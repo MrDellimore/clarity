@@ -71,9 +71,9 @@ return array(
 
     'view_manager' => array('template_path_stack' => array(__DIR__ . '/../view')),
 
-
-    'di' => array(
-    'services' => array(
-        'Search' => 'Search\Model\SearchTable')),
+//was 07/01/2014: this still appears to work
+//    'di' => array(
+//    'services' => array(
+//        'Search' => 'Search\Model\SearchTable')),
 
 );
