@@ -1,0 +1,131 @@
+<div class="container-fluid">
+    <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+    <h3 class="page-title">
+        Search Results				<small>search</small>
+    </h3>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="/">Home</a>
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>
+            <a href="/">Manage Content</a>
+            <i class="icon-angle-right"></i>
+        </li>
+        <li><a href="/">Search</a></li>
+    </ul>
+    <!-- END PAGE TITLE & BREADCRUMB-->
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+
+
+<br /><br /><br />
+
+    <div class="row-fluid">
+    <div class="span12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet box light-grey">
+    <div class="portlet-title">
+        <h4><i class="icon-globe"></i>Managed Products</h4>
+        <br />
+
+        <div class="tools">
+            <a href="javascript:;" class="collapse"></a>
+            <a href="#portlet-config" data-toggle="modal" class="config"></a>
+            <a href="javascript:;" class="reload"></a>
+            <a href="javascript:;" class="remove"></a>
+        </div>
+
+    </div>
+    <div class="portlet-body">
+    <div class="clearfix">
+        <div class="btn-group">
+            <a id="sample_editable_1_new" class="btn green" href="<?php echo $this->url('form', array('action'=>'index'));?>">
+                Add New Item <i class="icon-plus"></i>
+            </a>
+        </div>
+        <div class="btn-group pull-right">
+            <button class="btn dropdown-toggle" data-toggle="dropdown">Tools <i class="icon-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="">Bulk Edit</a></li>
+                <li><a href="">Change Status</a></li>
+                <li><a href="">Update attributes</a></li>
+            </ul>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered table-hover" id="sample_1">
+    <thead>
+    <tr>
+        <th style="width:8px;"><input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" /></th>
+        <th>id</th>
+        <th class="hidden-480">Sku</th>
+        <th class="hidden-480">Product Name</th>
+        <!--<th class="hidden-480">Manufacturer</th>-->
+        <th class="hidden-480">Price</th>
+        <th class="hidden-480">Quantity</th>
+        <th class="hidden-480">Site</th>
+        <th class="hidden-480">Status</th>
+        <th class="hidden-480">Visibility</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <?php
+    $results = Array();
+    $results = $this->result;
+    foreach($results as $key => $value){
+        //Checkboxes
+        echo '<tr class="odd gradeX">
+        <td><input type="checkbox" class="checkboxes" value="1" /></td>';
+
+        //Entity Id
+        echo '<td>'.$value['id'].'</td>';
+
+        //Sku
+        ?>
+        <td class='hidden-480'><a href="/form/<?=$value['sku']?>"> <?=$value['sku']?> </a> </td>
+        <?php
+        //Title
+        echo '<td class="hidden-480">'.$value['title'].'</td>';
+
+        //Manufacturer later......
+
+        //Price
+        echo '<td class="hidden-480">'.$value['price'].'</td>';
+
+        //Quantity
+        echo '<td class="hidden-480">'.$value['quantity'].'</td>';
+
+        //Site
+        echo '<td class="hidden-480">Focus</td>';
+
+        //Status
+        if($value['status'] == 1){
+            echo '<td><span class="label label-success">Enabled</span></td></td>';
+        }
+        else{
+            echo '<td><span class="label label-fail">Disabled</span></td></td>';
+        }
+
+        //Visibility
+        echo '<td><span class="label label-success">Search</span></td></tr>';
+
+    }
+
+    ?>
+
+    </tbody>
+    </table>
+    </div>
+    </div>
+    <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+    </div>
+    <br /><br /><br />
+
+
+
+</div>

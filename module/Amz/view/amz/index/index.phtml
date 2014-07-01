@@ -1,0 +1,22 @@
+<div>
+
+	<table border = "2" cellpadding = "2">
+	    <tr>
+	        <td>Asin</td>
+	        <td>Number of Reviews</td>
+	        <td>Rating</td>
+	    </tr>
+	    <?php 
+	       $review = $this->reviews;
+           
+	       foreach ($review as $key => $value){
+	           echo '<tr><td>';
+               echo '<a href="http://www.amazon.com/dp/'.$this->asins[$key].'" target="_blank"">'.$this->asins[$key].'</a></td><td align = "center">';
+               echo $value['reviewtotal'].'</td><td align = "center">';
+               echo $value['rating'].'</td></tr>';
+	       }?>    
+	</table>
+	
+	<br>
+	<?php print_r($this->test);?>
+</div>
