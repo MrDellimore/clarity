@@ -36,10 +36,15 @@ return array(
             'form'  => array(
                 'type'  => 'segment',
                 'options'    => array(
-                    'route' =>  '/form[/][/:id]',
+                    'route' =>  '/form[/][/:sku]',
                     'constraints'   =>  array(
 //                        'action'    =>  '[a-zA-Z]*',
-                        'id'    =>  '[0-9a-zA-Z]+',
+//                        'id'    =>  '[0-9a-zA-Z]+',
+                            'sku'    => '[a-zA-Z\d]+',
+//                        'id'    =>  '[a-zA-Z]+',
+//                        'id'    =>  '[0-9]+',
+//                        'sku'    =>  '[a-zA-Z\d]+',
+//                        'sku'    =>  '[^\W_]+',
                     ),
 
                     'defaults'  =>  array(
@@ -69,7 +74,18 @@ return array(
                                                 )
     ),
 
-    'view_manager' => array('template_path_stack' => array(__DIR__ . '/../view')),
+    'view_manager' => array(
+        'template_path_stack' => array(
+            __DIR__ . '/../view'
+        ),
+        'template_map'  =>  array(
+            'search/form/index' =>  __DIR__ . '/../view/search/form/index.phtml',
+            'search/search/index'   =>  __DIR__ . '/../view/search/search/index.phtml',
+            'search/form/404' =>  __DIR__ . '/../view/search/form/404.phtml',
+        ),
+        'display_not_found_reason' => true,
+        'not_found_template'       => 'search/form/404',
+    ),
 
 //was 07/01/2014: this still appears to work
 //    'di' => array(

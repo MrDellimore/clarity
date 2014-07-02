@@ -62,13 +62,13 @@
                                         <div class="control-group standard-group">
                                             <label class="control-label" for="general_sku">SKU</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="general_sku" id="general_sku" placeholder="SKU" style="width:140px" required/>
+                                                <input type="text" class="span6 m-wrap" name="general_sku" id="general_sku" placeholder="SKU" style="width:140px" value="<?= $this->sku?>"required/>
                                             </div>
                                         </div>
                                         <div class="control-group standard-group">
                                             <label class="control-label" for="name">Name</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="name" id="name" placeholder="Name" required/> <div id="char-count">Chars:<span id="name-count"></span></div>
+                                                <input type="text" class="span6 m-wrap" name="name" id="name" placeholder="Name" value="<?=$this->title?>" required/> <div id="char-count">Chars:<span id="name-count"></span></div>
                                             </div>
                                         </div>
                                     <div class="control-group standard-group">
@@ -893,6 +893,6 @@
     <br />
     <br />
     <div>
-        Test: <?php print_r( $this->test); ?>
+        Test: <?php print_r( $this->sku); ?>
     </div>
 </div>
