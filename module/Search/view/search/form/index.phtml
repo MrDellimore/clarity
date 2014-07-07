@@ -74,13 +74,13 @@
                                     <div class="control-group standard-group">
                                         <label class="control-label" for="inventory">Inventory</label>
                                         <div class="controls">
-                                            <input type="text" class="span6 m-wrap" name="inventory" id="inventory" placeholder="Inventory"  required/>
+                                            <input type="text" class="span6 m-wrap" name="inventory" id="inventory" placeholder="Inventory" value="<?=$this->quantity?>"  required/>
                                         </div>
                                     </div>
                                     <div class="control-group standard-group">
                                         <label class="control-label" for="urlkey">URL Key</label>
                                         <div class="controls">
-                                            <input type="text" class="span6 m-wrap" name="urlkey" id="urlkey" placeholder="URL Key" required />
+                                            <input type="text" class="span6 m-wrap" name="urlkey" id="urlkey" placeholder="URL Key" value="<?=$this->urlKey?>" required />
                                         </div>
                                     </div>
                                     <div class="control-group standard-group">
@@ -162,19 +162,19 @@
                                         <div class="control-group pricing-group">
                                             <label class="control-label" for="price">Price</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="price" id="price" placeholder="Price" required style="width: 80px" />
+                                                <input type="text" class="span6 m-wrap" name="price" id="price" placeholder="Price" value="<?=$this->price?>"required style="width: 80px" />
                                             </div>
                                         </div>
                                         <div class="control-group pricing-group">
                                             <label class="control-label" for="cost">Cost</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="cost" id="cost" placeholder="Cost" required style="width: 80px"/>
+                                                <input type="text" class="span6 m-wrap" name="cost" id="cost" placeholder="Cost" value="<?=$this->cost?>" required style="width: 80px"/>
                                             </div>
                                         </div>
                                         <div class="control-group pricing-group">
                                             <label class="control-label" for="rebate">Rebate Price</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="rebate" id="rebate" placeholder="Rebate Price" required />
+                                                <input type="text" class="span6 m-wrap" name="rebate" id="rebate" placeholder="Rebate Price" value="<?=$this->rebateAmount?>" required />
                                             </div>
                                         </div>
                                         <div class="control-group pricing-group">
@@ -183,14 +183,14 @@
                                                 <div class="input-prepend"> <span class="add-on">
                                                         <i class="icon-calendar"></i>
                                                     </span>
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-rebate-date" id="start-end-rebate-date" placeholder="Start Date - End Date" required />
+                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-rebate-date" id="start-end-rebate-date" value="<?=$this->rebateDateFromTo?>" placeholder="Start Date - End Date" required />
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="control-group pricing-group">
                                             <label class="control-label" for="special">Special Price</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="special" id="special" placeholder="Special Price" required />
+                                                <input type="text" class="span6 m-wrap" name="special" id="special" placeholder="Special Price" value="<?=$this->specialPrice?>" required />
                                             </div>
                                         </div>
                                         <!--special price will the same as final price-->
@@ -200,15 +200,14 @@
                                                 <div class="input-prepend"> <span class="add-on">
                                                         <i class="icon-calendar"></i>
                                                     </span>
-
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-special-date" id="start-end-special-date" placeholder="Start Date - End Date" required />
+                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-special-date" id="start-end-special-date" value="<?=$this->specialDateFromTo?>" placeholder="Start Date - End Date" required />
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="control-group pricing-group">
                                             <label class="control-label" for="mailin">Mail-In Rebate</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="mailin" id="mailin" placeholder="Mail-In Rebate" required />
+                                                <input type="text" class="span6 m-wrap" name="mailin" id="mailin" placeholder="Mail-In Rebate" value="<?=$this->mailinRebateAmount?>" required />
                                             </div>
                                         </div>
                                         <div class="control-group pricing-group">
@@ -218,7 +217,7 @@
                                                             <i class="icon-calendar"></i>
                                                         </span>
 
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-mailin-date" id="start-end-mailin-date" placeholder="Start Date - End Date" required />
+                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-mailin-date" id="start-end-mailin-date" placeholder="Start Date - End Date" value="<?=$this->mailRebateDateFromTo?>" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -240,27 +239,27 @@
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="weight">Weight</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="weight" id="weight" placeholder="Weight" required />
+                                                <input type="text" class="span6 m-wrap" name="weight" id="weight" placeholder="Weight" value="<?=$this->weight?>" required />
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="usexpedited">U.S Expedited</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="usexpedited" id="usexpedited" placeholder="U.S Expedited"  required/>
+                                                <input type="text" class="span6 m-wrap" name="usexpedited" id="usexpedited" placeholder="U.S Expedited"  value="<?=$this->usExpedited?>" required/>
                                             </div>
                                         </div>
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="ustwoday">U.S Two Day</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="ustwoday" id="ustwoday" placeholder="U.S Two Day"  required/>
+                                                <input type="text" class="span6 m-wrap" name="ustwoday" id="ustwoday" placeholder="U.S Two Day" value="<?=$this->usTwoWay?>"  required/>
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="canada">Canada Priority</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="canada" id="canada" placeholder="Canada Priority" required />
+                                                <input type="text" class="span6 m-wrap" name="canada" id="canada" placeholder="Canada Priority" value="<?=$this->canPriority?>" required />
                                             </div>
                                         </div>
 
@@ -268,73 +267,68 @@
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="canada_firstclass">Canada First Class</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="canada_firstclass" id="canada_firstclass" placeholder="Canada First Class"  required/>
+                                                <input type="text" class="span6 m-wrap" name="canada_firstclass" id="canada_firstclass" placeholder="Canada First Class"  value="<?=$this->canFirstClass?>"  required/>
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="asia_priority">Asia Priority</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="asia_priority" id="asia_priority" placeholder="Asia Priority" required />
+                                                <input type="text" class="span6 m-wrap" name="asia_priority" id="asia_priority" placeholder="Asia Priority"  value="<?=$this->asiaPriority?>"  required />
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="asia_firstclass">Asia First Class</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="asia_firstclass" id="asia_firstclass" placeholder="Asia First Class"  required/>
+                                                <input type="text" class="span6 m-wrap" name="asia_firstclass" id="asia_firstclass" placeholder="Asia First Class"  value="<?=$this->asiaFirstClass?>"  required/>
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="europe_priority">Europe Priority</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="europe_priority" id="europe_priority" placeholder="Europe Priority" required />
+                                                <input type="text" class="span6 m-wrap" name="europe_priority" id="europe_priority" placeholder="Europe Priority"  value="<?=$this->europePriority?>" required />
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="europe_firstclass">Europe First Class</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="europe_firstclass" id="europe_firstclass" placeholder="Europe First Class"  required/>
+                                                <input type="text" class="span6 m-wrap" name="europe_firstclass" id="europe_firstclass" placeholder="Europe First Class"  value="<?=$this->europeFirstClass?>"  required/>
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="outside_priority">Outside US, Eur., CA, Asia Priority</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="outside_priority" id="outside_priority" placeholder="Outside US, Eur., CA, Asia Priority" required />
+                                                <input type="text" class="span6 m-wrap" name="outside_priority" id="outside_priority" placeholder="Outside US, Eur., CA, Asia Priority"  value="<?=$this->outsideAsiaPriority?>"  required />
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="outside_firstclass">Outside US, Eur., CA, Asia First Class</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="outside_firstclass" id="outside_firstclass" placeholder="Outside US, Eur., CA, Asia First Class" required />
+                                                <input type="text" class="span6 m-wrap" name="outside_firstclass" id="outside_firstclass" placeholder="Outside US, Eur., CA, Asia First Class"  value="<?=$this->outsideAsiaFirstClass?>"  required />
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="us_oneday">US One Day</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="us_oneday" id="us_oneday" placeholder="US One Day" required />
+                                                <input type="text" class="span6 m-wrap" name="us_oneday" id="us_oneday" placeholder="US One Day"  value="<?=$this->usOneDay?>"  required />
                                             </div>
                                         </div>
 
                                         <div class="control-group shipping-group">
                                             <label class="control-label" for="us_standard">US Standard</label>
                                             <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="us_standard" id="us_standard" placeholder="US Standard" required />
+                                                <input type="text" class="span6 m-wrap" name="us_standard" id="us_standard" placeholder="US Standard"  value="<?=$this->usTwoWay?>"  required />
                                             </div>
                                         </div>
                                         <!--End of Shipping Attributes-->
                                         <!--Meta-information-->
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="meta_title">Meta Title</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="meta_title" id="meta_title" placeholder="Meta Title" required />
-                                            </div>
-                                        </div>
+
                                     <div class="portlet-title description">
                                         <h4><i class="icon-cogs"></i>Description</h4>
                                         <div class="tools-general">
@@ -345,11 +339,19 @@
                                         </div>
                                     </div>
                                     <br />
+                                    <div class="control-group meta-title">
+                                        <label class="control-label" for="meta_title">Meta Title</label>
+<!--                                        <div class="controls">-->
+                                            <div class="controls" style="width: 200px"  id="editable meta_title " contenteditable="true">
+                                        </div>
+<!--                                        <textarea type="text" class="span6 m-wrap" name="meta_title" id="meta_title" placeholder="Meta Title"  value="<?php //$this->metaTitle; ?>" ></textarea>-->
+                                        <textarea  style="visibility:hidden;  display:none" cols="15" rows="12" class="span6 m-wrap" name="meta_title" id="meta_title_ta" value="<?=$this->metaTitle?>" ></textarea>
+                                    </div>
                                         <div class="controls-group meta">
                                             <label class="control-label" for="meta_keyword">Meta Keywords: </label>
                                             <div class="controls" style="width: 200px"  id="editable meta_keyword " contenteditable="true">
                                             </div>
-<!--                                            <textarea  style="visibility:hidden;  display:none" cols="15" rows="12" class="span6 m-wrap" name="meta_title" id="meta_keyword_ta" ></textarea>-->
+                                            <textarea  style="visibility:hidden;  display:none" cols="15" rows="12" class="span6 m-wrap" name="meta_title" id="meta_keyword_ta" ></textarea>
                                         </div>
                                         <br />
                                         <br />
@@ -357,7 +359,7 @@
                                             <label class="control-label" for="meta_description">Meta Description: </label>
                                             <div class="controls" style="width: 200px" id="editable meta_description" contenteditable="true">
                                             </div>
-<!--                                            <textarea style="visibility:hidden; display:none" name="meta_description_ta" id="meta_description"></textarea>-->
+                                            <textarea style="visibility:hidden; display:none" name="meta_description_ta" id="meta_description"></textarea>
                                         </div>
                                         <br />
                                         <br />

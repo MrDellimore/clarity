@@ -23,7 +23,7 @@ class FormController extends AbstractActionController {
      * @return ViewModel
      */
     public function indexAction(){
-        $form = new Form();
+//        $form = new Form();
         $sku = $this->params()->fromRoute('sku');
         if (!$this->formTable) {
             $this->formTable = $this->getServiceLocator()->get('Search\Model\FormTable');
@@ -32,13 +32,13 @@ class FormController extends AbstractActionController {
             $entityID = $this->formTable->validateSku($sku);
             if( $entityID === False ) {
                 $view = new ViewModel(array('message'  => 'This Sku does not exist.'));
-                $view->setTemplate('search/form/404');
+                $view->setTemplate('error/404');
                 return $view;
             } else {
-                $form->setSku($sku);
-                $title = $this->formTable->lookupData($entityID,$sku);
-                $data = [ 'sku' => $sku, 'title' => $title ];
-                $view = new ViewModel($data );
+//                $form->setSku($sku);
+                $fields = array();
+                $fields = $this->formTable->lookupData($entityID,$sku);
+                $view = new ViewModel($this->formTable->setupData($fields) );
                 return $view;
             }
         }
