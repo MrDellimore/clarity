@@ -11,6 +11,10 @@ namespace Search\Model;
 
 class Form {
 
+    protected $images;
+
+    protected $relatedProjects;
+
     protected $sku;
 
     protected $name;
@@ -81,25 +85,67 @@ class Form {
 
     protected $description;
 
-    protected $thumbnail; // This might be an array
+    public function __construct(Images $img, RelatedProducts $rp){
+        $this->images = $img;
+        $this->relatedProjects = $rp;
+    }
 
-    protected $relatedSku;
+    /**
+     * @param mixed $images
+     */
+    public function setImages($images)
+    {
+//        echo "<pre>";
+//        var_dump($images);
+        foreach($images as $method => $values){
+//            echo $method . "<br />";
+            $setMethod = 'set'.ucfirst($method);
+//            echo count($values);
+//            var_dump($values);
+//            foreach($values as $vals){
+//                echo $setMethod  . ' ' . $vals. "<br />";
+                $this->images->$setMethod($values);
+//            }
+//            $this->images->$setMethod()
+        }
+//        $setMethods = array();
+//        var_dump(get_class_methods(get_class($this->images)));
+//        $setMethods = get_class_methods(get_class($this->images));
+//        foreach($setMethods as $imageMethod ){
+//            if( preg_match('/setLabel/',$imageMethod)){
+//                $this->images->$imageMethod($images['label']);
+//            }
+//            if( preg_match('/setLabel/',$imageMethod)){
+//                $this->images->$imageMethod($images['label']);
+//            }
+//        }
+    }
 
-    protected $relatedTitle;
+    /**
+     * @return mixed
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
 
-    protected $relatedQty;
+    /**
+     * @param mixed $relatedProjects
+     */
+    public function setRelatedProjects($relatedProjects)
+    {
+        $this->relatedProjects = $relatedProjects;
+    }
 
-    protected $relatedPosition;
+    /**
+     * @return mixed
+     */
+    public function getRelatedProjects()
+    {
+        return $this->relatedProjects;
+    }
 
-    protected $crossSku;
-
-    protected $crossTitle;
-
-    protected $crossQty;
-
-    protected $crossPosition;
-
-    protected $attributes; // This might be an array for Categories
+    //protected $attributes; // This might be an array for Categories
 
     //TODO: Add properties for Category form
 
@@ -110,6 +156,7 @@ class Form {
     public function setAsiaFirstClass($asiaFirstClass)
     {
         $this->asiaFirstClass = $asiaFirstClass;
+        return $this;
     }
 
     /**
@@ -126,6 +173,7 @@ class Form {
     public function setAsiaPriority($asiaPriority)
     {
         $this->asiaPriority = $asiaPriority;
+        //return $this;
     }
 
     /**
@@ -139,18 +187,18 @@ class Form {
     /**
      * @param mixed $attributes
      */
-    public function setAttributes($attributes)
-    {
-        $this->attributes = $attributes;
-    }
+//    public function setAttributes($attributes)
+//    {
+//        $this->attributes = $attributes;
+//    }
 
     /**
      * @return mixed
      */
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
+//    public function getAttributes()
+//    {
+//        return $this->attributes;
+//    }
 
     /**
      * @param mixed $canadaFirstClass
@@ -158,6 +206,7 @@ class Form {
     public function setCanadaFirstClass($canadaFirstClass)
     {
         $this->canadaFirstClass = $canadaFirstClass;
+        //return $this;
     }
 
     /**
@@ -174,6 +223,7 @@ class Form {
     public function setCanadaPriority($canadaPriority)
     {
         $this->canadaPriority = $canadaPriority;
+        //return $this;
     }
 
     /**
@@ -206,6 +256,7 @@ class Form {
     public function setCost($cost)
     {
         $this->cost = $cost;
+        //return $this;
     }
 
     /**
@@ -219,66 +270,66 @@ class Form {
     /**
      * @param mixed $crossPosition
      */
-    public function setCrossPosition($crossPosition)
-    {
-        $this->crossPosition = $crossPosition;
-    }
+//    public function setCrossPosition($crossPosition)
+//    {
+//        $this->crossPosition = $crossPosition;
+//    }
 
     /**
      * @return mixed
      */
-    public function getCrossPosition()
-    {
-        return $this->crossPosition;
-    }
+//    public function getCrossPosition()
+//    {
+//        return $this->crossPosition;
+//    }
 
     /**
      * @param mixed $crossQty
      */
-    public function setCrossQty($crossQty)
-    {
-        $this->crossQty = $crossQty;
-    }
+//    public function setCrossQty($crossQty)
+//    {
+//        $this->crossQty = $crossQty;
+//    }
 
     /**
      * @return mixed
      */
-    public function getCrossQty()
-    {
-        return $this->crossQty;
-    }
+//    public function getCrossQty()
+//    {
+//        return $this->crossQty;
+//    }
 
     /**
      * @param mixed $crossSku
      */
-    public function setCrossSku($crossSku)
-    {
-        $this->crossSku = $crossSku;
-    }
+//    public function setCrossSku($crossSku)
+//    {
+//        $this->crossSku = $crossSku;
+//    }
 
     /**
      * @return mixed
      */
-    public function getCrossSku()
-    {
-        return $this->crossSku;
-    }
+//    public function getCrossSku()
+//    {
+//        return $this->crossSku;
+//    }
 
     /**
      * @param mixed $crossTitle
      */
-    public function setCrossTitle($crossTitle)
-    {
-        $this->crossTitle = $crossTitle;
-    }
+//    public function setCrossTitle($crossTitle)
+//    {
+//        $this->crossTitle = $crossTitle;
+//    }
 
     /**
      * @return mixed
      */
-    public function getCrossTitle()
-    {
-        return $this->crossTitle;
-    }
+//    public function getCrossTitle()
+//    {
+//        return $this->crossTitle;
+//    }
 
     /**
      * @param mixed $description
@@ -302,6 +353,7 @@ class Form {
     public function setEuropeFirstClass($europeFirstClass)
     {
         $this->europeFirstClass = $europeFirstClass;
+        //return $this;
     }
 
     /**
@@ -318,6 +370,7 @@ class Form {
     public function setEuropePriority($europePriority)
     {
         $this->europePriority = $europePriority;
+        //return $this;
     }
 
     /**
@@ -334,6 +387,7 @@ class Form {
     public function setInventory($inventory)
     {
         $this->inventory = $inventory;
+        //return $this;
     }
 
     /**
@@ -350,6 +404,7 @@ class Form {
     public function setMailInRebate($mailInRebate)
     {
         $this->mailInRebate = $mailInRebate;
+        //return $this;
     }
 
     /**
@@ -366,6 +421,7 @@ class Form {
     public function setMailInStartEndDate($mailInStartEndDate)
     {
         $this->mailInStartEndDate = $mailInStartEndDate;
+        //return $this;
     }
 
     /**
@@ -446,6 +502,7 @@ class Form {
     public function setName($name)
     {
         $this->name = $name;
+        //return $this;
     }
 
     /**
@@ -462,6 +519,7 @@ class Form {
     public function setOutsideAsiaFirstClass($outsideAsiaFirstClass)
     {
         $this->outsideAsiaFirstClass = $outsideAsiaFirstClass;
+        //return $this;
     }
 
     /**
@@ -478,6 +536,7 @@ class Form {
     public function setOutsideAsiaPriority($outsideAsiaPriority)
     {
         $this->outsideAsiaPriority = $outsideAsiaPriority;
+        //return $this;
     }
 
     /**
@@ -494,6 +553,7 @@ class Form {
     public function setPrice($price)
     {
         $this->price = $price;
+        //return $this;
     }
 
     /**
@@ -510,6 +570,7 @@ class Form {
     public function setRebatePrice($rebatePrice)
     {
         $this->rebatePrice = $rebatePrice;
+        //return $this;
     }
 
     /**
@@ -526,6 +587,7 @@ class Form {
     public function setRebateStartEndDate($rebateStartEndDate)
     {
         $this->rebateStartEndDate = $rebateStartEndDate;
+        //return $this;
     }
 
     /**
@@ -539,66 +601,67 @@ class Form {
     /**
      * @param mixed $relatedPosition
      */
-    public function setRelatedPosition($relatedPosition)
-    {
-        $this->relatedPosition = $relatedPosition;
-    }
+//    public function setRelatedPosition($relatedPosition)
+//    {
+//        $this->relatedPosition = $relatedPosition;
+//    }
 
     /**
      * @return mixed
      */
-    public function getRelatedPosition()
-    {
-        return $this->relatedPosition;
-    }
+//    public function getRelatedPosition()
+//    {
+//        return $this->relatedPosition;
+//    }
 
     /**
      * @param mixed $relatedQty
      */
-    public function setRelatedQty($relatedQty)
-    {
-        $this->relatedQty = $relatedQty;
-    }
+//    public function setRelatedQty($relatedQty)
+//    {
+//        $this->relatedQty = $relatedQty;
+//        return $this;
+//    }
 
     /**
      * @return mixed
      */
-    public function getRelatedQty()
-    {
-        return $this->relatedQty;
-    }
+//    public function getRelatedQty()
+//    {
+//        return $this->relatedQty;
+//    }
 
     /**
      * @param mixed $relatedSku
      */
-    public function setRelatedSku($relatedSku)
-    {
-        $this->relatedSku = $relatedSku;
-    }
+//    public function setRelatedSku($relatedSku)
+//    {
+//        $this->relatedSku = $relatedSku;
+//    }
 
     /**
      * @return mixed
      */
-    public function getRelatedSku()
-    {
-        return $this->relatedSku;
-    }
+//    public function getRelatedSku()
+//    {
+//        return $this->relatedSku;
+//    }
 
     /**
      * @param mixed $relatedTitle
      */
-    public function setRelatedTitle($relatedTitle)
-    {
-        $this->relatedTitle = $relatedTitle;
-    }
+//    public function setRelatedTitle($relatedTitle)
+//    {
+//        $this->relatedTitle = $relatedTitle;
+//    }
 
     /**
      * @return mixed
      */
-    public function getRelatedTitle()
-    {
-        return $this->relatedTitle;
-    }
+//    public function getRelatedTitle()
+//    {
+//        return $this->relatedTitle;
+//    }
 
     /**
      * @param mixed $sku
@@ -606,6 +669,7 @@ class Form {
     public function setSku($sku)
     {
         $this->sku = $sku;
+        //return $this;
     }
 
     /**
@@ -622,6 +686,7 @@ class Form {
     public function setSpecialPrice($specialPrice)
     {
         $this->specialPrice = $specialPrice;
+        //return $this;
     }
 
     /**
@@ -638,6 +703,7 @@ class Form {
     public function setSpecialStartEndDate($specialStartEndDate)
     {
         $this->specialStartEndDate = $specialStartEndDate;
+        //return $this;
     }
 
     /**
@@ -699,18 +765,18 @@ class Form {
     /**
      * @param mixed $thumbnail
      */
-    public function setThumbnail($thumbnail)
-    {
-        $this->thumbnail = $thumbnail;
-    }
+//    public function setThumbnail($thumbnail)
+//    {
+//        $this->thumbnail = $thumbnail;
+//    }
 
     /**
      * @return mixed
      */
-    public function getThumbnail()
-    {
-        return $this->thumbnail;
-    }
+//    public function getThumbnail()
+//    {
+//        return $this->thumbnail;
+//    }
 
     /**
      * @param mixed $urlKey
@@ -718,6 +784,7 @@ class Form {
     public function setUrlKey($urlKey)
     {
         $this->urlKey = $urlKey;
+        //return $this;
     }
 
     /**
@@ -734,6 +801,7 @@ class Form {
     public function setUsExpedited($usExpedited)
     {
         $this->usExpedited = $usExpedited;
+        //return $this;
     }
 
     /**
@@ -750,6 +818,7 @@ class Form {
     public function setUsOneDay($usOneDay)
     {
         $this->usOneDay = $usOneDay;
+        //return $this;
     }
 
     /**
@@ -766,6 +835,7 @@ class Form {
     public function setUsStandard($usStandard)
     {
         $this->usStandard = $usStandard;
+        //return $this;
     }
 
     /**
@@ -782,6 +852,7 @@ class Form {
     public function setUsTwoDay($usTwoDay)
     {
         $this->usTwoDay = $usTwoDay;
+        //return $this;
     }
 
     /**
@@ -814,6 +885,7 @@ class Form {
     public function setWeight($weight)
     {
         $this->weight = $weight;
+        //return $this;
     }
 
     /**
@@ -824,4 +896,7 @@ class Form {
         return $this->weight;
     }
 
+    public function __call($method, $arg){
+        return;
+    }
 } 
