@@ -37,7 +37,7 @@ class FormTable{
             $resultSet->initialize($result);
         }
 //        This is my query.
-        var_dump($resultSet);
+//        var_dump($resultSet);
         return $resultSet;
     }
 
