@@ -37,7 +37,7 @@ class FormTable{
             $resultSet->initialize($result);
         }
 //        This is my query.
-//        var_dump($resultSet);
+        var_dump($resultSet);
         return $resultSet;
     }
 
@@ -135,36 +135,36 @@ class FormTable{
                     'inventory'  => $data['quantity'] = isset($data['quantity']) ? $data['quantity'] : '',
                     'urlKey'  => $data['urlkey'] = isset($data['urlkey']) ? $data['urlkey'] : '' ,
                     'price'  => $data['price'] = isset($data['price']) ? $data['price'] : '',
-                    'cost'  => $data['cost'] = isset($data['cost']) ? $data['cost'] : 0,
-                    'rebatePrice'  => $data['rebate'] = isset($data['rebate']) ? $data['rebate'] : 0,
+                    'cost'  => $data['cost'] = isset($data['cost']) ? $data['cost'] : null,
+                    'rebatePrice'  => $data['rebate'] = isset($data['rebate']) ? $data['rebate'] : null,
                     'rebateStartEndDate'   => $data['rebateDateFromTo'] = (isset($data['rebateDateFrom']) &&
                             isset($data['rebateDateTo'])) ?
-                            FormatFields::reformatDate($data['rebateDateFrom'], $data['rebateDateTo'])  : 'N/A',
-                    'specialPrice'  => $data['special'] = isset($data['special']) ? $data['special'] : 0,
+                            FormatFields::reformatDate($data['rebateDateFrom'], $data['rebateDateTo'])  : null,
+                    'specialPrice'  => $data['special'] = isset($data['special']) ? $data['special'] : null,
                     'specialStartEndDate'  => $data['specialDateFromTo'] = (isset($data['specialDateFrom']) &&
                             isset($data['specialDateTo'])) ?
-                            FormatFields::reformatDate($data['specialDateFrom'], $data['specialDateTo'])  : 'N/A',
-                    'mailInRebate'  => $data['mailInRebate'] = isset($data['mailInRebate']) ? $data['mailInRebate'] : 0,
+                            FormatFields::reformatDate($data['specialDateFrom'], $data['specialDateTo'])  : null,
+                    'mailInRebate'  => $data['mailInRebate'] = isset($data['mailInRebate']) ? $data['mailInRebate'] : null,
 
                     'mailInStartEndDate'   => $data['mailRebateDateFromTo'] = (isset($data['mailrebateDateFrom']) &&
                                                                                             isset($data['mailrebateDateTo'])) ?
-                                                                                            FormatFields::reformatDate($data['mailrebateDateFrom'], $data['mailrebateDateTo'])  : 'N/A',
+                                                                                            FormatFields::reformatDate($data['mailrebateDateFrom'], $data['mailrebateDateTo'])  :null,
 
-                    'weight'  => $data['weight'] = isset($data['weight']) ? $data['weight'] : 0,
-                    'usExpedited'  => $data['usExpedited'] = isset($data['usExpedited']) ? $data['usExpedited'] : 0,
-                    'usTwoDay'  => $data['usTwoDay'] = isset($data['usTwoDay']) ? $data['usTwoDay'] : 0,
-                    'canadaPriority'  => $data['canPriority'] = isset($data['canPriority']) ? $data['canPriority'] : 0,
-                    'canadaFirstClass'  => $data['canFirstClass'] = isset($data['canFirstClass']) ? $data['canFirstClass'] : 0,
-                    'asiaPriority'  => $data['asiaPriority'] = isset($data['asiaPriority']) ? $data['asiaPriority'] : 0,
-                    'asiaFirstClass'  => $data['asiaFirstClass'] = isset($data['asiaFirstClass']) ? $data['asiaFirstClass'] : 0,
-                    'europePriority'  => $data['europePriority'] = isset($data['europePriority']) ? $data['europePriority'] : 0,
-                    'europeFirstClass'  => $data['europeFirstClass'] = isset($data['europeFirstClass']) ? $data['europeFirstClass'] : 0,
-                    'outsideAsiaPriority'  => $data['outsideAsiaPriority'] = isset($data['outsideAsiaPriority']) ? $data['outsideAsiaPriority'] : 0,
-                    'outsideAsiaFirstClass'  => $data['outsideAsiaFirstClass'] = isset($data['outsideAsiaFirstClass']) ? $data['outsideAsiaFirstClass'] : 0,
-                    'usOneDay'  => $data['usOneDay'] = isset($data['usOneDay']) ? $data['usOneDay'] : 0,
-                    'usStandard'  => $data['usStandard'] = isset($data['usStandard']) ? $data['usStandard'] : 0,
-                    'metaTitle'  => $data['metaTitle'] = isset($data['metaTitle']) ? $data['metaTitle'] : 0,
-                    'metaDescription'  => $data['metaDescription'] = isset($data['metaDescription']) ? $data['metaDescription'] : 0,
+                    'weight'  => $data['weight'] = isset($data['weight']) ? $data['weight'] : null,
+                    'usExpedited'  => $data['usExpedited'] = isset($data['usExpedited']) ? $data['usExpedited'] : null,
+                    'usTwoDay'  => $data['usTwoDay'] = isset($data['usTwoDay']) ? $data['usTwoDay'] : null,
+                    'canadaPriority'  => $data['canPriority'] = isset($data['canPriority']) ? $data['canPriority'] : null,
+                    'canadaFirstClass'  => $data['canFirstClass'] = isset($data['canFirstClass']) ? $data['canFirstClass'] : null,
+                    'asiaPriority'  => $data['asiaPriority'] = isset($data['asiaPriority']) ? $data['asiaPriority'] : null,
+                    'asiaFirstClass'  => $data['asiaFirstClass'] = isset($data['asiaFirstClass']) ? $data['asiaFirstClass'] : null,
+                    'europePriority'  => $data['europePriority'] = isset($data['europePriority']) ? $data['europePriority'] : null,
+                    'europeFirstClass'  => $data['europeFirstClass'] = isset($data['europeFirstClass']) ? $data['europeFirstClass'] : null,
+                    'outsideAsiaPriority'  => $data['outsideAsiaPriority'] = isset($data['outsideAsiaPriority']) ? $data['outsideAsiaPriority'] : null,
+                    'outsideAsiaFirstClass'  => $data['outsideAsiaFirstClass'] = isset($data['outsideAsiaFirstClass']) ? $data['outsideAsiaFirstClass'] : null,
+                    'usOneDay'  => $data['usOneDay'] = isset($data['usOneDay']) ? $data['usOneDay'] : null,
+                    'usStandard'  => $data['usStandard'] = isset($data['usStandard']) ? $data['usStandard'] : null,
+                    'metaTitle'  => $data['metaTitle'] = isset($data['metaTitle']) ? $data['metaTitle'] : null,
+                    'metaDescription'  => $data['metaDescription'] = isset($data['metaDescription']) ? $data['metaDescription'] : null,
 
                 ];
     }

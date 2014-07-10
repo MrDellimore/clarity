@@ -7,6 +7,7 @@
 
 namespace Search\Controller;
 
+use Search\Model\NewFields;
 use Zend\Mvc\Controller\AbstractActionController;
 //use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\View\Model\ViewModel;
@@ -57,7 +58,7 @@ class FormController extends AbstractActionController {
         if($request->isPost()) {
             $formData = array();
             $formData = (array) $request->getPost();
-            echo "<pre>";
+//            echo "<pre>";
 //            var_dump($formData);
             foreach($formData as $key => $value){
 //                echo 'this are the indexs ' . $key . "<br />";
@@ -65,9 +66,10 @@ class FormController extends AbstractActionController {
                 $postData->$method($value);
             }
             $cleaner = new SearchCleaner();
-            $cleaner->dirty($container->data, $postData);
-            $cleaner->clean($container->data, $formData);
-            die();
+            $cleaner->determineQueryStatement($container->data, $postData);
+//            $getNew = new NewFields();
+//            echo "this is new cost " . $getNew->getCost() . "<br />";
+//            die();
         }
 
         $view = new ViewModel($this->skuData);
