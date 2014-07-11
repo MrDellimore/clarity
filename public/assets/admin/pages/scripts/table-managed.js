@@ -6,6 +6,8 @@ var TableManaged = function () {
 
         // begin first table
         table.dataTable({
+
+            /*
             "columns": [{
                 "orderable": false
             }, {
@@ -19,12 +21,33 @@ var TableManaged = function () {
             }, {
                 "orderable": false
             }],
+            */
+            "processing": true,
+            "serverSide": true,
+
+            "ajax": {
+                url: "/search/quicksearch",
+                type: 'POST'
+
+            },
+
+            "columns": [
+                { "data": "id" },
+                { "data": "sku" },
+                { "data": "title" },
+                { "data": "price" },
+                { "data": "quantity" },
+                { "data": "site" },
+                { "data": "status" },
+                { "data": "visibility" }
+            ],
+
             "lengthMenu": [
-                [5, 15, 20, -1],
-                [5, 15, 20, "All"] // change per page values here
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 5,            
+            "pageLength": 10,
             "pagingType": "bootstrap_full_number",
             "language": {
                 "lengthMenu": "_MENU_ records",
@@ -34,17 +57,18 @@ var TableManaged = function () {
                     "last": "Last",
                     "first": "First"
                 }
-            },
+            }/*,
             "columnDefs": [{  // set default column settings
                 'orderable': false,
                 'targets': [0]
             }, {
                 "searchable": false,
                 "targets": [0]
-            }],
+            }]
+            /*
             "order": [
                 [1, "asc"]
-            ] // set first column as a default sort by asc
+            ] */// set first column as a default sort by asc
         });
 
         var tableWrapper = jQuery('#sample_1_wrapper');
@@ -71,97 +95,110 @@ var TableManaged = function () {
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     }
 
-    var initTable2 = function () {
+    var initAcessoryDisplay = function () {
 
-        var table = $('#sample_2');
+        var table = $('#acessoriesDisplay');
 
-        table.dataTable({
+        var oTable = table.dataTable({
+            //"processing": true,
+            /*"serverSide": true,
+
+            "ajax": {
+                url: "/search/quicksearch",
+                type: 'POST'
+
+            },
+
+
+            "columns": [
+                { "data": "id" },
+                { "data": "sku" },
+                { "data": "title" },
+                { "data": "price" },
+                { "data": "quantity" },
+                { "data": "site" },
+                { "data": "status" },
+                { "data": "visibility" }
+            ],
+            */
             "lengthMenu": [
-                [5, 15, 20, -1],
-                [5, 15, 20, "All"] // change per page values here
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 5,
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
             "language": {
                 "lengthMenu": "_MENU_ records",
-                "paging": {
-                    "previous": "Prev",
-                    "next": "Next"
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
                 }
-            },
-            "columnDefs": [{  // set default column settings
-                'orderable': false,
-                'targets': [0]
-            }, {
-                "searchable": false,
-                "targets": [0]
-            }],
-            "order": [
-                [1, "asc"]
-            ] // set first column as a default sort by asc
+            }});
+
+        table.on('click', '.delete', function (e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            oTable.fnDeleteRow(nRow);
         });
 
-        var tableWrapper = jQuery('#sample_2_wrapper');
-
-        table.find('.group-checkable').change(function () {
-            var set = jQuery(this).attr("data-set");
-            var checked = jQuery(this).is(":checked");
-            jQuery(set).each(function () {
-                if (checked) {
-                    $(this).attr("checked", true);
-                } else {
-                    $(this).attr("checked", false);
-                }
-            });
-            jQuery.uniform.update(set);
-        });
-
-        tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
+        //var tableWrapper = jQuery('#sample_1_wrapper');
+        //tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     }
 
-    var initTable3 = function () {
+    var initCrossSellDisplay = function () {
 
-        var table = $('#sample_3');
+        var table = $('#crossSellDisplay');
 
-        // begin: third table
-        table.dataTable({
+        var oTable = table.dataTable({
+            //"processing": true,
+            /*"serverSide": true,
+
+             "ajax": {
+             url: "/search/quicksearch",
+             type: 'POST'
+
+             },
+
+
+             "columns": [
+             { "data": "id" },
+             { "data": "sku" },
+             { "data": "title" },
+             { "data": "price" },
+             { "data": "quantity" },
+             { "data": "site" },
+             { "data": "status" },
+             { "data": "visibility" }
+             ],
+             */
             "lengthMenu": [
-                [5, 15, 20, -1],
-                [5, 15, 20, "All"] // change per page values here
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 5,
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
             "language": {
-                "lengthMenu": "_MENU_ records"
-            },
-            "columnDefs": [{  // set default column settings
-                'orderable': false,
-                'targets': [0]
-            }, {
-                "searchable": false,
-                "targets": [0]
-            }],
-            "order": [
-                [1, "asc"]
-            ] // set first column as a default sort by asc
-        });
-
-        var tableWrapper = jQuery('#sample_3_wrapper');
-
-        table.find('.group-checkable').change(function () {
-            var set = jQuery(this).attr("data-set");
-            var checked = jQuery(this).is(":checked");
-            jQuery(set).each(function () {
-                if (checked) {
-                    $(this).attr("checked", true);
-                } else {
-                    $(this).attr("checked", false);
+                "lengthMenu": "_MENU_ records",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
                 }
-            });
-            jQuery.uniform.update(set);
+            }});
+
+        table.on('click', '.delete', function (e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            oTable.fnDeleteRow(nRow);
         });
 
-        tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
+        //var tableWrapper = jQuery('#sample_1_wrapper');
+        //tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     }
 
     return {
@@ -173,8 +210,9 @@ var TableManaged = function () {
             }
 
             initTable1();
-            initTable2();
-            initTable3();
+            initAcessoryDisplay();
+            initCrossSellDisplay();
+
         }
 
     };

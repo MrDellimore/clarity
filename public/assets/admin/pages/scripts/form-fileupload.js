@@ -11,11 +11,11 @@ var FormFileUpload = function () {
                 autoUpload: false,
                 disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
                 maxFileSize: 5000000,
-                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
                 // Uncomment the following to send cross-domain cookies:
-                //xhrFields: {withCredentials: true},                
+                //xhrFields: {withCredentials: true},
             });
-
+            console.log('loaded successfully');
             // Enable iframe cross-domain access via redirect option:
             $('#fileupload').fileupload(
                 'option',

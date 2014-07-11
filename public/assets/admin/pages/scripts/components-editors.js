@@ -23,7 +23,7 @@ var ComponentsEditors = function () {
         //main function to initiate the module
         init: function () {
             handleWysihtml5();
-            handleSummernote();
+            //handleSummernote();
         }
     };
 

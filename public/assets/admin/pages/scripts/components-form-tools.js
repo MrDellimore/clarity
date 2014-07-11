@@ -567,6 +567,8 @@ var ComponentsFormTools = function () {
     return {
         //main function to initiate the module
         init: function () {
+           // handleBootstrapSwitch();
+            /*
             handleTwitterTypeahead();
             handleTwitterTypeaheadModal();
 
@@ -580,6 +582,7 @@ var ComponentsFormTools = function () {
             handlePasswordStrengthChecker();
             handleUsernameAvailabilityChecker1();
             handleUsernameAvailabilityChecker2();
+            */
         }
     };
 

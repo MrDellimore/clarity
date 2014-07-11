@@ -45,6 +45,10 @@ class FormController extends AbstractActionController {
         $view = new ViewModel(array('test'  => $id ));
         return $view;
     }
+
+    public function imageUploadAction(){
+        return new ViewModel();
+    }
 /*
     public function addAction(){
 

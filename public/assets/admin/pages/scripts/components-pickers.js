@@ -45,7 +45,7 @@ var ComponentsPickers = function () {
             return;
         }
 
-        $('#defaultrange').daterangepicker({
+        $('#rebate').daterangepicker({
                 opens: (Metronic.isRTL() ? 'left' : 'right'),
                 format: 'MM/DD/YYYY',
                 separator: ' to ',
@@ -58,7 +58,37 @@ var ComponentsPickers = function () {
                 console.log("Callback has been called!");
                 $('#defaultrange input').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
             }
-        );        
+        );
+
+        $('#special').daterangepicker({
+                opens: (Metronic.isRTL() ? 'left' : 'right'),
+                format: 'MM/DD/YYYY',
+                separator: ' to ',
+                startDate: moment().subtract('days', 29),
+                endDate: moment(),
+                minDate: '01/01/2012',
+                maxDate: '12/31/2014',
+            },
+            function (start, end) {
+                console.log("Callback has been called!");
+                $('#defaultrange input').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+        );
+
+        $('#mailin').daterangepicker({
+                opens: (Metronic.isRTL() ? 'left' : 'right'),
+                format: 'MM/DD/YYYY',
+                separator: ' to ',
+                startDate: moment().subtract('days', 29),
+                endDate: moment(),
+                minDate: '01/01/2012',
+                maxDate: '12/31/2014',
+            },
+            function (start, end) {
+                console.log("Callback has been called!");
+                $('#defaultrange input').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+        );
 
         $('#defaultrange_modal').daterangepicker({
                 opens: (Metronic.isRTL() ? 'left' : 'right'),
