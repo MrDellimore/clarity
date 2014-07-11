@@ -13,6 +13,7 @@ return array(
         'Common',
 //        'ZFTool',
         'Search',
+        'Users',
 
 
         ),

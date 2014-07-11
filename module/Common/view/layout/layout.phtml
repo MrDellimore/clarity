@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
@@ -60,6 +61,57 @@
 
     <link rel="shortcut icon" href="favicon.ico"/>
 </head>
+=======
+<!--
+Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 2.3.1
+Version: 1.1.2
+Author: KeenThemes
+Website: http://www.keenthemes.com/preview/?theme=metronic
+Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469
+-->
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>Focus Intranet</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/metro.css" rel="stylesheet" />
+    <link href="/assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link href="/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/assets/css/style.css" rel="stylesheet" />
+    <link href="/assets/css/style_responsive.css" rel="stylesheet" />
+    <link href="/assets/css/style_default.css" rel="stylesheet" id="style_color" />
+    <link rel="stylesheet" type="text/css" href="/assets/gritter/css/jquery.gritter.css" />
+    <!--    was: added 6/18/2014 for web editor styling-->
+    <link href="/assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/assets/glyphicons/css/glyphicons.css" rel="stylesheet">
+    <link href="/assets/glyphicons/css/style.css" rel="stylesheet">
+    <!--    was:added 6/18/2014 for validation css-->
+    <link href="/assets/jquery-validation/css/cmxform.min.css" rel="stylesheet">
+    <!--was:added 6/18/2014 for date range picker styling-->
+    <link rel="stylesheet" type="text/css" href="/assets/bootstrap-daterangepicker/daterangepicker.css" />
+    <!--    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" type="text/css" href="/assets/uniform/css/uniform.default.css" />
+    <!--was: added 6/19/2014 for WYSIWYG-->
+    <!--    <link href="assets/bootstrap-summernote/summernote.css" rel="stylesheet"  />-->
+    <link rel="stylesheet" type="text/css" href="/assets/bootstrap-toggle-buttons/static/stylesheets/bootstrap-toggle-buttons.css" />
+    <link href="/assets/fullcalendar/fullcalendar/bootstrap-fullcalendar.css" rel="stylesheet" />
+    <link href="/assets/jqvmap/jqvmap/jqvmap.css" media="screen" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="favicon.ico" />
+
+    <!-------------------For file upload------------------------>
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="/assets/global/plugins/jquery-file-upload/blueimp-gallery/blueimp-gallery.min.css" rel="stylesheet"/>
+    <link href="/assets/global/plugins/jquery-file-upload/css/jquery.fileupload.css" rel="stylesheet"/>
+    <link href="/assets/global/plugins/jquery-file-upload/css/jquery.fileupload-ui.css" rel="stylesheet"/>
+    <!-- END PAGE LEVEL STYLES -->
+    <!-------------------For file upload------------------------>
+>>>>>>> user_auth_form
 
 <!-- END HEAD -->
 
@@ -549,11 +601,26 @@
         </li>
     </ul>
 </li>
+<<<<<<< HEAD
 
 <li class="last ">
     <a href="charts.html">
         <i class="icon-bar-chart"></i>
         <span class="title">Visual Charts</span>
+=======
+<!-- END TODO DROPDOWN -->
+<!-- BEGIN USER LOGIN DROPDOWN -->
+<li class="dropdown user">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <!-- <img alt="" src="assets/img/avatar1_small.jpg" />-->
+        <?php
+        use Zend\Session\Container;
+        $loginSession= new Container('login');
+        $userData = $loginSession->sessionDataforUser;
+        ?>
+        <span class="username"><?=$userData['firstname'] . ' ' .$userData['lastname']  ; ?></span>
+        <i class="icon-angle-down"></i>
+>>>>>>> user_auth_form
     </a>
 </li>
 </ul>
