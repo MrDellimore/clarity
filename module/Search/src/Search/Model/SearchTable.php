@@ -57,8 +57,8 @@ class SearchTable{
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-
-
+//echo '<pre>';
+//var_dump($resultSet->toArray());
         return $resultSet->toArray();
 
     }
