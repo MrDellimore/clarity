@@ -65,7 +65,10 @@ class AuthenticateController extends AbstractActionController{
                 }
             }
 
-            $auth->createUser($authTable, $user);
+            if(!$auth->createUser($authTable, $user)){
+                $this->flashMessenger()->addMessage("You have already registered. Try again.");
+                return $this->redirect()->toRoute("auth", array('action'=>'register'));
+            }
             return $this->redirect()->toUrl('authenticate');
 //            echo "<pre>";
 //            var_dump($register);

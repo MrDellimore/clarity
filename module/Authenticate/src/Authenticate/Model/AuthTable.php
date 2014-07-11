@@ -49,6 +49,27 @@ class AuthTable{
 
 
     public function saveUser(User $user){
+        $select = $this->sql->select('users');
+        $columns = array('firstname', 'lastname', 'email', 'username', 'password', 'role', 'datecreated');
+        $select->columns($columns);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $resultSet->rewind();
+        while($current = $resultSet->current()){
+//            echo "<pre>";
+//                var_dump($current);
+            $resultSet->next();
+            if($current['firstname'] == $user->getFirstName() || $current['lastname'] == $user->getLastName() ){
+                return false;
+            }
+        }
+
+//        for($i = 0; $i < $resultSet->count(); $i++){
+//        die();
 
         $insert = $this->sql->insert('users');
         $data = array(
