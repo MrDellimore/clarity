@@ -250,9 +250,9 @@ var ComponentsDropdowns = function () {
         //main function to initiate the module
         init: function () {            
             handleSelect2();
-            handleSelect2Modal();
-            handleMultiSelect();
-            handleBootstrapSelect();
+            //handleSelect2Modal();
+            //handleMultiSelect();
+           // handleBootstrapSelect();
         }
     };
 

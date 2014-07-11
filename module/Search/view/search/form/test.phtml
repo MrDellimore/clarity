@@ -1,862 +1,898 @@
 <div class="container-fluid">
-    <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+<!-- BEGIN PAGE TITLE & BREADCRUMB-->
 
-    <h3 class="page-title">
-        Search Results				<small>search</small>
-    </h3>
+<h3 class="page-title">
+    Search Results				<small>search</small>
+</h3>
 
-    <ul class="breadcrumb">
-        <li> <i class="icon-home"></i>
-            <a href="/">Home</a>
-            <i class="icon-angle-right"></i>
+<ul class="breadcrumb">
+    <li> <i class="icon-home"></i>
+        <a href="/">Home</a>
+        <i class="icon-angle-right"></i>
 
-        </li>
-        <li> <a href="/">Manage Content</a>
-            <i class="icon-angle-right"></i>
+    </li>
+    <li> <a href="/">Manage Content</a>
+        <i class="icon-angle-right"></i>
 
-        </li>
-        <li><a href="/">Form</a>
-        </li>
-    </ul>
-    <!-- END PAGE TITLE & BREADCRUMB-->
-    <!-- END PAGE HEADER-->
-    <!-- BEGIN PAGE CONTENT-->
-    <div class="row-fluid">
-        <div class="span12">
-            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    </li>
+    <li><a href="/">Form</a>
+    </li>
+</ul>
+<!-- END PAGE TITLE & BREADCRUMB-->
+<!-- END PAGE HEADER-->
+<!-- BEGIN PAGE CONTENT-->
+<div class="row-fluid">
+<div class="span12">
+<!-- BEGIN EXAMPLE TABLE PORTLET-->
 <!--            <form></form>-->
 
-            <div class="portlet box light-grey">
-                <div class="portlet-title">
-                    <h4><i class="icon-globe"></i>Catalog</h4>
+<div class="portlet box light-grey">
+<div class="portlet-title">
+    <h4><i class="icon-globe"></i>Catalog</h4>
 
-                    <br />
-<!--                    <div class="tools">-->
-<!--                        <a href="javascript:;" class="collapse"></a>-->
-<!--                        <a href="#portlet-config" data-toggle="modal" class="config"></a>-->
-<!--                        <a href="javascript:;" class="reload"></a>-->
-<!--                        <a href="javascript:;" class="remove"></a>-->
-<!--                    </div>-->
-                </div>
-                <div class="portlet-body form">
-                    <div class="tabbable portlet-tabs">
-                        <ul class="nav nav-tabs">
-                            <li class=""><a href="#portlet_tab4" data-toggle="tab">Categories</a></li>
-                            <li class=""><a href="#portlet_tab3" data-toggle="tab">Related Products</a></li>
-                            <li class=""><a href="#portlet_tab2" data-toggle="tab">Images</a></li>
-                            <li class="active"><a href="#portlet_tab1" data-toggle="tab">General</a></li>
-                        </ul>
-                        <form action="/form" class="form-horizontal" method="post" id="add-form" >
-                         <div class="form-actions">
-                             <input type="submit" class="btn blue" value="Submit" id="submit" />
-                             <button type="button" class="btn">Cancel</button>
-                         </div>
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="portlet_tab1">
-                                    <div class="portlet-title general">
-                                        <h4><i class="icon-cogs"></i>Standard</h4>
-                                        <div class="tools-general">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="general_sku">SKU</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="general_sku" id="general_sku" placeholder="SKU" style="width:140px" required/>
-                                            </div>
-                                        </div>
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="name">Name</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="name" id="name" placeholder="Name" required/> <div id="char-count">Chars:<span id="name-count"></span></div>
-                                            </div>
-                                        </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="inventory">Inventory</label>
-                                        <div class="controls">
-                                            <input type="text" class="span6 m-wrap" name="inventory" id="inventory" placeholder="Inventory"  required/>
-                                        </div>
-                                    </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="urlkey">URL Key</label>
-                                        <div class="controls">
-                                            <input type="text" class="span6 m-wrap" name="urlkey" id="urlkey" placeholder="URL Key" required />
-                                        </div>
-                                    </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="status">Status</label>
-                                        <div class="controls">
+    <br />
+    <!--                    <div class="tools">-->
+    <!--                        <a href="javascript:;" class="collapse"></a>-->
+    <!--                        <a href="#portlet-config" data-toggle="modal" class="config"></a>-->
+    <!--                        <a href="javascript:;" class="reload"></a>-->
+    <!--                        <a href="javascript:;" class="remove"></a>-->
+    <!--                    </div>-->
+</div>
+<div class="portlet-body form">
+<div class="tabbable portlet-tabs">
+<ul class="nav nav-tabs">
+    <li class=""><a href="#portlet_tab4" data-toggle="tab">Categories</a></li>
+    <li class=""><a href="#portlet_tab3" data-toggle="tab">Related Products</a></li>
+    <li class=""><a href="#portlet_tab2" data-toggle="tab">Images</a></li>
+    <li class="active"><a href="#portlet_tab1" data-toggle="tab">General</a></li>
+</ul><!--**upload**-->
+<form enctype="multipart/form-data" action="/form" class="form-horizontal" method="post" id="add-form fileupload" >
 
-                                            <div class="success-toggle-button toggle-button" style="width: 100px; height: 25px;">
-                                                <div style="left: 0px; width: 150px;">
-                                                    <input type="checkbox" class="toggle" checked="checked">
-                                                    <span class="labelLeft success" style="width: 68px; height: 25px; line-height: 25px;">Enabled</span>
-                                                        <label style="width: 50px; height: 25px;"></label>
-                                                    <span class="labelRight info" style="width: 79px; height: 25px; line-height: 25px;">Disabled</span>
-                                                </div>
-                                            </div>
-<!---->
-<!--                                            <select name="status" id="status" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Status" required>-->
-<!--                                                <option value="">--Please Select--</option>-->
-<!--                                                <option value="test">test</option>-->
-<!--                                            </select>-->
-                                        </div>
-                                    </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="manufacturer">Manufacturer</label>
-                                        <div class="controls">
-                                            <select name="manufacturer" id="manufacturer" class="span6 m-wrap" tabindex="1" data-placeholder="Choose a Manufacturer" required>
-                                                <option value="">--Please Select--</option>
-                                                <option value="test">test</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="visibility">Visibility</label>
-                                            <div class="controls">
-                                                <select name="visibility" id="visibility" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Visibility" required>
-                                                    <option value="">--Please Select--</option>
-                                                    <option value="test">test</option>
-                                                </select>
-                                            </div>
-                                        </div>
+<div class="tab-content">
+<div class="tab-pane active" id="portlet_tab1">
+<div class="portlet-title general">
+    <h4><i class="icon-cogs"></i>Standard</h4>
+    <div class="tools-general">
+        <a href="javascript:;" class="collapse"></a>
+        <a href="#portlet-config" data-toggle="modal" class="config"></a>
+        <a href="javascript:;" class="reload"></a>
+        <a href="javascript:;" class="remove"></a>
+    </div>
+</div>
+<div class="control-group standard-group">
+    <label class="control-label" for="general_sku">SKU</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="general_sku" id="general_sku" placeholder="SKU" style="width:140px" required/>
+    </div>
+</div>
+<div class="control-group standard-group">
+    <label class="control-label" for="name">Name</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="name" id="name" placeholder="Name" required/> <div id="char-count">Chars:<span id="name-count"></span></div>
+    </div>
+</div>
+<div class="control-group standard-group">
+    <label class="control-label" for="inventory">Inventory</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="inventory" id="inventory" placeholder="Inventory"  required/>
+    </div>
+</div>
+<div class="control-group standard-group">
+    <label class="control-label" for="urlkey">URL Key</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="urlkey" id="urlkey" placeholder="URL Key" required />
+    </div>
+</div>
+<div class="control-group standard-group">
+    <label class="control-label" for="status">Status</label>
+    <div class="controls">
 
 
 
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="condition">Condition</label>
-                                            <div class="controls">
-                                                <select name="condition" id="condition" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Condition" required>
-                                                    <option value="">--Please Select</option>
-                                                    <option value="test">test</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="taxes">Tax Class</label>
-                                            <div class="controls">
-                                                <select name="taxes" id="taxes" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Tax Class" required>
-                                                    <option value="">--Please Select</option>
-                                                    <option value="test">test</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="cust-stock-status">Customer Stock Status</label>
-                                        <div class="controls">
-                                            <select name="taxes" id="cust-stock-status" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Tax Class" required>
-                                                <option value="">--Please Select</option>
-                                                <option value="test">test</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="portlet-title pricing">
-                                        <h4><i class="icon-cogs"></i>Pricing</h4>
-                                        <div class="tools-general">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="price">Price</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="price" id="price" placeholder="Price" required style="width: 80px" />
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="cost">Cost</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="cost" id="cost" placeholder="Cost" required style="width: 80px"/>
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="rebate">Rebate Price</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="rebate" id="rebate" placeholder="Rebate Price" required />
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="start-end-rebate-date">Start Date - End Date (Rebate)</label>
-                                            <div class="controls">
-                                                <div class="input-prepend"> <span class="add-on">
+
+        <div class="text-toggle-button">
+            <input type="checkbox" class="toggle" checked = "check"/>
+        </div>
+        <!---->
+        <!--                                            <select name="status" id="status" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Status" required>-->
+        <!--                                                <option value="">--Please Select--</option>-->
+        <!--                                                <option value="test">test</option>-->
+        <!--                                            </select>-->
+    </div>
+</div>
+<div class="control-group standard-group">
+    <label class="control-label" for="manufacturer">Manufacturer</label>
+    <div class="controls">
+        <select name="manufacturer" id="manufacturer" class="span6 m-wrap" tabindex="1" data-placeholder="Choose a Manufacturer" required>
+            <option value="">--Please Select--</option>
+            <option value="test">test</option>
+        </select>
+    </div>
+</div>
+
+
+<div class="control-group standard-group">
+    <label class="control-label" for="visibility">Visibility</label>
+    <div class="controls">
+        <select name="visibility" id="visibility" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Visibility" required>
+            <option value="">--Please Select--</option>
+            <option value="test">test</option>
+        </select>
+    </div>
+</div>
+
+
+
+<div class="control-group standard-group">
+    <label class="control-label" for="condition">Condition</label>
+    <div class="controls">
+        <select name="condition" id="condition" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Condition" required>
+            <option value="">--Please Select</option>
+            <option value="test">test</option>
+        </select>
+    </div>
+</div>
+<div class="control-group standard-group">
+    <label class="control-label" for="taxes">Tax Class</label>
+    <div class="controls">
+        <select name="taxes" id="taxes" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Tax Class" required>
+            <option value="">--Please Select</option>
+            <option value="test">test</option>
+        </select>
+    </div>
+</div>
+<div class="control-group standard-group">
+    <label class="control-label" for="cust-stock-status">Customer Stock Status</label>
+    <div class="controls">
+        <select name="taxes" id="cust-stock-status" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Tax Class" required>
+            <option value="">--Please Select</option>
+            <option value="test">test</option>
+        </select>
+    </div>
+</div>
+<div class="portlet-title pricing">
+    <h4><i class="icon-cogs"></i>Pricing</h4>
+    <div class="tools-general">
+        <a href="javascript:;" class="collapse"></a>
+        <a href="#portlet-config" data-toggle="modal" class="config"></a>
+        <a href="javascript:;" class="reload"></a>
+        <a href="javascript:;" class="remove"></a>
+    </div>
+</div>
+<div class="control-group pricing-group">
+    <label class="control-label" for="price">Price</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="price" id="price" placeholder="Price" required style="width: 80px" />
+    </div>
+</div>
+<div class="control-group pricing-group">
+    <label class="control-label" for="cost">Cost</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="cost" id="cost" placeholder="Cost" required style="width: 80px"/>
+    </div>
+</div>
+<div class="control-group pricing-group">
+    <label class="control-label" for="rebate">Rebate Price</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="rebate" id="rebate" placeholder="Rebate Price" required />
+    </div>
+</div>
+<div class="control-group pricing-group">
+    <label class="control-label" for="start-end-rebate-date">Start Date - End Date (Rebate)</label>
+    <div class="controls">
+        <div class="input-prepend"> <span class="add-on">
                                                         <i class="icon-calendar"></i>
                                                     </span>
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-rebate-date" id="start-end-rebate-date" placeholder="Start Date - End Date" required />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="special">Special Price</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="special" id="special" placeholder="Special Price" required />
-                                            </div>
-                                        </div>
-                                        <!--special price will the same as final price-->
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="start-end-special-date">Start Date - End Date (Special)</label>
-                                            <div class="controls">
-                                                <div class="input-prepend"> <span class="add-on">
+            <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-rebate-date" id="start-end-rebate-date" placeholder="Start Date - End Date" required />
+        </div>
+    </div>
+</div>
+<div class="control-group pricing-group">
+    <label class="control-label" for="special">Special Price</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="special" id="special" placeholder="Special Price" required />
+    </div>
+</div>
+<!--special price will the same as final price-->
+<div class="control-group pricing-group">
+    <label class="control-label" for="start-end-special-date">Start Date - End Date (Special)</label>
+    <div class="controls">
+        <div class="input-prepend"> <span class="add-on">
                                                         <i class="icon-calendar"></i>
                                                     </span>
 
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-special-date" id="start-end-special-date" placeholder="Start Date - End Date" required />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="mailin">Mail-In Rebate</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="mailin" id="mailin" placeholder="Mail-In Rebate" required />
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="start-end-mailin-date">Start Date - End Date (Mail-In Rebate)</label>
-                                            <div class="controls">
-                                                <div class="input-prepend"> <span class="add-on">
+            <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-special-date" id="start-end-special-date" placeholder="Start Date - End Date" required />
+        </div>
+    </div>
+</div>
+<div class="control-group pricing-group">
+    <label class="control-label" for="mailin">Mail-In Rebate</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="mailin" id="mailin" placeholder="Mail-In Rebate" required />
+    </div>
+</div>
+<div class="control-group pricing-group">
+    <label class="control-label" for="start-end-mailin-date">Start Date - End Date (Mail-In Rebate)</label>
+    <div class="controls">
+        <div class="input-prepend"> <span class="add-on">
                                                             <i class="icon-calendar"></i>
                                                         </span>
 
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-mailin-date" id="start-end-mailin-date" placeholder="Start Date - End Date" required />
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    <!--special price will the same as final price-->
-
-
-                                    <div class="portlet-title shipping">
-                                        <h4><i class="icon-cogs"></i>Shipping</h4>
-                                        <div class="tools-general">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                        <!--Shipping Attributes-->
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="weight">Weight</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="weight" id="weight" placeholder="Weight" required />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="usexpedited">U.S Expedited</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="usexpedited" id="usexpedited" placeholder="U.S Expedited"  required/>
-                                            </div>
-                                        </div>
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="ustwoday">U.S Two Day</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="ustwoday" id="ustwoday" placeholder="U.S Two Day"  required/>
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="canada">Canada Priority</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="canada" id="canada" placeholder="Canada Priority" required />
-                                            </div>
-                                        </div>
-
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="canada_firstclass">Canada First Class</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="canada_firstclass" id="canada_firstclass" placeholder="Canada First Class"  required/>
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="asia_priority">Asia Priority</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="asia_priority" id="asia_priority" placeholder="Asia Priority" required />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="asia_firstclass">Asia First Class</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="asia_firstclass" id="asia_firstclass" placeholder="Asia First Class"  required/>
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="europe_priority">Europe Priority</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="europe_priority" id="europe_priority" placeholder="Europe Priority" required />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="europe_firstclass">Europe First Class</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="europe_firstclass" id="europe_firstclass" placeholder="Europe First Class"  required/>
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="outside_priority">Outside US, Eur., CA, Asia Priority</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="outside_priority" id="outside_priority" placeholder="Outside US, Eur., CA, Asia Priority" required />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="outside_firstclass">Outside US, Eur., CA, Asia First Class</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="outside_firstclass" id="outside_firstclass" placeholder="Outside US, Eur., CA, Asia First Class" required />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="us_oneday">US One Day</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="us_oneday" id="us_oneday" placeholder="US One Day" required />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="us_standard">US Standard</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="us_standard" id="us_standard" placeholder="US Standard" required />
-                                            </div>
-                                        </div>
-                                        <!--End of Shipping Attributes-->
-                                        <!--Meta-information-->
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="meta_title">Meta Title</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="meta_title" id="meta_title" placeholder="Meta Title" required />
-                                            </div>
-                                        </div>
-                                    <div class="portlet-title description">
-                                        <h4><i class="icon-cogs"></i>Description</h4>
-                                        <div class="tools-general">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                    <br />
-                                        <div class="controls-group meta">
-                                            <label class="control-label" for="meta_keyword">Meta Keywords: </label>
-                                            <div class="controls" id="editable meta_keyword " contenteditable="true">
-                                            </div>
-                                            <textarea  style="visibility:hidden;  display:none" cols="15" rows="12" class="span6 m-wrap" name="meta_title" id="meta_keyword_ta" ></textarea>
-                                        </div>
-                                        <br />
-                                        <br />
-                                        <div class="controls-group meta">
-                                            <label class="control-label" for="meta_description">Meta Description: </label>
-                                            <div class="controls" id="editable meta_description" contenteditable="true">
-                                            </div>
-                                            <textarea style="visibility:hidden; display:none" name="meta_description_ta" id="meta_description"></textarea>
-                                        </div>
-                                        <br />
-                                        <br />
-                                        <div class="controls-group meta">
-                                            <label class="control-label" for="description">Description: </label>
-                                            <div class="controls" id="editable description" contenteditable="true">
-                                            </div>
-                                            <textarea style="visibility:hidden; display:none" name=description" id="description_ta"></textarea>
-                                            <!--                                        <textarea name="description"  rows="10" id="description" data-provide="markdown" required></textarea>-->
-                                            <!--                                    </div>-->
-
-                                        </div>
-                                </div>
-                                <div class="tab-pane" id="portlet_tab2">
-                                    <div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10" style="position: relative;">
-                                        <a id="tab_images_uploader_pickfiles" href="javascript:;" class="btn yellow" style="position: relative; z-index: 1;">
-                                            <i class="fa fa-plus"></i> Select Files </a>
-                                        <a id="tab_images_uploader_uploadfiles" href="javascript:;" class="btn green">
-                                            <i class="fa fa-share"></i> Upload Files </a>
-                                        <div id="html5_18r23gvmu1aqahvv2t1tg3thg3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;">
-                                            <input id="html5_18r23gvmu1aqahvv2t1tg3thg3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept="image/jpeg,image/gif,image/png,application/zip">
-                                        </div>
-                                    </div>
-                                    <table class="table table-bordered table-hover">
-                                        <thead>
-                                        <tr role="row" class="heading">
-                                            <th width="8%">
-                                                Image
-                                            </th>
-                                            <th width="25%">
-                                                Label
-                                            </th>
-                                            <th width="8%">
-                                                Sort Order
-                                            </th>
-                                            <th width="10%">
-                                                Thumbnail
-                                            </th>
-                                            <th width="10%">
-                                                Small Image
-                                            </th>
-                                            <th width="10%">
-                                                Base Image
-                                            </th>
-                                            <th width="10%">
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>
-                                                <a href="" class="fancybox-button" data-rel="fancybox-button">
-                                                    <img class="img-responsive" src="" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                No Images
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="product[images][1][sort_order]" value="1">
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span><input type="radio" name="product[images][1][image_type]" value="1"></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span><input type="radio" name="product[images][1][image_type]" value="2"></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span class="checked"><input type="radio" name="product[images][1][image_type]" value="3" checked=""></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:;" class="btn default btn-sm">
-                                                    <i class="fa fa-times"></i> Remove </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="" class="fancybox-button" data-rel="fancybox-button">
-                                                    <img class="img-responsive" src="" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="product[images][1][label]" value="Thumbnail image">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="product[images][1][sort_order]" value="1">
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span><input type="radio" name="product[images][1][image_type]" value="1"></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span><input type="radio" name="product[images][1][image_type]" value="2"></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span class="checked"><input type="radio" name="product[images][1][image_type]" value="3" checked=""></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:;" class="btn default btn-sm">
-                                                    <i class="fa fa-times"></i> Remove </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="" class="fancybox-button" data-rel="fancybox-button">
-                                                    <img class="img-responsive" src="" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="product[images][2][label]" value="Product image #1">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="product[images][2][sort_order]" value="1">
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span><input type="radio" name="product[images][2][image_type]" value="1"></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span class="checked"><input type="radio" name="product[images][2][image_type]" value="2" checked=""></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span><input type="radio" name="product[images][2][image_type]" value="3"></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:;" class="btn default btn-sm">
-                                                    <i class="fa fa-times"></i> Remove </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="" class="fancybox-button" data-rel="fancybox-button">
-                                                    <img class="img-responsive" src="" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="product[images][3][label]" value="Product image #2">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="product[images][3][sort_order]" value="1">
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span class="checked"><input type="radio" name="product[images][3][image_type]" value="1" checked=""></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span><input type="radio" name="product[images][3][image_type]" value="2"></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <div class="radio"><span><input type="radio" name="product[images][3][image_type]" value="3"></span></div>
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:;" class="btn default btn-sm">
-                                                    <i class="fa fa-times"></i> Remove </a>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="tab-pane" id="portlet_tab3">
-                                    <div class="portlet-title product">
-                                        <h4><i class="icon-cogs"></i>Accessories</h4>
-                                        <div class="tools">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>SKU</th>
-                                                <th>Title/Name</th>
-                                                <th>Quantity/Inventory</th>
-                                                <th>Position</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td><input type="text" id="sku" required name="related_sku" placeholder="SKU"/></td>
-                                                <td><input type="text" id="title" required name="related_title" Placeholder="Title/Name"/></td>
-                                                <td><input type="text" id="qty" required name="related_qty" placeholder="Quantity/Inventory"/></td>
-    <!--                                            <td class="hidden-480"></td>-->
-                                                <td><input type="text" id="pos" required name="related_pos" placeholder="Position"/></td>
-    <!--                                            <td><span class="label label-success"></span></td>-->
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    <div class="portlet-title cross">
-                                            <h4><i class="icon-globe"></i>Cross Sells/Up Sells</h4>
-                                            <div class="tools">
-                                                <a href="javascript:;" class="collapse"></a>
-                                                <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                                <a href="javascript:;" class="reload"></a>
-                                                <a href="javascript:;" class="remove"></a>
-                                            </div>
-                                    </div>
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>SKU</th>
-                                                <th>Title/Name</th>
-                                                <th>Quantity/Inventory</th>
-                                                <th>Position</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td><input type="text" id="cross_sku" required name="cross_sku" placeholder="SKU"/></td>
-                                                <td><input type="text" id="cross_title" required name="cross_title" Placeholder="Title/Name"/></td>
-                                                <td><input type="text" id="cross_qty" required name="cross_qty" placeholder="Quantity/Inventory"/></td>
-                                                <td><input type="text" id="cross_pos" required name="cross_pos" placeholder="Position"/></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-<!--                                    <div class="portlet-title upsells">-->
-<!--                                        <h4><i class="icon-globe"></i>Up Sells</h4>-->
-<!--                                        <div class="tools">-->
-<!--                                            <a href="javascript:;" class="collapse"></a>-->
-<!--                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>-->
-<!--                                            <a href="javascript:;" class="reload"></a>-->
-<!--                                            <a href="javascript:;" class="remove"></a>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                        <table class="table table-hover">-->
-<!--                                        <thead>-->
-<!--                                        <tr>-->
-<!--                                            <th>SKU</th>-->
-<!--                                            <th>Title/Name</th>-->
-<!--                                            <th>Quantity/Inventory</th>-->
-<!--                                            <th>Position</th>-->
-<!--                                        </tr>-->
-<!--                                        </thead>-->
-<!--                                        <tbody>-->
-<!--                                        <tr>-->
-<!--                                            <td><input type="text" id="upsells_sku" required name="upsells_sku" placeholder="SKU"/></td>-->
-<!--                                            <td><input type="text" id="upsells_title" required name="upsells_title" Placeholder="Title/Name"/></td>-->
-<!--                                            <td><input type="text" id="upsells_qty" required name="upsells_qty" placeholder="Quantity/Inventory"/></td>-->
-<!--                                            <td><input type="text" id="upsells_pos" required name="upsells_pos" placeholder="Position"/></td>-->
-<!--                                        </tr>-->
-<!--                                        </tbody>-->
-<!--                                    </table>-->
-
-                                </div>
-                                <div class="tab-pane" id="portlet_tab4">
-                                    <div class="col-md-10">
-                                        <div class="form-control height-auto">
-                                            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 275px;">
-                                                <div class="scroller" style="overflow: hidden; width: auto; height: 275px;" data-always-visible="1" data-initialized="1">
-                                                    <ul class="list-unstyled">
-                                                        <li id="top_cat0">
-                                                            <label>
-                                                                            <input type="checkbox" id="first_cat" name="product[categories][]" value="1">
-                                                                Mens
-                                                            </label>
-                                                            <ul class="list-unstyled">
-                                                                <li class="first_li">
-                                                                    <label>
-                                                                        <div class="checker "><span><input type="checkbox" class="first_att " name="product[categories][]" value="1"></span>
-                                                                        </div>
-                                                                        Footwear
-                                                                    </label>
-                                                                </li>
-                                                                <li class="first_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox" class="first_att "  name="product[categories][]" value="1"></span>
-                                                                        </div>
-                                                                        Clothing
-                                                                    </label>
-                                                                </li>
-                                                                <li class="first_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox" class="first_att "  name="product[categories][]" value="1"></span>
-                                                                        </div>
-                                                                        Accessories
-                                                                    </label>
-                                                                </li>
-                                                                <li class="first_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox" class="first_att "  name="product[categories][]" value="1"></span>
-                                                                        </div>
-                                                                        Fashion Outlet
-                                                                    </label>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                        <li id="top_cat1">
-                                                            <label>
-
-                                                                    <span>
-                                                                        <input type="checkbox"  id="second_cat"  name="product[categories][]" value="1">
-                                                                    </span>
-
-                                                                Football Shirts</label>
-                                                            <ul class="list-unstyled">
-                                                                <li class="second_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox" class="second_att"  name="product[categories][]" value="1"></span>
-                                                                        </div>Premier League</label>
-                                                                </li>
-                                                                <li class="second_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox" class="second_att"  name="product[categories][]" value="1"></span>
-                                                                        </div>Football League</label>
-                                                                </li>
-                                                                <li class="second_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox" class="second_att"  name="product[categories][]" value="1"></span>
-                                                                        </div>Serie A</label>
-                                                                </li>
-                                                                <li class="second_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox" class="second_att"  name="product[categories][]" value="1"></span>
-                                                                        </div>Bundesliga</label>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                        <li id="top_cat2">
-                                                            <label>
-                                                                <span>
-                                                                    <input type="checkbox"  id="third_cat"   name="product[categories][]" value="1">
-                                                                </span>
-                                                                Brands</label>
-                                                            <ul class="list-unstyled">
-                                                                <li class="third_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox"  class="third_att"   name="product[categories][]" value="1"></span>
-                                                                        </div>Adidas</label>
-                                                                </li>
-                                                                <li class="third_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox"  class="third_att"    name="product[categories][]" value="1"></span>
-                                                                        </div>Nike</label>
-                                                                </li>
-                                                                <li class="third_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox"  class="third_att"    name="product[categories][]" value="1"></span>
-                                                                        </div>Airwalk</label>
-                                                                </li>
-                                                                <li class="third_li">
-                                                                    <label>
-                                                                        <div class="checker"><span><input type="checkbox"  class="third_att"    name="product[categories][]" value="1"></span>
-                                                                        </div>Kangol</label>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="slimScrollBar" style="width: 7px; position: absolute; opacity: 0.4; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; top: 0px; height: 196.42857142857144px; display: block; background: rgb(187, 187, 187);"></div>
-                                                <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(234, 234, 234);"></div>
-                                            </div>
-                                        </div>	<span class="help-block">
-														select one or more categories </span>
-                                    </div>
-                                    <br /><br /><br />
-                                    <div class="portlet-title product">
-                                        <h4><i class="icon-cogs"></i>Related Products</h4>
-                                        <div class="tools">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                    <table class="table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>SKU</th>
-                                            <th>Title/Name</th>
-                                            <th>Quantity/Inventory</th>
-                                            <th>Position</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td><input type="text" id="sku" required="" name="related_sku" placeholder="SKU"></td>
-                                            <td><input type="text" id="title" required="" name="related_title" placeholder="Title/Name"></td>
-                                            <td><input type="text" id="qty" required="" name="related_qty" placeholder="Quantity/Inventory"></td>
-                                            <!--                                            <td class="hidden-480"></td>-->
-                                            <td><input type="text" id="pos" required="" name="related_pos" placeholder="Position"></td>
-                                            <!--                                            <td><span class="label label-success"></span></td>-->
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="portlet-title cross">
-                                        <h4><i class="icon-globe"></i>Cross Sells</h4>
-                                        <div class="tools">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                    <table class="table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>SKU</th>
-                                            <th>Title/Name</th>
-                                            <th>Quantity/Inventory</th>
-                                            <th>Position</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td><input type="text" id="cross_sku" required="" name="cross_sku" placeholder="SKU"></td>
-                                            <td><input type="text" id="cross_title" required="" name="cross_title" placeholder="Title/Name"></td>
-                                            <td><input type="text" id="cross_qty" required="" name="cross_qty" placeholder="Quantity/Inventory"></td>
-                                            <td><input type="text" id="cross_pos" required="" name="cross_pos" placeholder="Position"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="portlet-title upsells">
-                                        <h4><i class="icon-globe"></i>Up Sells</h4>
-                                        <div class="tools">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                    <table class="table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>SKU</th>
-                                            <th>Title/Name</th>
-                                            <th>Quantity/Inventory</th>
-                                            <th>Position</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td><input type="text" id="upsells_sku" required="" name="upsells_sku" placeholder="SKU"></td>
-                                            <td><input type="text" id="upsells_title" required="" name="upsells_title" placeholder="Title/Name"></td>
-                                            <td><input type="text" id="upsells_qty" required="" name="upsells_qty" placeholder="Quantity/Inventory"></td>
-                                            <td><input type="text" id="upsells_pos" required="" name="upsells_pos" placeholder="Position"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                                </div>
-                            </div>
-                    <br /><br /><br />
-                                <!--End of Meta-information-->
-
-                                <!--Description-->
-
-
-    <!--                            <div class="control-group">-->
-    <!--                                <label class="control-label">Short Description</label>-->
-    <!--                                <div class="controls">-->
-    <!--                                    <textarea name="shortdescription" data-provide="markdown-editable" rows="10"></textarea>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-                                <!--End of Description-->
-                         <div class="form-actions">
-                             <input type="submit" class="btn blue" value="Submit" id="submit" />
-                             <button type="button" class="btn">Cancel</button>
-                         </div>
-                        </form>
-                    </div>
-                </div>
-
-            </div>
-<!--            <form></form>-->
+            <input type="text" class="m-ctrl-medium date-range  m-wrap" name="start-end-mailin-date" id="start-end-mailin-date" placeholder="Start Date - End Date" required />
         </div>
-        <!-- END EXAMPLE TABLE PORTLET-->
     </div>
-    <br />
-    <br />
-    <br />
-    <div>
-        Test: <?php print_r( $this->test); ?>
+</div>
+
+
+<!--special price will the same as final price-->
+
+
+<div class="portlet-title shipping">
+    <h4><i class="icon-cogs"></i>Shipping</h4>
+    <div class="tools-general">
+        <a href="javascript:;" class="collapse"></a>
+        <a href="#portlet-config" data-toggle="modal" class="config"></a>
+        <a href="javascript:;" class="reload"></a>
+        <a href="javascript:;" class="remove"></a>
     </div>
+</div>
+<!--Shipping Attributes-->
+<div class="control-group shipping-group">
+    <label class="control-label" for="weight">Weight</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="weight" id="weight" placeholder="Weight" required />
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="usexpedited">U.S Expedited</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="usexpedited" id="usexpedited" placeholder="U.S Expedited"  required/>
+    </div>
+</div>
+<div class="control-group shipping-group">
+    <label class="control-label" for="ustwoday">U.S Two Day</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="ustwoday" id="ustwoday" placeholder="U.S Two Day"  required/>
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="canada">Canada Priority</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="canada" id="canada" placeholder="Canada Priority" required />
+    </div>
+</div>
+
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="canada_firstclass">Canada First Class</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="canada_firstclass" id="canada_firstclass" placeholder="Canada First Class"  required/>
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="asia_priority">Asia Priority</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="asia_priority" id="asia_priority" placeholder="Asia Priority" required />
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="asia_firstclass">Asia First Class</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="asia_firstclass" id="asia_firstclass" placeholder="Asia First Class"  required/>
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="europe_priority">Europe Priority</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="europe_priority" id="europe_priority" placeholder="Europe Priority" required />
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="europe_firstclass">Europe First Class</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="europe_firstclass" id="europe_firstclass" placeholder="Europe First Class"  required/>
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="outside_priority">Outside US, Eur., CA, Asia Priority</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="outside_priority" id="outside_priority" placeholder="Outside US, Eur., CA, Asia Priority" required />
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="outside_firstclass">Outside US, Eur., CA, Asia First Class</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="outside_firstclass" id="outside_firstclass" placeholder="Outside US, Eur., CA, Asia First Class" required />
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="us_oneday">US One Day</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="us_oneday" id="us_oneday" placeholder="US One Day" required />
+    </div>
+</div>
+
+<div class="control-group shipping-group">
+    <label class="control-label" for="us_standard">US Standard</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="us_standard" id="us_standard" placeholder="US Standard" required />
+    </div>
+</div>
+<!--End of Shipping Attributes-->
+<!--Meta-information-->
+<div class="control-group shipping-group">
+    <label class="control-label" for="meta_title">Meta Title</label>
+    <div class="controls">
+        <input type="text" class="span6 m-wrap" name="meta_title" id="meta_title" placeholder="Meta Title" required />
+    </div>
+</div>
+<div class="portlet-title description">
+    <h4><i class="icon-cogs"></i>Description</h4>
+    <div class="tools-general">
+        <a href="javascript:;" class="collapse"></a>
+        <a href="#portlet-config" data-toggle="modal" class="config"></a>
+        <a href="javascript:;" class="reload"></a>
+        <a href="javascript:;" class="remove"></a>
+    </div>
+</div>
+<br />
+<div class="controls-group meta">
+    <label class="control-label" for="meta_keyword">Meta Keywords: </label>
+    <div class="controls" style="width: 200px"  id="editable meta_keyword " contenteditable="true">
+    </div>
+    <!--                                            <textarea  style="visibility:hidden;  display:none" cols="15" rows="12" class="span6 m-wrap" name="meta_title" id="meta_keyword_ta" ></textarea>-->
+</div>
+<br />
+<br />
+<div class="controls-group meta">
+    <label class="control-label" for="meta_description">Meta Description: </label>
+    <div class="controls" style="width: 200px" id="editable meta_description" contenteditable="true">
+    </div>
+    <!--                                            <textarea style="visibility:hidden; display:none" name="meta_description_ta" id="meta_description"></textarea>-->
+</div>
+<br />
+<br />
+<div class="controls-group meta">
+    <label class="control-label" for="description">Description: </label>
+    <div class="controls" style="width: 200px"  id="editable description" contenteditable="true">
+    </div>
+    <!--                                            <textarea style="visibility:hidden; display:none" name=description" id="description_ta"></textarea>-->
+    <!--                                        <textarea name="description"  rows="10" id="description" data-provide="markdown" required></textarea>-->
+    <!--                                    </div>-->
+
+</div>
+</div>
+<div class="tab-pane" id="portlet_tab2">
+<!--                                    <div class="alert alert-success margin-bottom-10">-->
+<!--                                    </div>-->
+<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10" style="position: relative;">
+    <!--                                        tab_images_uploader_pickfiles-->
+    <!--                                        <input type='file' id="imgInp" />-->
+    <!--                                        <img id="blah" src="#" alt="your image" />-->
+    <!--                                        <a class="inputWrapper" style="height: 48px; width: 128px;">-->
+    <!--                                            <input class="fileInput" type="file" name="file1"/>-->
+    <!--                                        </a>-->
+    <a class="btn yellow select_file " style="position: relative; z-index: 1;">
+        <i class="fa fa-plus"></i> Select Files <input type="file" name="image_file" class="pick_file"  /></a>
+    <!--                                        TODO turn this input file type into multiple files -->
+
+
+    <!--                                        tab_images_uploader_uploadfiles-->
+    <!--                                        <a id="tab_images_uploader_uploadfiles" class="upload_image btn green">-->
+    <!--                                            <i class="fa fa-share"></i> Upload Files </a>-->
+    <!--                                        <div id="html5_18r23gvmu1aqahvv2t1tg3thg3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;">-->
+    <!--                                            <input id="html5_18r23gvmu1aqahvv2t1tg3thg3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept="image/jpeg,image/gif,image/png,application/zip">-->
+    <!--                                        </div>-->
+</div>
+<div class="row">
+    <div id="tab_images_uploader_filelist" class="col-md-6 col-sm-12">
+        <!--                                            <div class="alert alert-warning added-files">-->
+        <!--                                                <img id="img_file" src="#" /> <span class="status label label-info"></span>&nbsp;-->
+        <!--                                                <a href="javascript:;" style="margin-top:-5px" class="remove_queue_file pull-right btn btn-sm red">-->
+        <!--                                                    <i class="fa fa-times"></i> remove</a>-->
+        <!--                                            </div>-->
+    </div>
+</div>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr role="row" class="heading">
+        <th width="8%">
+            Image
+        </th>
+        <th width="25%">
+            Label
+        </th>
+        <th width="5%">
+            File Size
+        </th>
+        <th width="8%">
+            Sort Order
+        </th>
+        <th width="10%">
+            Thumbnail
+        </th>
+        <th width="10%">
+            Small Image
+        </th>
+        <th width="10%">
+            Base Image
+        </th>
+        <th width="10%">
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <a href="" class="fancybox-button" data-rel="fancybox-button">
+                <img class="img-responsive" src="" alt="">
+            </a>
+
+        </td>
+        <td>
+            No Images
+        </td>
+        <td>
+
+        </td>
+        <td>
+            <input type="text" class="form-control"  name="product[images][1][sort_order]" value="1">
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span><input type="radio"   name="product[images][1][image_type]" value="1" ></span></div>
+            </label>
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span><input type="radio"   name="product[images][1][image_type]" value="2"></span></div>
+            </label>
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span class="checked"><input type="radio"   name="product[images][1][image_type]" value="3" checked=""></span></div>
+            </label>
+        </td>
+        <td>
+            <!--                                                <a href="javascript:;" class="btn default btn-sm remove">-->
+            <!--                                                    <i class="fa fa-times"></i> Remove </a>-->
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="" class="fancybox-button" data-rel="fancybox-button">
+                <img class="img-responsive" src="" alt="">
+            </a>
+        </td>
+        <td>
+            <input type="text" class="form-control" name="product[images][1][label]" value="Thumbnail image">
+        </td>
+        <td>
+
+        </td>
+        <td>
+            <input type="text" class="form-control" name="product[images][1][sort_order]" value="1">
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span><input type="radio" name="product[images][1][image_type]" value="1"></span></div>
+            </label>
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span><input type="radio" name="product[images][1][image_type]" value="2"></span></div>
+            </label>
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span class="checked"><input type="radio" name="product[images][1][image_type]" value="3" checked=""></span></div>
+            </label>
+        </td>
+        <td>
+            <a href="javascript:;" class="btn default btn-sm remove">
+                <i class="fa fa-times"></i> Remove </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="" class="fancybox-button" data-rel="fancybox-button">
+                <img class="img-responsive" src="" alt="">
+            </a>
+        </td>
+        <td>
+            <input type="text" class="form-control" name="product[images][2][label]" value="Product image #1">
+        </td>
+        <td>
+
+        </td>
+        <td>
+            <input type="text" class="form-control" name="product[images][2][sort_order]" value="1">
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span><input type="radio" name="product[images][2][image_type]" value="1"></span></div>
+            </label>
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span class="checked"><input type="radio" name="product[images][2][image_type]" value="2" checked=""></span></div>
+            </label>
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span><input type="radio" name="product[images][2][image_type]" value="3"></span></div>
+            </label>
+        </td>
+        <td>
+            <a href="javascript:;" class="btn default btn-sm remove">
+                <i class="fa fa-times"></i> Remove </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="" class="fancybox-button" data-rel="fancybox-button">
+                <img class="img-responsive" src="" alt="">
+            </a>
+        </td>
+        <td>
+            <input type="text" class="form-control" name="product[images][3][label]" value="Product image #2">
+        </td>
+        <td>
+
+        </td>
+        <td>
+            <input type="text" class="form-control" name="product[images][3][sort_order]" value="1">
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span class="checked"><input type="radio" name="product[images][3][image_type]" value="1" checked=""></span></div>
+            </label>
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span><input type="radio" name="product[images][3][image_type]" value="2"></span></div>
+            </label>
+        </td>
+        <td>
+            <label>
+                <div class="radio"><span><input type="radio" name="product[images][3][image_type]" value="3"></span></div>
+            </label>
+        </td>
+        <td>
+            <a href="javascript:;" class="btn default btn-sm remove">
+                <i class="fa fa-times"></i> Remove </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+<div class="tab-pane" id="portlet_tab3">
+    <div class="portlet-title product">
+        <h4><i class="icon-cogs"></i>Accessories</h4>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"></a>
+            <a href="#portlet-config" data-toggle="modal" class="config"></a>
+            <a href="javascript:;" class="reload"></a>
+            <a href="javascript:;" class="remove"></a>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>SKU</th>
+            <th>Title/Name</th>
+            <th>Quantity/Inventory</th>
+            <th>Position</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="text" id="sku"  name="related_sku" placeholder="SKU"/></td>
+            <td><input type="text" id="title"  name="related_title" Placeholder="Title/Name"/></td>
+            <td><input type="text" id="qty"  name="related_qty" placeholder="Quantity/Inventory"/></td>
+            <!--                                            <td class="hidden-480"></td>-->
+            <td><input type="text" id="pos"  name="related_pos" placeholder="Position"/></td>
+            <!--                                            <td><span class="label label-success"></span></td>-->
+        </tr>
+        </tbody>
+    </table>
+    <div class="portlet-title cross">
+        <h4><i class="icon-globe"></i>Cross Sells/Up Sells</h4>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"></a>
+            <a href="#portlet-config" data-toggle="modal" class="config"></a>
+            <a href="javascript:;" class="reload"></a>
+            <a href="javascript:;" class="remove"></a>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>SKU</th>
+            <th>Title/Name</th>
+            <th>Quantity/Inventory</th>
+            <th>Position</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="text" id="cross_sku"  name="cross_sku" placeholder="SKU"/></td>
+            <td><input type="text" id="cross_title"  name="cross_title" Placeholder="Title/Name"/></td>
+            <td><input type="text" id="cross_qty"  name="cross_qty" placeholder="Quantity/Inventory"/></td>
+            <td><input type="text" id="cross_pos"  name="cross_pos" placeholder="Position"/></td>
+        </tr>
+        </tbody>
+    </table>
+    <!--                                    <div class="portlet-title upsells">-->
+    <!--                                        <h4><i class="icon-globe"></i>Up Sells</h4>-->
+    <!--                                        <div class="tools">-->
+    <!--                                            <a href="javascript:;" class="collapse"></a>-->
+    <!--                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>-->
+    <!--                                            <a href="javascript:;" class="reload"></a>-->
+    <!--                                            <a href="javascript:;" class="remove"></a>-->
+    <!--                                        </div>-->
+    <!--                                    </div>-->
+    <!--                                        <table class="table table-hover">-->
+    <!--                                        <thead>-->
+    <!--                                        <tr>-->
+    <!--                                            <th>SKU</th>-->
+    <!--                                            <th>Title/Name</th>-->
+    <!--                                            <th>Quantity/Inventory</th>-->
+    <!--                                            <th>Position</th>-->
+    <!--                                        </tr>-->
+    <!--                                        </thead>-->
+    <!--                                        <tbody>-->
+    <!--                                        <tr>-->
+    <!--                                            <td><input type="text" id="upsells_sku"  name="upsells_sku" placeholder="SKU"/></td>-->
+    <!--                                            <td><input type="text" id="upsells_title"  name="upsells_title" Placeholder="Title/Name"/></td>-->
+    <!--                                            <td><input type="text" id="upsells_qty"  name="upsells_qty" placeholder="Quantity/Inventory"/></td>-->
+    <!--                                            <td><input type="text" id="upsells_pos"  name="upsells_pos" placeholder="Position"/></td>-->
+    <!--                                        </tr>-->
+    <!--                                        </tbody>-->
+    <!--                                    </table>-->
+
+</div>
+<div class="tab-pane" id="portlet_tab4">
+    <div class="col-md-10">
+        <div class="form-control height-auto">
+            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 275px;">
+                <div class="scroller" style="overflow: hidden; width: auto; height: 275px;" data-always-visible="1" data-initialized="1">
+                    <ul class="list-unstyled">
+                        <li>
+                            <!--                                                            <label>-->
+                            <input type="checkbox" id="first_cat" class="parent" name="product[categories][]" value="1">
+                            Mens
+                            <!--                                                            </label>-->
+                            <ul class="list-unstyled">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" class="child" name="product[categories][]" value="1">
+
+                                        Footwear
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" class="child"  name="product[categories][]" value="1">
+                                        Clothing
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" class="child"  name="product[categories][]" value="1">
+                                        Accessories
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" class="child"  name="product[categories][]" value="1">
+                                        Fashion Outlet
+                                    </label>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+
+
+
+                            <input type="checkbox"  id="second_cat" class="parent"  name="product[categories][]" value="1">
+
+
+                            Football Shirts
+                            <ul class="list-unstyled">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" class="child"  name="product[categories][]" value="1">
+                                        Premier League
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" class="child"  name="product[categories][]" value="1">Football League
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" class="child"  name="product[categories][]" value="1">Serie A
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" class="child"  name="product[categories][]" value="1">
+                                        Bundesliga
+                                    </label>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="top_cat2">
+
+
+                            <input type="checkbox"  id="third_cat" class="parent"  name="product[categories][]" value="1">
+
+                            Brands
+                            <ul class="list-unstyled">
+                                <li id="third_cat0">
+                                    <label>
+                                        <input type="checkbox"  class="child"   name="product[categories][]" value="1">
+                                        Adidas
+                                    </label>
+                                </li>
+                                <li id="third_cat1">
+                                    <label>
+                                        <input type="checkbox"  class="child"    name="product[categories][]" value="1">
+                                        Nike
+                                    </label>
+                                </li>
+                                <li id="third_cat2">
+                                    <label>
+                                        <input type="checkbox"  class="child"    name="product[categories][]" value="1">
+                                        Airwalk
+                                    </label>
+                                </li>
+                                <li id="third_cat3">
+                                    <label>
+                                        <input type="checkbox"  class="child"    name="product[categories][]" value="1">
+                                        Kangol
+                                    </label>
+                                </li>
+
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="slimScrollBar" style="width: 7px; position: absolute; opacity: 0.4; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; top: 0px; height: 196.42857142857144px; display: block; background: rgb(187, 187, 187);"></div>
+                <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(234, 234, 234);"></div>
+            </div>
+        </div>	<span class="help-block">
+														select one or more categories </span>
+    </div>
+    <br /><br /><br />
+    <div class="portlet-title product">
+        <h4><i class="icon-cogs"></i>Related Products</h4>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"></a>
+            <a href="#portlet-config" data-toggle="modal" class="config"></a>
+            <a href="javascript:;" class="reload"></a>
+            <a href="javascript:;" class="remove"></a>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>SKU</th>
+            <th>Title/Name</th>
+            <th>Quantity/Inventory</th>
+            <th>Position</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="text" id="sku"  name="first_sku" placeholder="SKU"></td>
+            <td><input type="text" id="title"  name="first_title" placeholder="Title/Name"></td>
+            <td><input type="text" id="qty"  name="first_qty" placeholder="Quantity/Inventory"></td>
+            <!--                                            <td class="hidden-480"></td>-->
+            <td><input type="text" id="pos"  name="first_pos" placeholder="Position"></td>
+            <!--                                            <td><span class="label label-success"></span></td>-->
+        </tr>
+        </tbody>
+    </table>
+    <div class="portlet-title cross">
+        <h4><i class="icon-globe"></i>Cross Sells</h4>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"></a>
+            <a href="#portlet-config" data-toggle="modal" class="config"></a>
+            <a href="javascript:;" class="reload"></a>
+            <a href="javascript:;" class="remove"></a>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>SKU</th>
+            <th>Title/Name</th>
+            <th>Quantity/Inventory</th>
+            <th>Position</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="text" id="cross_sku"  name="second_sku" placeholder="SKU"></td>
+            <td><input type="text" id="cross_title"  name="second_title" placeholder="Title/Name"></td>
+            <td><input type="text" id="cross_qty"  name="second_qty" placeholder="Quantity/Inventory"></td>
+            <td><input type="text" id="cross_pos"  name="second_pos" placeholder="Position"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="portlet-title upsells">
+        <h4><i class="icon-globe"></i>Up Sells</h4>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"></a>
+            <a href="#portlet-config" data-toggle="modal" class="config"></a>
+            <a href="javascript:;" class="reload"></a>
+            <a href="javascript:;" class="remove"></a>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>SKU</th>
+            <th>Title/Name</th>
+            <th>Quantity/Inventory</th>
+            <th>Position</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="text" id="upsells_sku"  name="third_sku" placeholder="SKU"></td>
+            <td><input type="text" id="upsells_title"  name="third_title" placeholder="Title/Name"></td>
+            <td><input type="text" id="upsells_qty"  name="third_qty" placeholder="Quantity/Inventory"></td>
+            <td><input type="text" id="upsells_pos"  name="third_pos" placeholder="Position"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</div>
+</div>
+<br /><br /><br />
+<!--End of Meta-information-->
+
+<!--Description-->
+
+
+<!--                            <div class="control-group">-->
+<!--                                <label class="control-label">Short Description</label>-->
+<!--                                <div class="controls">-->
+<!--                                    <textarea name="shortdescription" data-provide="markdown-editable" rows="10"></textarea>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--End of Description-->
+<div class="form-actions">
+    <input type="submit" class="btn blue" value="Submit" id="submit" />
+    <button type="button" class="btn">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+
+</div>
+<!--            <form></form>-->
+</div>
+<!-- END EXAMPLE TABLE PORTLET-->
+</div>
+<br />
+<br />
+<br />
+<div>
+    Test: <?php print_r( $this->test); ?>
+</div>
 </div>

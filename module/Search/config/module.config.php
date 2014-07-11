@@ -6,6 +6,7 @@
  * @see https://github.com/zendframework/ZFTool
  */
 return array(
+    /* Removed
     'doctrine' => array(
         'driver' => array(
             'search_entities' => array(
@@ -20,6 +21,7 @@ return array(
             ),
         )
     ),
+    */
 
     'router' => array(
         'routes' => array(
@@ -33,6 +35,7 @@ return array(
                     ),
                 ),
             ),
+
             'form'  => array(
                 'type'  => 'segment',
                 'options'    => array(
@@ -49,14 +52,16 @@ return array(
                     ),
                 ),
             ),
-            'quickSearch'  => array(
+
+
+            'quicksearch'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',
                 'options'    => array(
                     'route' =>  '/search/quicksearch',
 
                     'defaults'  =>  array(
                         'controller'    => 'Search\Controller\Search',
-                        'action'        =>  'quickSearch',
+                        'action'        =>  'quicksearch',
 
                     ),
                 ),
