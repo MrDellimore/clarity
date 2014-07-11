@@ -11,7 +11,6 @@ return array(
 //        'DoctrineModule',
 //        'DoctrineORMModule',
         'Common',
-        'Authenticate',
 //        'ZFTool',
         'Search',
 

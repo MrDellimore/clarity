@@ -575,7 +575,7 @@
 
 
     <div class="portlet-body">
-        <div class=" portlet-tabs">
+        <div class="portlet-tabs">
             <ul class="nav nav-tabs">
                 <li>
                     <a href="#portlet_includesfree" data-toggle="tab">
@@ -585,7 +585,7 @@
                     <a href="#portlet_inbox" data-toggle="tab">
                         In Box </a>
                 </li>
-                <li class="">
+                <li>
                     <a href="#portlet_sDescription" data-toggle="tab">
                         Short Description </a>
                 </li>
@@ -596,12 +596,13 @@
                     <a href="#portlet_searchterms" data-toggle="tab"> Search Terms</a>
                 </li>
             </ul>
+            <div class="row">
             <div class="tab-content">
 
                 <!-- search terms-->
                 <div class="tab-pane active" id="portlet_searchterms">
                     <div class="form-body">
-                        <div class="form-group">
+                        <div class="form-group col-md-11">
                             <label class="control-label col-md-3" for="searchTerms">Search Terms</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" name="searchTerms" placeholder="Search Terms" required/>
@@ -611,14 +612,16 @@
                     </div>
                 </div>
 
+
+
                 <!-- Description-->
                 <div class="tab-pane" id="portlet_description">
-                    Description:
                     <div class="form-body">
-                        <div class="form-group">
-                            <div class="col-md-10">
-                                <textarea class="wysihtml5 form-control" rows="6"></textarea>
-                            </div>
+                        <div class="form-group col-md-11">
+                            <label class="control-label col-md-3" for="searchTerms">Description</label>
+                            <div class="col-md-11">
+                            <textarea class="wysihtml5 form-control" rows="6"></textarea>
+                                </div>
                         </div>
 
                     </div>
@@ -626,10 +629,10 @@
 
                 <!--Short Description-->
                 <div class="tab-pane" id="portlet_sDescription">
-                    Short Description:
                     <div class="form-body">
-                        <div class="form-group">
-                            <div class="col-md-10">
+                        <div class="form-group col-md-11">
+                            <label class="control-label col-md-3" for="searchTerms">Short Description</label>
+                            <div class="col-md-11">
                                 <textarea class="wysihtml5 form-control" rows="6"></textarea>
                             </div>
                         </div>
@@ -639,10 +642,10 @@
 
                 <!--In Box-->
                 <div class="tab-pane" id="portlet_inbox">
-                    In the Box:
                     <div class="form-body">
-                        <div class="form-group">
-                            <div class="col-md-10">
+                        <div class="form-group col-md-11">
+                            <label class="control-label col-md-3" for="searchTerms">In Box</label>
+                            <div class="col-md-11">
                                 <textarea class="wysihtml5 form-control" rows="6"></textarea>
                             </div>
                         </div>
@@ -652,10 +655,10 @@
 
                 <!--Includes Free-->
                 <div class="tab-pane" id="portlet_includesfree">
-                    Includes Free:
                     <div class="form-body">
-                        <div class="form-group">
-                            <div class="col-md-10">
+                        <div class="form-group col-md-11">
+                            <label class="control-label col-md-3" for="searchTerms">Includes Free</label>
+                            <div class="col-md-11">
                                 <textarea class="wysihtml5 form-control" rows="6"></textarea>
                             </div>
                         </div>
@@ -664,16 +667,22 @@
                 </div>
 
 
+
+
+
+            </div><!--end tab content-->
+
             </div>
          </div>
      </div>
 </div>
-
-
-
-
-
 </div>
+
+
+
+
+
+
 
 <div class="tab-pane" id="tab_acessories">
     <!-- Acessories-->
