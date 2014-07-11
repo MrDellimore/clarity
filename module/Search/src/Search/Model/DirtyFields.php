@@ -81,6 +81,8 @@ class DirtyFields {
 
     protected $description;
 
+    protected $dirtyField;
+
     /**
      * @param mixed $asiaFirstClass
      */
@@ -164,9 +166,10 @@ class DirtyFields {
     /**
      * @param mixed $cost
      */
-    public function setCost($cost)
+    public function setCost($dirtyField, $cost)
     {
-        $this->cost = $cost;
+        $this->dirtyField = $dirtyField;
+        $this->dirtyField->cost = $cost;
     }
 
     /**
