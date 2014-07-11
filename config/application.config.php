@@ -14,6 +14,7 @@ return array(
         'Authenticate',
 //        'ZFTool',
         'Search',
+        'Users',
 
 
         ),

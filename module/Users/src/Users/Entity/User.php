@@ -12,9 +12,21 @@ use Wall\Entity\Status;
 class User
 {
     const GENDER_MALE = 1;
-    
+
     protected $id;
+
+    protected $firstName;
+
+    protected $lastName;
+
+    protected $email;
+
+    protected $role;
+
     protected $username;
+
+    protected $password;
+
     protected $name;
     protected $surname;
     protected $avatar;
@@ -24,6 +36,86 @@ class User
     protected $createdAt = null;
     protected $updatedAt = null;
     protected $feed = array();
+
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param mixed $firstName
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param mixed $lastName
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param mixed $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param mixed $role
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
     
     public function setId($id)
     {
@@ -39,12 +131,12 @@ class User
     {
         $this->name = $name;
     }
-    
+
     public function setSurname($surname)
     {
         $this->surname = $surname;
     }
-    
+
     public function setAvatar($avatar)
     {
         if (empty($avatar)) {
@@ -56,26 +148,26 @@ class User
             $this->avatar = $hydrator->hydrate($avatar, new Image());
         }
     }
-    
+
     public function setBio($bio)
     {
         $this->bio = $bio;
     }
-    
+
     public function setLocation($location)
     {
         $this->location = $location;
     }
-    
+
     public function setGender($gender)
     {
         $this->gender = (int)$gender;
     }
-    
+
     public function setFeed($feed)
     {
         $hydrator = new ClassMethods();
-        
+
         foreach ($feed as $entry) {
             if (array_key_exists('status', $entry)) {
                 $this->feed[] = $hydrator->hydrate($entry, new Status());

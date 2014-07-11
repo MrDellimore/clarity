@@ -287,12 +287,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
 <li class="dropdown user">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
         <!-- <img alt="" src="assets/img/avatar1_small.jpg" />-->
-        <?php
-        use Zend\Session\Container;
-        $loginSession= new Container('login');
-        $userData = $loginSession->sessionDataforUser;
-        ?>
-        <span class="username"><?=$userData['firstname'] . ' ' .$userData['lastname']  ; ?></span>
+        <span class="username">haha<?=$this->firstname . ' ' . $this->lastname; ?></span>
         <i class="icon-angle-down"></i>
     </a>
     <ul class="dropdown-menu">

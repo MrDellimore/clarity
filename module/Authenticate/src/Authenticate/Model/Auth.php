@@ -1,5 +1,10 @@
 <?php
-namespace Users\Model;
+namespace Authenticate\Model;
+
+//use Authenticate\Model\AuthTable;
+//use Zend\Mvc\Controller\AbstractActionController;
+//use Zend\Mvc\Controller\AbstractController;
+use Zend\Db\Sql\Select;
 /*
  * Model for user updates and creation
  */
@@ -7,11 +12,15 @@ namespace Users\Model;
 class Auth{
     
     protected $authTable;
+
+    protected $userId;
     
     //register User
     //return boolean if user was created
-    public function createUser($userData){
-        $authTable = $this ->getAuthTable();
+    public function createUser($authTable, $userData){
+
+//        $authTable = $this->getAuthTable();
+//        $authTable = new AuthTable();
         return $authTable->saveUser($userData);
     }
     
@@ -23,15 +32,14 @@ class Auth{
         return $authTable->checkUser($credentials);   
     }
     
+
     
-    
-    
-    protected function getAuthTable(){
-        if (!$this->authTable) {
-            $sm = $this->getServiceLocator();
-            $this->authTable = $sm->get('Authenticate\Model\AuthTable');
-            
-        }
-        return $this->authTable;
-    }
+//    protected function getAuthTable(){
+//        if (!$this->authTable) {
+//            $sm = $this->getServiceLocator();
+//            $this->authTable = $sm->get('Authenticate\Model\AuthTable');
+//
+//        }
+//        return $this->authTable;
+//    }
 }
