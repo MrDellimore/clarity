@@ -11,14 +11,39 @@ return array(
             'auth' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/login',
+                    'route'    => '/authenticate',
+                    'defaults' => array(
+                        'controller' => 'Authenticate\Controller\Authenticate',
+                        'action'     => 'index',
+                    )
+                ),
+            ),
+            'login' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/authenticate/login',
                     'defaults' => array(
                         'controller' => 'Authenticate\Controller\Authenticate',
                         'action'     => 'login',
-                    ),
+                    )
+                ),
+            ),
+            'register' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/authenticate/register',
+                    'defaults' => array(
+                        'controller' => 'Authenticate\Controller\Authenticate',
+                        'action'     => 'register',
+                    )
                 ),
             ),
         ),
+    ),
+    'services' => array(
+        // Keys are the service names
+        // Values are objects
+        'auth_service' => new Authenticate\Authenticator\AuthenticationAdapter(),
     ),
 
     'controllers' => array('invokables' => array('Authenticate\Controller\Authenticate' => 'Authenticate\Controller\AuthenticateController')),
