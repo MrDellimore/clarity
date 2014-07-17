@@ -10,12 +10,13 @@ return array(
         'ZendDeveloperTools',
 //        'DoctrineModule',
 //        'DoctrineORMModule',
-        'Common',
         'Authenticate',
+        'Common',
 //        'ZFTool',
         'Search',
         'Users',
-    ),
+        'Api',
+        ),
     'module_listener_options' => array(
         'config_glob_paths' => array('config/autoload/{,*.}{global,local}.php'),
         'module_paths' => array(
