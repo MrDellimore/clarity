@@ -1,1 +1,149 @@
-<?=$this->test;?>
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            API Feeds
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="index.html">Home</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#">API Feeds</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-gift"></i>Magento
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse">
+            </a>
+        </div>
+    </div>
+
+
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 margin-bottom-10">
+                <div class="dashboard-stat blue-madison">
+                    <div class="visual">
+                        <i class="fa fa-briefcase fa-icon-medium"></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <?=$this->sku['dirty']?>
+                        </div>
+                        <div class="desc">
+                            Items Requiring Update
+                        </div>
+                    </div>
+                    <a class="more" href="/search">
+                        Show Updates<i class="m-icon-swapright m-icon-white"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="dashboard-stat green-haze">
+                    <div class="visual">
+                        <i class="fa fa-shopping-cart"></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <?=$this->sku['clean']?>
+                        </div>
+                        <div class="desc">
+                            Synced
+                        </div>
+                    </div>
+                    <a class="more" href="#">
+                        &nbsp;<i class="m-icon-swapright m-icon-white"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="dashboard-stat red-intense">
+                    <div class="visual">
+                        <i class="fa fa-group fa-icon-medium"></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <?=$this->sku['new']?>
+                        </div>
+                        <div class="desc">
+                            Newly Created
+                        </div>
+                    </div>
+                    <a class="more" href="/search">
+                        View more <i class="m-icon-swapright m-icon-white"></i>
+                    </a>
+                </div>
+            </div>
+<!--            </div>-->
+            <br />
+            <div class="show-table">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <a href="linktomage(ajax later)" class="btn blue btn-block btn-lg m-icon-big">
+                            Push All Items <i class="m-icon-big-swapright m-icon-white"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-striped table-bordered table-hover" id="accessoriesDisplay">
+                        <thead>
+                        <tr><th>ID</th>
+                            <th>Sku</th>
+                            <th>Product Name</th>
+                            <th>Last Modified Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <?php
+                            foreach($this->sku['data'] as $index => $value) {
+
+                                echo "<tr>";
+                                if('1' == $value['state']){
+                                    echo "<td>". $value['id']. "</td>";
+                                    echo "<td>". $value['sku']. "</td>";
+                                    echo "<td></td>";
+                                    echo "<td>". $value['lastModified']. "</td>";
+                                }
+                                echo "</tr>";
+
+                            }
+//                                echo "<td>";
+//                                if('id' == $index) {
+//                                    foreach($value as $id) {
+//                                        echo "$id";
+//                                    }
+//                                }
+//                                echo "</td>";
+//                                foreach($this->sku[$index]['dirty'] as $value) {
+//                                    echo "<td>$value</td>";
+//                                }
+//                                echo "</tr>";
+//
+//
+//                            }
+//                                ?>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
