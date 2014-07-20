@@ -17,7 +17,6 @@ class AuthenticateController extends AbstractActionController{
     public function loginAction(){
         $request = $this->getRequest();
         if($request->isPost()) {
-            $login = array();
             $login = (array) $request->getPost();
             $username = $login['username'];
             $password = $login['password'];
@@ -47,16 +46,18 @@ class AuthenticateController extends AbstractActionController{
             }
 
         }
+
+        else{
+            return $this->redirect()->toRoute("auth", array('action'=>'index'));
+        }
     }
 
     public function registerAction(){
         $request = $this->getRequest();
         if($request->isPost()) {
-            $register = array();
             $register = (array) $request->getPost();
             $user = new User();
             $auth = new Auth();
-//            $sm = $this->getServiceLocator();
             $authTable = $this->getServiceLocator()->get('Authenticate\Model\AuthTable');
             foreach($register as $method => $value){
                 if ( $method != 'rpassword' ){
@@ -67,24 +68,16 @@ class AuthenticateController extends AbstractActionController{
 
             if(!$auth->createUser($authTable, $user)){
                 $this->flashMessenger()->addMessage("You have already registered. Try again.");
-                return $this->redirect()->toRoute("auth", array('action'=>'register'));
+                return $this->redirect()->toRoute("index", array('action'=>'register'));
             }
-            return $this->redirect()->toUrl('authenticate');
-//            echo "<pre>";
-//            var_dump($register);
+            return $this->redirect()->toRoute("auth", array('action'=>'index'));
 
         }
-            $result = new ViewModel();
-        $result ->setTerminal(true);
-        return $result;
-//        $request = $this->getRequest();
-//        if($request->isPost()) {
-//            $register = array();
-//            $register = (array) $request->getPost();
-//        }
-//        $result = new ViewModel();
-//        $result ->setTerminal(true);
-//        return $result;
+
+
+        else{
+            return $this->redirect()->toRoute("auth", array('action'=>'index'));
+        }
     }
 
     public function indexAction(){

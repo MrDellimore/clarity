@@ -21,8 +21,6 @@ Login page
   padding: 30px;
   padding-top: 20px;
   padding-bottom: 15px;
-    /*was added: 07/10/2104*/
-  /*height: 580px*/
 }
 
 .login .content h3 {
@@ -51,12 +49,6 @@ Login page
 .login .content .forget-form {
   display: none;
 }
-/*#login-form{*/
-    /*height: 287px;*/
-/*}*/
-/*#register-form{*/
-    /*height: 620px;*/
-/*}*/
 
 .login .content .register-form {
   display: none;
@@ -110,11 +102,15 @@ Login page
   border-top: 1px dotted #eee;
   padding-top: 10px;
   margin-top: 15px;
+  margin-left: -23px;
+  margin-right: -20px;
 }
 
 .login .content .create-account a {
   display: inline-block;
   margin-top: 5px;
+  color: black;
+  font-size: 20px;
 }
 
 /* select2 dropdowns */
