@@ -39,7 +39,7 @@
                     </div>
                     <div class="details">
                         <div class="number">
-                            <?=$this->sku['dirty']?>
+                            <?=$this->dirtyCount;//sku['dirty']?>
                         </div>
                         <div class="desc">
                             Items Requiring Update
@@ -87,12 +87,12 @@
                 </div>
             </div>
 <!--            </div>-->
-            <br />
+
             <div class="show-table">
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-md-4">
 <!--                        /api-feeds/magento-->
-                        <a href="#" class="btn blue btn-block btn-lg m-icon-big">
+                        <a href="/api-feeds/magento" class="btn blue btn-block btn-lg m-icon-big">
                             Push All Items <i class="m-icon-big-swapright m-icon-white"></i>
                         </a>
                     </div>
@@ -102,22 +102,38 @@
                         <thead>
                         <tr><th>ID</th>
                             <th>Sku</th>
-                            <th>Product Name</th>
+                            <th>Attribute Field</th>
                             <th>Last Modified Date</th>
                         </tr>
                         </thead>
                         <tbody>
 
                         <?php
-                            foreach($this->sku['data'] as $index => $value) :?>
+                        //echo "<pre>";
+//                            $sku = $this->sku;
+//                        var_dump($this->sku);
+//                        echo end($this->sku);
+//                        foreach($sku as $key => $value){
+//                            echo $sku[$key]['id'] . ' ' . $sku[$key]['attributeID'] . ' ' . $sku[$key]['sku'] . "<br />";
+//
+//                            foreach($value as $val){
+//                                echo 'key get type ' . gettype($key). "<br />";
+//                                echo 'value get type ' . gettype($val). "<br />";
+//                            }
+//
+//                        }
+//                        die();
+                            foreach($this->sku as $index => $value) :?>
+
                                 <tr>
                                 <?php
-                                if('1' == $value['state']):?>
-                                    <td><?=$value['id']?></td>
-                                    <td><?=$value['sku']?></td>
-                                    <td><?=$value['title']?></td>
-                                    <td><?=$value['lastModified']?></td>
-                                <?php endif;?>
+                               // if('1' == $value['state']):
+                        ?>
+                                    <td><?=$this->sku[$index]['id']?></td>
+                                    <td><?=isset($this->sku[$index]['sku']) ? $this->sku[$index]['sku'] : ''?></td>
+                                    <td><?=$this->sku[$index]['value']?></td>
+                                    <td><?=$this->sku[$index]['lastModDate']?></td>
+<!--                                --><?php //endif;?>
                                </tr>
                             <?php endforeach?>
                         </tbody>
