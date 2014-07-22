@@ -87,6 +87,7 @@ class MagentoTable {
     {
         $dirtyAttributes = array();
         $attributes = array('product', 'varchar', 'text', 'int', 'decimal', 'datetime');
+
         $fields = array(
             'id'   =>  'entity_id',
             'attributeID' =>  'attribute_id',
@@ -113,6 +114,12 @@ class MagentoTable {
 //            echo gettype($dirtyAttributes);
 //            $dirtySku = array('sku' => $sku);
             $dirtyAttributes = array_merge($resultSet->toArray(), $dirtyAttributes );
+            $dirtySku = array('sku' => $sku);
+            $x[] = $resultSet->toArray();
+            array_push($x,$dirtySku);
+//            array_push($dirtySku, $resultSet->toArray());
+//            $dirtyAttributes = array_merge($dirtyAttributes ,$resultSet->toArray());
+//            array_push($dirtySku, $dirtyAttributes );
 
 //            var_dump($dirtyAttributes);
 //            echo gettype($dirtyAttributes);
