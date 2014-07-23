@@ -330,6 +330,8 @@ class MagentoTable {
                     return 96;
                 case 'description':
                     return 97;
+//                case 'short_descrition':
+//                    return 506;
             }
         }
         public function fetchTableType($tableType)
@@ -338,6 +340,7 @@ class MagentoTable {
                 case 'title':
                     return 'varchar';
                 case 'description':
+//                case 'short_descrition':
                     return 'text';
             }
         }

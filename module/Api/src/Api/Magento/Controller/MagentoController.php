@@ -23,6 +23,11 @@ class MagentoController  extends AbstractActionController {
 
     public function magentoAction()
     {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
         $this->skuData = array();
         $this->skuData = $this->getMagentoTable()->lookupDirt();
         $cleanCount = $this->getMagentoTable()->lookupClean();
@@ -38,8 +43,13 @@ class MagentoController  extends AbstractActionController {
         );
     }
 
-    public function soapAction()
+    protected function soapAction()
     {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
         $session = new Container('dirty_skus');
         $dirtyData = $session->dirtyProduct;
         if( $response = $this->getMagentoTable()->soapContent($dirtyData) ){
