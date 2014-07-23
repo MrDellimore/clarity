@@ -45,6 +45,7 @@ class FormController extends AbstractActionController {
         }
         if($sku){
             $entityID = $this->formTable->validateSku($sku);
+            //TODO have to add error page is sku doesn't exist.
 //            if( $entityID === False ) {
 //                $view = new ViewModel(array('message'  => 'This Sku does not exist.'));
 //                $view->setTemplate('error/404');
@@ -64,8 +65,6 @@ class FormController extends AbstractActionController {
         if($request->isPost()) {
             $formData = array();
             $formData = (array) $request->getPost();
-//            echo "<pre>";
-//            var_dump($formData);
             foreach($formData as $key => $value){
 //                echo 'this are the indexs ' . $key . "<br />";
                 $method = 'set'.ucfirst($key);
