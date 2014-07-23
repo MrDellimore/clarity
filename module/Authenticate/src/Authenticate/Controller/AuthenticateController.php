@@ -11,6 +11,8 @@ use Authenticate\Model\Auth;
 use Zend\Authentication\Adapter\DbTable;
 use Zend\Mvc\Controller\Plugin\PluginInterface;
 use Zend\View\Helper\FlashMessenger;
+use Zend\Session\Container;
+
 
 class AuthenticateController extends AbstractActionController{
 
@@ -78,6 +80,13 @@ class AuthenticateController extends AbstractActionController{
         else{
             return $this->redirect()->toRoute("auth", array('action'=>'index'));
         }
+    }
+
+    public function logoutAction()
+    {
+        $loginSession= new Container('login');
+        $loginSession->offsetUnset('sessionDataforUser');
+        return $this->redirect()->toRoute("auth", array('action'=>'index'));
     }
 
     public function indexAction(){

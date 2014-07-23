@@ -17,6 +17,7 @@ use Search\Model\SearchCleaner;
 use Search\Model\Images;
 use Search\Model\RelatedProducts;
 
+
 /**
  * Class FormController
  * @package Search\Controller
@@ -30,6 +31,11 @@ class FormController extends AbstractActionController {
      * @return ViewModel
      */
     public function indexAction(){
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
         $container = new Container('intranet');
         $queriedData = new Form(new Images(), new RelatedProducts());
         $postData = new Form(new Images(), new RelatedProducts());
