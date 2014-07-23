@@ -57,7 +57,7 @@
                     </div>
                     <div class="details">
                         <div class="number">
-                            <?=$this->sku['clean']?>
+                            <?=$this->cleanCount?>
                         </div>
                         <div class="desc">
                             Synced
@@ -75,7 +75,7 @@
                     </div>
                     <div class="details">
                         <div class="number">
-                            <?=$this->sku['new']?>
+<!--                           this is where new fields belong-->
                         </div>
                         <div class="desc">
                             Newly Created
@@ -103,13 +103,14 @@
                         <tr><th>ID</th>
                             <th>Sku</th>
                             <th>Attribute Field</th>
+                            <th>New Attribute Value</th>
                             <th>Last Modified Date</th>
                         </tr>
                         </thead>
                         <tbody>
 
                         <?php
-                        echo "<pre>";
+                        //echo "<pre>";
 //                            $sku = $this->sku;
 //                        var_dump($this->sku);
 //                        echo end($this->sku);
@@ -123,18 +124,42 @@
 //
 //                        }
 //                        die();
-                            foreach($this->sku as $index => $value) :?>
+//                        echo "<pre>";
+//                        var_dump($this->sku);
+//                        die();
+                            foreach($this->sku as $index => $value) :
+//die();
+                               if(isset($value['id'])):
+                                echo '<tr><td>'.$value['id']. '</td>';//$index."<br />";
+                                echo '<td>'.$value['item']. '</td>';//$index."<br />";
+                                   array_shift($value);
+                                echo '<td>'.ucfirst(current(array_keys($value))). '</td>';//$index."<br />";
 
-                                <tr>
-                                <?php
-                               // if('1' == $value['state']):
+                                echo '<td>'.current($value). '</td>';//$index."<br />";
+                                echo '<td>'.$value['ldate']. '</td></tr>';//$index."<br />";
+                                 endif;
+                                ?>
+<!--                                <tr>-->
+<!--                                --><?php
+                                //if(isset($value['id'])):
                         ?>
-                                    <td><?=$this->sku[$index]['id']?></td>
-                                    <td><?=isset($this->sku[$index]['sku']) ? $this->sku[$index]['sku'] : ''?></td>
-                                    <td><?=$this->sku[$index]['value']?></td>
-                                    <td><?=$this->sku[$index]['lastModDate']?></td>
+<!--                                    <td>--><?//=$value['id']?><!--</td>-->
+<!--                                    <td>--><?//=$value['item']?><!--</td>-->
+
+<!--                                    --><?php //foreach($value as $property => $val) :
+//                                        if($property != 'id' && $property != 'ldate' && $property != 'item' && $property != 'sku'):
+//                                    echo "<pre>";
+//                                      echo $property;
+//                                    var_dump($value);
+                                    ?>
+<!--                                        <td>--><?//=ucfirst($property)?><!--</td>-->
+<!--                                    <td>--><?//=$value[$property]?><!--</td>-->
+<!--                                    --><?php //endif?>
+<!--                                    --><?php //endforeach?>
+<!--                                    <td>--><?//=$value['ldate']?><!--</td>-->
 <!--                                --><?php //endif;?>
-                               </tr>
+<!--                               </tr>-->
+<!--                                --><?php //endforeach?>
                             <?php endforeach?>
                         </tbody>
                     </table>
