@@ -86,7 +86,7 @@
 <!-- BEGIN LOGO -->
 <div class="page-logo">
     <a href="index.html">
-       <!-- <img src="../../assets/admin/layout/img/logo.png" alt="logo" class="logo-default"/>-->
+        <!-- <img src="../../assets/admin/layout/img/logo.png" alt="logo" class="logo-default"/>-->
     </a>
     <div class="menu-toggler sidebar-toggler hide">
         <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
@@ -141,37 +141,6 @@
             <a href="">
                 See all notifications <i class="m-icon-swapright"></i>
             </a>
-        </li>
-        <li>
-            <a href="#">
-            <span class="label label-warning"><i class="icon-bell"></i></span>
-            Server #2 not respoding.
-            <span class="time">22 mins</span>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-            <span class="label label-info"><i class="icon-bullhorn"></i></span>
-            Application error.
-            <span class="time">40 mins</span>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-            <span class="label label-important"><i class="icon-bolt"></i></span>
-            Database overloaded 68%.
-            <span class="time">2 hrs</span>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-            <span class="label label-important"><i class="icon-bolt"></i></span>
-            2 user IP blocked.
-            <span class="time">5 hrs</span>
-            </a>
-        </li>
-        <li class="external">
-            <a href="#">See all notifications <i class="m-icon-swapright"></i></a>
         </li>
 
     </ul>
@@ -300,14 +269,14 @@
 <!-- BEGIN USER LOGIN DROPDOWN -->
 <li class="dropdown dropdown-user">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-       <!-- <img alt="" class="img-circle" src="../../assets/admin/layout/img/avatar3_small.jpg"/>-->
+        <!-- <img alt="" class="img-circle" src="../../assets/admin/layout/img/avatar3_small.jpg"/>-->
         <?php
         use Zend\Session\Container;
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         ?>
         <span class="username"><?=$userData['firstname'] . ' ' .$userData['lastname']  ; ?></span>
-					
+
         <i class="fa fa-angle-down"></i>
     </a>
     <ul class="dropdown-menu">
@@ -338,8 +307,8 @@
                 <i class="icon-lock"></i> Lock Screen </a>
         </li>
         <li>
-            <a href="/logout">
-                <i class="icon-key"></i> Log Out </a>
+            <a href="/logout"">
+            <i class="icon-key"></i> Log Out </a>
         </li>
     </ul>
 </li>
@@ -347,105 +316,82 @@
 
 <!-- BEGIN QUICK SIDEBAR TOGGLER -->
 <li class="dropdown dropdown-quick-sidebar-toggler">
-    <a href="javascript:;" class="dropdown-toggle">
-        <i class="icon-logout"></i>
+    <a href="/logout"" class="dropdown-toggle">
+    <i class="icon-logout"></i>
     </a>
-    <ul class="dropdown-menu">
-        <li><a href=""><i class="icon-user"></i> My Profile</a></li>
-        <li><a href=""><i class="icon-calendar"></i> My Calendar</a></li>
-        <li><a href=""><i class="icon-tasks"></i> My Tasks</a></li>
-        <li class="divider"></li>
-        <li><a href="/logout"><i class="icon-key"></i> Log Out</a></li>
-    </ul>
-
 </li>
-<!-- END USER LOGIN DROPDOWN -->
+<!-- END QUICK SIDEBAR TOGGLER -->
 </ul>
+</div>
 <!-- END TOP NAVIGATION MENU -->
 </div>
+<!-- END HEADER INNER -->
 </div>
 <!-- END HEADER -->
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-<!-- BEGIN SIDEBAR -->
-<div class="page-sidebar-wrapper">
-<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-<div class="page-sidebar navbar-collapse collapse">
-<!-- BEGIN SIDEBAR MENU -->
-<ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
-<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-<li class="sidebar-toggler-wrapper">
-    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-    <div class="sidebar-toggler">
-    </div>
-    <!-- END SIDEBAR TOGGLER BUTTON -->
-</li>
-<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-<li class="sidebar-search-wrapper hidden-xs">
-    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-    <form class="sidebar-search" action="extra_search.html" method="POST">
-        <a href="javascript:;" class="remove">
-            <i class="icon-close"></i>
-        </a>
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search...">
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <!-- BEGIN SIDEBAR MENU -->
+            <ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
+                <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+                <li class="sidebar-toggler-wrapper">
+                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                    <div class="sidebar-toggler">
+                    </div>
+                    <!-- END SIDEBAR TOGGLER BUTTON -->
+                </li>
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <li class="sidebar-search-wrapper hidden-xs">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                            <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
 							<span class="input-group-btn">
 							<a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>
 							</span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li class="start active ">
+                    <a href="index.html">
+                        <i class="icon-home"></i>
+                        <span class="title">Dashboard</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/search">
+                        <i class="icon-basket"></i>
+                        <span class="title">Manage Content</span>
+                        <span class="arrow "></span>
+                    </a>
+
+                </li>
+                <li>
+                    <a href="/api-feeds">
+                        <i class="icon-basket"></i>
+                        <span class="title">API Feeds</span>
+                        <span class="arrow "></span>
+                    </a>
+                </li>
+
+            </ul>
+            <!-- END SIDEBAR MENU -->
         </div>
-    </form>
-    <!-- END RESPONSIVE QUICK SEARCH FORM -->
-</li>
-<li class="start active ">
-    <a href="index.html">
-        <i class="icon-home"></i>
-        <span class="title">Dashboard</span>
-        <span class="selected"></span>
-    </a>
-</li>
-<li>
-    <a href="/search">
-        <i class="icon-basket"></i>
-        <span class="title">Manage Content</span>
-        <span class="arrow "></span>
-    </a>
-</li>
-<li>
-    <a href="/api-feeds">
-        <i class="icon-basket"></i>
-        <span class="title">API Feeds</span>
-        <span class="arrow "></span>
-    </a>
-</li>
-
-
-</ul>
-<!-- END SIDEBAR MENU -->
-</div>
-</div>
-<!-- END SIDEBAR -->
-
-
-
-
-
-
-
-
-
-
-<!-- BEGIN CONTENT -->
-<div class="page-content-wrapper">
-    <div id = "contentdiv" class="page-content">
-        <?php echo $this->content ?>
     </div>
-</div>
-<!-- END CONTENT -->
+    <!-- END SIDEBAR -->
 
 
 
@@ -453,14 +399,31 @@
 
 
 
-<!-- BEGIN QUICK SIDEBAR -->
--
-<a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-<div class="page-quick-sidebar-wrapper">
-Menu here eventurally
-</div>
 
-<!-- END QUICK SIDEBAR -->
+
+
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div id = "contentdiv" class="page-content">
+            <?php echo $this->content ?>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+
+
+
+
+
+
+
+    <!-- BEGIN QUICK SIDEBAR -->
+    -
+    <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
+    <div class="page-quick-sidebar-wrapper">
+        Menu here eventurally
+    </div>
+
+    <!-- END QUICK SIDEBAR -->
 
 
 
@@ -708,7 +671,7 @@ Menu here eventurally
         ComponentsDropdowns.init();
         //fileupload
         FormFileUpload.init();
-       // ComponentsFormTools.init();
+        // ComponentsFormTools.init();
         //Tree
         UITree.init();
         //form submitting
