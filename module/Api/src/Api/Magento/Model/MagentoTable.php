@@ -313,7 +313,7 @@ class MagentoTable {
             while( $a < count($updateBatch) ){
                 $x = 0;
                 while($x < 10 && $a < count($updateBatch)){
-                    $queueBatch[$x] = array('catalog_product.update', $updateBatch[$a]);
+                    $queueBatch[$x] = array(PRODUCT_UPDATE, $updateBatch[$a]);
                     $x++;
                     $a++;
                 }
