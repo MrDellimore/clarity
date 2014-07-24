@@ -42,7 +42,7 @@ return array(
                     'route' =>  '/form[/][/:sku]',
                     'constraints'   =>  array(
 //                        'action'    =>  '[a-zA-Z]*',
-                        'sku'    =>  '[0-9a-zA-Z]+',
+                        'sku'    =>  '[0-9a-zA-Z\-]+',
                     ),
 
                     'defaults'  =>  array(
