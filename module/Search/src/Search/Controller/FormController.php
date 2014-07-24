@@ -7,15 +7,14 @@
 
 namespace Search\Controller;
 
-use Search\Model\NewFields;
+
 use Zend\Mvc\Controller\AbstractActionController;
-//use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 use Zend\View\Model\ViewModel;
 use Search\Model\Form;
 use Zend\Session\Container;
-use Search\Model\SearchCleaner;
-use Search\Model\Images;
-use Search\Model\RelatedProducts;
+use Search\Model\EntityCompare;
+
 
 /**
  * Class FormController
@@ -25,74 +24,120 @@ class FormController extends AbstractActionController {
 
     protected $formTable;
 
-    protected $skuData = array();
+    //protected $skuData = array();
     /**
      * @return ViewModel
      */
     public function indexAction(){
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
         $container = new Container('intranet');
-        $queriedData = new Form(new Images(), new RelatedProducts());
-        $postData = new Form(new Images(), new RelatedProducts());
+        $queriedData = new Form();
         $sku = $this->params()->fromRoute('sku');
-        if (!$this->formTable) {
-            $this->formTable = $this->getServiceLocator()->get('Search\Model\FormTable');
-        }
-        if($sku){
-            $entityID = $this->formTable->validateSku($sku);
-//            if( $entityID === False ) {
-//                $view = new ViewModel(array('message'  => 'This Sku does not exist.'));
-//                $view->setTemplate('error/404');
-//                return $view;
-//            } else {
-                $this->skuData = $this->formTable->setupData($this->formTable->lookupData($entityID,$sku));
-                foreach($this->skuData as $key => $value){
-                    $method = 'set'.ucfirst($key);
-                    $queriedData->$method($value);
-                }
-                $container->data = $queriedData;
-//            }
+        $form = $this->getFormTable();
 
+        if($sku){
+            $entityID = $form->validateSku($sku);
+            //insert error handle for invalid sku here
+
+            //lookupdata
+            $skuData = $form->lookupForm($entityID);
+
+
+
+            //hydrate data to form entity
+            $hydrator = new cHydrator;
+            $hydrator->hydrate($skuData,$queriedData);
+
+
+/* Removing custom hydrator and using std Classmethod hydrator
+            foreach($this->skuData as $key => $value){
+//		echo 'key ' . $key . ' value ' . $value . "\n"; 
+                $method = 'set'.ucfirst($key);
+                $queriedData->$method($value);
+            }
+*/
+
+
+            //stash object in container
+            $container->data = $queriedData;
         }
+
+        $view = new ViewModel(array('data'=>$queriedData));
+        return $view;
+    }
+
+
+
+
+
+
+    public function submitFormAction(){
 
         $request = $this->getRequest();
         if($request->isPost()) {
-            $formData = array();
+            $postData = new Form();
+            $container = new Container('intranet');
             $formData = (array) $request->getPost();
-//            echo "<pre>";
-//            var_dump($formData);
-            foreach($formData as $key => $value){
-//                echo 'this are the indexs ' . $key . "<br />";
-                $method = 'set'.ucfirst($key);
-                $postData->$method($value);
+            //fix dates on post...
+
+            //Hydrate into object
+            $hydrator = new cHydrator;
+            $hydrator->hydrate($formData,$postData);
+
+            //Find dirty and new entities
+            $comp = new EntityCompare();
+            $dirtyData = $comp->dirtCheck($container->data, $postData);
+            $newData = $comp->newCheck($container->data, $postData);
+
+            //run update or insert data
+            $form = $this->getFormTable();
+            $result = $form->dirtyHandle($dirtyData);
+            $form->newHandle($newData);
+
+            if($result == ''){
+                $result = 'No changes to sku made.';
             }
-            $cleaner = new SearchCleaner();
-            $cleaner->determineQueryStatement($container->data, $postData);
-//            $getNew = new NewFields();
-//            echo "this is new cost " . $getNew->getCost() . "<br />";
-//            die();
+
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+
+            return $response;
+
+
+            //return $this->redirect()->toRoute("search", array('action'=>'index'));
         }
-<<<<<<< HEAD
-        $view = new ViewModel(array('test'  => $id ));
-        return $view;
     }
 
-    public function imageUploadAction(){
-        return new ViewModel();
+
+
+
+
+    public function manufacturerLoadAction(){
+
+        $form = $this->getFormTable();
+        $manufacturerlist =$form->manufacturerDropDown();
+
+        $result = json_encode($manufacturerlist);
+
+
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+
+        return $response;
     }
-/*
-    public function addAction(){
 
-    }
 
-    public function editAction(){
-
-    }
-
-    public function deleteAction(){
-=======
->>>>>>> edit_form
-
-        $view = new ViewModel($this->skuData);
-        return $view;
+    public function getFormTable(){
+        if (!$this->formTable) {
+            $sm = $this->getServiceLocator();
+            $this->formTable = $sm->get('Search\Model\FormTable');
+        }
+        return $this->formTable;
     }
 }

@@ -8,15 +8,15 @@
         <ul class="page-breadcrumb breadcrumb">
             <li>
                 <i class="fa fa-home"></i>
-                <a href="index.html">Home</a>
+                <a href="/">Home</a>
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <a href="#">Content</a>
+                <a href="/search">Content</a>
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <a href="#">Product Edit</a>
+                <a href="">Product Edit</a>
             </li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
@@ -25,17 +25,18 @@
 <!-- END PAGE HEADER-->
 <!-- BEGIN PAGE CONTENT-->
 <div class="row">
+<form id="generalForm" action="/form" method="POST">
 <div class="col-md-12">
-<!--<form class="form-horizontal form-row-seperated" action="#">-->
 <div class="portlet">
 <div class="portlet-title">
     <div class="caption">
-        <i class="fa fa-shopping-cart"></i>Product Title
+        <i class="fa fa-shopping-cart"></i><a href="http://focuscamera.com/<?=$this->data->getUrlKey()?>.html" target="_blank"><?=$this->data->getTitle()?></a>
     </div>
+
     <div class="actions btn-set">
         <button type="button" name="back" class="btn default"><i class="fa fa-angle-left"></i> Back</button>
-
-        <button class="btn green"><i class="fa fa-check"></i> Save</button>
+        <button class="btn green" id="submitForm"><i class="fa fa-check" ></i> Save</button>
+        <!--<input class="btn default" value="Save" type="submit">-->
     </div>
 </div>
 <div class="portlet-body">
@@ -55,7 +56,7 @@
 											3 </span></a>
     </li>
     <li>
-        <a href="#tab_reviews" data-toggle="tab">
+        <a href="#tab_categories" data-toggle="tab">
             Catagories
         </a>
     </li>
@@ -92,8 +93,8 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">SKU</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="general_sku" placeholder="SKU" style="width:140px" required/>
-                        <span class="help-block">This is inline help </span>
+                        <input type="text" class="form-control" name="sku" value="<?= $this->data->getSku();//$this->$queriedData->getSku ?>" placeholder="SKU" style="width:140px" required/>
+                        <span class="help-block"></span>
                     </div>
                 </div>
             </div>
@@ -102,8 +103,8 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Name</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control"  name="name" placeholder="Name" required/>
-                        <span class="help-block">This is inline help </span>
+                        <input type="text" class="form-control"  name="title" placeholder="Title" value="<?=$this->data->getTitle()?>" required/>
+                        <span class="help-block"></span>
                     </div>
                 </div>
             </div>
@@ -116,8 +117,8 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Inventory</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="inventory"  placeholder="Inventory" style="width:140px" required/>
-                        <span class="help-block">This is inline help </span>
+                        <input type="text" class="form-control" name="inventory"  placeholder="Inventory" style="width:140px" value="<?=$this->data->getInventory()?>" required/>
+                        <span class="help-block"></span>
                     </div>
                 </div>
             </div>
@@ -126,8 +127,8 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">URL Key</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="urlkey" placeholder="URL Key"  required/>
-                        <span class="help-block">This is inline help </span>
+                        <input type="text" class="form-control" name="urlkey" placeholder="URL Key" value="<?=$this->data->getUrlKey()?>"  required/>
+                        <span class="help-block"></span>
                     </div>
                 </div>
             </div>
@@ -140,10 +141,10 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">Status</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium select2me" data-placeholder="Select...">
-                            <option value=""></option>
-                            <option value="AL">Alabama</option>
-                            <option value="WY">Wyoming</option>
+                        <select class="form-control input-medium" name="status">
+                            <option value="0" <?= $this->data->getStatus() == 0 ? 'selected' :''  ?>>Status Not Set</option>
+                            <option value="1" <?= $this->data->getStatus() == 1 ? 'selected' :''  ?>>Enabled</option>
+                            <option value="2" <?= $this->data->getStatus() == 2 ? 'selected' :''  ?>>Disabled</option>
                         </select>
                     </div>
                 </div>
@@ -151,12 +152,10 @@
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="general_sku">Manufacturer</label>
+                    <label class="control-label col-md-3">Manufacturer</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium select2me" data-placeholder="Select...">
-                            <option value=""></option>
-                            <option value="AL">Alabama</option>
-                            <option value="WY">Wyoming</option>
+                        <select class="form-control input-medium" id="manufacturerDropdown" data-placeholder="No Manufacturer Set" name="manufacturer">
+                            <option value="<?= $this->data->getManufacturer(); ?>" selected><?= $this->data->getManufacturer(); ?></option>
                         </select>
                     </div>
                 </div>
@@ -170,10 +169,12 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Visibility</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium select2me" data-placeholder="Select...">
+                        <select class="form-control input-medium" data-placeholder="No Visitility Set" name="visibility">
                             <option value=""></option>
-                            <option value="AL">Alabama</option>
-                            <option value="WY">Wyoming</option>
+                            <option value="1" <?= $this->data->getVisibility() == 1 ? 'selected' :''?>>Not Visible Indivdually</option>
+                            <option value="2" <?= $this->data->getVisibility() == 2 ? 'selected' :''?>>Catalog</option>
+                            <option value="3" <?= $this->data->getVisibility() == 3 ? 'selected' :''?>>Search</option>
+                            <option value="4" <?= $this->data->getVisibility() == 4 ? 'selected' :''?>>Catalog, Search</option>
                         </select>
                     </div>
                 </div>
@@ -183,10 +184,10 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Condition</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium select2me" data-placeholder="Select...">
+                        <select class="form-control input-medium" data-placeholder="No Condition Set" name="condition">
                             <option value=""></option>
-                            <option value="AL">Alabama</option>
-                            <option value="WY">Wyoming</option>
+                            <option value="1332" <?= $this->data->getCondition() == 1332 ? 'selected' :''?> >New</option>
+                            <option value="1331" <?= $this->data->getCondition() == 1331 ? 'selected' :''?> >Refurbished</option>
                         </select>
                     </div>
                 </div>
@@ -200,10 +201,12 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Tax Class</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium select2me" data-placeholder="Select...">
-                            <option value=""></option>
-                            <option value="AL">Alabama</option>
-                            <option value="WY">Wyoming</option>
+                        <select class="form-control input-medium" data-placeholder="Select..." name="taxClass">
+
+                            <option value="0" <?= $this->data->getTaxClass() == 0 ? 'selected' :''?> >None</option>
+                            <option value="1" <?= $this->data->getTaxClass() == 1 ? 'selected' :''?> >Default</option>
+                            <option value="2" <?= $this->data->getTaxClass() == 2 ? 'selected' :''?> >Taxable Goods</option>
+                            <option value="4" <?= $this->data->getTaxClass() == 3 ? 'selected' :''?> >Shipping</option>
                         </select>
                     </div>
                 </div>
@@ -213,10 +216,12 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Stock Status</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium select2me" data-placeholder="Select...">
-                            <option value=""></option>
-                            <option value="AL">Alabama</option>
-                            <option value="WY">Wyoming</option>
+                        <select class="form-control input-medium" data-placeholder="Select..." name="stockStatus">
+                            <option value="0" <?= $this->data->getStockStatus() == 0 ? 'selected' :''?> > </option>
+                            <option value="3756" <?= $this->data->getStockStatus() == 3756 ? 'selected' :''?> >Pre-Order Only </option>
+                            <option value="4265" <?= $this->data->getStockStatus() == 4265 ? 'selected' :''?> >Call to Order</option>
+                            <option value="3784" <?= $this->data->getStockStatus() == 3784 ? 'selected' :''?> >Ships in 5-7 Days</option>
+                            <option value="3755" <?= $this->data->getStockStatus() == 3755 ? 'selected' :''?> >Ships in 3-4 Days</option>
                         </select>
                     </div>
                 </div>
@@ -232,7 +237,7 @@
 
 
 <br /><br />
-<!--------------------Pricing------------------->
+<!--------------------Pricing-------------------->
 <div class="portlet box green">
     <div class="portlet-title">
         <div class="caption">
@@ -250,9 +255,9 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="general_sku">Price</label>
+                    <label class="control-label col-md-3" for="price">Price</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="general_sku" placeholder="Price" style="width:140px" required/>
+                        <input type="text" class="form-control" name="price" placeholder="Price" style="width:140px" value="<?=$this->data->getPrice();?>" required/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -260,9 +265,9 @@
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="general_sku">Cost</label>
+                    <label class="control-label col-md-3" for="cost">Cost</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control"  name="name" placeholder="Cost" style="width:140px" required/>
+                        <input type="text" class="form-control"  name="cost" placeholder="cost" style="width:140px" value="<?=$this->data->getCost(); ?>"/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -275,9 +280,9 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="general_sku">MSRP</label>
+                    <label class="control-label col-md-3" for="inventory">MSRP</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="inventory"  placeholder="Rebate" style="width:140px" required/>
+                        <input type="text" class="form-control" name="msrp"  placeholder="MSRP" style="width:140px"/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -287,10 +292,12 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">Map Display</label>
                     <div class="col-md-4">
-                        <select class="form-control input-medium select2me" data-placeholder="Select...">
+                        <select class="form-control input-medium" name="mapDisplay" data-placeholder="Select...">
                             <option value=""></option>
-                            <option value="AL">Alabama</option>
-                            <option value="WY">Wyoming</option>
+                            <option value="2" <?= $this->data->getMapDisplay() == 2 ? 'selected' :''?> >In Cart</option>
+                            <option value="3" <?= $this->data->getMapDisplay() == 3 ? 'selected' :''?> >Before Order Confirmation</option>
+                            <option value="1" <?= $this->data->getMapDisplay() == 1 ? 'selected' :''?> >On Gesture</option>
+                            <option value="4" <?= $this->data->getMapDisplay() == 4 ? 'selected' :''?> >Use config</option>
                         </select>
                     </div>
                 </div>
@@ -303,9 +310,9 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="general_sku">Rebate Price</label>
+                    <label class="control-label col-md-3">Rebate Price</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="inventory"  placeholder="Rebate" style="width:140px" required/>
+                        <input type="text" class="form-control" name="rebatePrice"  placeholder="Rebate" style="width:140px" value="<?=$rebatePrice = is_null($this->data->getRebatePrice())? 0:  $this->data-getRebatePrice() ?>">
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -316,7 +323,7 @@
                     <label class="control-label col-md-3">Start Date -End Date (Rebate)</label>
                     <div class="col-md-4">
                         <div class="input-group" id="rebate">
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" name="rebatedates" value="<?=$rebateStartEndDate = is_null($this->data->getRebateStartEndDate())? '' : $this->data->getRebateStartEndDate()?>">
 												<span class="input-group-btn">
 												<button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
 												</span>
@@ -331,9 +338,9 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="general_sku">Special Price</label>
+                    <label class="control-label col-md-3">Special Price</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="inventory"  placeholder="Special Price" style="width:140px" required/>
+                        <input type="text" class="form-control"  name="specialprice" placeholder="Special Price" style="width:140px" value="<?=$specialPrice = is_null($this->data->getSpecialPrice())? 0:  $this->data-getSpecialPrice() ?>"/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -344,7 +351,7 @@
                     <label class="control-label col-md-3">Start Date -End Date (Special Price)</label>
                     <div class="col-md-4">
                         <div class="input-group" id="special">
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" name="specialrebatedates" value="<?=$specialStartEndDate = is_null($this->data->getSpecialStartEndDate())? '' : $this->data->getSpecialStartEndDate()?>">
 												<span class="input-group-btn">
 												<button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
 												</span>
@@ -361,7 +368,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Mail in rebate</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="inventory"  placeholder="Mail in Rebate" style="width:140px" required/>
+                        <input type="text" class="form-control" name="mailinrebate"  placeholder="Mail in Rebate" style="width:140px" value="<?=$mailinPrice = is_null($this->data->getMailInRebate())? 0:  $this->data-getMailInRebate() ?>"required/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -372,7 +379,7 @@
                     <label class="control-label col-md-3">Start Date -End Date (Mail in rebate)</label>
                     <div class="col-md-4">
                         <div class="input-group" id="mailin">
-                            <input type="text" class="form-control">
+                            <input type="text" name="mailinrebatedates" class="form-control" value="<?=$mailStartEndDate = is_null($this->data->getMailInStartEndDate())? '' : $this->data->getMailInStartEndDate()?>">
 												<span class="input-group-btn">
 												<button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
 												</span>
@@ -387,186 +394,11 @@
     </div>
 </div>
 
-<!--------Shipping------>
-<div class="portlet box blue">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class="fa fa-gift"></i>Shipping
-        </div>
-        <div class="tools">
-            <a href="javascript:;" class="collapse">
-            </a>
 
-        </div>
-    </div>
-
-
-    <div class="portlet-body">
-        <div class="row">
-            <div class="col-md-11">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Weight</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="general_sku" placeholder="Weight" style="width:140px" required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">US Standard</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control"  name="name" placeholder="US Standard" style="width:140px" required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">US Expedited</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control"  name="name" placeholder="US Expedited" style="width:140px"  required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!--end row-->
-
-
-        <div class="row">
-            <div class="col-md-11">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">US Two Day</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="general_sku" placeholder="US Two Day" style="width:140px" required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">US One Day</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control"  name="name" placeholder="US One Day" style="width:140px"  required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Europe First Class</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control"  name="name" placeholder="Europe First Class" style="width:140px"  required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!--end row-->
-
-
-
-        <div class="row">
-            <div class="col-md-11">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Europe Priority</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="general_sku" placeholder="Europe Priority" style="width:140px" required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Asia First Class</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control"  name="name" placeholder="Asia First Class" style="width:140px"  required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Asia Priority</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control"  name="name" placeholder="Asia Priority" style="width:140px"  required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!--end row-->
-
-
-        <div class="row">
-            <div class="col-md-11">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Canada First Class</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="general_sku" placeholder="Canada First Class" style="width:140px" required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Canada Priority</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control"  name="name" placeholder="Canada Priority" style="width:140px" required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Outside US,EUR CA, Asia First Class</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control"  name="name" placeholder="Outside US,EUR CA, Asia First Class" style="width:140px" required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!--end row-->
-
-
-        <div class="row">
-            <div class="col-md-11">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label col-md-3" for="general_sku">Outside US,EUR CA, Asia Priority</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="general_sku" placeholder="Outside US,EUR CA, Asia Priority" style="width:140px" required/>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!--end row-->
-
-
-
-
-    </div>
-
-</div>
 
 
 <!---Description-->
-<div class="portlet box green tabbable">
+<div class="portlet box blue tabbable">
     <div class="portlet-title">
         <div class="caption">
             <i class="fa fa-gift"></i>Description
@@ -605,7 +437,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3" for="searchTerms">Search Terms</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" name="searchTerms" placeholder="Search Terms" required/>
+                                <input type="text" class="form-control" name="searchTerms" placeholder="Search Terms" />
                             </div>
                         </div>
 
@@ -618,9 +450,9 @@
                 <div class="tab-pane" id="portlet_description">
                     <div class="form-body">
                         <div class="form-group col-md-11">
-                            <label class="control-label col-md-3" for="searchTerms">Description</label>
+                            <label class="control-label col-md-3">Description</label>
                             <div class="col-md-11">
-                            <textarea class="wysihtml5 form-control" rows="6"></textarea>
+                            <textarea id="descriptionwys" class="form-control" name ="description" rows="20" style = "height: 500px;"> <?= $this->data->getDescription(); ?> </textarea>
                                 </div>
                         </div>
 
@@ -631,9 +463,9 @@
                 <div class="tab-pane" id="portlet_sDescription">
                     <div class="form-body">
                         <div class="form-group col-md-11">
-                            <label class="control-label col-md-3" for="searchTerms">Short Description</label>
+                            <label class="control-label col-md-3">Short Description</label>
                             <div class="col-md-11">
-                                <textarea class="wysihtml5 form-control" rows="6"></textarea>
+                                <textarea  id="shortdescriptionwys" class="form-control" name="shortDescription" rows="6" style = "height: 500px;"> <?= $this->data->getShortDescription(); ?> </textarea>
                             </div>
                         </div>
 
@@ -644,9 +476,9 @@
                 <div class="tab-pane" id="portlet_inbox">
                     <div class="form-body">
                         <div class="form-group col-md-11">
-                            <label class="control-label col-md-3" for="searchTerms">In Box</label>
+                            <label class="control-label col-md-3">In Box</label>
                             <div class="col-md-11">
-                                <textarea class="wysihtml5 form-control" rows="6"></textarea>
+                                <textarea id="inboxwys" class="form-control" name = "inBox" rows="6" style = "height: 500px;"> <?= $this->data->getInBox(); ?> </textarea>
                             </div>
                         </div>
 
@@ -659,7 +491,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3" for="searchTerms">Includes Free</label>
                             <div class="col-md-11">
-                                <textarea class="wysihtml5 form-control" rows="6"></textarea>
+                                <textarea class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> <?php $this->data->getIncludesFree() ?> </textarea>
                             </div>
                         </div>
 
@@ -680,7 +512,7 @@
 
 
 
-
+</form>
 
 
 
@@ -692,73 +524,12 @@
             <!-- Related products-->
             <div class="portlet box blue">
                 <div class="portlet-title">
-<<<<<<< HEAD
                     <div class="caption">
                         <i class="fa fa-gift"></i>Acessories
                     </div>
                     <div class="tools">
                         <a href="javascript:;" class="collapse">
                         </a>
-=======
-                    <h4><i class="icon-globe"></i>Catalog</h4>
-
-                    <br />
-<!--                    <div class="tools">-->
-<!--                        <a href="javascript:;" class="collapse"></a>-->
-<!--                        <a href="#portlet-config" data-toggle="modal" class="config"></a>-->
-<!--                        <a href="javascript:;" class="reload"></a>-->
-<!--                        <a href="javascript:;" class="remove"></a>-->
-<!--                    </div>-->
-                </div>
-                <div class="portlet-body form">
-                    <div class="tabbable portlet-tabs">
-                        <ul class="nav nav-tabs">
-                            <li class=""><a href="#portlet_tab4" data-toggle="tab">Categories</a></li>
-                            <li class=""><a href="#portlet_tab3" data-toggle="tab">Related Products</a></li>
-                            <li class=""><a href="#portlet_tab2" data-toggle="tab">Images</a></li>
-                            <li class="active"><a href="#portlet_tab1" data-toggle="tab">General</a></li>
-                        </ul><!--**upload**-->
-                        <form enctype="multipart/form-data" action="/form" class="form-horizontal" method="post" id="add-form fileupload" >
-
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="portlet_tab1">
-                                    <div class="portlet-title general">
-                                        <h4><i class="icon-cogs"></i>Standard</h4>
-                                        <div class="tools-general">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="general_sku">SKU</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="sku" id="sku" placeholder="SKU" style="width:140px" value="<?= $this->sku?>"required/>
-                                            </div>
-                                        </div>
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="name">Name</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="name" id="name" placeholder="Name" value="<?=$this->name?>" required/> <div id="char-count">Chars:<span id="name-count"></span></div>
-                                            </div>
-                                        </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="inventory">Inventory</label>
-                                        <div class="controls">
-                                            <input type="text" class="span6 m-wrap" name="inventory" id="inventory" placeholder="Inventory" value="<?=$this->inventory?>"  required/>
-                                        </div>
-                                    </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="urlkey">URL Key</label>
-                                        <div class="controls">
-                                            <input type="text" class="span6 m-wrap" name="urlKey" id="urlKey" placeholder="URL Key" value="<?=$this->urlKey?>" required />
-                                        </div>
-                                    </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="status">Status</label>
-                                        <div class="controls">
->>>>>>> edit_form
 
                     </div>
                 </div>
@@ -797,7 +568,6 @@
                             </table>
                         </div>
 
-<<<<<<< HEAD
 
 
                         <div class="modal fade" id="acessoryModal" tabindex="-1" role="acessoryModal" aria-hidden="true">
@@ -806,72 +576,10 @@
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                                         <h4 class="modal-title">Add Acessory Items</h4>
-=======
-                                            <div class="text-toggle-button">
-                                                <input type="checkbox" class="toggle" checked = "check"/>
-                                            </div>
-<!---->
-<!--                                            <select name="status" id="status" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Status" required>-->
-<!--                                                <option value="">--Please Select--</option>-->
-<!--                                                <option value="test">test</option>-->
-<!--                                            </select>-->
-                                        </div>
-                                    </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="manufacturer">Manufacturer</label>
-                                        <div class="controls">
-<!--                                            <select name="manufacturer" id="manufacturer" class="span6 m-wrap" tabindex="1" data-placeholder="Choose a Manufacturer" >-->
-<!--                                                <option value="">--Please Select--</option>-->
-<!--                                                <option value="test">test</option>-->
-<!--                                            </select>-->
-                                        </div>
-                                    </div>
-
-
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="visibility">Visibility</label>
-                                            <div class="controls">
-<!--                                                <select name="visibility" id="visibility" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Visibility" >-->
-<!--                                                    <option value="">--Please Select--</option>-->
-<!--                                                    <option value="test">test</option>-->
-<!--                                                </select>-->
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="condition">Condition</label>
-                                            <div class="controls">
-<!--                                                <select name="condition" id="condition" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Condition" >-->
-<!--                                                    <option value="">--Please Select</option>-->
-<!--                                                    <option value="test">test</option>-->
-<!--                                                </select>-->
-                                            </div>
-                                        </div>
-                                        <div class="control-group standard-group">
-                                            <label class="control-label" for="taxes">Tax Class</label>
-                                            <div class="controls">
-<!--                                                <select name="taxClass" id="taxClass" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Tax Class" >-->
-<!--                                                    <option value="">--Please Select</option>-->
-<!--                                                    <option value="test">test</option>-->
-<!--                                                </select>-->
-                                            </div>
-                                        </div>
-                                    <div class="control-group standard-group">
-                                        <label class="control-label" for="cust-stock-status">Customer Stock Status</label>
-                                        <div class="controls">
-<!--                                            <select name="stockStatus" id="stockStatus" class="span6 m-wrap" tabindex="1" data-placeholder="Choose Tax Class" >-->
-<!--                                                <option value="">--Please Select</option>-->
-<!--                                                <option value="test">test</option>-->
-<!--                                            </select>-->
-                                        </div>
->>>>>>> edit_form
                                     </div>
                                     <div class="modal-body">
                                         Select 2 input (multi/ajax)
                                     </div>
-<<<<<<< HEAD
                                     <div class="modal-footer">
                                         <button type="button" class="btn default" data-dismiss="modal">Close</button>
                                         Send Ajax Call to add on click<button type="button" class="btn blue">Save changes</button>
@@ -897,531 +605,6 @@
                     <div class="tools">
                         <a href="javascript:;" class="collapse">
                         </a>
-=======
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="price">Price</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="price" id="price" placeholder="Price" value="<?=is_null($this->price) ? 0 : $this->price ?>"required style="width: 80px" />
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="cost">Cost</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="cost" id="cost" placeholder="Cost" value="<?=is_null($this->cost) ? 0 : $this->cost ?>" required style="width: 80px"/>
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="rebate">Rebate Price</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="rebatePrice" id="rebatePrice" placeholder="Rebate Price" value="<?=is_null($this->rebatePrice) ? 0 : $this->rebatePrice?>" required />
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="start-end-rebate-date">Start Date - End Date (Rebate)</label>
-                                            <div class="controls">
-                                                <div class="input-prepend"> <span class="add-on">
-                                                        <i class="icon-calendar"></i>
-                                                    </span>
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="rebateStartEndDate" id="rebateStartEndDate" value="<?=is_null($this->rebateStartEndDate) ? 'N/A': $this->rebateStartEndDate?>" placeholder="Start Date - End Date" required />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="special">Special Price</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="specialPrice" id="specialPrice" placeholder="Special Price" value="<?=is_null($this->specialPrice) ? 0 : $this->specialPrice?>" required />
-                                            </div>
-                                        </div>
-                                        <!--special price will the same as final price-->
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="start-end-special-date">Start Date - End Date (Special)</label>
-                                            <div class="controls">
-                                                <div class="input-prepend"> <span class="add-on">
-                                                        <i class="icon-calendar"></i>
-                                                    </span>
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="specialStartEndDate" id="specialStartEndDate" value="<?=is_null($this->specialStartEndDate) ? 'N/A' : $this->specialStartEndDate?>" placeholder="Start Date - End Date" required />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="mailin">Mail-In Rebate</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="mailInRebate" id="mailInRebate" placeholder="Mail-In Rebate" value="<?=is_null($this->mailInRebate) ? 0 : $this->mailInRebate?>" required />
-                                            </div>
-                                        </div>
-                                        <div class="control-group pricing-group">
-                                            <label class="control-label" for="start-end-mailin-date">Start Date - End Date (Mail-In Rebate)</label>
-                                            <div class="controls">
-                                                <div class="input-prepend"> <span class="add-on">
-                                                            <i class="icon-calendar"></i>
-                                                        </span>
-
-                                                    <input type="text" class="m-ctrl-medium date-range  m-wrap" name="mailInStartEndDate" id="mailInStartEndDate" placeholder="Start Date - End Date" value="<?=is_null($this->mailInStartEndDate) ? 'N/A' : $this->mailInStartEndDate?>" required />
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    <!--special price will the same as final price-->
-
-
-                                    <div class="portlet-title shipping">
-                                        <h4><i class="icon-cogs"></i>Shipping</h4>
-                                        <div class="tools-general">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                        <!--Shipping Attributes-->
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="weight">Weight</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="weight" id="weight" placeholder="Weight" value="<?=is_null($this->weight) ? 0.00 : $this->weight ?>" required />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="usexpedited">U.S Expedited</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="usExpedited" id="usExpedited" placeholder="U.S Expedited"  value="<?= is_null($this->usExpedited) ? 0.00 : $this->usExpedited?>" required/>
-                                            </div>
-                                        </div>
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="ustwoday">U.S Two Day</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="usTwoDay" id="usTwoDay" placeholder="U.S Two Day" value="<?=is_null($this->usTwoDay) ? 0.00 : $this->usTwoDay?>"  required/>
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="canada">Canada Priority</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="canadaPriority" id="canadaPriority" placeholder="Canada Priority" value="<?=is_null($this->canadaPriority) ? '' : $this->canadaPriority ?>"  />
-                                            </div>
-                                        </div>
-
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="canada_firstclass">Canada First Class</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="canadaFirstClass" id="canadaFirstClass" placeholder="Canada First Class"  value="<?=$this->canadaFirstClass?>"  />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="asia_priority">Asia Priority</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="asiaPriority" id="asiaPriority" placeholder="Asia Priority"  value="<?=$this->asiaPriority?>"   />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="asia_firstclass">Asia First Class</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="asiaFirstClass" id="asiaFirstClass" placeholder="Asia First Class"  value="<?=$this->asiaFirstClass?>"  />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="europe_priority">Europe Priority</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="europePriority" id="europePriority" placeholder="Europe Priority"  value="<?=$this->europePriority?>"  />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="europe_firstclass">Europe First Class</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="europeFirstClass" id="europeFirstClass" placeholder="Europe First Class"  value="<?=$this->europeFirstClass?>"  />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="outside_priority">Outside US, Eur., CA, Asia Priority</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="outsideAsiaPriority" id="outsideAsiaPriority" placeholder="Outside US, Eur., CA, Asia Priority"  value="<?=$this->outsideAsiaPriority?>"   />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="outside_firstclass">Outside US, Eur., CA, Asia First Class</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="outsideAsiaFirstClass" id="outsideAsiaFirstClass" placeholder="Outside US, Eur., CA, Asia First Class"  value="<?=$this->outsideAsiaFirstClass?>"   />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="us_oneday">US One Day</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="usOneDay" id="usOneDay" placeholder="US One Day"  value="<?=$this->usOneDay?>"   />
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group shipping-group">
-                                            <label class="control-label" for="us_standard">US Standard</label>
-                                            <div class="controls">
-                                                <input type="text" class="span6 m-wrap" name="usStandard" id="usStandard" placeholder="US Standard"  value="<?=$this->usStandard?>"   />
-                                            </div>
-                                        </div>
-                                        <!--End of Shipping Attributes-->
-                                        <!--Meta-information-->
-
-                                    <div class="portlet-title description">
-                                        <h4><i class="icon-cogs"></i>Description</h4>
-                                        <div class="tools-general">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    <div class="control-group meta-title">
-                                        <label class="control-label" for="meta_title">Meta Title</label>
-<!--                                        <div class="controls">-->
-                                            <div class="controls" style="width: 200px"  id="editable meta_title " contenteditable="true">
-                                        </div>
-<!--                                        <textarea type="text" class="span6 m-wrap" name="meta_title" id="meta_title" placeholder="Meta Title"  value="<?php //$this->metaTitle; ?>" ></textarea>-->
-<!--                                        <textarea  style="visibility:hidden;  display:none" cols="15" rows="12" class="span6 m-wrap" name="meta_title" id="meta_title_ta" value="--><?php //$this->metaTitle?><!--" ></textarea>-->
-                                    </div>
-                                        <div class="controls-group meta">
-                                            <label class="control-label" for="meta_keyword">Meta Keywords: </label>
-                                            <div class="controls" style="width: 200px"  id="editable meta_keyword " contenteditable="true">
-                                            </div>
-<!--                                            <textarea  style="visibility:hidden;  display:none" cols="15" rows="12" class="span6 m-wrap" name="meta_title" id="meta_keyword_ta" ></textarea>-->
-                                        </div>
-                                        <br />
-                                        <br />
-                                        <div class="controls-group meta">
-                                            <label class="control-label" for="meta_description">Meta Description: </label>
-                                            <div class="controls" style="width: 200px" id="editable meta_description" contenteditable="true">
-                                            </div>
-<!--                                            <textarea style="visibility:hidden; display:none" name="meta_description_ta" id="meta_description"></textarea>-->
-                                        </div>
-                                        <br />
-                                        <br />
-                                        <div class="controls-group meta">
-                                            <label class="control-label" for="description">Description: </label>
-                                            <div class="controls" style="width: 200px"  id="editable description" contenteditable="true">
-                                            </div>
-<!--                                            <textarea style="visibility:hidden; display:none" name=description" id="description_ta"></textarea>-->
-                                            <!--                                        <textarea name="description"  rows="10" id="description" data-provide="markdown" required></textarea>-->
-                                            <!--                                    </div>-->
-
-                                        </div>
-                                </div>
-                                <div class="tab-pane" id="portlet_tab2">
-<!--                                    <div class="alert alert-success margin-bottom-10">-->
-<!--                                    </div>-->
-                                    <div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10" style="position: relative;">
-<!--                                        tab_images_uploader_pickfiles-->
-<!--                                        <input type='file' id="imgInp" />-->
-<!--                                        <img id="blah" src="#" alt="your image" />-->
-<!--                                        <a class="inputWrapper" style="height: 48px; width: 128px;">-->
-<!--                                            <input class="fileInput" type="file" name="file1"/>-->
-<!--                                        </a>-->
-                                        <a class="btn yellow select_file " style="position: relative; z-index: 1;">
-                                            <i class="fa fa-plus"></i> Select Files <input type="file" name="image_file" class="pick_file"  /></a>
-<!--                                        TODO turn this input file type into multiple files -->
-
-
-<!--                                        tab_images_uploader_uploadfiles-->
-<!--                                        <a id="tab_images_uploader_uploadfiles" class="upload_image btn green">-->
-<!--                                            <i class="fa fa-share"></i> Upload Files </a>-->
-<!--                                        <div id="html5_18r23gvmu1aqahvv2t1tg3thg3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;">-->
-<!--                                            <input id="html5_18r23gvmu1aqahvv2t1tg3thg3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept="image/jpeg,image/gif,image/png,application/zip">-->
-<!--                                        </div>-->
-                                    </div>
-                                    <div class="row">
-                                        <div id="tab_images_uploader_filelist" class="col-md-6 col-sm-12">
-<!--                                            <div class="alert alert-warning added-files">-->
-<!--                                                <img id="img_file" src="#" /> <span class="status label label-info"></span>&nbsp;-->
-<!--                                                <a href="javascript:;" style="margin-top:-5px" class="remove_queue_file pull-right btn btn-sm red">-->
-<!--                                                    <i class="fa fa-times"></i> remove</a>-->
-<!--                                            </div>-->
-                                        </div>
-                                    </div>
-                                    <table class="table table-bordered table-hover">
-                                        <thead>
-                                        <tr role="row" class="heading">
-                                            <th width="8%">
-                                                Image
-                                            </th>
-                                            <th width="25%">
-                                                Label
-                                            </th>
-                                            <th width="5%">
-                                                File Size
-                                            </th>
-                                            <th width="8%">
-                                                Sort Order
-                                            </th>
-                                            <th width="10%">
-                                                Thumbnail
-                                            </th>
-                                            <th width="10%">
-                                                Small Image
-                                            </th>
-                                            <th width="10%">
-                                                Base Image
-                                            </th>
-                                            <th width="10%">
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-<!--                                        <tr>-->
-<!--                                            <td>-->
-<!--<!--                                                <a href="" class="fancybox-button" data-rel="fancybox-button">-->
-<!--<!--                                                    <img class="img-responsive" src="" alt="">-->
-<!--<!--                                                </a>-->
-<!---->
-<!--                                            </td>-->
-<!--                                            <td>-->
-<!--                                                No Images-->
-<!--                                            </td>-->
-<!--                                            <td>-->
-<!---->
-<!--                                            </td>-->
-<!--                                            <td>-->
-<!--                                                <input type="text" class="form-control"  name="images[sortOrder][]" value="1">-->
-<!--                                            </td>-->
-<!--                                            <td>-->
-<!--<!--                                                <label>-->
-<!--                                                            <input type="radio"   name="images[thumbnail][]" value="1" >-->
-<!--<!--                                                </label>-->
-<!--                                            </td>-->
-<!--                                            <td>-->
-<!--<!--                                                <label>-->
-<!--                                                            <input type="radio"   name="images[smallImage][]" value="2">-->
-<!--<!--                                                </label>-->
-<!--                                            </td>-->
-<!--                                            <td>-->
-<!--<!--                                                <label>-->
-<!--                                                            <input type="radio"   name="images[baseImage][]" value="3" checked="">-->
-<!--<!--                                                </label>-->
-<!--                                            </td>-->
-<!--                                            <td>-->
-<!--<!--                                                <a href="javascript:;" class="btn default btn-sm remove">-->
-<!--<!--                                                    <i class="fa fa-times"></i> Remove </a>-->
-<!--                                            </td>-->
-<!--                                        </tr>-->
-                                        <tr>
-                                            <td>
-<!--                                                <a href="" class="fancybox-button" data-rel="fancybox-button">-->
-<!--                                                    <img class="img-responsive" src="" alt="">-->
-<!--                                                </a>-->
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="images[label][]" value="Thumbnail 1"/>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="images[sortOrder][]" value="1"/>
-                                            </td>
-                                            <td>
-<!--                                                <label>-->
-<!--                                                    <div class="radio">-->
-<!--                                                        <span>-->
-                                                            <input type="radio" name="images[thumb][]" />
-<!--                                                        </span>-->
-<!--                                                    </div>-->
-<!--                                                </label>-->
-                                            </td>
-                                            <td>
-<!--                                                <label>-->
-<!--                                                    <div class="radio"><span>-->
-                                                            <input type="radio" name="images[smallImage][]" />
-<!--                                                        </span></div>-->
-<!--                                                </label>-->
-                                            </td>
-                                            <td>
-                                                <label>
-<!--                                                    <div class="radio"><span class="checked">-->
-                                                            <input type="radio" name="images[baseImage][]"  checked=""/>
-<!--                                                        </span></div>-->
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:;" class="btn default btn-sm remove">
-                                                    <i class="fa fa-times"></i> Remove </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="" class="fancybox-button" data-rel="fancybox-button">
-                                                    <img class="img-responsive" src="" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="images[label][]" value="Product image #1"/>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="images[sortOrder][]" value="1"/>
-                                            </td>
-                                            <td>
-                                                <label>
-<!--                                                    <div class="radio"><span>-->
-                                                            <input type="radio" name="images[thumb][]" />
-<!--                                                        </span></div>-->
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-<!--                                                    <div class="radio"><span class="checked">-->
-                                                            <input type="radio" name="images[smallImage][]" checked=""/>
-<!--                                                        </span></div>-->
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-<!--                                                    <div class="radio"><span>-->
-                                                            <input type="radio" name="images[baseImage][]" />
-<!--                                                        </span></div>-->
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:;" class="btn default btn-sm remove">
-                                                    <i class="fa fa-times"></i> Remove </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="" class="fancybox-button" data-rel="fancybox-button">
-                                                    <img class="img-responsive" src="" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="images[label][]" value="Product image #2">
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="images[sortOrder][]" value="1">
-                                            </td>
-                                            <td>
-                                                <label>
-<!--                                                    <div class="radio"><span class="checked">-->
-                                                            <input type="radio" name="images[thumb][]" checked=""/>
-<!--                                                        </span></div>-->
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-<!--                                                    <div class="radio"><span>-->
-                                                            <input type="radio" name="images[smallImage][]" />
-<!--                                                        </span></div>-->
-                                                </label>
-                                            </td>
-<!--                                            product[images][3][image_type]-->
-                                            <td>
-                                                <label>
-<!--                                                    <div class="radio"><span>-->
-                                                            <input type="radio" name="images[baseImage][]" />
-<!--                                                        </span></div>-->
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:;" class="btn default btn-sm remove">
-                                                    <i class="fa fa-times"></i> Remove </a>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="tab-pane" id="portlet_tab3">
-                                    <div class="portlet-title product">
-                                        <h4><i class="icon-cogs"></i>Accessories</h4>
-                                        <div class="tools">
-                                            <a href="javascript:;" class="collapse"></a>
-                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                            <a href="javascript:;" class="reload"></a>
-                                            <a href="javascript:;" class="remove"></a>
-                                        </div>
-                                    </div>
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>SKU</th>
-                                                <th>Title/Name</th>
-                                                <th>Quantity/Inventory</th>
-                                                <th>Position</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td><input type="text" id="sku"  name="related_sku" placeholder="SKU"/></td>
-                                                <td><input type="text" id="title"  name="related_title" Placeholder="Title/Name"/></td>
-                                                <td><input type="text" id="qty"  name="related_qty" placeholder="Quantity/Inventory"/></td>
-    <!--                                            <td class="hidden-480"></td>-->
-                                                <td><input type="text" id="pos"  name="related_pos" placeholder="Position"/></td>
-    <!--                                            <td><span class="label label-success"></span></td>-->
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    <div class="portlet-title cross">
-                                            <h4><i class="icon-globe"></i>Cross Sells/Up Sells</h4>
-                                            <div class="tools">
-                                                <a href="javascript:;" class="collapse"></a>
-                                                <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                                                <a href="javascript:;" class="reload"></a>
-                                                <a href="javascript:;" class="remove"></a>
-                                            </div>
-                                    </div>
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>SKU</th>
-                                                <th>Title/Name</th>
-                                                <th>Quantity/Inventory</th>
-                                                <th>Position</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td><input type="text" id="cross_sku"  name="cross_sku" placeholder="SKU"/></td>
-                                                <td><input type="text" id="cross_title"  name="cross_title" Placeholder="Title/Name"/></td>
-                                                <td><input type="text" id="cross_qty"  name="cross_qty" placeholder="Quantity/Inventory"/></td>
-                                                <td><input type="text" id="cross_pos"  name="cross_pos" placeholder="Position"/></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-<!--                                    <div class="portlet-title upsells">-->
-<!--                                        <h4><i class="icon-globe"></i>Up Sells</h4>-->
-<!--                                        <div class="tools">-->
-<!--                                            <a href="javascript:;" class="collapse"></a>-->
-<!--                                            <a href="#portlet-config" data-toggle="modal" class="config"></a>-->
-<!--                                            <a href="javascript:;" class="reload"></a>-->
-<!--                                            <a href="javascript:;" class="remove"></a>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                        <table class="table table-hover">-->
-<!--                                        <thead>-->
-<!--                                        <tr>-->
-<!--                                            <th>SKU</th>-->
-<!--                                            <th>Title/Name</th>-->
-<!--                                            <th>Quantity/Inventory</th>-->
-<!--                                            <th>Position</th>-->
-<!--                                        </tr>-->
-<!--                                        </thead>-->
-<!--                                        <tbody>-->
-<!--                                        <tr>-->
-<!--                                            <td><input type="text" id="upsells_sku"  name="upsells_sku" placeholder="SKU"/></td>-->
-<!--                                            <td><input type="text" id="upsells_title"  name="upsells_title" Placeholder="Title/Name"/></td>-->
-<!--                                            <td><input type="text" id="upsells_qty"  name="upsells_qty" placeholder="Quantity/Inventory"/></td>-->
-<!--                                            <td><input type="text" id="upsells_pos"  name="upsells_pos" placeholder="Position"/></td>-->
-<!--                                        </tr>-->
-<!--                                        </tbody>-->
-<!--                                    </table>-->
->>>>>>> edit_form
 
                     </div>
                 </div>
@@ -1498,13 +681,11 @@
     <div class="col-md-12">
         <blockquote>
             <p style="font-size:16px">
-                File Upload widget with multiple file selection, drag&amp;drop support, progress bars and preview images for jQuery.<br>
-                Supports cross-domain, chunked and resumable file uploads and client-side image resizing.<br>
-                Works with any server-side platform (PHP, Python, Ruby on Rails, Java, Node.js, Go etc.) that supports standard HTML form file uploads.
+                Add or Drag Files to Upload
             </p>
         </blockquote>
         <br>
-        <form id="fileupload" action="../../assets/global/plugins/jquery-file-upload/server/php/" method="POST" enctype="multipart/form-data">
+        <form id="fileupload" action="#" method="POST" enctype="multipart/form-data">
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
                 <div class="col-lg-7">
@@ -1524,6 +705,7 @@
                         <i class="fa fa-ban-circle"></i>
 								<span>
 								Cancel upload </span>
+                    <!--
                     </button>
                     <button type="button" class="btn red delete">
                         <i class="fa fa-trash"></i>
@@ -1531,6 +713,7 @@
 								Delete </span>
                     </button>
                     <input type="checkbox" class="toggle">
+                    -->
                     <!-- The global file processing state -->
 								<span class="fileupload-process">
 								</span>
@@ -1554,29 +737,17 @@
                 </tbody>
             </table>
         </form>
+
         <div class="panel panel-success">
             <div class="panel-heading">
-                <h3 class="panel-title">Demo Notes</h3>
+                <h3 class="panel-title">Images</h3>
             </div>
             <div class="panel-body">
-                <ul>
-                    <li>
-                        The maximum file size for uploads in this demo is <strong>5 MB</strong> (default file size is unlimited).
-                    </li>
-                    <li>
-                        Only image files (<strong>JPG, GIF, PNG</strong>) are allowed in this demo (by default there is no file type restriction).
-                    </li>
-                    <li>
-                        Uploaded files will be deleted automatically after <strong>5 minutes</strong> (demo setting).
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-<<<<<<< HEAD
-</div>
 
-<!--
+
+
+
+<!--Current Images-->
 <table class="table table-bordered table-hover">
     <thead>
     <tr role="row" class="heading">
@@ -1701,12 +872,270 @@
     </tr>
     </tbody>
 </table>
--->
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
 </div>
 
 
 <div class="tab-pane" id="tab_categories">
     <!-- categories -->
+    <div class = "row">
+    <div class = "col-md-4">
+
+        <div class="portlet box green-meadow tabbable">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>Categories
+                </div>
+            </div>
+
+
+            <div class="portlet-body">
+                <div class="portlet-tabs">
+                    <ul class="nav nav-tabs">
+                        <li>
+                            <a href="#portlet_inbox" data-toggle="tab">New aSavings</a>
+                        </li>
+                        <li>
+                            <a href="#portlet_newfocus" data-toggle="tab">New Focus</a>
+                        </li>
+                        <li>
+                            <a href="#portlet_asave" data-toggle="tab">aSavings</a>
+                        </li>
+                        <li  class="active">
+                            <a href="#portlet_focus" data-toggle="tab">Focus</a>
+                        </li>
+                    </ul>
+                    <div class="row">
+                        <div class="tab-content">
+
+
+
+                            <!-- Focus categories-->
+                            <div class="tab-pane col-md-11 active" id="portlet_focus">
+                                <h3>Focus Camera Categories</h3>
+                                <div id="tree_2" class="tree-demo"></div>
+                            </div>
+
+
+                            <!-- aSave Categories-->
+                            <div class="tab-pane col-md-11" id="portlet_asave">
+                                <div class="form-body">
+                                    <h3>aSavings Categories</h3>
+                                    <div id="asave" class="tree-demo"></div>
+                                </div>
+                            </div>
+
+
+                            <!-- newFocus categories-->
+                            <div class="tab-pane col-md-11" id="portlet_newfocus">
+                                <h3>Focus Camera Categories (New Site)</h3>
+                                <div id="newfocus" class="tree-demo"></div>
+                            </div>
+
+
+
+
+
+
+
+
+
+
+                        </div><!--end tab content-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class = "col-md-6">
+        <div class="portlet box green-meadow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>Attributes
+                </div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Color</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Color">
+                                    <option value="0">Black</option>
+                                    <option value="1">Silver</option>
+                                    <option value="2">Red</option>
+                                    <option value="3">Pink</option>
+                                    <option value="4">Blue</option>
+                                    <option value="5">Green</option>
+                                    <option value="6">Yellow</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Packs</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Pack">
+                                    <option value="0">Two</option>
+                                    <option value="1">Three</option>
+                                    <option value="1">four</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Capacity</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Capaciaty">
+                                    <option value="0">8 GB</option>
+                                    <option value="1">16 GB</option>
+                                    <option value="2">32 GB</option>
+                                    <option value="3">64 GB</option>
+                                    <option value="4">128 GB</option>
+                                    <option value="5">256 GB</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Network</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Color">
+                                    <option value="0">Black</option>
+                                    <option value="1">Silver</option>
+                                    <option value="2">Red</option>
+                                    <option value="3">Pink</option>
+                                    <option value="4">Blue</option>
+                                    <option value="5">Green</option>
+                                    <option value="6">Yellow</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Size [Cloths]</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Pack">
+                                    <option value="0">Two</option>
+                                    <option value="1">Three</option>
+                                    <option value="1">four</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Size (mm) [Sunglasses</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Capaciaty">
+                                    <option value="0">8 GB</option>
+                                    <option value="1">16 GB</option>
+                                    <option value="2">32 GB</option>
+                                    <option value="3">64 GB</option>
+                                    <option value="4">128 GB</option>
+                                    <option value="5">256 GB</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Resolution [camera]</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Color">
+                                    <option value="0">Black</option>
+                                    <option value="1">Silver</option>
+                                    <option value="2">Red</option>
+                                    <option value="3">Pink</option>
+                                    <option value="4">Blue</option>
+                                    <option value="5">Green</option>
+                                    <option value="6">Yellow</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Sensor Size</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Pack">
+                                    <option value="0">Two</option>
+                                    <option value="1">Three</option>
+                                    <option value="1">four</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" style = "display: none;">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Zoom/Prime [Lens]</label>
+                            <div class="col-md-9">
+                                <select class="form-control input-small" data-placeholder="Select Capaciaty">
+                                    <option value="0">8 GB</option>
+                                    <option value="1">16 GB</option>
+                                    <option value="2">32 GB</option>
+                                    <option value="3">64 GB</option>
+                                    <option value="4">128 GB</option>
+                                    <option value="5">256 GB</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        </div>
+        </div>
+
+    </div>
+    </div>
 </div>
 
 </div>
@@ -1724,9 +1153,3 @@
 </div>
 
 
-=======
-    <br />
-    <br />
-    <br />
-</div>
->>>>>>> edit_form

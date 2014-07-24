@@ -11,13 +11,11 @@ namespace Search\Model;
 
 class Form {
 
-    protected $images;
-
-    protected $relatedProjects;
+    protected $id;
 
     protected $sku;
 
-    protected $name;
+    protected $title;
 
     protected $inventory;
 
@@ -36,6 +34,10 @@ class Form {
     protected $stockStatus;
 
     protected $price;
+
+    protected $msrp;
+
+    protected $mapDisplay;
 
     protected $cost;
 
@@ -85,70 +87,11 @@ class Form {
 
     protected $description;
 
-    public function __construct(Images $img, RelatedProducts $rp){
-        $this->images = $img;
-        $this->relatedProjects = $rp;
-    }
+    protected $inBox;
 
-    /**
-     * @param mixed $images
-     */
-    public function setImages($images)
-    {
-//        echo "<pre>";
-//        var_dump($images);
-        foreach($images as $method => $values){
-//            echo $method . "<br />";
-            $setMethod = 'set'.ucfirst($method);
-//            echo count($values);
-//            var_dump($values);
-//            foreach($values as $vals){
-//                echo $setMethod  . ' ' . $vals. "<br />";
-                $this->images->$setMethod($values);
-//            }
-//            $this->images->$setMethod()
-        }
-//        $setMethods = array();
-//        var_dump(get_class_methods(get_class($this->images)));
-//        $setMethods = get_class_methods(get_class($this->images));
-//        foreach($setMethods as $imageMethod ){
-//            if( preg_match('/setLabel/',$imageMethod)){
-//                $this->images->$imageMethod($images['label']);
-//            }
-//            if( preg_match('/setLabel/',$imageMethod)){
-//                $this->images->$imageMethod($images['label']);
-//            }
-//        }
-    }
+    protected $shortDescription;
 
-    /**
-     * @return mixed
-     */
-    public function getImages()
-    {
-        return $this->images;
-    }
-
-    /**
-     * @param mixed $relatedProjects
-     */
-    public function setRelatedProjects($relatedProjects)
-    {
-        $this->relatedProjects = $relatedProjects;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRelatedProjects()
-    {
-        return $this->relatedProjects;
-    }
-
-    //protected $attributes; // This might be an array for Categories
-
-    //TODO: Add properties for Category form
-
+    protected $includesFree;
 
     /**
      * @param mixed $asiaFirstClass
@@ -156,7 +99,6 @@ class Form {
     public function setAsiaFirstClass($asiaFirstClass)
     {
         $this->asiaFirstClass = $asiaFirstClass;
-        return $this;
     }
 
     /**
@@ -173,7 +115,6 @@ class Form {
     public function setAsiaPriority($asiaPriority)
     {
         $this->asiaPriority = $asiaPriority;
-        //return $this;
     }
 
     /**
@@ -185,28 +126,11 @@ class Form {
     }
 
     /**
-     * @param mixed $attributes
-     */
-//    public function setAttributes($attributes)
-//    {
-//        $this->attributes = $attributes;
-//    }
-
-    /**
-     * @return mixed
-     */
-//    public function getAttributes()
-//    {
-//        return $this->attributes;
-//    }
-
-    /**
      * @param mixed $canadaFirstClass
      */
     public function setCanadaFirstClass($canadaFirstClass)
     {
         $this->canadaFirstClass = $canadaFirstClass;
-        //return $this;
     }
 
     /**
@@ -223,7 +147,6 @@ class Form {
     public function setCanadaPriority($canadaPriority)
     {
         $this->canadaPriority = $canadaPriority;
-        //return $this;
     }
 
     /**
@@ -256,7 +179,6 @@ class Form {
     public function setCost($cost)
     {
         $this->cost = $cost;
-        //return $this;
     }
 
     /**
@@ -266,70 +188,6 @@ class Form {
     {
         return $this->cost;
     }
-
-    /**
-     * @param mixed $crossPosition
-     */
-//    public function setCrossPosition($crossPosition)
-//    {
-//        $this->crossPosition = $crossPosition;
-//    }
-
-    /**
-     * @return mixed
-     */
-//    public function getCrossPosition()
-//    {
-//        return $this->crossPosition;
-//    }
-
-    /**
-     * @param mixed $crossQty
-     */
-//    public function setCrossQty($crossQty)
-//    {
-//        $this->crossQty = $crossQty;
-//    }
-
-    /**
-     * @return mixed
-     */
-//    public function getCrossQty()
-//    {
-//        return $this->crossQty;
-//    }
-
-    /**
-     * @param mixed $crossSku
-     */
-//    public function setCrossSku($crossSku)
-//    {
-//        $this->crossSku = $crossSku;
-//    }
-
-    /**
-     * @return mixed
-     */
-//    public function getCrossSku()
-//    {
-//        return $this->crossSku;
-//    }
-
-    /**
-     * @param mixed $crossTitle
-     */
-//    public function setCrossTitle($crossTitle)
-//    {
-//        $this->crossTitle = $crossTitle;
-//    }
-
-    /**
-     * @return mixed
-     */
-//    public function getCrossTitle()
-//    {
-//        return $this->crossTitle;
-//    }
 
     /**
      * @param mixed $description
@@ -353,7 +211,6 @@ class Form {
     public function setEuropeFirstClass($europeFirstClass)
     {
         $this->europeFirstClass = $europeFirstClass;
-        //return $this;
     }
 
     /**
@@ -370,7 +227,6 @@ class Form {
     public function setEuropePriority($europePriority)
     {
         $this->europePriority = $europePriority;
-        //return $this;
     }
 
     /**
@@ -382,12 +238,59 @@ class Form {
     }
 
     /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $inBox
+     */
+    public function setInBox($inBox)
+    {
+        $this->inBox = $inBox;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBox()
+    {
+        return $this->inBox;
+    }
+
+    /**
+     * @param mixed $includesFree
+     */
+    public function setIncludesFree($includesFree)
+    {
+        $this->includesFree = $includesFree;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncludesFree()
+    {
+        return $this->includesFree;
+    }
+
+    /**
      * @param mixed $inventory
      */
     public function setInventory($inventory)
     {
         $this->inventory = $inventory;
-        //return $this;
     }
 
     /**
@@ -404,7 +307,6 @@ class Form {
     public function setMailInRebate($mailInRebate)
     {
         $this->mailInRebate = $mailInRebate;
-        //return $this;
     }
 
     /**
@@ -421,7 +323,6 @@ class Form {
     public function setMailInStartEndDate($mailInStartEndDate)
     {
         $this->mailInStartEndDate = $mailInStartEndDate;
-        //return $this;
     }
 
     /**
@@ -446,6 +347,22 @@ class Form {
     public function getManufacturer()
     {
         return $this->manufacturer;
+    }
+
+    /**
+     * @param mixed $mapDisplay
+     */
+    public function setMapDisplay($mapDisplay)
+    {
+        $this->mapDisplay = $mapDisplay;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMapDisplay()
+    {
+        return $this->mapDisplay;
     }
 
     /**
@@ -497,20 +414,19 @@ class Form {
     }
 
     /**
-     * @param mixed $name
+     * @param mixed $msrp
      */
-    public function setName($name)
+    public function setMsrp($msrp)
     {
-        $this->name = $name;
-        //return $this;
+        $this->msrp = $msrp;
     }
 
     /**
      * @return mixed
      */
-    public function getName()
+    public function getMsrp()
     {
-        return $this->name;
+        return $this->msrp;
     }
 
     /**
@@ -519,7 +435,6 @@ class Form {
     public function setOutsideAsiaFirstClass($outsideAsiaFirstClass)
     {
         $this->outsideAsiaFirstClass = $outsideAsiaFirstClass;
-        //return $this;
     }
 
     /**
@@ -536,7 +451,6 @@ class Form {
     public function setOutsideAsiaPriority($outsideAsiaPriority)
     {
         $this->outsideAsiaPriority = $outsideAsiaPriority;
-        //return $this;
     }
 
     /**
@@ -553,7 +467,6 @@ class Form {
     public function setPrice($price)
     {
         $this->price = $price;
-        //return $this;
     }
 
     /**
@@ -570,7 +483,6 @@ class Form {
     public function setRebatePrice($rebatePrice)
     {
         $this->rebatePrice = $rebatePrice;
-        //return $this;
     }
 
     /**
@@ -587,7 +499,6 @@ class Form {
     public function setRebateStartEndDate($rebateStartEndDate)
     {
         $this->rebateStartEndDate = $rebateStartEndDate;
-        //return $this;
     }
 
     /**
@@ -599,69 +510,20 @@ class Form {
     }
 
     /**
-     * @param mixed $relatedPosition
+     * @param mixed $shortDescription
      */
-//    public function setRelatedPosition($relatedPosition)
-//    {
-//        $this->relatedPosition = $relatedPosition;
-//    }
+    public function setShortDescription($shortDescription)
+    {
+        $this->shortDescription = $shortDescription;
+    }
 
     /**
      * @return mixed
      */
-//    public function getRelatedPosition()
-//    {
-//        return $this->relatedPosition;
-//    }
-
-    /**
-     * @param mixed $relatedQty
-     */
-//    public function setRelatedQty($relatedQty)
-//    {
-//        $this->relatedQty = $relatedQty;
-//        return $this;
-//    }
-
-    /**
-     * @return mixed
-     */
-//    public function getRelatedQty()
-//    {
-//        return $this->relatedQty;
-//    }
-
-    /**
-     * @param mixed $relatedSku
-     */
-//    public function setRelatedSku($relatedSku)
-//    {
-//        $this->relatedSku = $relatedSku;
-//    }
-
-    /**
-     * @return mixed
-     */
-//    public function getRelatedSku()
-//    {
-//        return $this->relatedSku;
-//    }
-
-    /**
-     * @param mixed $relatedTitle
-     */
-//    public function setRelatedTitle($relatedTitle)
-//    {
-//        $this->relatedTitle = $relatedTitle;
-//    }
-
-    /**
-     * @return mixed
-     */
-//    public function getRelatedTitle()
-//    {
-//        return $this->relatedTitle;
-//    }
+    public function getShortDescription()
+    {
+        return $this->shortDescription;
+    }
 
     /**
      * @param mixed $sku
@@ -669,7 +531,6 @@ class Form {
     public function setSku($sku)
     {
         $this->sku = $sku;
-        //return $this;
     }
 
     /**
@@ -686,7 +547,6 @@ class Form {
     public function setSpecialPrice($specialPrice)
     {
         $this->specialPrice = $specialPrice;
-        //return $this;
     }
 
     /**
@@ -703,7 +563,6 @@ class Form {
     public function setSpecialStartEndDate($specialStartEndDate)
     {
         $this->specialStartEndDate = $specialStartEndDate;
-        //return $this;
     }
 
     /**
@@ -763,20 +622,20 @@ class Form {
     }
 
     /**
-     * @param mixed $thumbnail
+     * @param mixed $title
      */
-//    public function setThumbnail($thumbnail)
-//    {
-//        $this->thumbnail = $thumbnail;
-//    }
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
 
     /**
      * @return mixed
      */
-//    public function getThumbnail()
-//    {
-//        return $this->thumbnail;
-//    }
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
     /**
      * @param mixed $urlKey
@@ -784,7 +643,6 @@ class Form {
     public function setUrlKey($urlKey)
     {
         $this->urlKey = $urlKey;
-        //return $this;
     }
 
     /**
@@ -801,7 +659,6 @@ class Form {
     public function setUsExpedited($usExpedited)
     {
         $this->usExpedited = $usExpedited;
-        //return $this;
     }
 
     /**
@@ -818,7 +675,6 @@ class Form {
     public function setUsOneDay($usOneDay)
     {
         $this->usOneDay = $usOneDay;
-        //return $this;
     }
 
     /**
@@ -835,7 +691,6 @@ class Form {
     public function setUsStandard($usStandard)
     {
         $this->usStandard = $usStandard;
-        //return $this;
     }
 
     /**
@@ -852,7 +707,6 @@ class Form {
     public function setUsTwoDay($usTwoDay)
     {
         $this->usTwoDay = $usTwoDay;
-        //return $this;
     }
 
     /**
@@ -885,7 +739,6 @@ class Form {
     public function setWeight($weight)
     {
         $this->weight = $weight;
-        //return $this;
     }
 
     /**
@@ -896,7 +749,5 @@ class Form {
         return $this->weight;
     }
 
-    public function __call($method, $arg){
-        return;
-    }
+
 } 

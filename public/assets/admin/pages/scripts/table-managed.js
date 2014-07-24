@@ -7,21 +7,7 @@ var TableManaged = function () {
         // begin first table
         table.dataTable({
 
-            /*
-            "columns": [{
-                "orderable": false
-            }, {
-                "orderable": true
-            }, {
-                "orderable": false
-            }, {
-                "orderable": false
-            }, {
-                "orderable": true
-            }, {
-                "orderable": false
-            }],
-            */
+
             "processing": true,
             "serverSide": true,
 
@@ -100,27 +86,6 @@ var TableManaged = function () {
         var table = $('#acessoriesDisplay');
 
         var oTable = table.dataTable({
-            //"processing": true,
-            /*"serverSide": true,
-
-            "ajax": {
-                url: "/search/quicksearch",
-                type: 'POST'
-
-            },
-
-
-            "columns": [
-                { "data": "id" },
-                { "data": "sku" },
-                { "data": "title" },
-                { "data": "price" },
-                { "data": "quantity" },
-                { "data": "site" },
-                { "data": "status" },
-                { "data": "visibility" }
-            ],
-            */
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here
@@ -153,27 +118,7 @@ var TableManaged = function () {
         var table = $('#crossSellDisplay');
 
         var oTable = table.dataTable({
-            //"processing": true,
-            /*"serverSide": true,
 
-             "ajax": {
-             url: "/search/quicksearch",
-             type: 'POST'
-
-             },
-
-
-             "columns": [
-             { "data": "id" },
-             { "data": "sku" },
-             { "data": "title" },
-             { "data": "price" },
-             { "data": "quantity" },
-             { "data": "site" },
-             { "data": "status" },
-             { "data": "visibility" }
-             ],
-             */
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here

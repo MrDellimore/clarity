@@ -6,27 +6,7 @@
  * @see https://github.com/zendframework/ZFTool
  */
 return array(
-<<<<<<< HEAD
     /* Removed
-=======
-
-//    'session'   =>  array(
-//        'config'    => array(
-//            'class' =>  'Zend\Session\Config\SessionConfig',
-//            'options'   =>  array(
-//                'name'  =>  'intranet'
-//            ),
-//        ),
-//        'storage'   => 'Zend\Session\Storage\SessionArrayStorage',
-//        'validators'    =>  array(
-//            array(
-//                'Zend\Session\Validator\RemoteAddr',
-//                'Zend\Session\Validator\HttpUserAgent'
-//            ),
-//        ),
-//    ),
-//
->>>>>>> edit_form
     'doctrine' => array(
         'driver' => array(
             'search_entities' => array(
@@ -62,12 +42,7 @@ return array(
                     'route' =>  '/form[/][/:sku]',
                     'constraints'   =>  array(
 //                        'action'    =>  '[a-zA-Z]*',
-//                        'id'    =>  '[0-9a-zA-Z]+',
-                            'sku'    => '[a-zA-Z\d]+',
-//                        'id'    =>  '[a-zA-Z]+',
-//                        'id'    =>  '[0-9]+',
-//                        'sku'    =>  '[a-zA-Z\d]+',
-//                        'sku'    =>  '[^\W_]+',
+                        'sku'    =>  '[0-9a-zA-Z]+',
                     ),
 
                     'defaults'  =>  array(
@@ -91,6 +66,32 @@ return array(
                     ),
                 ),
             ),
+
+            'mfcload'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/form/manufacturerload',
+
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\Controller\Form',
+                        'action'        =>  'manufacturerLoad',
+
+                    ),
+                ),
+            ),
+
+            'submitform'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/form/submit',
+
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\Controller\Form',
+                        'action'        =>  'submitForm',
+
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -99,33 +100,11 @@ return array(
                                                 )
     ),
 
-//    'view_manager' => array(
-//        'display_not_found_reason' => true,
-//        'display_exceptions'       => true,
-//        'doctype'                  => 'HTML5',
-//        'not_found_template'       => 'error/404',
-//        'exception_template'       => 'error/index',
-//        'template_path_stack' => array(
-//            __DIR__ . '/../view',
-//        ),
-//    ),
+    'view_manager' => array('template_path_stack' => array(__DIR__ . '/../view')),
 
-    'view_manager' => array(
-        'template_path_stack' => array(
-            __DIR__ . '/../view'
-        ),
-        'template_map'  =>  array(
-            'search/form/index' =>  __DIR__ . '/../view/search/form/index.phtml',
-            'search/search/index'   =>  __DIR__ . '/../view/search/search/index.phtml',
-//            'search/form/404' =>  __DIR__ . '/../view/search/form/404.phtml',
-        ),
-//        'display_not_found_reason' => true,
-//        'not_found_template'       => 'search/form/404',
-    ),
 
-//was 07/01/2014: this still appears to work
-//    'di' => array(
-//    'services' => array(
-//        'Search' => 'Search\Model\SearchTable')),
+    'di' => array(
+    'services' => array(
+        'Search' => 'Search\Model\SearchTable')),
 
 );

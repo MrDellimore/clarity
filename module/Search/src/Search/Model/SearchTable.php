@@ -6,7 +6,6 @@ namespace Search\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
-//use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Expression;
@@ -44,10 +43,6 @@ class SearchTable{
         $select->join(array('s' => 'productattribute_int'), $statusJoin,array('status' => 'value'));
 
         $select->limit(100);
-        /*
-            ->join(array('price' => 'productattribute_decimal'),
-                'price.entity_id = p.entity_id');
-        */
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

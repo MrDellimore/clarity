@@ -1,29 +1,59 @@
 var ComponentsEditors = function () {
-    
-    var handleWysihtml5 = function () {
+
+    var description = function () {
         if (!jQuery().wysihtml5) {
             return;
         }
-
-        if ($('.wysihtml5').size() > 0) {
-            $('.wysihtml5').wysihtml5({
+        var currentValue = $('textarea#descriptionwys').text();
+        if ($('#descriptionwys').size() > 0) {
+            $('#descriptionwys').wysihtml5({
+               // "placeholderText": currentValue,
                 "stylesheets": ["../../assets/global/plugins/bootstrap-wysihtml5/wysiwyg-color.css"]
             });
         }
+
+        $('textarea#descriptionwys').text(currentValue);
+
     }
 
-    var handleSummernote = function () {
-        $('#summernote_1').summernote({height: 300});
-        //API:
-        //var sHTML = $('#summernote_1').code(); // get code
-        //$('#summernote_1').destroy(); // destroy
+    var shortDescription = function () {
+        if (!jQuery().wysihtml5) {
+            return;
+        }
+        var currentValue = $('textarea#shortdescriptionwys').text();
+        if ($('#shortdescriptionwys').size() > 0) {
+            $('#shortdescriptionwys').wysihtml5({
+                "placeholderText": currentValue,
+                "stylesheets": ["../../assets/global/plugins/bootstrap-wysihtml5/wysiwyg-color.css"]
+
+            });
+        }//
     }
+
+    var inBox = function () {
+        if (!jQuery().wysihtml5) {
+            return;
+        }
+        var currentValue = $('textarea#inboxwys').text();
+        if ($('#inboxwys').size() > 0) {
+            $('#inboxwys').wysihtml5({
+                "placeholderText": currentValue,
+                "stylesheets": ["../../assets/global/plugins/bootstrap-wysihtml5/wysiwyg-color.css"]
+            });
+        }
+
+
+
+    }
+
+
 
     return {
         //main function to initiate the module
         init: function () {
-            handleWysihtml5();
-            //handleSummernote();
+            description();
+            inBox();
+            shortDescription();
         }
     };
 
