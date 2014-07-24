@@ -294,7 +294,7 @@ class MagentoTable {
         public function soapContent($data)
         {
             $soapClient = new SoapClient(SOAP_URL);
-            $session = $soapClient->login('Adellimore', 'krimson1');
+            $session = $soapClient->login(SOAP_USER, SOAP_USER_PASS);
             $i = 0;
             $updateBatch = array();
             foreach($data as $key => $value){
