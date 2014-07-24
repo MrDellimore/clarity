@@ -4,6 +4,7 @@
 Rounded Portlets
 ***/
 /*
+this is a test
 .portlet {
 	border-radius: 4px !important;
 }
@@ -17,3 +18,17 @@ Rounded Portlets
 	border-radius: 0px 0px 4px 4px !important;
 }
 */
+
+/*#accessoriesDisplay{*/
+    /*margin-left: 12%;*/
+    /*width: 73%;*/
+/*}*/
+
+/*.error_message{*/
+    /*list-style: none;*/
+/*}*/
+/*.alert-warn-message{*/
+    /*background-color: rgba(207, 206, 200, 0.16);*/
+    /*border-color: transparent;*/
+    /*color: #000;*/
+/*}*/

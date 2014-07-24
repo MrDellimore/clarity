@@ -15,14 +15,29 @@ use Zend\Session\Container;
 
 class IndexController extends AbstractActionController
 {
-    public function indexAction(){
+    public function indexAction()
+    {
+//        echo 'haha';
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $this->layout('layout/layout');
-        
-        return new ViewModel();
+//        return $this->redirect()->toRoute('home');
+        return new ViewModel(
+//            array(
+//                'firstName' =>  $userLogin['firstname'],
+//                'lastName'  =>  $userLogin['lastname'],
+//                'username'  =>  $userLogin['username'],
+//            )
+        );
+    }
+
+    public function logoutAction(){
+
+        $loginSession= new Container('login');
+        $loginSession->offsetUnset('sessionDataforUser');
+        return $this->redirect()->toRoute('auth', array('action'=>'index') );
     }
 }

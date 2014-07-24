@@ -142,6 +142,37 @@
                 See all notifications <i class="m-icon-swapright"></i>
             </a>
         </li>
+        <li>
+            <a href="#">
+            <span class="label label-warning"><i class="icon-bell"></i></span>
+            Server #2 not respoding.
+            <span class="time">22 mins</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+            <span class="label label-info"><i class="icon-bullhorn"></i></span>
+            Application error.
+            <span class="time">40 mins</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+            <span class="label label-important"><i class="icon-bolt"></i></span>
+            Database overloaded 68%.
+            <span class="time">2 hrs</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+            <span class="label label-important"><i class="icon-bolt"></i></span>
+            2 user IP blocked.
+            <span class="time">5 hrs</span>
+            </a>
+        </li>
+        <li class="external">
+            <a href="#">See all notifications <i class="m-icon-swapright"></i></a>
+        </li>
 
     </ul>
 </li>
@@ -307,7 +338,7 @@
                 <i class="icon-lock"></i> Lock Screen </a>
         </li>
         <li>
-            <a href="login.html">
+            <a href="/logout">
                 <i class="icon-key"></i> Log Out </a>
         </li>
     </ul>
@@ -319,13 +350,19 @@
     <a href="javascript:;" class="dropdown-toggle">
         <i class="icon-logout"></i>
     </a>
+    <ul class="dropdown-menu">
+        <li><a href=""><i class="icon-user"></i> My Profile</a></li>
+        <li><a href=""><i class="icon-calendar"></i> My Calendar</a></li>
+        <li><a href=""><i class="icon-tasks"></i> My Tasks</a></li>
+        <li class="divider"></li>
+        <li><a href="/logout"><i class="icon-key"></i> Log Out</a></li>
+    </ul>
+
 </li>
-<!-- END QUICK SIDEBAR TOGGLER -->
+<!-- END USER LOGIN DROPDOWN -->
 </ul>
-</div>
 <!-- END TOP NAVIGATION MENU -->
 </div>
-<!-- END HEADER INNER -->
 </div>
 <!-- END HEADER -->
 <div class="clearfix">
@@ -377,8 +414,15 @@
         <span class="title">Manage Content</span>
         <span class="arrow "></span>
     </a>
-
 </li>
+<li>
+    <a href="/api-feeds">
+        <i class="icon-basket"></i>
+        <span class="title">API Feeds</span>
+        <span class="arrow "></span>
+    </a>
+</li>
+
 
 </ul>
 <!-- END SIDEBAR MENU -->

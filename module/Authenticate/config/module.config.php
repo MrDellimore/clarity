@@ -38,6 +38,16 @@ return array(
                     )
                 ),
             ),
+            'logout' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/logout',
+                    'defaults' => array(
+                        'controller' => 'Authenticate\Controller\Authenticate',
+                        'action'     => 'logout',
+                    )
+                ),
+            ),
         ),
     ),
     'services' => array(

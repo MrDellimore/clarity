@@ -11,6 +11,9 @@ use Authenticate\Model\Auth;
 use Zend\Authentication\Adapter\DbTable;
 use Zend\Mvc\Controller\Plugin\PluginInterface;
 use Zend\View\Helper\FlashMessenger;
+use Zend\Session\Container;
+
+use Zend\Validator\StringLength;
 
 class AuthenticateController extends AbstractActionController{
 
@@ -20,6 +23,7 @@ class AuthenticateController extends AbstractActionController{
             $login = (array) $request->getPost();
             $username = $login['username'];
             $password = $login['password'];
+
             $dbAdapter = $this->serviceLocator->get('Zend\Db\Adapter\Adapter');
 
             $authAdapter = new DbTable($dbAdapter, 'users', 'username', 'password');
@@ -42,7 +46,7 @@ class AuthenticateController extends AbstractActionController{
                 $loginMsg = $result->getMessages();
                 $message = $loginMsg[0];
                 $this->flashMessenger()->addMessage($message);
-                return $this->redirect()->toRoute("home", array('action'=>'index'));
+                return $this->redirect()->toRoute("auth", array('action'=>'index'));
             }
 
         }
@@ -54,6 +58,7 @@ class AuthenticateController extends AbstractActionController{
 
     public function registerAction(){
         $request = $this->getRequest();
+        $errorMessages = array();
         if($request->isPost()) {
             $register = (array) $request->getPost();
             $user = new User();
@@ -65,12 +70,18 @@ class AuthenticateController extends AbstractActionController{
                     $user->$setMethods($value);
                 }
             }
-
+            $validate = new StringLength(array('min'=>8, 'max'=>12));
+            if( !$validate->isValid( $user->getPassword() ) ) {
+                $errorMessages = $validate->getMessages();
+                $message = array_shift($errorMessages);
+                $this->flashMessenger()->addMessage($message);
+                return $this->redirect()->toRoute("register", array('action'=>'register'));
+            }
             if(!$auth->createUser($authTable, $user)){
                 $this->flashMessenger()->addMessage("You have already registered. Try again.");
                 return $this->redirect()->toRoute("auth", array('action'=>'register'));
             }
-            return $this->redirect()->toRoute("home", array('action'=>'index'));
+            return $this->redirect()->toRoute("auth", array('action'=>'index'));
 
         }
 
@@ -78,6 +89,13 @@ class AuthenticateController extends AbstractActionController{
         else{
             return $this->redirect()->toRoute("auth", array('action'=>'index'));
         }
+    }
+
+    public function logoutAction()
+    {
+        $loginSession= new Container('login');
+        $loginSession->offsetUnset('sessionDataforUser');
+        return $this->redirect()->toRoute("auth", array('action'=>'index'));
     }
 
     public function indexAction(){
