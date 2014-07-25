@@ -60,6 +60,7 @@ class MagentoTable {
         $select = $this->sql->select();
         $select->from('product');
         $select->columns(array('id' => 'entity_id', 'sku' => 'productid', 'ldate'=>'modifieddate', 'item' => 'productid'));
+        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('user' => 'firstname'));
 
         $select->where(array( 'dataState' => '1'));
 
@@ -244,6 +245,7 @@ class MagentoTable {
 
             $select->columns(array('id'=>'entity_id', $property => 'value', 'ldate' => 'lastModifiedDate'));
             $select->join(array('p' => 'product'),'p.entity_id = productattribute_'.$tableType. ' .entity_id ' ,array('item' => 'productid'));
+            $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType. ' .changedby ' ,array('user' => 'firstname'));
             $select->where(array( 'attribute_id' => $attributeid, 'productattribute_'.$tableType. '.dataState'=> '1'));
 
             $statement = $this->sql->prepareStatementForSqlObject($select);

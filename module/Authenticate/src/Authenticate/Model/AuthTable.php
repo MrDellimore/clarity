@@ -34,7 +34,7 @@ class AuthTable{
 
     public function storeUser($userId){
         $this->userId = $userId;
-        $columns = array('firstname', 'lastname', 'email', 'username', 'password', 'role', 'datecreated');
+        $columns = array('userid','firstname', 'lastname', 'email', 'username', 'password', 'role', 'datecreated');
         $select = $this->sql->select('users');
         $select->columns($columns)
             ->where(array('userid'   =>  $userId));

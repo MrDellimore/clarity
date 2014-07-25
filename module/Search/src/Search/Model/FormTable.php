@@ -6,6 +6,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
+use Zend\Session\Container;
 //use Zend\Db\Sql\Expression;
 //use Zend\Db\Sql\Select;
 //use Search\Helper\FormatFields;
@@ -373,20 +374,13 @@ class FormTable{
 
     }
 
-    /**
-     *Update for title
-     */
-    public function updateTitle(Form $form){
-
-        $update = $this->sql->update('productattribute_varchar')->set(array('value' => $form->getTitle(),'dataState' => '1'))->where(array('entity_id ='.$form->getID(), 'attribute_id = 96'));
-        $statement = $this->sql->prepareStatementForSqlObject($update);
-        return $statement->execute();
-
-    }
-
     public function updateAttribute($entityid,$value,$attributeid,$tableType){
 
-        $update = $this->sql->update('productattribute_'.$tableType)->set(array('value' => $value,'dataState' => '1'))->where(array('entity_id ='.$entityid, 'attribute_id ='.$attributeid));
+        $loginSession= new Container('login');
+        $userData = $loginSession->sessionDataforUser;
+        $user = $userData['userid'];
+
+        $update = $this->sql->update('productattribute_'.$tableType)->set(array('value' => $value,'dataState' => '1', 'changedby' => $user))->where(array('entity_id ='.$entityid, 'attribute_id ='.$attributeid));
         $statement = $this->sql->prepareStatementForSqlObject($update);
         return $statement->execute();
 
