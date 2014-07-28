@@ -31,6 +31,8 @@ class MagentoTable {
 
     protected $dirtyCount;
 
+    protected $attributeDirtyCount = 0;
+
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
@@ -237,6 +239,16 @@ class MagentoTable {
         return $result;
     }
 
+    public function getAggregateAttributeDirtyCount()
+    {
+        return $this->attributeDirtyCount;
+    }
+
+    public function setAggregateAttributeDirtyCount($attributeDirtyCount)
+    {
+        $this->attributeDirtyCount += $attributeDirtyCount;
+    }
+
     public function fetchAttribute($tableType, $attributeid, $property)
     {
             $select = $this->sql->select();
@@ -256,6 +268,7 @@ class MagentoTable {
             if ($result instanceof ResultInterface && $result->isQueryResult()) {
                 $resultSet->initialize($result);
             }
+            $this->setAggregateAttributeDirtyCount($resultSet->count());
             $result = $resultSet->toArray();
 
             //check if array passed or value given

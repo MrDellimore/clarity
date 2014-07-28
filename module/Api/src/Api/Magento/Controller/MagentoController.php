@@ -38,7 +38,7 @@ class MagentoController  extends AbstractActionController {
             array(
                 'sku'   =>  $this->skuData,
                 'cleanCount'    => $cleanCount,
-                'dirtyCount' => $this->getMagentoTable()->getDirtyCount()
+                'dirtyCount' => $this->getMagentoTable()->getDirtyCount() + $this->getMagentoTable()->getAggregateAttributeDirtyCount()
             )
         );
     }
