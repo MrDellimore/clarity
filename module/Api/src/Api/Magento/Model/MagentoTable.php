@@ -33,6 +33,8 @@ class MagentoTable {
 
     protected $attributeDirtyCount = 0;
 
+    protected $dirtyItems;
+
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
@@ -236,8 +238,20 @@ class MagentoTable {
                $result[] = $newAtt;
             }
         }
+        $this->setDirtyItems($this->getDirtyCount(), $this->getAggregateAttributeDirtyCount());
         return $result;
     }
+
+    public function setDirtyItems($dirtyProducts, $dirtyAttributes)
+    {
+        $this->dirtyItems = $dirtyProducts + $dirtyAttributes;
+    }
+
+    public function getDirtyItems()
+    {
+        return $this->dirtyItems;
+    }
+
 
     public function getAggregateAttributeDirtyCount()
     {
