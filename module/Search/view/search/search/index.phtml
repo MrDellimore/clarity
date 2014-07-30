@@ -1,0 +1,170 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Managed Datatables <small>managed datatable samples</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li class="btn-group">
+            </li>
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="">Home</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="">Data Tables</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="">Managed Datatables</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+
+
+<!-- BEGIN PAGE CONTENT-->
+
+
+<br /><br /><br />
+<div class="row">
+<div class="col-md-12">
+<!-- BEGIN EXAMPLE TABLE PORTLET-->
+<div class="portlet box grey-cascade">
+<div class="portlet-title">
+    <div class="caption">
+        <i class="fa fa-globe"></i>Managed Table
+    </div>
+    <div class="tools">
+        <a href="javascript:;" class="collapse">
+        </a>
+        <a href="#portlet-config" data-toggle="modal" class="config">
+        </a>
+        <a href="javascript:;" class="reload">
+        </a>
+        <a href="javascript:;" class="remove">
+        </a>
+    </div>
+</div>
+<div class="portlet-body">
+<div class="table-toolbar">
+    <div class="btn-group">
+        <button id="sample_editable_1_new" class="btn green">
+            Add New <i class="fa fa-plus"></i>
+        </button>
+    </div>
+    <div class="btn-group pull-right">
+        <button class="btn dropdown-toggle" data-toggle="dropdown">Tools <i class="fa fa-angle-down"></i>
+        </button>
+        <ul class="dropdown-menu pull-right">
+            <li><a href="">Bulk Edit</a></li>
+            <li><a href="">Change Status</a></li>
+            <li><a href="">Update attributes</a></li>
+        </ul>
+    </div>
+</div>
+<table class="table table-striped table-bordered table-hover" id="sample_1">
+<thead>
+<tr>
+    <!-- taking out checkboxed for now
+    <th class="table-checkbox"><input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes"/></th>
+    -->
+    <th>id</th>
+    <th>Sku</th>
+    <th>Product Name</th>
+    <!--<th class="hidden-480">Manufacturer</th>-->
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>Site</th>
+    <th>Status</th>
+    <th>Visibility</th>
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+    <?php
+    /*
+    $results = Array();
+    $results = $this->result;
+    foreach($results as $key => $value){
+        //Checkboxes
+        //echo '<tr class="odd gradeX"><td><input type="checkbox" class="checkboxes" value="1"/></td>';
+
+        //Entity Id
+        echo '<tr class="odd gradeX"><td>'.$value['id'].'</td>';
+
+        //Sku
+        echo '<td><a href="/form/'.$value['sku'].'">'.$value['sku'].'</a> </td>';
+
+        //Title
+        echo '<td>'.$value['title'].'</td>';
+
+        //Manufacturer later......
+        //images later
+
+        //Price
+        echo '<td>'.$value['price'].'</td>';
+
+        //Quantity
+        echo '<td>'.$value['quantity'].'</td>';
+
+        //Site
+        echo '<td>Focus</td>';
+
+        //Status
+        if($value['status'] == 1){
+            echo '<td><span class="label label-sm label-success">Enabled</span></td></td>';
+        }
+        else{
+            echo '<td><span class="label label-sm label-fail">Disabled</span></td></td>';
+        }
+
+        //Visibility
+        echo '<td><span class="label label-sm label-success">Search</span></td></tr>';
+
+    }
+*/
+    ?>
+
+</tbody>
+
+
+<!--
+<tbody>
+<tr class="odd gradeX">
+    <td>        <input type="checkbox" class="checkboxes" value="1"/>    </td>
+    <td>        shuxer    </td>
+    <td>        <a href="mailto:shuxer@gmail.com">      shuxer@gmail.com </a>    </td>
+    <td>        120    </td>
+    <td class="center">        12 Jan 2012    </td>
+    <td><span class="label label-sm label-success">Approved</span>
+    </td>
+</tr>
+</tbody>
+-->
+</table>
+</div>
+</div>
+<!-- END EXAMPLE TABLE PORTLET-->
+</div>
+</div>
+
+
+
+
+
