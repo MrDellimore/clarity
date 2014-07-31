@@ -47,8 +47,8 @@
             General </a>
     </li>
     <li>
-        <a href="#tab_acessories" data-toggle="tab">
-            Acessories </a>
+        <a href="#tab_accessories" data-toggle="tab">
+            Accessories </a>
     </li>
     <li>
         <a href="#tab_images" data-toggle="tab">
@@ -57,7 +57,7 @@
     </li>
     <li>
         <a href="#tab_categories" data-toggle="tab">
-            Catagories
+            Categories
         </a>
     </li>
 </ul>
@@ -155,7 +155,7 @@
                     <label class="control-label col-md-3">Manufacturer</label>
                     <div class="col-md-9">
                         <select class="form-control input-medium" id="manufacturerDropdown" data-placeholder="No Manufacturer Set" name="manufacturer">
-                            <option value="<?= $this->data->getManufacturer(); ?>" selected><?= $this->data->getManufacturer(); ?></option>
+                            <option value="<?= array_keys(current($this->data->getManufacturer())); ?>" selected><?= current($this->data->getManufacturer()); ?></option>
                         </select>
                     </div>
                 </div>
@@ -179,7 +179,21 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label col-md-3">Brand</label>
+                    <div class="col-md-9">
+                        <select class="form-control input-medium" id="brandDropdown" data-placeholder="No Brand Set" name="brand">
+                            <option value="<?= array_keys(current($this->data->getBrand())); ?>" selected><?= current($this->data->getBrand()); ?></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
+        </div>
+
+        <br />
+        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Condition</label>
@@ -192,11 +206,6 @@
                     </div>
                 </div>
             </div>
-
-        </div>
-
-        <br />
-        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Tax Class</label>
@@ -211,7 +220,9 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+        <br />
+        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Stock Status</label>
@@ -226,7 +237,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
 
@@ -429,84 +439,84 @@
                 </li>
             </ul>
             <div class="row">
-            <div class="tab-content">
+                <div class="tab-content">
 
-                <!-- search terms-->
-                <div class="tab-pane active" id="portlet_searchterms">
-                    <div class="form-body">
-                        <div class="form-group col-md-11">
-                            <label class="control-label col-md-3" for="searchTerms">Search Terms</label>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="searchTerms" placeholder="Search Terms" />
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-
-
-                <!-- Description-->
-                <div class="tab-pane" id="portlet_description">
-                    <div class="form-body">
-                        <div class="form-group col-md-11">
-                            <label class="control-label col-md-3">Description</label>
-                            <div class="col-md-11">
-                            <textarea id="descriptionwys" class="form-control" name ="description" rows="20" style = "height: 500px;"> <?= $this->data->getDescription(); ?> </textarea>
+                    <!-- search terms-->
+                    <div class="tab-pane active" id="portlet_searchterms">
+                        <div class="form-body">
+                            <div class="form-group col-md-11">
+                                <label class="control-label col-md-3" for="searchTerms">Search Terms</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" name="searchTerms" placeholder="Search Terms" />
                                 </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!--Short Description-->
-                <div class="tab-pane" id="portlet_sDescription">
-                    <div class="form-body">
-                        <div class="form-group col-md-11">
-                            <label class="control-label col-md-3">Short Description</label>
-                            <div class="col-md-11">
-                                <textarea  id="shortdescriptionwys" class="form-control" name="shortDescription" rows="6" style = "height: 500px;"> <?= $this->data->getShortDescription(); ?> </textarea>
                             </div>
+
                         </div>
-
                     </div>
-                </div>
 
-                <!--In Box-->
-                <div class="tab-pane" id="portlet_inbox">
-                    <div class="form-body">
-                        <div class="form-group col-md-11">
-                            <label class="control-label col-md-3">In Box</label>
-                            <div class="col-md-11">
-                                <textarea id="inboxwys" class="form-control" name = "inBox" rows="6" style = "height: 500px;"> <?= $this->data->getInBox(); ?> </textarea>
+
+
+                    <!-- Description-->
+                    <div class="tab-pane" id="portlet_description">
+                        <div class="form-body">
+                            <div class="form-group col-md-11">
+                                <label class="control-label col-md-3">Description</label>
+                                <div class="col-md-11">
+                                    <textarea id="descriptionwys" class="form-control" name ="description" rows="20" style = "height: 500px;"> <?= $this->data->getDescription(); ?> </textarea>
+                                </div>
                             </div>
+
                         </div>
-
                     </div>
-                </div>
 
-                <!--Includes Free-->
-                <div class="tab-pane" id="portlet_includesfree">
-                    <div class="form-body">
-                        <div class="form-group col-md-11">
-                            <label class="control-label col-md-3" for="searchTerms">Includes Free</label>
-                            <div class="col-md-11">
-                                <textarea class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> <?php $this->data->getIncludesFree() ?> </textarea>
+                    <!--Short Description-->
+                    <div class="tab-pane" id="portlet_sDescription">
+                        <div class="form-body">
+                            <div class="form-group col-md-11">
+                                <label class="control-label col-md-3">Short Description</label>
+                                <div class="col-md-11">
+                                    <textarea  id="shortdescriptionwys" class="form-control" name="shortDescription" rows="6" style = "height: 500px;"> <?= $this->data->getShortDescription(); ?> </textarea>
+                                </div>
                             </div>
+
                         </div>
-
                     </div>
-                </div>
+
+                    <!--In Box-->
+                    <div class="tab-pane" id="portlet_inbox">
+                        <div class="form-body">
+                            <div class="form-group col-md-11">
+                                <label class="control-label col-md-3">In Box</label>
+                                <div class="col-md-11">
+                                    <textarea id="inboxwys" class="form-control" name = "inBox" rows="6" style = "height: 500px;"> <?= $this->data->getInBox(); ?> </textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!--Includes Free-->
+                    <div class="tab-pane" id="portlet_includesfree">
+                        <div class="form-body">
+                            <div class="form-group col-md-11">
+                                <label class="control-label col-md-3" for="searchTerms">Includes Free</label>
+                                <div class="col-md-11">
+                                    <textarea class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> <?php $this->data->getIncludesFree() ?> </textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
 
 
 
 
 
-            </div><!--end tab content-->
+                </div><!--end tab content-->
 
             </div>
-         </div>
-     </div>
+        </div>
+    </div>
 </div>
 </div>
 
@@ -516,7 +526,7 @@
 
 
 
-<div class="tab-pane" id="tab_acessories">
+<div class="tab-pane" id="tab_accessories">
     <!-- Acessories-->
 
     <div class="row">
@@ -543,7 +553,7 @@
                                     <a class="btn green" data-toggle="modal" href="#acessoryModal">
                                         Add Acessory <i class="fa fa-plus"></i></a>
                                 </div>
-                             </div>
+                            </div>
                             <table class="table table-striped table-bordered table-hover" id="acessoriesDisplay">
                                 <thead>
                                 <tr><th>id</th>
@@ -564,7 +574,7 @@
                                     <td>Category</td>
                                     <td><a class="delete" href="javascript:;">Delete</a></td>
                                 </tr>
-                                    </tbody>
+                                </tbody>
                             </table>
                         </div>
 
@@ -592,7 +602,7 @@
                     </div>
                 </div>
             </div>
-         </div>
+        </div>
 
 
         <div class="col-md-6">
@@ -705,16 +715,16 @@
                         <i class="fa fa-ban-circle"></i>
 								<span>
 								Cancel upload </span>
-                    <!--
-                    </button>
-                    <button type="button" class="btn red delete">
-                        <i class="fa fa-trash"></i>
-								<span>
-								Delete </span>
-                    </button>
-                    <input type="checkbox" class="toggle">
-                    -->
-                    <!-- The global file processing state -->
+                        <!--
+                        </button>
+                        <button type="button" class="btn red delete">
+                            <i class="fa fa-trash"></i>
+                                    <span>
+                                    Delete </span>
+                        </button>
+                        <input type="checkbox" class="toggle">
+                        -->
+                        <!-- The global file processing state -->
 								<span class="fileupload-process">
 								</span>
                 </div>
@@ -747,131 +757,131 @@
 
 
 
-<!--Current Images-->
-<table class="table table-bordered table-hover">
-    <thead>
-    <tr role="row" class="heading">
-        <th width="8%">
-            Image
-        </th>
-        <th width="25%">
-            Label
-        </th>
-        <th width="8%">
-            Sort Order
-        </th>
-        <th width="10%">
-            Base Image
-        </th>
-        <th width="10%">
-            Small Image
-        </th>
-        <th width="10%">
-            Thumbnail
-        </th>
-        <th width="10%">
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <a href="../../assets/admin/pages/media/works/img1.jpg" class="fancybox-button" data-rel="fancybox-button">
-                <img class="img-responsive" src="../../assets/admin/pages/media/works/img1.jpg" alt="">
-            </a>
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][1][label]" value="Thumbnail image">
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][1][sort_order]" value="1">
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][1][image_type]" value="1">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][1][image_type]" value="2">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][1][image_type]" value="3" checked>
-            </label>
-        </td>
-        <td>
-            <a href="javascript:;" class="btn default btn-sm">
-                <i class="fa fa-times"></i> Remove </a>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a href="../../assets/admin/pages/media/works/img2.jpg" class="fancybox-button" data-rel="fancybox-button">
-                <img class="img-responsive" src="../../assets/admin/pages/media/works/img2.jpg" alt="">
-            </a>
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][2][label]" value="Product image #1">
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][2][sort_order]" value="1">
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][2][image_type]" value="1">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][2][image_type]" value="2" checked>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][2][image_type]" value="3">
-            </label>
-        </td>
-        <td>
-            <a href="javascript:;" class="btn default btn-sm">
-                <i class="fa fa-times"></i> Remove </a>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a href="../../assets/admin/pages/media/works/img3.jpg" class="fancybox-button" data-rel="fancybox-button">
-                <img class="img-responsive" src="../../assets/admin/pages/media/works/img3.jpg" alt="">
-            </a>
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][3][label]" value="Product image #2">
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][3][sort_order]" value="1">
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][3][image_type]" value="1" checked>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][3][image_type]" value="2">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][3][image_type]" value="3">
-            </label>
-        </td>
-        <td>
-            <a href="javascript:;" class="btn default btn-sm">
-                <i class="fa fa-times"></i> Remove </a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                <!--Current Images-->
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr role="row" class="heading">
+                        <th width="8%">
+                            Image
+                        </th>
+                        <th width="25%">
+                            Label
+                        </th>
+                        <th width="8%">
+                            Sort Order
+                        </th>
+                        <th width="10%">
+                            Base Image
+                        </th>
+                        <th width="10%">
+                            Small Image
+                        </th>
+                        <th width="10%">
+                            Thumbnail
+                        </th>
+                        <th width="10%">
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <a href="../../assets/admin/pages/media/works/img1.jpg" class="fancybox-button" data-rel="fancybox-button">
+                                <img class="img-responsive" src="../../assets/admin/pages/media/works/img1.jpg" alt="">
+                            </a>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="product[images][1][label]" value="Thumbnail image">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="product[images][1][sort_order]" value="1">
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][1][image_type]" value="1">
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][1][image_type]" value="2">
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][1][image_type]" value="3" checked>
+                            </label>
+                        </td>
+                        <td>
+                            <a href="javascript:;" class="btn default btn-sm">
+                                <i class="fa fa-times"></i> Remove </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="../../assets/admin/pages/media/works/img2.jpg" class="fancybox-button" data-rel="fancybox-button">
+                                <img class="img-responsive" src="../../assets/admin/pages/media/works/img2.jpg" alt="">
+                            </a>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="product[images][2][label]" value="Product image #1">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="product[images][2][sort_order]" value="1">
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][2][image_type]" value="1">
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][2][image_type]" value="2" checked>
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][2][image_type]" value="3">
+                            </label>
+                        </td>
+                        <td>
+                            <a href="javascript:;" class="btn default btn-sm">
+                                <i class="fa fa-times"></i> Remove </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="../../assets/admin/pages/media/works/img3.jpg" class="fancybox-button" data-rel="fancybox-button">
+                                <img class="img-responsive" src="../../assets/admin/pages/media/works/img3.jpg" alt="">
+                            </a>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="product[images][3][label]" value="Product image #2">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="product[images][3][sort_order]" value="1">
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][3][image_type]" value="1" checked>
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][3][image_type]" value="2">
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <input type="radio" name="product[images][3][image_type]" value="3">
+                            </label>
+                        </td>
+                        <td>
+                            <a href="javascript:;" class="btn default btn-sm">
+                                <i class="fa fa-times"></i> Remove </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>
@@ -884,60 +894,60 @@
 
 
 <div class="tab-pane" id="tab_categories">
-    <!-- categories -->
-    <div class = "row">
-    <div class = "col-md-4">
+<!-- categories -->
+<div class = "row">
+<div class = "col-md-4">
 
-        <div class="portlet box green-meadow tabbable">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-gift"></i>Categories
-                </div>
+    <div class="portlet box green-meadow tabbable">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-gift"></i>Categories
             </div>
+        </div>
 
 
-            <div class="portlet-body">
-                <div class="portlet-tabs">
-                    <ul class="nav nav-tabs">
-                        <li>
-                            <a href="#portlet_inbox" data-toggle="tab">New aSavings</a>
-                        </li>
-                        <li>
-                            <a href="#portlet_newfocus" data-toggle="tab">New Focus</a>
-                        </li>
-                        <li>
-                            <a href="#portlet_asave" data-toggle="tab">aSavings</a>
-                        </li>
-                        <li  class="active">
-                            <a href="#portlet_focus" data-toggle="tab">Focus</a>
-                        </li>
-                    </ul>
-                    <div class="row">
-                        <div class="tab-content">
+        <div class="portlet-body">
+            <div class="portlet-tabs">
+                <ul class="nav nav-tabs">
+                    <li>
+                        <a href="#portlet_inbox" data-toggle="tab">New aSavings</a>
+                    </li>
+                    <li>
+                        <a href="#portlet_newfocus" data-toggle="tab">New Focus</a>
+                    </li>
+                    <li>
+                        <a href="#portlet_asave" data-toggle="tab">aSavings</a>
+                    </li>
+                    <li  class="active">
+                        <a href="#portlet_focus" data-toggle="tab">Focus</a>
+                    </li>
+                </ul>
+                <div class="row">
+                    <div class="tab-content">
 
 
 
-                            <!-- Focus categories-->
-                            <div class="tab-pane col-md-11 active" id="portlet_focus">
-                                <h3>Focus Camera Categories</h3>
-                                <div id="tree_2" class="tree-demo"></div>
+                        <!-- Focus categories-->
+                        <div class="tab-pane col-md-11 active" id="portlet_focus">
+                            <h3>Focus Camera Categories</h3>
+                            <div id="tree_2" class="tree-demo"></div>
+                        </div>
+
+
+                        <!-- aSave Categories-->
+                        <div class="tab-pane col-md-11" id="portlet_asave">
+                            <div class="form-body">
+                                <h3>aSavings Categories</h3>
+                                <div id="asave" class="tree-demo"></div>
                             </div>
+                        </div>
 
 
-                            <!-- aSave Categories-->
-                            <div class="tab-pane col-md-11" id="portlet_asave">
-                                <div class="form-body">
-                                    <h3>aSavings Categories</h3>
-                                    <div id="asave" class="tree-demo"></div>
-                                </div>
-                            </div>
-
-
-                            <!-- newFocus categories-->
-                            <div class="tab-pane col-md-11" id="portlet_newfocus">
-                                <h3>Focus Camera Categories (New Site)</h3>
-                                <div id="newfocus" class="tree-demo"></div>
-                            </div>
+                        <!-- newFocus categories-->
+                        <div class="tab-pane col-md-11" id="portlet_newfocus">
+                            <h3>Focus Camera Categories (New Site)</h3>
+                            <div id="newfocus" class="tree-demo"></div>
+                        </div>
 
 
 
@@ -948,180 +958,180 @@
 
 
 
-                        </div><!--end tab content-->
+                    </div><!--end tab content-->
 
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+</div>
+<div class = "col-md-6">
+    <div class="portlet box green-meadow">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-gift"></i>Attributes
+            </div>
+        </div>
+
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Color</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Color">
+                                <option value="0">Black</option>
+                                <option value="1">Silver</option>
+                                <option value="2">Red</option>
+                                <option value="3">Pink</option>
+                                <option value="4">Blue</option>
+                                <option value="5">Green</option>
+                                <option value="6">Yellow</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Packs</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Pack">
+                                <option value="0">Two</option>
+                                <option value="1">Three</option>
+                                <option value="1">four</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Capacity</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Capaciaty">
+                                <option value="0">8 GB</option>
+                                <option value="1">16 GB</option>
+                                <option value="2">32 GB</option>
+                                <option value="3">64 GB</option>
+                                <option value="4">128 GB</option>
+                                <option value="5">256 GB</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Network</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Color">
+                                <option value="0">Black</option>
+                                <option value="1">Silver</option>
+                                <option value="2">Red</option>
+                                <option value="3">Pink</option>
+                                <option value="4">Blue</option>
+                                <option value="5">Green</option>
+                                <option value="6">Yellow</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Size [Cloths]</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Pack">
+                                <option value="0">Two</option>
+                                <option value="1">Three</option>
+                                <option value="1">four</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Size (mm) [Sunglasses</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Capaciaty">
+                                <option value="0">8 GB</option>
+                                <option value="1">16 GB</option>
+                                <option value="2">32 GB</option>
+                                <option value="3">64 GB</option>
+                                <option value="4">128 GB</option>
+                                <option value="5">256 GB</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Resolution [camera]</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Color">
+                                <option value="0">Black</option>
+                                <option value="1">Silver</option>
+                                <option value="2">Red</option>
+                                <option value="3">Pink</option>
+                                <option value="4">Blue</option>
+                                <option value="5">Green</option>
+                                <option value="6">Yellow</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Sensor Size</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Pack">
+                                <option value="0">Two</option>
+                                <option value="1">Three</option>
+                                <option value="1">four</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4" style = "display: none;">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Zoom/Prime [Lens]</label>
+                        <div class="col-md-9">
+                            <select class="form-control input-small" data-placeholder="Select Capaciaty">
+                                <option value="0">8 GB</option>
+                                <option value="1">16 GB</option>
+                                <option value="2">32 GB</option>
+                                <option value="3">64 GB</option>
+                                <option value="4">128 GB</option>
+                                <option value="5">256 GB</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+
 
     </div>
-    <div class = "col-md-6">
-        <div class="portlet box green-meadow">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-gift"></i>Attributes
-                </div>
-            </div>
-
-            <div class="portlet-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Color</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Color">
-                                    <option value="0">Black</option>
-                                    <option value="1">Silver</option>
-                                    <option value="2">Red</option>
-                                    <option value="3">Pink</option>
-                                    <option value="4">Blue</option>
-                                    <option value="5">Green</option>
-                                    <option value="6">Yellow</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Packs</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Pack">
-                                    <option value="0">Two</option>
-                                    <option value="1">Three</option>
-                                    <option value="1">four</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Capacity</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Capaciaty">
-                                    <option value="0">8 GB</option>
-                                    <option value="1">16 GB</option>
-                                    <option value="2">32 GB</option>
-                                    <option value="3">64 GB</option>
-                                    <option value="4">128 GB</option>
-                                    <option value="5">256 GB</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Network</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Color">
-                                    <option value="0">Black</option>
-                                    <option value="1">Silver</option>
-                                    <option value="2">Red</option>
-                                    <option value="3">Pink</option>
-                                    <option value="4">Blue</option>
-                                    <option value="5">Green</option>
-                                    <option value="6">Yellow</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Size [Cloths]</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Pack">
-                                    <option value="0">Two</option>
-                                    <option value="1">Three</option>
-                                    <option value="1">four</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Size (mm) [Sunglasses</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Capaciaty">
-                                    <option value="0">8 GB</option>
-                                    <option value="1">16 GB</option>
-                                    <option value="2">32 GB</option>
-                                    <option value="3">64 GB</option>
-                                    <option value="4">128 GB</option>
-                                    <option value="5">256 GB</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Resolution [camera]</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Color">
-                                    <option value="0">Black</option>
-                                    <option value="1">Silver</option>
-                                    <option value="2">Red</option>
-                                    <option value="3">Pink</option>
-                                    <option value="4">Blue</option>
-                                    <option value="5">Green</option>
-                                    <option value="6">Yellow</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Sensor Size</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Pack">
-                                    <option value="0">Two</option>
-                                    <option value="1">Three</option>
-                                    <option value="1">four</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4" style = "display: none;">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Zoom/Prime [Lens]</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Capaciaty">
-                                    <option value="0">8 GB</option>
-                                    <option value="1">16 GB</option>
-                                    <option value="2">32 GB</option>
-                                    <option value="3">64 GB</option>
-                                    <option value="4">128 GB</option>
-                                    <option value="5">256 GB</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
-
-
-
-            </div>
-
-
-
-        </div>
 
 
 
@@ -1131,11 +1141,11 @@
 
 
 
-        </div>
-        </div>
+</div>
+</div>
 
-    </div>
-    </div>
+</div>
+</div>
 </div>
 
 </div>

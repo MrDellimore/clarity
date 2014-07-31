@@ -79,7 +79,17 @@ return array(
                     ),
                 ),
             ),
+            'brand'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/form/brandload',
 
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\Controller\Form',
+                        'action'        =>  'brandLoad',
+                    ),
+                ),
+            ),
             'submitform'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',
                 'options'    => array(

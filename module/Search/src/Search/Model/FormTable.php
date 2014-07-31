@@ -149,8 +149,13 @@ class FormTable{
 
         //Fetch Manufacturer Option
         $newAttibute = $this->fetchAttribute($entityid,'int','102','manufacturer');
-        $newAttibute = $this->fetchOption(current($newAttibute),'102','manufacturer');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+        $newOption = $this->fetchOption(current($newAttibute),'102','manufacturer');
+        $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
+
+//        Fetch Brand Option
+        $newAttibute = $this->fetchAttribute($entityid,'int','1641','brand');
+        $newOption = $this->fetchOption(current($newAttibute),'1641','brand');
+        $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
 
         return $result;
     }
@@ -299,9 +304,34 @@ class FormTable{
 
         $select->from('productattribute_option');
 
-        $select->columns(array('mfc' => 'value'));
+        $select->columns(array('value'=>'option_id','mfc' => 'value'));
 
         $select->where(array('attribute_id' => '102'));
+
+        $select->order('value');
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+
+
+        return $resultSet->toArray();
+    }
+
+    public function brandDropDown(){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+
+        $select->from('productattribute_option');
+
+        $select->columns(array('value'=>'option_id','brand' => 'value'));
+
+        $select->where(array('attribute_id' => '1641'));
 
         $select->order('value');
 
@@ -324,7 +354,7 @@ class FormTable{
      */
     public function dirtyHandle(Form $form){
         //Find Dirty properties and call corresponding updates
-        $startMessage = 'The following feilds have been updated :<br>';
+        $startMessage = 'The following fields have been updated :<br>';
         $updateditems = '';
 
         //update sku
@@ -341,11 +371,23 @@ class FormTable{
         //update inventory
         //update url Key
         //update status
+        if(!(is_null($form->getStatus()))) {
+            $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
+            $updateditems .= 'Status<br>';
+        }
         //update manufacturer
         //update visibility
+        if(!(is_null($form->getVisibility()))) {
+            $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
+            $updateditems .= 'Visibility<br>';
+        }
         //update condition
         //update tax class
         //update stock status
+        if(!(is_null($form->getStockStatus()))) {
+            $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
+            $updateditems .= 'Stock Status<br>';
+        }
         //update price
         //update cost
         //update rebate price
@@ -356,6 +398,41 @@ class FormTable{
         //update weight
         //update shipping
         //update text
+        //update In Box
+        if(!(is_null($form->getInBox()))) {
+            $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
+            $updateditems .= 'In Box<br>';
+        }
+
+        //update Includes Free
+        if(!(is_null($form->getIncludesFree()))) {
+            $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
+            $updateditems .= 'Includes Free<br>';
+        }
+
+        //update Meta Description
+        if(!(is_null($form->getMetaDescription()))) {
+            $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
+            $updateditems .= 'Meta Description<br>';
+        }
+
+        //update Original Content
+        if(!(is_null($form->getOriginalContent()))) {
+            $this->updateAttribute($form->getId(),$form->getOriginalContent(),'1659','int');
+            $updateditems .= 'Original Content<br>';
+        }
+
+        //update Content Reviewed
+        if(!(is_null($form->getContentReviewed()))) {
+            $this->updateAttribute($form->getId(),$form->getContentReviewed(),'1676','int');
+            $updateditems .= 'Content Reviewed<br>';
+        }
+
+        //update Short Description
+        if(!(is_null($form->getShortDescription()))) {
+            $this->updateAttribute($form->getId(),$form->getShortDescription(),'506','text');
+            $updateditems .= 'Visibility<br>';
+        }
 
         if($updateditems != ''){
             $updateditems = $startMessage.$updateditems;
@@ -370,8 +447,6 @@ class FormTable{
      */
     public function newHandle(Form $form){
         //Find New properties and call corresponding inserts
-
-
     }
 
     public function updateAttribute($entityid,$value,$attributeid,$tableType){
