@@ -46,12 +46,9 @@ class FormController extends AbstractActionController {
             //lookupdata
             $skuData = $form->lookupForm($entityID);
 
-
-
             //hydrate data to form entity
             $hydrator = new cHydrator;
             $hydrator->hydrate($skuData,$queriedData);
-
 
 /* Removing custom hydrator and using std Classmethod hydrator
             foreach($this->skuData as $key => $value){
@@ -65,7 +62,8 @@ class FormController extends AbstractActionController {
             //stash object in container
             $container->data = $queriedData;
         }
-
+//echo "<pre>";
+//        var_dump($queriedData);
         $view = new ViewModel(array('data'=>$queriedData));
         return $view;
     }
@@ -87,7 +85,6 @@ class FormController extends AbstractActionController {
             //Hydrate into object
             $hydrator = new cHydrator;
             $hydrator->hydrate($formData,$postData);
-
             //Find dirty and new entities
             $comp = new EntityCompare();
             $dirtyData = $comp->dirtCheck($container->data, $postData);
@@ -113,18 +110,23 @@ class FormController extends AbstractActionController {
         }
     }
 
-
-
-
+    public function brandLoadAction()
+    {
+        $form = $this->getFormTable();
+        $brandList = $form->brandDropDown();
+        $result = json_encode($brandList);
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+        return $response;
+    }
 
     public function manufacturerLoadAction(){
 
         $form = $this->getFormTable();
-        $manufacturerlist =$form->manufacturerDropDown();
+        $manufacturerlist = $form->manufacturerDropDown();
 
         $result = json_encode($manufacturerlist);
-
-
         $event    = $this->getEvent();
         $response = $event->getResponse();
         $response->setContent($result);

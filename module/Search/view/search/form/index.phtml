@@ -155,7 +155,7 @@
                     <label class="control-label col-md-3">Manufacturer</label>
                     <div class="col-md-9">
                         <select class="form-control input-medium" id="manufacturerDropdown" data-placeholder="No Manufacturer Set" name="manufacturer">
-                            <option value="<?= $this->data->getManufacturer(); ?>" selected><?= $this->data->getManufacturer(); ?></option>
+                            <option value="<?= array_keys(current($this->data->getManufacturer())); ?>" selected><?= current($this->data->getManufacturer()); ?></option>
                         </select>
                     </div>
                 </div>
@@ -179,7 +179,21 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label col-md-3">Brand</label>
+                    <div class="col-md-9">
+                        <select class="form-control input-medium" id="brandDropdown" data-placeholder="No Brand Set" name="brand">
+                            <option value="<?= array_keys(current($this->data->getBrand())); ?>" selected><?= current($this->data->getBrand()); ?></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
+        </div>
+
+        <br />
+        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Condition</label>
@@ -192,11 +206,6 @@
                     </div>
                 </div>
             </div>
-
-        </div>
-
-        <br />
-        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Tax Class</label>
@@ -211,7 +220,9 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+        <br />
+        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Stock Status</label>
@@ -226,7 +237,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
 
@@ -424,16 +434,12 @@
                 <li>
                     <a href="#portlet_description" data-toggle="tab"> Description</a>
                 </li>
-                <li>
-                    <a href="#portlet_metadescription" data-toggle="tab">
-                        MetaDescription </a>
-                </li>
                 <li  class="active">
-                    <a href="#portlet_metaterms" data-toggle="tab"> MetaKeywords</a>
+                    <a href="#portlet_searchterms" data-toggle="tab"> Search Terms</a>
                 </li>
             </ul>
             <div class="row">
-            <div class="tab-content">
+                <div class="tab-content">
 
                 <!-- MetaKeyword terms-->
                 <div class="tab-pane active" id="portlet_metaterms">
@@ -583,7 +589,7 @@
                                     <td>Category</td>
                                     <td><a class="delete" href="javascript:;">Delete</a></td>
                                 </tr>
-                                    </tbody>
+                                </tbody>
                             </table>
                         </div>
 

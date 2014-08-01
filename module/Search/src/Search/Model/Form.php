@@ -23,7 +23,7 @@ class Form {
 
     protected $status;
 
-    protected $manufacturer;
+    protected $manufacturer = array();
 
     protected $visibility;
 
@@ -92,6 +92,67 @@ class Form {
     protected $shortDescription;
 
     protected $includesFree;
+
+    protected $color;
+
+    protected $packs;
+
+    protected $capacity;
+
+    protected $network;
+
+    protected $sizeCloths;
+
+    protected $sizeSunglasses;
+
+    protected $resolution;
+
+    protected $sensorSize;
+
+    protected $opticalDesign;
+
+    protected $flashType;
+
+    protected $power;
+
+    protected $objectiveDiameter;
+
+    protected $useBinoculars;
+
+    protected $size;
+
+    protected $cameraStyle;
+
+    protected $videoResolution;
+
+    protected $zoomPrime;
+
+    protected $focalLength;
+
+    protected $cineLens;
+
+    protected $apertureLens;
+
+    protected $legLockTypeTripod;
+
+    protected $maxHeightTripod;
+
+    protected $foldedLengthTripod;
+
+    protected $materialTripod;
+
+    protected $typeOfBag;
+
+    protected $prismType;
+
+    protected $brand = array();
+
+    protected $website;
+
+    protected $contentReviewed;
+
+    protected $originalContent;
+
 
     /**
      * @param mixed $asiaFirstClass
@@ -748,6 +809,487 @@ class Form {
     {
         return $this->weight;
     }
+
+    /**
+     * @param mixed $apertureLens
+     */
+    public function setApertureLens($apertureLens)
+    {
+        $this->apertureLens = $apertureLens;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getApertureLens()
+    {
+        return $this->apertureLens;
+    }
+
+    /**
+     * @param mixed $cameraStyle
+     */
+    public function setCameraStyle($cameraStyle)
+    {
+        $this->cameraStyle = $cameraStyle;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCameraStyle()
+    {
+        return $this->cameraStyle;
+    }
+
+    /**
+     * @param mixed $capacity
+     */
+    public function setCapacity($capacity)
+    {
+        $this->capacity = $capacity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCapacity()
+    {
+        return $this->capacity;
+    }
+
+    /**
+     * @param mixed $cineLens
+     */
+    public function setCineLens($cineLens)
+    {
+        $this->cineLens = $cineLens;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCineLens()
+    {
+        return $this->cineLens;
+    }
+
+    /**
+     * @param mixed $color
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param mixed $flashType
+     */
+    public function setFlashType($flashType)
+    {
+        $this->flashType = $flashType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFlashType()
+    {
+        return $this->flashType;
+    }
+
+    /**
+     * @param mixed $focalLength
+     */
+    public function setFocalLength($focalLength)
+    {
+        $this->focalLength = $focalLength;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFocalLength()
+    {
+        return $this->focalLength;
+    }
+
+    /**
+     * @param mixed $foldedLengthTripod
+     */
+    public function setFoldedLengthTripod($foldedLengthTripod)
+    {
+        $this->foldedLengthTripod = $foldedLengthTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFoldedLengthTripod()
+    {
+        return $this->foldedLengthTripod;
+    }
+
+    /**
+     * @param mixed $legLockTypeTripod
+     */
+    public function setLegLockTypeTripod($legLockTypeTripod)
+    {
+        $this->legLockTypeTripod = $legLockTypeTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLegLockTypeTripod()
+    {
+        return $this->legLockTypeTripod;
+    }
+
+    /**
+     * @param mixed $materialTripod
+     */
+    public function setMaterialTripod($materialTripod)
+    {
+        $this->materialTripod = $materialTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaterialTripod()
+    {
+        return $this->materialTripod;
+    }
+
+    /**
+     * @param mixed $maxHeightTripod
+     */
+    public function setMaxHeightTripod($maxHeightTripod)
+    {
+        $this->maxHeightTripod = $maxHeightTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaxHeightTripod()
+    {
+        return $this->maxHeightTripod;
+    }
+
+    /**
+     * @param mixed $network
+     */
+    public function setNetwork($network)
+    {
+        $this->network = $network;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNetwork()
+    {
+        return $this->network;
+    }
+
+    /**
+     * @param mixed $objectiveDiameter
+     */
+    public function setObjectiveDiameter($objectiveDiameter)
+    {
+        $this->objectiveDiameter = $objectiveDiameter;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getObjectiveDiameter()
+    {
+        return $this->objectiveDiameter;
+    }
+
+    /**
+     * @param mixed $opticalDesign
+     */
+    public function setOpticalDesign($opticalDesign)
+    {
+        $this->opticalDesign = $opticalDesign;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOpticalDesign()
+    {
+        return $this->opticalDesign;
+    }
+
+    /**
+     * @param mixed $packs
+     */
+    public function setPacks($packs)
+    {
+        $this->packs = $packs;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPacks()
+    {
+        return $this->packs;
+    }
+
+    /**
+     * @param mixed $power
+     */
+    public function setPower($power)
+    {
+        $this->power = $power;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPower()
+    {
+        return $this->power;
+    }
+
+    /**
+     * @param mixed $prismType
+     */
+    public function setPrismType($prismType)
+    {
+        $this->prismType = $prismType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrismType()
+    {
+        return $this->prismType;
+    }
+
+    /**
+     * @param mixed $resolution
+     */
+    public function setResolution($resolution)
+    {
+        $this->resolution = $resolution;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResolution()
+    {
+        return $this->resolution;
+    }
+
+    /**
+     * @param mixed $sensorSize
+     */
+    public function setSensorSize($sensorSize)
+    {
+        $this->sensorSize = $sensorSize;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSensorSize()
+    {
+        return $this->sensorSize;
+    }
+
+    /**
+     * @param mixed $size
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param mixed $sizeCloths
+     */
+    public function setSizeCloths($sizeCloths)
+    {
+        $this->sizeCloths = $sizeCloths;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSizeCloths()
+    {
+        return $this->sizeCloths;
+    }
+
+    /**
+     * @param mixed $sizeSunglasses
+     */
+    public function setSizeSunglasses($sizeSunglasses)
+    {
+        $this->sizeSunglasses = $sizeSunglasses;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSizeSunglasses()
+    {
+        return $this->sizeSunglasses;
+    }
+
+    /**
+     * @param mixed $typeOfBag
+     */
+    public function setTypeOfBag($typeOfBag)
+    {
+        $this->typeOfBag = $typeOfBag;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTypeOfBag()
+    {
+        return $this->typeOfBag;
+    }
+
+    /**
+     * @param mixed $useBinoculars
+     */
+    public function setUseBinoculars($useBinoculars)
+    {
+        $this->useBinoculars = $useBinoculars;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUseBinoculars()
+    {
+        return $this->useBinoculars;
+    }
+
+    /**
+     * @param mixed $videoResolution
+     */
+    public function setVideoResolution($videoResolution)
+    {
+        $this->videoResolution = $videoResolution;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVideoResolution()
+    {
+        return $this->videoResolution;
+    }
+
+    /**
+     * @param mixed $zoomPrime
+     */
+    public function setZoomPrime($zoomPrime)
+    {
+        $this->zoomPrime = $zoomPrime;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getZoomPrime()
+    {
+        return $this->zoomPrime;
+    }
+
+    /**
+     * @param mixed $brand
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param mixed $contentReviewed
+     */
+    public function setContentReviewed($contentReviewed)
+    {
+        $this->contentReviewed = $contentReviewed;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContentReviewed()
+    {
+        return $this->contentReviewed;
+    }
+
+    /**
+     * @param mixed $originalContent
+     */
+    public function setOriginalContent($originalContent)
+    {
+        $this->originalContent = $originalContent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOriginalContent()
+    {
+        return $this->originalContent;
+    }
+
+    /**
+     * @param mixed $website
+     */
+    public function setWebsite($website)
+    {
+        $this->website = $website;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
 
 
 } 

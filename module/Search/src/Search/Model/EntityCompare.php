@@ -23,8 +23,12 @@ class EntityCompare {
             if($value != $newData[$key] && $value != null && $value != ''){
                 $dirt[$key] = $newData[$key];
             }
+            if(is_array($newData[$key])){
+                if($value != $newData[$key][0] && $value != null && $value != ''){
+                    $dirt[$key] = $newData[$key][0];
+                }
+            }
         }
-
 
         $dirtyEntity = new Form();
         $hydrator->hydrate($dirt,$dirtyEntity);
@@ -53,19 +57,6 @@ class EntityCompare {
         return $newEntity;
 
     }
-
-
-
-
-
-
-
-
-
-//    public function isDirty($query){
-//        echo 'this is url key ' . $query->getUrlKey();
-//    }
-
     public function determineQueryStatement($queriedData, $postedData){
         $dirtyFields = new Form();
         $cleanFields = new Form();
