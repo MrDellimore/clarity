@@ -93,7 +93,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">SKU</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="sku" value="<?= $this->data->getSku();//$this->$queriedData->getSku ?>" placeholder="SKU" style="width:140px" required/>
+                        <input type="text" class="form-control" name="sku" value="<?= $this->data->getSku(); ?>" placeholder="SKU" style="width:140px" required/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -424,20 +424,39 @@
                 <li>
                     <a href="#portlet_description" data-toggle="tab"> Description</a>
                 </li>
+                <li>
+                    <a href="#portlet_metadescription" data-toggle="tab">
+                        MetaDescription </a>
+                </li>
                 <li  class="active">
-                    <a href="#portlet_searchterms" data-toggle="tab"> Search Terms</a>
+                    <a href="#portlet_metaterms" data-toggle="tab"> MetaKeywords</a>
                 </li>
             </ul>
             <div class="row">
             <div class="tab-content">
 
-                <!-- search terms-->
-                <div class="tab-pane active" id="portlet_searchterms">
+                <!-- MetaKeyword terms-->
+                <div class="tab-pane active" id="portlet_metaterms">
                     <div class="form-body">
                         <div class="form-group col-md-11">
-                            <label class="control-label col-md-3" for="searchTerms">Search Terms</label>
+                            <label class="control-label col-md-3" for="metaKeywords">MetaKeywords</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" name="searchTerms" placeholder="Search Terms" />
+                                <input type="text" class="form-control" name="metaKeyword" placeholder="MetaKeywords" value="<?php// $this->data->getMetaKeywords(); ?>"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <!-- metaDescription-->
+                <div class="tab-pane" id="portlet_metadescription">
+                    <div class="form-body">
+                        <div class="form-group col-md-11">
+                            <label class="control-label col-md-3">MetaDescription</label>
+                            <div class="col-md-11">
+                                <textarea id="metadescriptionwys" class="form-control" name ="metadescription" rows="20" style = "height: 500px;"> <?= $this->data->getMetaDescription(); ?> </textarea>
                             </div>
                         </div>
 

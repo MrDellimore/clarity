@@ -147,6 +147,14 @@ class FormTable{
         $newAttibute = $this->fetchAttribute($entityid,'text','506','shortDescription');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
+        //Fetch metaKeywords
+        $newAttibute = $this->fetchAttribute($entityid,'varchar','104','metaKeywords');
+        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+
+        //Fetch metaKeywords
+        $newAttibute = $this->fetchAttribute($entityid,'varchar','105','metaDescription');
+        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+
         //Fetch Manufacturer Option
         $newAttibute = $this->fetchAttribute($entityid,'int','102','manufacturer');
         $newAttibute = $this->fetchOption(current($newAttibute),'102','manufacturer');
