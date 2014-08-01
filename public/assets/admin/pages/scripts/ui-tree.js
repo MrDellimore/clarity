@@ -22,7 +22,8 @@ var UITree = function () {
             }, {
                 "id": "p1c1c5",
                 "text": "Build Your Own Kit"
-            }, {
+            }]},
+            {
                 "id": "p1c2",
                 "text": "Camera Accessories",
                 "children": [{
@@ -41,35 +42,35 @@ var UITree = function () {
                     "id": "p1c2c5",
                     "text": "Tripods"
                 }, {
-                    "id": "p1c2c5",
+                    "id": "p1c2c6",
                     "text": "Filters",
                     "children": [{
-                        "id": "p1c2c5c1",
+                        "id": "p1c2c6c1",
                         "text": "Protective/UV/Skylight"
                     }, {
-                        "id": "p1c2c5c2",
+                        "id": "p1c2c6c2",
                         "text": "Polarizing"
                     }, {
-                        "id": "p1c2c5c3",
+                        "id": "p1c2c6c3",
                         "text": "Specialty",
                         "children": [{
-                            "id": "p1c2c5c3c1",
+                            "id": "p1c2c6c3c1",
                             "text": "Black & White Contrast Filters"
                         }, {
-                            "id": "p1c2c5c3c2",
+                            "id": "p1c2c6c3c2",
                             "text": "Color Conversion Filters"
                         }, {
-                            "id": "p1c2c5c3c3",
+                            "id": "p1c2c6c3c3",
                             "text": "Infrared Filters"
                         }, {
-                            "id": "p1c2c5c3c4",
+                            "id": "p1c2c6c3c4",
                             "text": "Special Effects Filters"
                         }]
                     }, {
-                        "id": "p1c2c5c4",
+                        "id": "p1c2c6c4",
                         "text": "Neutral Density Filters"
                     }, {
-                        "id": "p1c2c5c5",
+                        "id": "p1c2c6c5",
                         "text": "Filter Kits"
                     }]
                 }]
@@ -118,9 +119,9 @@ var UITree = function () {
                     "id": "p1c5c1",
                     "text": "Media & Storage"
                 }]
-            }]
+//            }]
         }]
-    }, {
+        }, {
         "id": "p2",
         "text": "Scopes and Optics",
         "children": [{
@@ -636,7 +637,7 @@ Create JSON/ with categories and corresponding attributes
 if cat is checked loop though and display corresponding attributes.
 Nest if statement to see if input is already listed.
  */
-                console.log(wtf);
+//                console.log(wtf);
             });
     }
 
