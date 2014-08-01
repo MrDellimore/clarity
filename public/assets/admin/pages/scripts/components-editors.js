@@ -70,7 +70,7 @@ var ComponentsEditors = function () {
             description();
             inBox();
             shortDescription();
-          //  metadescription();
+            metadescription();
         }
     };
 

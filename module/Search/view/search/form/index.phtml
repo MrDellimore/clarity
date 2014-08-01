@@ -225,7 +225,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="general_sku">Stock Status</label>
+                    <label class="control-label col-md-3" for="general_sku">Custom Stock Status</label>
                     <div class="col-md-9">
                         <select class="form-control input-medium" data-placeholder="Select..." name="stockStatus">
                             <option value="0" <?= $this->data->getStockStatus() == 0 ? 'selected' :''?> > </option>
@@ -237,6 +237,26 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="checker">
+                            <span><input name = "orginalContent" type="checkbox"></span>
+                        </div>
+                        Original Content
+                    </div>
+                </div><div class="col-md-4">
+                    <div class="form-group">
+                        <div class="checker">
+                            <span><input name="contentReviewed" type="checkbox"></span>
+                        </div>
+                        Content Reviewed
+                    </div>
+                </div>
+            </div>
+
         </div>
 
 
@@ -435,39 +455,61 @@
                     <a href="#portlet_description" data-toggle="tab"> Description</a>
                 </li>
                 <li  class="active">
-                    <a href="#portlet_searchterms" data-toggle="tab"> Search Terms</a>
+                    <a href="#portlet_metaData" data-toggle="tab"> MetaData</a>
                 </li>
             </ul>
             <div class="row">
                 <div class="tab-content">
 
-                <!-- MetaKeyword terms-->
-                <div class="tab-pane active" id="portlet_metaterms">
-                    <div class="form-body">
-                        <div class="form-group col-md-11">
-                            <label class="control-label col-md-3" for="metaKeywords">MetaKeywords</label>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="metaKeyword" placeholder="MetaKeywords" value="<?php// $this->data->getMetaKeywords(); ?>"/>
+                <!-- MetaData-->
+                <div class="tab-pane active" id="portlet_metaData">
+                    <!-- MetaKeywords-->
+                    <div class = "row col-md-11">
+                        <div class="form-body">
+                            <div class="form-group col-md-11">
+                                <label class="control-label col-md-3" for="metaKeywords">MetaKeywords:</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" name="metaKeyword" placeholder="MetaKeywords" value="<?php $this->data->getMetaKeywords(); ?>"/>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <br/><br/><br/><br/>
 
+
+                    <!-- MetaTitle-->
+                    <div class = "row col-md-11">
+                        <div class="form-body">
+                            <div class="form-group col-md-11">
+                                <label class="control-label col-md-3" for="metaKeywords">MetaTitle:</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" name="metaTitle" placeholder="MetaTitle" value="<?php $this->data->getMetaTitle(); ?>"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/><br/><br/><br/>
+
+
+
+
+                    <!-- metaDescription-->
+                    <div class="row col-md-11">
+                        <div class="form-body">
+                            <div class="form-group col-md-11">
+                                <label class="control-label col-md-3">MetaDescription:</label>
+                                <div class="col-md-11">
+                                    <textarea id="metadescriptionwys" class="form-control" name ="metadescription" rows="20" style = "height: 500px;"> <?= $this->data->getMetaDescription(); ?> </textarea>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
 
 
-                <!-- metaDescription-->
-                <div class="tab-pane" id="portlet_metadescription">
-                    <div class="form-body">
-                        <div class="form-group col-md-11">
-                            <label class="control-label col-md-3">MetaDescription</label>
-                            <div class="col-md-11">
-                                <textarea id="metadescriptionwys" class="form-control" name ="metadescription" rows="20" style = "height: 500px;"> <?= $this->data->getMetaDescription(); ?> </textarea>
-                            </div>
-                        </div>
 
-                    </div>
-                </div>
 
 
 

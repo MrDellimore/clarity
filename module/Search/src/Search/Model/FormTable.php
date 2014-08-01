@@ -151,8 +151,20 @@ class FormTable{
         $newAttibute = $this->fetchAttribute($entityid,'varchar','104','metaKeywords');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
-        //Fetch metaKeywords
-        $newAttibute = $this->fetchAttribute($entityid,'varchar','105','metaDescription');
+        //Fetch metaTitle
+        $newAttibute = $this->fetchAttribute($entityid,'varchar','103','metaTitle');
+        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+
+        //Fetch originalContent
+        $newAttibute = $this->fetchAttribute($entityid,'varchar','1658','orginalContent');
+        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+
+        //Fetch contentReviewed
+        $newAttibute = $this->fetchAttribute($entityid,'varchar','1676','contentReviewed');
+        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+
+        //Fetch metaDescrition
+        $newAttibute = $this->fetchAttribute($entityid,'text','105','metaDescription');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch Manufacturer Option
@@ -160,7 +172,7 @@ class FormTable{
         $newOption = $this->fetchOption(current($newAttibute),'102','manufacturer');
         $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
 
-//        Fetch Brand Option
+        //Fetch Brand Option
         $newAttibute = $this->fetchAttribute($entityid,'int','1641','brand');
         $newOption = $this->fetchOption(current($newAttibute),'1641','brand');
         $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
@@ -316,7 +328,7 @@ class FormTable{
 
         $select->where(array('attribute_id' => '102'));
 
-        $select->order('value');
+        $select->order('mfc');
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -341,7 +353,7 @@ class FormTable{
 
         $select->where(array('attribute_id' => '1641'));
 
-        $select->order('value');
+        $select->order('brand');
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
