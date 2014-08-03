@@ -325,6 +325,9 @@ class MagentoTable {
             return $result;
         }
 
+        /*
+         * todo switch to SQL lookup
+         */
         public function fetchAttributeID($attributeField)
         {
             switch($attributeField){
@@ -332,18 +335,25 @@ class MagentoTable {
                     return 96;
                 case 'description':
                     return 97;
-//                case 'short_descrition':
-//                    return 506;
+                case 'short_descrition':
+                    return 506;
+
             }
         }
+
+        /*
+         * todo no longer needed after sql lookup
+         * select backend
+         */
         public function fetchTableType($tableType)
         {
             switch($tableType){
-                case 'title':
+                case ($tableType == 'title'):
                     return 'varchar';
-                case 'description':
-//                case 'short_descrition':
+                case ($tableType == 'description' || $tableType == 'inbox'):
                     return 'text';
+
+
             }
         }
 
