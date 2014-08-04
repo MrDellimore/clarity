@@ -1,5 +1,32 @@
 var TableManaged = function () {
 
+//    var accessoryCall = function (){
+//        var table = $('input[type=search]');
+//        table.on('keyup',function(){
+//            var searchValue = $(this).val();
+//            var limit = $("select[name=acessoriesDisplay_length]").val();
+//            var params = {
+//                'searchValue' : searchValue,
+//                'limit' :   limit
+//            };
+//            $.post('/form/accessories', params, function(data){
+//                $.each(data, function(key, value) {
+//                    if($('tr').hasClass('odd')){
+//                        $('tr').addClass('add-accessories');
+//                    }
+//                    var entityID = value.entityID,
+//                        sku = value.Sku,
+//                        title = value.title,
+//                        price = value.price,
+//                        qty = value.inventory;
+//                    console.log(data);
+//                    var tableData = '<tr><td>'+entityID+'</td><td>'+sku+'</td><td>'+title+'</td><td>'+price+'</td><td>'+qty+'</td></tr>';
+//                    $('.add-accessories').after(tableData);
+//                });
+//            }, "json");
+//        });
+//    }
+
     var initTable1 = function () {
 
         var table = $('#sample_1');
@@ -14,7 +41,6 @@ var TableManaged = function () {
             "ajax": {
                 url: "/search/quicksearch",
                 type: 'POST'
-
             },
 
             "columns": [
@@ -79,13 +105,29 @@ var TableManaged = function () {
         });
 
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-    }
+    };
 
-    var initAcessoryDisplay = function () {
+    var initAccessoryDisplay = function () {
 
-        var table = $('#acessoriesDisplay');
+        var table = $('#accessoriesDisplay');
 
         var oTable = table.dataTable({
+
+//            "processing": true,
+//            "serverSide": true,
+
+            "ajax": {
+                url: "/form/accessories",
+                type: 'POST'
+            },
+            "columns": [
+                { "data": "id" },
+                { "data": "sku" },
+                { "data": "title" },
+                { "data": "price" },
+                { "data": "quantity" },
+                { "data": "category" }
+            ],
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here
@@ -111,7 +153,7 @@ var TableManaged = function () {
 
         //var tableWrapper = jQuery('#sample_1_wrapper');
         //tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-    }
+    };
 
     var initCrossSellDisplay = function () {
 
@@ -144,7 +186,7 @@ var TableManaged = function () {
 
         //var tableWrapper = jQuery('#sample_1_wrapper');
         //tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-    }
+    };
 
     return {
 
@@ -155,8 +197,9 @@ var TableManaged = function () {
             }
 
             initTable1();
-            initAcessoryDisplay();
+            initAccessoryDisplay();
             initCrossSellDisplay();
+//            accessoryCall();
 
         }
 

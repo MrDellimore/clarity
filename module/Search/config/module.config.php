@@ -34,7 +34,22 @@ return array(
                         'action'     => 'index',
                     ),
                 ),
+                'may_terminate' => true,
+                'child_routes'  =>  array(
+                    'quicksearch'  => array(
+                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'options'    => array(
+                            'route' =>  '/quicksearch',
+                            'defaults'  =>  array(
+                                'controller'    => 'Search\Controller\Search',
+                                'action'        =>  'quicksearch',
+
+                            ),
+                        ),
+                    ),
+                ),
             ),
+            'may_terminate' => true,
 
             'form'  => array(
                 'type'  => 'segment',
@@ -48,60 +63,63 @@ return array(
                     'defaults'  =>  array(
                         'controller'    => 'Search\Controller\Form',
                         'action'        =>  'index',
+                    ),
+                ),
+                'may_terminate' =>  true,
+                'child_routes'  =>  array(
+                    'mfcload'  => array(
+                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'options'    => array(
+                            'route' =>  '/manufacturerload',
 
+                            'defaults'  =>  array(
+                                'controller'    => 'Search\Controller\Form',
+                                'action'        =>  'manufacturerLoad',
+
+                            ),
+                        ),
+                    ),
+                    'brand'  => array(
+                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'options'    => array(
+                            'route' =>  '/brandload',
+                            'defaults'  =>  array(
+                                'controller'    => 'Search\Controller\Form',
+                                'action'        =>  'brandLoad',
+                            ),
+                        ),
+                    ),
+                    'loadaccessories'  => array(
+                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'options'    => array(
+                            'route' =>  '/accessories',
+                            'defaults'  =>  array(
+                                'controller'    => 'Search\Controller\Form',
+                                'action'        =>  'loadAccessories',
+                            ),
+                        ),
+                    ),
+                    'submitform'  => array(
+                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'options'    => array(
+                            'route' =>  '/submit',
+                            'defaults'  =>  array(
+                                'controller'    => 'Search\Controller\Form',
+                                'action'        =>  'submitForm',
+
+                            ),
+                        ),
                     ),
                 ),
             ),
 
 
-            'quicksearch'  => array(
-                'type'  => 'Zend\Mvc\Router\Http\Literal',
-                'options'    => array(
-                    'route' =>  '/search/quicksearch',
+//            quicksearch was here
 
-                    'defaults'  =>  array(
-                        'controller'    => 'Search\Controller\Search',
-                        'action'        =>  'quicksearch',
-
-                    ),
-                ),
-            ),
-
-            'mfcload'  => array(
-                'type'  => 'Zend\Mvc\Router\Http\Literal',
-                'options'    => array(
-                    'route' =>  '/form/manufacturerload',
-
-                    'defaults'  =>  array(
-                        'controller'    => 'Search\Controller\Form',
-                        'action'        =>  'manufacturerLoad',
-
-                    ),
-                ),
-            ),
-            'brand'  => array(
-                'type'  => 'Zend\Mvc\Router\Http\Literal',
-                'options'    => array(
-                    'route' =>  '/form/brandload',
-
-                    'defaults'  =>  array(
-                        'controller'    => 'Search\Controller\Form',
-                        'action'        =>  'brandLoad',
-                    ),
-                ),
-            ),
-            'submitform'  => array(
-                'type'  => 'Zend\Mvc\Router\Http\Literal',
-                'options'    => array(
-                    'route' =>  '/form/submit',
-
-                    'defaults'  =>  array(
-                        'controller'    => 'Search\Controller\Form',
-                        'action'        =>  'submitForm',
-
-                    ),
-                ),
-            ),
+//            mfcload was here
+//            brandload was here
+//            loadaccessories was here
+//            submitform was here
         ),
     ),
 
@@ -110,7 +128,9 @@ return array(
                                                 )
     ),
 
-    'view_manager' => array('template_path_stack' => array(__DIR__ . '/../view')),
+    'view_manager' => array(
+        'template_path_stack' => array(__DIR__ . '/../view'),
+    ),
 
 
     'di' => array(

@@ -11,7 +11,6 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Expression;
 
 
-
 class SearchTable{
 
     public function __construct(Adapter $adapter){

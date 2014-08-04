@@ -68,10 +68,36 @@ class FormController extends AbstractActionController {
         return $view;
     }
 
+    public function loadAccessoriesAction()
+    {
+        $form = $this->getFormTable();
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $loadAccessories = $request->getPost();
+            $draw = $loadAccessories['draw'];
+            $sku = $loadAccessories['search']['value'];
+            $limit = $loadAccessories['length'];
+//            var_dump($loadAccessories);
+        echo 'draw'. $draw . 'sku' .$sku . 'limit' . $limit;
+            if($limit == '-1'){
+                $limit = 100;
+            }
 
-
-
-
+            $loadedAccessories = $form->lookupAccessories($sku, $limit);
+            $result = json_encode(
+                array(
+                    'draw'  =>  $draw,
+                    'data'  =>  $loadedAccessories,
+                    'recordsTotal'  =>  1000,
+                    'recordsFiltered'   =>  $limit,
+                )
+            );
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
+    }
 
     public function submitFormAction(){
 

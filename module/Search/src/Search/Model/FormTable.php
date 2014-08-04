@@ -7,7 +7,8 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
-//use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Expression;
 //use Zend\Db\Sql\Select;
 //use Search\Helper\FormatFields;
 
@@ -180,9 +181,8 @@ class FormTable{
         return $result;
     }
 
-    public function fetchAttribute($entityid,$tableType,$attributeid,$property){
+    public function fetchAttribute($entityid,$tableType, $attributeid ,$property){
         $select = $this->sql->select();
-
         $select->from('productattribute_'.$tableType);
 
         $select->columns(array($property => 'value'));
@@ -238,17 +238,6 @@ class FormTable{
 
         return $result;
     }
-
-
-
-
-
-
-
-
-
-
-
 
 /*
  * This should be refactored to less granular
@@ -309,12 +298,6 @@ class FormTable{
     }
 
 
-
-
-
-
-
-
     /**
      * Manufacturer Drop Down list
      */
@@ -364,9 +347,65 @@ class FormTable{
             $resultSet->initialize($result);
         }
 
-
         return $resultSet->toArray();
     }
+
+    public function lookupAccessories($searchValue, $limit)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+
+        $select->from('product');
+
+        $select->columns(array('entityID'=>'entity_id','Sku' => 'productid'));
+
+
+//        $entityId = $searchResults[0]['entityID'];
+//        $titleJoin = new Expression('t.entity_id = product.'.$searchValue.'% and t.attribute_id = 96');
+//        $priceJoin = new Expression('p.entity_id = product.'.$searchValue.'% and p.attribute_id = 99');
+//        $quantityJoin = new Expression('q.entity_id = product.'.$searchValue.'% and q.attribute_id = 1');
+        $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
+        $priceJoin = new Expression('p.entity_id = product.entity_id and p.attribute_id = 99');
+        $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
+
+        $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'));
+
+        $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'));
+
+        $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'));
+
+        $where = new Where();
+        $where->like('product.productid',$searchValue.'%');
+        $select->where($where);
+        $select->limit($limit);
+
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+//        var_dump($statement);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        var_dump($resultSet);
+        $searchResults = $resultSet->toArray();
+//        $titleAttribute = $this->fetchAttribute($entityId, 'varchar','96','title');
+//        if(is_array($titleAttribute)){
+//            $searchResults[] = $titleAttribute;
+//        }
+//        $priceAttribute = $this->fetchAttribute($entityId, 'decimal','99','price');
+//        if(is_array($priceAttribute)){
+//            $searchResults[] = $priceAttribute;
+//        }
+//        $quantityAttribute = $this->fetchAttribute($entityId,'int','1','inventory');
+//        //this is where query for Category should be.
+//        if(is_array($quantityAttribute)){
+//            $searchResults[] = $quantityAttribute;
+//        }
+//        var_dump($searchResults);
+        return $searchResults;
+    }
+
 
 
     /**
