@@ -57,13 +57,9 @@ class FormController extends AbstractActionController {
                 $queriedData->$method($value);
             }
 */
-
-
             //stash object in container
             $container->data = $queriedData;
         }
-//echo "<pre>";
-//        var_dump($queriedData);
         $view = new ViewModel(array('data'=>$queriedData));
         return $view;
     }
@@ -72,18 +68,15 @@ class FormController extends AbstractActionController {
     {
         $form = $this->getFormTable();
         $request = $this->getRequest();
-//        if($request->isPost()) {
+        if($request->isPost()) {
             $loadAccessories = $request->getPost();
             $draw = $loadAccessories['draw'];
             $sku = $loadAccessories['search']['value'];
             $limit = $loadAccessories['length'];
-//            var_dump($loadAccessories);
-        echo 'draw'. $draw . 'sku' .$sku . 'limit' . $limit;
             if($limit == '-1'){
                 $limit = 100;
             }
-
-            $loadedAccessories = $form->lookupAccessories($sku, $limit);
+            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
             $result = json_encode(
                 array(
                     'draw'  =>  (int)$draw,
@@ -96,7 +89,7 @@ class FormController extends AbstractActionController {
             $response = $event->getResponse();
             $response->setContent($result);
             return $response;
-//        }
+        }
     }
 
     public function submitFormAction(){
@@ -130,8 +123,6 @@ class FormController extends AbstractActionController {
             $response->setContent($result);
 
             return $response;
-
-
             //return $this->redirect()->toRoute("search", array('action'=>'index'));
         }
     }

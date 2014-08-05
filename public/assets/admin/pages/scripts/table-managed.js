@@ -111,7 +111,7 @@ var TableManaged = function () {
 
         var table = $('#accessoriesDisplay');
 
-        var oTable = table.dataTable({
+        table.dataTable({
 
             "processing": true,
             "serverSide": true,
@@ -121,12 +121,23 @@ var TableManaged = function () {
                 type: 'POST'
             },
             "columns": [
-                { "data": "id" },
-                { "data": "sku" },
+                { "data": "entityID" },
+                { "data": "Sku" },
                 { "data": "title" },
                 { "data": "price" },
                 { "data": "quantity" },
-                { "data": "category" }
+//                { "data": "category" }
+                {
+                    "orderable":    true,
+                    "data": null,
+                    "defaultContent":   "Category"
+                },
+                {
+                    "class":    "delete",
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td><a href='javascript:;'>Delete</a></td>"
+                }
             ],
             "lengthMenu": [
                 [10, 20, 30, -1],
@@ -137,6 +148,10 @@ var TableManaged = function () {
             "pagingType": "bootstrap_full_number",
             "language": {
                 "lengthMenu": "_MENU_ records",
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
                 "paginate": {
                     "previous":"Prev",
                     "next": "Next",
@@ -144,11 +159,10 @@ var TableManaged = function () {
                     "first": "First"
                 }
             }});
-
         table.on('click', '.delete', function (e) {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];
-            oTable.fnDeleteRow(nRow);
+            nRow.remove();
         });
 
         //var tableWrapper = jQuery('#sample_1_wrapper');
@@ -160,7 +174,31 @@ var TableManaged = function () {
         var table = $('#crossSellDisplay');
 
         var oTable = table.dataTable({
-
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/form/accessories",
+                type: 'POST'
+            },
+            "columns": [
+                { "data": "entityID" },
+                { "data": "Sku" },
+                { "data": "title" },
+                { "data": "price" },
+                { "data": "quantity" },
+//                { "data": "category" }
+                {
+                    "orderable":    true,
+                    "data": null,
+                    "defaultContent":   "Category"
+                },
+                {
+                    "class":    "delete",
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td><a href='javascript:;'>Delete</a></td>"
+                }
+            ],
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here
@@ -169,7 +207,11 @@ var TableManaged = function () {
             "pageLength": 10,
             "pagingType": "bootstrap_full_number",
             "language": {
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
                 "lengthMenu": "_MENU_ records",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
                 "paginate": {
                     "previous":"Prev",
                     "next": "Next",
@@ -181,7 +223,8 @@ var TableManaged = function () {
         table.on('click', '.delete', function (e) {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];
-            oTable.fnDeleteRow(nRow);
+//            oTable.fnDeleteRow(nRow);
+            nRow.remove();
         });
 
         //var tableWrapper = jQuery('#sample_1_wrapper');

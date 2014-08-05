@@ -38,7 +38,7 @@ return array(
             'quicksearch'  => array(
                         'type'  => 'Zend\Mvc\Router\Http\Literal',
                         'options'    => array(
-                            'route' =>  '/quicksearch',
+                            'route' =>  '/search/quicksearch',
                             'defaults'  =>  array(
                                 'controller'    => 'Search\Controller\Search',
                                 'action'        =>  'quicksearch',

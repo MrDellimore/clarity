@@ -372,19 +372,11 @@ class FormTable{
 
         $statement = $sql->prepareStatementForSqlObject($select);
 
-        var_dump($statement);
         $result = $statement->execute();
-        echo 'haha';
-
         $resultSet = new ResultSet;
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-//        var_dump($resultSet);
-//        echo 'haha';
-        return $select->getSqlString();
-        die();
-
         $searchResults = $resultSet->toArray();
         return $searchResults;
     }
