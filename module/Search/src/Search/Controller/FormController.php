@@ -72,7 +72,7 @@ class FormController extends AbstractActionController {
     {
         $form = $this->getFormTable();
         $request = $this->getRequest();
-        if($request->isPost()) {
+//        if($request->isPost()) {
             $loadAccessories = $request->getPost();
             $draw = $loadAccessories['draw'];
             $sku = $loadAccessories['search']['value'];
@@ -86,7 +86,7 @@ class FormController extends AbstractActionController {
             $loadedAccessories = $form->lookupAccessories($sku, $limit);
             $result = json_encode(
                 array(
-                    'draw'  =>  $draw,
+                    'draw'  =>  (int)$draw,
                     'data'  =>  $loadedAccessories,
                     'recordsTotal'  =>  1000,
                     'recordsFiltered'   =>  $limit,
@@ -96,7 +96,7 @@ class FormController extends AbstractActionController {
             $response = $event->getResponse();
             $response->setContent($result);
             return $response;
-        }
+//        }
     }
 
     public function submitFormAction(){

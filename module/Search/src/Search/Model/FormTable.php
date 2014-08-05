@@ -354,16 +354,8 @@ class FormTable{
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-
         $select->from('product');
-
         $select->columns(array('entityID'=>'entity_id','Sku' => 'productid'));
-
-
-//        $entityId = $searchResults[0]['entityID'];
-//        $titleJoin = new Expression('t.entity_id = product.'.$searchValue.'% and t.attribute_id = 96');
-//        $priceJoin = new Expression('p.entity_id = product.'.$searchValue.'% and p.attribute_id = 99');
-//        $quantityJoin = new Expression('q.entity_id = product.'.$searchValue.'% and q.attribute_id = 1');
         $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
         $priceJoin = new Expression('p.entity_id = product.entity_id and p.attribute_id = 99');
         $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
@@ -373,36 +365,27 @@ class FormTable{
         $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'));
 
         $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'));
-
         $where = new Where();
         $where->like('product.productid',$searchValue.'%');
         $select->where($where);
         $select->limit($limit);
 
-
         $statement = $sql->prepareStatementForSqlObject($select);
-//        var_dump($statement);
+
+        var_dump($statement);
         $result = $statement->execute();
+        echo 'haha';
+
         $resultSet = new ResultSet;
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-        var_dump($resultSet);
+//        var_dump($resultSet);
+//        echo 'haha';
+        return $select->getSqlString();
+        die();
+
         $searchResults = $resultSet->toArray();
-//        $titleAttribute = $this->fetchAttribute($entityId, 'varchar','96','title');
-//        if(is_array($titleAttribute)){
-//            $searchResults[] = $titleAttribute;
-//        }
-//        $priceAttribute = $this->fetchAttribute($entityId, 'decimal','99','price');
-//        if(is_array($priceAttribute)){
-//            $searchResults[] = $priceAttribute;
-//        }
-//        $quantityAttribute = $this->fetchAttribute($entityId,'int','1','inventory');
-//        //this is where query for Category should be.
-//        if(is_array($quantityAttribute)){
-//            $searchResults[] = $quantityAttribute;
-//        }
-//        var_dump($searchResults);
         return $searchResults;
     }
 

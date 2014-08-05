@@ -113,8 +113,8 @@ var TableManaged = function () {
 
         var oTable = table.dataTable({
 
-//            "processing": true,
-//            "serverSide": true,
+            "processing": true,
+            "serverSide": true,
 
             "ajax": {
                 url: "/form/accessories",
