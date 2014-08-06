@@ -11,11 +11,11 @@ namespace Search\Model;
 
 class Images {
 
-    protected $label = array();
+    protected $id;
 
-    protected $fileSize = array();
+    protected $filename = array();
 
-    protected $sortOrder = array();
+    protected $domain = array();
 
     protected $thumb = array();
 
