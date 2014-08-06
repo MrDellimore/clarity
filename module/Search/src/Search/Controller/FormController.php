@@ -89,21 +89,27 @@ class FormController extends AbstractActionController {
             $comp = new EntityCompare();
             $dirtyData = $comp->dirtCheck($container->data, $postData);
             $newData = $comp->newCheck($container->data, $postData);
+            $oldData = $container->data;
+            $oldData = $hydrator->extract($oldData);
+            $dirtyData = $hydrator->extract($dirtyData);
+
 
             //run update or insert data
             $form = $this->getFormTable();
             $result = $form->dirtyHandle($dirtyData);
+            $this->getFormTable()->storeLogger($oldData, $dirtyData);
+            die();
             $form->newHandle($newData);
 
-            if($result == ''){
-                $result = 'No changes to sku made.';
-            }
+//            if($result == ''){
+//                $result = 'No changes to sku made.';
+//            }
 
-            $event    = $this->getEvent();
-            $response = $event->getResponse();
-            $response->setContent($result);
+//            $event    = $this->getEvent();
+//            $response = $event->getResponse();
+//            $response->setContent($result);
 
-            return $response;
+//            return $response;
 
 
             //return $this->redirect()->toRoute("search", array('action'=>'index'));

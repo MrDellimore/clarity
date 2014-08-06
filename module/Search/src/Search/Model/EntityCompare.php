@@ -8,9 +8,21 @@
 namespace Search\Model;
 
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
+use Iterator;
 
+class EntityCompare implements Iterator {
 
-class EntityCompare {
+    /**
+     * @private
+     * @var Container Object
+     * */
+    private $oldSkuData;
+
+    /**
+     * @private
+     * @var Form Object
+     * */
+    private $changedSkuData;
 
     public function dirtCheck($oldData, $newData){
         //dehydate objects to arrays
@@ -57,4 +69,39 @@ class EntityCompare {
         return $newEntity;
 
     }
+
+    public function setLogger($oldSkuData, $changedSkuData)
+    {
+        $this->oldSkuData = $oldSkuData;
+        $this->changedSkuData = $changedSkuData;
+    }
+
+    public function storeLogger()
+    {
+        $this->rewind();
+    }
+
+    public function rewind(){
+        reset($this->changedSkuData);
+    }
+
+    public function current(){
+        $this->current();
+    }
+
+    public function key(){
+        $this->key();
+    }
+
+    public function valid(){
+        $this->valid();
+    }
+
+    public function next(){
+        $this->next();
+    }
+
+
+
+
 }

@@ -7,11 +7,14 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
+use Zend\Log\Writer\Db;
+use Zend\Log\Logger;
 //use Zend\Db\Sql\Expression;
 //use Zend\Db\Sql\Select;
 //use Search\Helper\FormatFields;
 
-class FormTable{
+class FormTable
+{
 
     protected $sku;
     protected $select = Null;
@@ -460,6 +463,87 @@ class FormTable{
 
         return $updateditems;
 
+    }
+
+    public function storeLogger($oldData, $dirtyData)
+    {
+
+//        var_dump($dirtyData);
+//        die();
+        $columnMap = array('entity_id','oldvalue','newvalue','datechanged','changedby','property');
+        $writer = new Db($this->adapter, 'logger',$columnMap);
+        $logger = new Logger();
+//        $logger->addWriter($writer);
+        $firstResult = array();
+//        $oldValue = null;
+//        $newValue = null;
+//        var_dump($dirtyData);
+        $lookupResults = array();
+        $entityID = null;
+        foreach($dirtyData as $key => $value){
+            if(isset($value)){
+                $lookup = $this->sql->select();
+                $oldValue = $oldData[$key];
+                var_dump($oldValue);
+                $newValue = $dirtyData[$key];
+                $property = ($key ==  'title') ?'name' : $key;
+                $entityID = $dirtyData['id'];
+
+//                echo 'property ' . $property . ' old value ' . $oldValue . ' new value  ' . $newValue . ' entity id ' . $entityID . "\n";
+                $lookup->from('productattribute_lookup')
+                       ->columns(array('type'=>'backend_type', 'attributeID'=>'attribute_id'))
+                       ->where(array('attribute_code'=>$property));
+                $lookupStatement = $this->sql->prepareStatementForSqlObject($lookup);
+                $lookupResult = $lookupStatement->execute();
+                $lookupSet = new ResultSet;
+                if ($lookupResult instanceof ResultInterface && $lookupResult->isQueryResult()) {
+                    $lookupSet->initialize($lookupResult);
+                }
+                $lookupResults[] = $lookupSet->toArray();
+//                $results[] = $lookupResults;
+//                $dataTableHistory = array('old'=>$oldValue, 'new'=>$newValue,'property',$property);
+//                $results[] = array_merge($results,$dataTableHistory);
+            }
+        }
+//        echo "<pre>";
+//        var_dump($results);
+//
+//        echo "==========";
+        foreach($lookupResults as $key => $value) {
+            if(count($lookupResults[$key])) {
+                foreach($lookupResults[$key][0] as $index => $val){
+//                        echo $index . ' ' ;
+
+                    $tableType = $value[0]['type'];
+                    $attributeID = $value[0]['attributeID'];
+                    $attributeLookup = $this->sql->select();
+                    $attributeLookup->from('productattribute_'.$tableType)
+                           ->columns(array('user'=>'changedby', 'datechanged'=>'lastModifiedDate'))
+                           ->where(array('entity_id'=>$entityID, 'attribute_id'=>$attributeID));
+                    $statement = $this->sql->prepareStatementForSqlObject($attributeLookup);
+
+                    $result = $statement->execute();
+
+                    $attributeSet = new ResultSet;
+                    if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                        $attributeSet->initialize($result);
+                    }
+                    $dataTableHistory = array('old'=>$oldValue, 'new'=>$newValue,'property',$property);
+//                    var_dump($oldValue);
+//                    echo gettype($oldValue);
+//                    echo gettype($newValue);
+//                    echo gettype($property);
+                    echo $dataTableHistory['old'] . ' ' . $dataTableHistory['new']. ' ' . $dataTableHistory['property']. '123456789';
+//                    echo "<pre>";
+//var_dump($dataTableHistory);
+                    $attributeResults[] = $attributeSet->toArray();
+
+                }
+            }
+        }
+//
+//        var_dump($attributeResults);
+        die();
     }
 
     /**
