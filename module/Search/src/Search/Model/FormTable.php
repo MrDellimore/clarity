@@ -375,7 +375,8 @@ class FormTable
     /**
      * Handle isDirty Form entities
      */
-    public function dirtyHandle(Form $form){
+    public function dirtyHandle(Form $form, Form $oldData)
+    {
         //Find Dirty properties and call corresponding updates
         $startMessage = 'The following fields have been updated :<br>';
         $updateditems = '';
@@ -383,32 +384,42 @@ class FormTable
         //update sku
         //update Title
         if(!(is_null($form->getTitle()))) {
+            $property = 'title';
             $this->updateAttribute($form->getId(),$form->getTitle(),'96','varchar');
+            $this->insertLogging($form->getId(),$form->getTitle(), $oldData->getTitle(), $property,'96','varchar');
             $updateditems .= 'Title<br>';
         }
         //update description
         if(!(is_null($form->getDescription()))) {
+            $property = 'description';
             $this->updateAttribute($form->getId(),$form->getDescription(),'97','text');
+            $this->insertLogging($form->getId(),$form->getDescription(), $oldData->getDescription(), $property,'97','text');
             $updateditems .= 'Description<br>';
         }
         //update inventory
         //update url Key
         //update status
         if(!(is_null($form->getStatus()))) {
+            $property = 'status';
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
+            $this->insertLogging($form->getId(),$form->getStatus(), $oldData->getStatus(), $property,'273','int');
             $updateditems .= 'Status<br>';
         }
         //update manufacturer
         //update visibility
         if(!(is_null($form->getVisibility()))) {
+            $property = 'visibility';
             $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
+            $this->insertLogging($form->getId(),$form->getVisibility(), $oldData->getVisibility(), $property,'526','int');
             $updateditems .= 'Visibility<br>';
         }
         //update condition
         //update tax class
         //update stock status
         if(!(is_null($form->getStockStatus()))) {
+            $property = 'stock status';
             $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
+            $this->insertLogging($form->getId(),$form->getStockStatus(), $oldData->getStockStatus(), $property,'1661','int');
             $updateditems .= 'Stock Status<br>';
         }
         //update price
@@ -423,37 +434,49 @@ class FormTable
         //update text
         //update In Box
         if(!(is_null($form->getInBox()))) {
+            $property = 'inbox';
             $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
+            $this->insertLogging($form->getId(),$form->getInBox(), $oldData->getInBox(), $property,'1633','text');
             $updateditems .= 'In Box<br>';
         }
 
         //update Includes Free
         if(!(is_null($form->getIncludesFree()))) {
+            $property = 'includes free';
             $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
+            $this->insertLogging($form->getId(),$form->getIncludesFree(), $oldData->getIncludesFree(), $property,'1679','text');
             $updateditems .= 'Includes Free<br>';
         }
 
         //update Meta Description
         if(!(is_null($form->getMetaDescription()))) {
+            $property = 'meta description';
             $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
+            $this->insertLogging($form->getId(),$form->getMetaDescription(), $oldData->getMetaDescription(), $property,'105','varchar');
             $updateditems .= 'Meta Description<br>';
         }
 
         //update Original Content
         if(!(is_null($form->getOriginalContent()))) {
+            $property = 'original content';
             $this->updateAttribute($form->getId(),$form->getOriginalContent(),'1659','int');
+            $this->insertLogging($form->getId(),$form->getOriginalContent(), $oldData->getOriginalContent(), $property,'1659','int');
             $updateditems .= 'Original Content<br>';
         }
 
         //update Content Reviewed
         if(!(is_null($form->getContentReviewed()))) {
+            $property = 'content reviewed';
             $this->updateAttribute($form->getId(),$form->getContentReviewed(),'1676','int');
+            $this->insertLogging($form->getId(),$form->getContentReviewed(), $oldData->getContentReviewed(), $property,'1676','int');
             $updateditems .= 'Content Reviewed<br>';
         }
 
         //update Short Description
         if(!(is_null($form->getShortDescription()))) {
+            $property = 'short description';
             $this->updateAttribute($form->getId(),$form->getShortDescription(),'506','text');
+            $this->insertLogging($form->getId(),$form->getShortDescription(), $oldData->getShortDescription(), $property,'506','text');
             $updateditems .= 'Visibility<br>';
         }
 
@@ -563,5 +586,40 @@ class FormTable
         $statement = $this->sql->prepareStatementForSqlObject($update);
         return $statement->execute();
 
+    }
+    public function insertLogging($entityid ,$newValue, $oldValue, $property, $attributeid,$tableType)
+    {
+        echo $property;
+
+        $loginSession= new Container('login');
+        $userData = $loginSession->sessionDataforUser;
+        $user = $userData['userid'];
+        echo $user;
+        $event = array(
+            $entityid   =>  'entity_id',
+            $oldValue   =>  'oldvalue',
+            $newValue   =>  'newvalue',
+            date('Y-m-t h:i:s')  =>  'datechanged',
+            $user   =>  'changedby',
+            $property   =>  'property',
+        );
+        $columnMap = array(
+            'entity_id' =>  $entityid,
+            'oldvalue'  =>  $oldValue,
+            'newvalue'  =>  $newValue,
+            'datechanged'   => date('Y-m-t h:i:s'),
+            'changedby' =>  $user,
+            'property'  =>  $property,
+//            $entityid   =>  'entity_id',
+//            $oldValue   =>  'oldvalue',
+//            $newValue   =>  'newvalue',
+//            date('Y-m-t h:i:s')  =>  'datechanged',
+//            $user   =>  'changedby',
+//            $property   =>  'property',
+        );
+        $writer = new Db($this->adapter, 'logger', $event);
+        $logger = new Logger();
+//        $logger->addWriter($writer);
+        $writer->write($columnMap);
     }
 }

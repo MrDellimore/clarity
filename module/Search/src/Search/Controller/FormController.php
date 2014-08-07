@@ -73,8 +73,8 @@ class FormController extends AbstractActionController {
 
 
 
-    public function submitFormAction(){
-
+    public function submitFormAction()
+    {
         $request = $this->getRequest();
         if($request->isPost()) {
             $postData = new Form();
@@ -90,30 +90,26 @@ class FormController extends AbstractActionController {
             $dirtyData = $comp->dirtCheck($container->data, $postData);
             $newData = $comp->newCheck($container->data, $postData);
             $oldData = $container->data;
-            $oldData = $hydrator->extract($oldData);
-            $dirtyData = $hydrator->extract($dirtyData);
+//            $oldData = $hydrator->extract($oldData);
+//            $dirtyData = $hydrator->extract($dirtyData);
 
 
             //run update or insert data
             $form = $this->getFormTable();
-            $result = $form->dirtyHandle($dirtyData);
-            $this->getFormTable()->storeLogger($oldData, $dirtyData);
-            die();
+            $result = $form->dirtyHandle($dirtyData, $oldData);
+//            $this->getFormTable()->storeLogger($oldData, $dirtyData);
             $form->newHandle($newData);
 
-//            if($result == ''){
-//                $result = 'No changes to sku made.';
-//            }
-
-//            $event    = $this->getEvent();
-//            $response = $event->getResponse();
-//            $response->setContent($result);
-
-//            return $response;
-
-
-            //return $this->redirect()->toRoute("search", array('action'=>'index'));
+            if($result == ''){
+                $result = 'No changes to sku made.';
+            }
+//
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+//
         }
+        return $response;
     }
 
     public function brandLoadAction()
