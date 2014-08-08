@@ -81,17 +81,27 @@ var TableManaged = function () {
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     }
     var populateSkuHistory = function () {
-
         var table = $('#skuHistoryDisplay');
-        var filterRange = $('#filterDateRange').val();
-        $('#btnDateRange').on('click',function(){
-            console.log('haha');
-            console.log($('#filterDateRange').val());
+
+        var filterDateRange;
+
+        $('#filterDateRange .applyBtn').on("click", function(){
+            console.log('haha',filterDateRange);
+            filterDateRange = $('#filterDateRange').val();
         });
+//        console.log('haha','hoho', filterDateRange);
+//        $('#filterDateRange').on('focusout',function(){
+//            var that = $(this);
+//            $('.applyBtn').on("click", function(){
+//                filterDateRange = $('#filterDateRange').val();
+//            });
+//            $('#btnDateRange').click(function(){
+//                filterDateRange = that.val();
+//                console.log('haha',filterDateRange);
+//            });
+//            console.log(filterDateRange);
+//        });
 
-//        table.parent('div.row').addClass('haha');//next().html('<a>haha</a>');
-
-        // begin first table
         table.dataTable({
 
             "processing": true,
@@ -100,8 +110,22 @@ var TableManaged = function () {
             "ajax": {
                 url: "/sku-history",
                 type: 'POST',
-                "data": function ( d ) {
-                    d.myKey = filterRange
+                data: function (d){
+                    d.filterDateRange = filterDateRange;
+                }
+//                $('.applyBtn').on("click", function() {
+//                        return $('#filterDateRange').val();
+//                        return $('#filterDateRange').val();
+//                    })
+//                    d.myKey = "myValue";
+//                    d.custom = $('#myInput').val();
+//                    etc
+//                }
+
+//                {
+//                    "filterDateRange" : filterDateRange
+//                    "filterDateRange" : $('#filterDateRange').val()
+//                }
                     // d.custom = $('#myInput').val();
                     // etc
 

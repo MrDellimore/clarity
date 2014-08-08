@@ -23,7 +23,7 @@ class LoggingTable {
         $this->sql = new Sql($this->adapter);
     }
 
-    public function lookupLoggingInfo($sku = null)
+    public function lookupLoggingInfo($searchParams = array())
     {
         $select = $this->sql->select();
         $select->from('logger');
@@ -36,11 +36,16 @@ class LoggingTable {
             'property'  =>  'property',
         ));
 //        var_dump($sku);
-        if(!empty($sku)) {
-            $skuLike = new Expression('p.entity_id = logger.entity_id');
-            $select->join(array('p' => 'product'), $skuLike ,array('entityID' => 'entity_id'));
+        if( isset($searchParams['sku']) || isset($searchParams['from']) || isset($searchParams['to']) ) {
+            $entityId = new Expression('p.entity_id = logger.entity_id');
+            $select->join(array('p' => 'product'), $entityId ,array('entityID' => 'entity_id'));
             $filter = new Where();
-            $filter->like('p.productid',$sku . '%');
+            if( isset($searchParams['sku']) ) {
+                $filter->like('p.productid', $searchParams['sku'] . '%');
+            }
+            if( isset($searchParams['from']) ) {
+                $filter->between('logger.datachanged',$searchParams['from'], $searchParams['to']);
+            }
             $select->where($filter);
         }
         $statement = $this->sql->prepareStatementForSqlObject($select);

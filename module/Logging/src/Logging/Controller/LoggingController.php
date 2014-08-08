@@ -17,12 +17,22 @@ class LoggingController extends AbstractActionController
         if($request->isPost()) {
             $logsInfo = $request->getPost();
             $draw = $logsInfo['draw'];
-            $sku = $logsInfo['search']['value'];
+            $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
+//            $filterDateRange = (!is_null($logsInfo['filterDateRange'])) ? $logsInfo['filterDateRange'] : null;
+//            $dateRange = explode('to',$filterDateRange);
+//            $fromDate = trim((string)$dateRange[0]);
+//            $toDate = trim((string)$dateRange[1]);
+
+            $searchParams = array('sku'=>$sku);//,'from'=>$fromDate,'to'=>$toDate);
+
+//            $dateRange = array('from'=>$fromDate,'to'=>$toDate);
+
+//            var_dump($filterDateRange);
 //            $limit = $loadAccessories['length'];
 //            if($limit == '-1'){
 //                $limit = 100;
 //            }
-            $loadedLogs = $logs->lookupLoggingInfo($sku);
+            $loadedLogs = $logs->lookupLoggingInfo($searchParams);
             $result = json_encode(
                 array(
                     'draw'  =>  (int)$draw,
