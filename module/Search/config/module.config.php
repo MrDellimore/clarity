@@ -79,6 +79,7 @@ return array(
                     ),
                 ),
             ),
+
             'brand'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',
                 'options'    => array(
@@ -90,6 +91,19 @@ return array(
                     ),
                 ),
             ),
+
+            'imagesave'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/form/imagesave',
+
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\Controller\Form',
+                        'action'        =>  'imageSave',
+                    ),
+                ),
+            ),
+
             'submitform'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',
                 'options'    => array(

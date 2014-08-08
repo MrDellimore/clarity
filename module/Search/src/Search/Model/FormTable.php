@@ -177,6 +177,14 @@ class FormTable{
         $newOption = $this->fetchOption(current($newAttibute),'1641','brand');
         $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
 
+
+        //Fetch Images
+        $images = $this->fetchImages($entityid);
+        $result['imageGallery'] = $images;
+
+
+
+
         return $result;
     }
 
@@ -239,6 +247,27 @@ class FormTable{
         return $result;
     }
 
+    public function fetchImages($entityid){
+        $select = $this->sql->select();
+
+        $select->from('productattribute_images');
+        $select->columns(array('id' => 'entity_id','label' => 'label','position' => 'position', 'filename' =>'filename'));
+        $select->where(array('entity_id' => $entityid));
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $result = $resultSet->toArray();
+
+        return $result;
+
+    }
+
 
 
 
@@ -251,7 +280,7 @@ class FormTable{
 
 
 /*
- * This should be refactored to less granular
+ * todo Make this less granular. One method to validate sku
  */
 
     public function executeQuery(){
@@ -307,8 +336,6 @@ class FormTable{
         $skuList = $resultSet->current();
         return $skuList['entity_id'];
     }
-
-
 
 
 

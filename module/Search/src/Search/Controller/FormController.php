@@ -11,7 +11,7 @@ namespace Search\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 use Zend\View\Model\ViewModel;
-use Search\Model\Form;
+use Search\Entity\Form;
 use Zend\Session\Container;
 use Search\Model\EntityCompare;
 
@@ -49,6 +49,7 @@ class FormController extends AbstractActionController {
             //hydrate data to form entity
             $hydrator = new cHydrator;
             $hydrator->hydrate($skuData,$queriedData);
+
 
 /* Removing custom hydrator and using std Classmethod hydrator
             foreach($this->skuData as $key => $value){
@@ -132,6 +133,41 @@ class FormController extends AbstractActionController {
         $response->setContent($result);
 
         return $response;
+    }
+
+    public function imageSaveAction(){
+
+/*
+ * todo get files from POST
+ * todo create imageHandler to save images
+ * todo get imageHandle reponse and encode in JSON
+ */
+
+        $arr =json_decode($jmes);
+        $message = array('files'=>
+            array(array(
+                'name'        => 'this pic',
+                'size'          => '10000',
+                'url'           => 'http://google.com',
+                'thumbnailurl'  => 'http://google.com',
+                'deleteURL'     => 'http://google.com',
+                'deleteType'    => 'DELETE')),
+
+            array(array('name'        => 'this pic',
+                'size'          => '10000',
+                'url'           => 'http://google.com',
+                'thumbnailurl'  => 'http://google.com',
+                'deleteURL'     => 'http://google.com',
+                'deleteType'    => 'DELETE')));
+//        echo '<pre>';
+//        var_dump($arr);
+//        die();
+        $result = json_encode($message);
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+        return $response;
+
     }
 
 

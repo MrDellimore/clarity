@@ -752,7 +752,7 @@
             </p>
         </blockquote>
         <br>
-        <form id="fileupload" action="#" method="POST" enctype="multipart/form-data">
+        <form id="fileupload" action="/form/imagesave" method="POST" enctype="multipart/form-data">
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
                 <div class="col-lg-7">
@@ -815,7 +815,8 @@
 
 
 <!--Current Images-->
-<table class="table table-bordered table-hover">
+<form id="imageForm" method="POST">
+<table id="currentImages" class="table table-bordered table-hover">
     <thead>
     <tr role="row" class="heading">
         <th width="8%">
@@ -841,7 +842,41 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
+
+    <?php
+
+    foreach($this->data->getImageGallery() as $image){
+        echo '<tr><td><img class="img-responsive" src="http://www.focuscamera.com/media/catalog/product'.$image->getFilename().'" alt=""></td>';
+        echo '<input type="hidden" name="imageGallery[][][filename]" value ="'.$image->getFilename().'">';
+        echo '<td><input type="text" class="form-control" name="imageGallery[][][label]" value="'.$image->getLabel().'"></td>';
+        echo '<td><input type="text" class="form-control" name="imageGallery[][][position]" value="'.$image->getPosition().'"></td>';
+        echo '<td>
+            <label>
+                <input type="radio" name="imageGallery[][][thumbnail]" value="1">
+
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="imageGallery[][][small_image]" value="1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="imageGallery[][][image]" value="1">
+            </label>
+        </td>
+        <td>
+            <a href="javascript:;" class="imageremove btn default btn-sm">
+                <i class="fa fa-times"></i> Remove </a>
+        </td></tr>';
+
+
+
+    }
+
+    ?>
+    <!--<tr>
         <td>
             <a href="../../assets/admin/pages/media/works/img1.jpg" class="fancybox-button" data-rel="fancybox-button">
                 <img class="img-responsive" src="../../assets/admin/pages/media/works/img1.jpg" alt="">
@@ -872,73 +907,12 @@
             <a href="javascript:;" class="btn default btn-sm">
                 <i class="fa fa-times"></i> Remove </a>
         </td>
-    </tr>
-    <tr>
-        <td>
-            <a href="../../assets/admin/pages/media/works/img2.jpg" class="fancybox-button" data-rel="fancybox-button">
-                <img class="img-responsive" src="../../assets/admin/pages/media/works/img2.jpg" alt="">
-            </a>
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][2][label]" value="Product image #1">
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][2][sort_order]" value="1">
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][2][image_type]" value="1">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][2][image_type]" value="2" checked>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][2][image_type]" value="3">
-            </label>
-        </td>
-        <td>
-            <a href="javascript:;" class="btn default btn-sm">
-                <i class="fa fa-times"></i> Remove </a>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a href="../../assets/admin/pages/media/works/img3.jpg" class="fancybox-button" data-rel="fancybox-button">
-                <img class="img-responsive" src="../../assets/admin/pages/media/works/img3.jpg" alt="">
-            </a>
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][3][label]" value="Product image #2">
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][3][sort_order]" value="1">
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][3][image_type]" value="1" checked>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][3][image_type]" value="2">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][3][image_type]" value="3">
-            </label>
-        </td>
-        <td>
-            <a href="javascript:;" class="btn default btn-sm">
-                <i class="fa fa-times"></i> Remove </a>
-        </td>
-    </tr>
+    </tr>-->
+
     </tbody>
 </table>
+</form>
+
 
             </div>
         </div>
