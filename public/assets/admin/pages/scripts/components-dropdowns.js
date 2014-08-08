@@ -27,6 +27,26 @@ var ComponentsDropdowns = function () {
             });
 
     }
+    var skuHistoryUserDropDown = function (){
+        $('#findUser').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+        var url = '/sku-history/user';
+        $.ajax({
+            url: url,
+            dataType: "json"})
+            .done(function( data ) {
+                var $el = $("#findUser");
+                //Save old option to set in list
+                $.each(data, function(key, value) {
+                    var user = value.firstName + ' ' + value.lastName;
+                    var userId = value.userId;
+                        $el.append($("<option></option>").attr("value",userId).text(user));
+                });
+            });
+
+    };
 
     var mfcDropDown = function () {
 
@@ -68,6 +88,7 @@ var ComponentsDropdowns = function () {
         init: function () {
             mfcDropDown();
             brandDropDown();
+            skuHistoryUserDropDown();
         }
     };
 

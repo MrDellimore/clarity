@@ -79,16 +79,13 @@ var TableManaged = function () {
         });
 
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-    }
+    };
     var populateSkuHistory = function () {
         var table = $('#skuHistoryDisplay');
 
         var filterDateRange;
 
-        $('#filterDateRange .applyBtn').on("click", function(){
-            console.log('haha',filterDateRange);
-            filterDateRange = $('#filterDateRange').val();
-        });
+
 //        console.log('haha','hoho', filterDateRange);
 //        $('#filterDateRange').on('focusout',function(){
 //            var that = $(this);
@@ -108,36 +105,22 @@ var TableManaged = function () {
             "serverSide": true,
 
             "ajax": {
-                url: "/sku-history",
-                type: 'POST',
-                data: function (d){
-                    d.filterDateRange = filterDateRange;
+                "url": "/sku-history",
+                "type": 'POST',
+                "data": function (d){
+                    d.filterDateRange =  $('#filterDateRange').val()
                 }
-//                $('.applyBtn').on("click", function() {
-//                        return $('#filterDateRange').val();
-//                        return $('#filterDateRange').val();
-//                    })
-//                    d.myKey = "myValue";
-//                    d.custom = $('#myInput').val();
-//                    etc
-//                }
-
-//                {
-//                    "filterDateRange" : filterDateRange
-//                    "filterDateRange" : $('#filterDateRange').val()
-//                }
-                    // d.custom = $('#myInput').val();
-                    // etc
-
             },
 
             "columns": [
                 { "data": "entityID" },
                 { "data": "oldValue" },
                 { "data": "newValue" },
+                { "data": "manufacturer" },
                 { "data": "user" },
                 { "data": "dataChanged" },
                 { "data": "property" },
+//                { "data": "user" },
                 {
                     "class":    "revert",
                     "orderable":    false,
@@ -161,7 +144,7 @@ var TableManaged = function () {
                     "next": "Next",
                     "last": "Last",
                     "first": "First"
-                }
+            }
             }/*,
             "columnDefs": [{  // set default column settings
                 'orderable': false,
@@ -175,18 +158,22 @@ var TableManaged = function () {
                 [1, "asc"]
             ] */// set first column as a default sort by asc
         });
-
-        table.on('click', '.revert', function (e) {
-            e.preventDefault();
-            console.log('haha');
-        });
-
-//        table.on('click', 'tbody tr .checkboxes', function () {
-//            $(this).parents('tr').toggleClass("active");
+//        }).columnFilter({
+//            sPlaceHolder: "head:before",
+//            aoColumns: [ 	{ type: "text" },
+//                { type: "date-range" }
+//            ]
+//
 //        });
-
-//        tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-    }
+//            table.ajax.reload({
+//                "url": "/sku-history",
+//                "type": 'POST'
+//            });
+//        table.on('click', '.revert', function (e) {
+//            e.preventDefault();
+//            console.log('haha');
+//        });
+    };
 
     var initAcessoryDisplay = function () {
 

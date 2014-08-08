@@ -17,7 +17,18 @@ return array(
                         'action'    =>  'index',
                     )
                 )
-            )
+            ),
+            'listUsers'   =>  array(
+                'type'  =>  'literal',
+                'options'   =>  array(
+                    'route' =>  '/sku-history/user',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Logging\Controller\Logging',
+                        'action'    =>  'listUsers',
+                    )
+                )
+            ),
+
         )
     ),
     'view_manager'  =>  array(

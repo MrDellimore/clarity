@@ -7,11 +7,10 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
+use Zend\EventManager\EventManagerAwareTrait;
+use Zend\EventManager\EventManager;
 use Zend\Log\Writer\Db;
 use Zend\Log\Logger;
-//use Zend\Db\Sql\Expression;
-//use Zend\Db\Sql\Select;
-//use Search\Helper\FormatFields;
 
 class FormTable
 {
@@ -21,6 +20,9 @@ class FormTable
     protected $sql;
     protected $skuFields = array();
     protected $form;
+
+    use EventManagerAwareTrait;
+
 
     public function __construct(Adapter $adapter){
         $this->adapter = $adapter;
@@ -386,14 +388,14 @@ class FormTable
         if(!(is_null($form->getTitle()))) {
             $property = 'title';
             $this->updateAttribute($form->getId(),$form->getTitle(),'96','varchar');
-            $this->insertLogging($form->getId(),$form->getTitle(), $oldData->getTitle(), $property,'96','varchar');
+            $this->insertLogging($form->getId(),$form->getTitle(), $oldData->getTitle(), $oldData->getManufacturer(), $property);//,'96','varchar');
             $updateditems .= 'Title<br>';
         }
         //update description
         if(!(is_null($form->getDescription()))) {
             $property = 'description';
             $this->updateAttribute($form->getId(),$form->getDescription(),'97','text');
-            $this->insertLogging($form->getId(),$form->getDescription(), $oldData->getDescription(), $property,'97','text');
+            $this->insertLogging($form->getId(),$form->getDescription(), $oldData->getDescription(), $oldData->getManufacturer(), $property);//'97','text');
             $updateditems .= 'Description<br>';
         }
         //update inventory
@@ -402,7 +404,7 @@ class FormTable
         if(!(is_null($form->getStatus()))) {
             $property = 'status';
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
-            $this->insertLogging($form->getId(),$form->getStatus(), $oldData->getStatus(), $property,'273','int');
+            $this->insertLogging($form->getId(),$form->getStatus(), $oldData->getStatus(), $oldData->getManufacturer(), $property);//,'273','int');
             $updateditems .= 'Status<br>';
         }
         //update manufacturer
@@ -410,7 +412,7 @@ class FormTable
         if(!(is_null($form->getVisibility()))) {
             $property = 'visibility';
             $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
-            $this->insertLogging($form->getId(),$form->getVisibility(), $oldData->getVisibility(), $property,'526','int');
+            $this->insertLogging($form->getId(),$form->getVisibility(), $oldData->getVisibility(),$oldData->getManufacturer(), $property);//,'526','int');
             $updateditems .= 'Visibility<br>';
         }
         //update condition
@@ -419,7 +421,7 @@ class FormTable
         if(!(is_null($form->getStockStatus()))) {
             $property = 'stock status';
             $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
-            $this->insertLogging($form->getId(),$form->getStockStatus(), $oldData->getStockStatus(), $property,'1661','int');
+            $this->insertLogging($form->getId(),$form->getStockStatus(), $oldData->getStockStatus(),$oldData->getManufacturer(), $property);//,'1661','int');
             $updateditems .= 'Stock Status<br>';
         }
         //update price
@@ -436,7 +438,7 @@ class FormTable
         if(!(is_null($form->getInBox()))) {
             $property = 'inbox';
             $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
-            $this->insertLogging($form->getId(),$form->getInBox(), $oldData->getInBox(), $property,'1633','text');
+            $this->insertLogging($form->getId(),$form->getInBox(), $oldData->getInBox(),$oldData->getManufacturer(), $property);//,'1633','text');
             $updateditems .= 'In Box<br>';
         }
 
@@ -444,7 +446,7 @@ class FormTable
         if(!(is_null($form->getIncludesFree()))) {
             $property = 'includes free';
             $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
-            $this->insertLogging($form->getId(),$form->getIncludesFree(), $oldData->getIncludesFree(), $property,'1679','text');
+            $this->insertLogging($form->getId(),$form->getIncludesFree(), $oldData->getIncludesFree(), $oldData->getManufacturer(), $property);//,'1679','text');
             $updateditems .= 'Includes Free<br>';
         }
 
@@ -452,7 +454,7 @@ class FormTable
         if(!(is_null($form->getMetaDescription()))) {
             $property = 'meta description';
             $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
-            $this->insertLogging($form->getId(),$form->getMetaDescription(), $oldData->getMetaDescription(), $property,'105','varchar');
+            $this->insertLogging($form->getId(),$form->getMetaDescription(), $oldData->getMetaDescription(), $oldData->getManufacturer(), $property);//,'105','varchar');
             $updateditems .= 'Meta Description<br>';
         }
 
@@ -460,7 +462,7 @@ class FormTable
         if(!(is_null($form->getOriginalContent()))) {
             $property = 'original content';
             $this->updateAttribute($form->getId(),$form->getOriginalContent(),'1659','int');
-            $this->insertLogging($form->getId(),$form->getOriginalContent(), $oldData->getOriginalContent(), $property,'1659','int');
+            $this->insertLogging($form->getId(),$form->getOriginalContent(), $oldData->getOriginalContent(), $oldData->getManufacturer(), $property);//,'1659','int');
             $updateditems .= 'Original Content<br>';
         }
 
@@ -468,7 +470,7 @@ class FormTable
         if(!(is_null($form->getContentReviewed()))) {
             $property = 'content reviewed';
             $this->updateAttribute($form->getId(),$form->getContentReviewed(),'1676','int');
-            $this->insertLogging($form->getId(),$form->getContentReviewed(), $oldData->getContentReviewed(), $property,'1676','int');
+            $this->insertLogging($form->getId(),$form->getContentReviewed(), $oldData->getContentReviewed(), $oldData->getManufacturer(), $property);//,'1676','int');
             $updateditems .= 'Content Reviewed<br>';
         }
 
@@ -476,7 +478,7 @@ class FormTable
         if(!(is_null($form->getShortDescription()))) {
             $property = 'short description';
             $this->updateAttribute($form->getId(),$form->getShortDescription(),'506','text');
-            $this->insertLogging($form->getId(),$form->getShortDescription(), $oldData->getShortDescription(), $property,'506','text');
+            $this->insertLogging($form->getId(),$form->getShortDescription(), $oldData->getShortDescription(), $oldData->getManufacturer(), $property);//,'506','text');
             $updateditems .= 'Visibility<br>';
         }
 
@@ -486,87 +488,6 @@ class FormTable
 
         return $updateditems;
 
-    }
-
-    public function storeLogger($oldData, $dirtyData)
-    {
-
-//        var_dump($dirtyData);
-//        die();
-        $columnMap = array('entity_id','oldvalue','newvalue','datechanged','changedby','property');
-        $writer = new Db($this->adapter, 'logger',$columnMap);
-        $logger = new Logger();
-//        $logger->addWriter($writer);
-        $firstResult = array();
-//        $oldValue = null;
-//        $newValue = null;
-//        var_dump($dirtyData);
-        $lookupResults = array();
-        $entityID = null;
-        foreach($dirtyData as $key => $value){
-            if(isset($value)){
-                $lookup = $this->sql->select();
-                $oldValue = $oldData[$key];
-                var_dump($oldValue);
-                $newValue = $dirtyData[$key];
-                $property = ($key ==  'title') ?'name' : $key;
-                $entityID = $dirtyData['id'];
-
-//                echo 'property ' . $property . ' old value ' . $oldValue . ' new value  ' . $newValue . ' entity id ' . $entityID . "\n";
-                $lookup->from('productattribute_lookup')
-                       ->columns(array('type'=>'backend_type', 'attributeID'=>'attribute_id'))
-                       ->where(array('attribute_code'=>$property));
-                $lookupStatement = $this->sql->prepareStatementForSqlObject($lookup);
-                $lookupResult = $lookupStatement->execute();
-                $lookupSet = new ResultSet;
-                if ($lookupResult instanceof ResultInterface && $lookupResult->isQueryResult()) {
-                    $lookupSet->initialize($lookupResult);
-                }
-                $lookupResults[] = $lookupSet->toArray();
-//                $results[] = $lookupResults;
-//                $dataTableHistory = array('old'=>$oldValue, 'new'=>$newValue,'property',$property);
-//                $results[] = array_merge($results,$dataTableHistory);
-            }
-        }
-//        echo "<pre>";
-//        var_dump($results);
-//
-//        echo "==========";
-        foreach($lookupResults as $key => $value) {
-            if(count($lookupResults[$key])) {
-                foreach($lookupResults[$key][0] as $index => $val){
-//                        echo $index . ' ' ;
-
-                    $tableType = $value[0]['type'];
-                    $attributeID = $value[0]['attributeID'];
-                    $attributeLookup = $this->sql->select();
-                    $attributeLookup->from('productattribute_'.$tableType)
-                           ->columns(array('user'=>'changedby', 'datechanged'=>'lastModifiedDate'))
-                           ->where(array('entity_id'=>$entityID, 'attribute_id'=>$attributeID));
-                    $statement = $this->sql->prepareStatementForSqlObject($attributeLookup);
-
-                    $result = $statement->execute();
-
-                    $attributeSet = new ResultSet;
-                    if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                        $attributeSet->initialize($result);
-                    }
-                    $dataTableHistory = array('old'=>$oldValue, 'new'=>$newValue,'property',$property);
-//                    var_dump($oldValue);
-//                    echo gettype($oldValue);
-//                    echo gettype($newValue);
-//                    echo gettype($property);
-                    echo $dataTableHistory['old'] . ' ' . $dataTableHistory['new']. ' ' . $dataTableHistory['property']. '123456789';
-//                    echo "<pre>";
-//var_dump($dataTableHistory);
-                    $attributeResults[] = $attributeSet->toArray();
-
-                }
-            }
-        }
-//
-//        var_dump($attributeResults);
-        die();
     }
 
     /**
@@ -587,39 +508,42 @@ class FormTable
         return $statement->execute();
 
     }
-    public function insertLogging($entityid ,$newValue, $oldValue, $property, $attributeid,$tableType)
+    public function insertLogging($entityid ,$newValue, $oldValue, $manufacturer, $property)//, $attributeid,$tableType)
     {
-        echo $property;
-
+        var_dump($manufacturer);
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-        echo $user;
-        $event = array(
-            $entityid   =>  'entity_id',
-            $oldValue   =>  'oldvalue',
-            $newValue   =>  'newvalue',
-            date('Y-m-t h:i:s')  =>  'datechanged',
-            $user   =>  'changedby',
-            $property   =>  'property',
+        $logger = array(
+            'entity_id' => 'entity_id',
+            'oldvalue'  =>  'oldvalue',
+            'newvalue'  =>  'newvalue',
+            'manufacturer'  =>  'manufacturer',
+            'datechanged'   =>  'datechanged',
+            'changedby' =>  'changedby',
+            'property'  =>  'property',
         );
+
         $columnMap = array(
             'entity_id' =>  $entityid,
             'oldvalue'  =>  $oldValue,
             'newvalue'  =>  $newValue,
-            'datechanged'   => date('Y-m-t h:i:s'),
+            'manufacturer'  =>  current(array_keys($manufacturer)),
+            'datechanged'   => date('Y-m-d h:i:s'),
             'changedby' =>  $user,
             'property'  =>  $property,
-//            $entityid   =>  'entity_id',
-//            $oldValue   =>  'oldvalue',
-//            $newValue   =>  'newvalue',
-//            date('Y-m-t h:i:s')  =>  'datechanged',
-//            $user   =>  'changedby',
-//            $property   =>  'property',
         );
-        $writer = new Db($this->adapter, 'logger', $event);
+        $mapping = array(
+            'extra' =>  $logger,
+        );
+
+        $myLog = array(
+            'message'   =>  'some msg',
+            'extra' =>  $columnMap,
+        );
+        $writer = new Db($this->adapter, 'logger', $mapping);
         $logger = new Logger();
-//        $logger->addWriter($writer);
-        $writer->write($columnMap);
+        $logger->addWriter($writer);
+        $logger->info($myLog['message'], $myLog['extra']);
     }
 }
