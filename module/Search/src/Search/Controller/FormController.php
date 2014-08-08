@@ -143,6 +143,7 @@ class FormController extends AbstractActionController {
  * todo get imageHandle reponse and encode in JSON
  */
 
+
         $arr =json_decode($jmes);
         $message = array('files'=>
             array(array(
