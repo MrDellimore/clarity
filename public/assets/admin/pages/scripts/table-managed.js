@@ -169,10 +169,48 @@ var TableManaged = function () {
 //                "url": "/sku-history",
 //                "type": 'POST'
 //            });
-//        table.on('click', '.revert', function (e) {
-//            e.preventDefault();
-//            console.log('haha');
+        table.on('click.dt', '.revert', function (e) {
+            e.preventDefault();
+            var oldValue = $('tr > td:eq(1)').text();
+            var newValue = $('tr > td:eq(2)').text();
+//            $.post('/sku-history/revert',{'old':oldValue, 'new': newValue}, function(data){
+            table.dataTable({
+                "processing": true,
+                "serverSide": true,
+
+                "ajax": {
+                    "url": "/sku-history/revert",
+                    "type": 'POST',
+                    "data": function (d){
+                        d.oldValue = oldValue;
+                        d.newValue = newValue;
+                    }
+                },
+
+                "columns": [
+                    { "data": "entityID" },
+                    { "data": "oldValue" },
+                    { "data": "newValue" },
+                    { "data": "manufacturer" },
+                    { "data": "user" },
+                    { "data": "dataChanged" },
+                    { "data": "property" },
+//                { "data": "user" },
+                    {
+                        "class":    "revert",
+                        "orderable":    false,
+                        "data": null,
+                        "defaultContent":   "<td><a href='#'>Revert</a></td>"
+                    }
+
+                ]
+            });
 //        });
+//            });
+//            /sku-history/revert
+
+//            console.log('haha');
+        });
     };
 
     var initAcessoryDisplay = function () {

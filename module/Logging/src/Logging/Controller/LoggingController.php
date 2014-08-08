@@ -26,9 +26,6 @@ class LoggingController extends AbstractActionController
         $request = $this->getRequest();
         if($request->isPost()) {
             $logsInfo = $request->getPost();
-//            var_dump($logsInfo);
-//    die();
-
             $draw = $logsInfo['draw'];
             $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
 
@@ -67,6 +64,18 @@ class LoggingController extends AbstractActionController
             $response->setContent($result);
             return $response;
 
+        }
+    }
+
+    public function revertAction()
+    {
+        $revert = $this->getLoggingTable();
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $logsInfo = $request->getPost();
+            $draw = $logsInfo['draw'];
+            $oldValue = $logsInfo['oldValue'];
+            $newValue = $logsInfo['newValue'];
         }
     }
 
