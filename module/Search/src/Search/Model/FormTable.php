@@ -510,7 +510,6 @@ class FormTable
     }
     public function insertLogging($entityid ,$newValue, $oldValue, $manufacturer, $property)//, $attributeid,$tableType)
     {
-        var_dump($manufacturer);
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
