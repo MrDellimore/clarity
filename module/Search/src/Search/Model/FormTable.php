@@ -519,10 +519,8 @@ class FormTable
     public function setEventManager(EventManagerInterface $eventManager)
     {
         $eventManager->addIdentifiers(array(
-            'Search\Model\FormTable',
             get_called_class()
         ));
-
         $this->eventManager = $eventManager;
     }
 
