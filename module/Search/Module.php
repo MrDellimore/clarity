@@ -1,6 +1,14 @@
 <?php
 namespace Search;
 
+use Zend\Mvc\MvcEvent;
+use Zend\ServiceManager\ServiceManager;
+use Zend\EventManager\Event;
+use Zend\EventManager\StaticEventManager;
+use Zend\Log\Logger;
+use Zend\Log\Writer\Db;
+
+
 class Module
 {
     public function getConfig()
@@ -17,6 +25,18 @@ class Module
                 ),
             ),
         );
+    }
+
+    public function onBootstrap(MvcEvent $event)
+    {
+        $eventManager       = $event->getApplication()->getEventManager();
+        $sharedEventManager = $eventManager->getSharedManager();
+        $sharedEventManager->attach('*', 'log', function($e){
+                $writer = new Db($e->getParam('dbAdapter'), 'logger', $e->getParam('mapping'));
+                $logger = new Logger();
+                $logger->addWriter($writer);
+                $logger->info(null,$e->getParam('extra'));
+        },100);
     }
 
 

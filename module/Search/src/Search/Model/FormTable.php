@@ -10,7 +10,9 @@ use Zend\Session\Container;
 use Zend\EventManager\EventManagerAwareTrait;
 use Zend\EventManager\EventManager;
 use Zend\Log\Writer\Db;
+use Zend\EventManager\EventManagerInterface;
 use Zend\Log\Logger;
+
 
 class FormTable
 {
@@ -20,6 +22,11 @@ class FormTable
     protected $sql;
     protected $skuFields = array();
     protected $form;
+
+    /**
+     * @var EventManagerInterface
+     */
+    protected $eventManager;
 
     use EventManagerAwareTrait;
 
@@ -508,6 +515,27 @@ class FormTable
         return $statement->execute();
 
     }
+
+    public function setEventManager(EventManagerInterface $eventManager)
+    {
+        $eventManager->addIdentifiers(array(
+            'Search\Model\FormTable',
+            get_called_class()
+        ));
+
+        $this->eventManager = $eventManager;
+    }
+
+    public function getEventManager()
+    {
+        if (null === $this->eventManager) {
+            $this->setEventManager(new EventManager());
+        }
+
+        return $this->eventManager;
+    }
+
+
     public function insertLogging($entityid ,$newValue, $oldValue, $manufacturer, $property)//, $attributeid,$tableType)
     {
         $loginSession= new Container('login');
@@ -540,9 +568,8 @@ class FormTable
             'message'   =>  'some msg',
             'extra' =>  $columnMap,
         );
-        $writer = new Db($this->adapter, 'logger', $mapping);
-        $logger = new Logger();
-        $logger->addWriter($writer);
-        $logger->info($myLog['message'], $myLog['extra']);
+
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'mapping' => $mapping, 'extra'=> $myLog['extra']);
+        $this->getEventManager()->trigger('log', null, $eventWritables);
     }
 }
