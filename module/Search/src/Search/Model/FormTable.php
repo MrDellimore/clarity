@@ -457,7 +457,7 @@ class FormTable
         if(!(is_null($form->getIncludesFree()))) {
             $property = 'includes free';
             $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
-            $this->insertLogging($form->getId(),$form->getIncludesFree(), $oldData->getIncludesFree(), $oldData->getManufacturer(), $property);//,'1679','text');
+            $this->insertLogging($form->getId(),$form->getIncludesFree(), $oldData->getIncludesFree(), $oldData->getManufacturer(), $property);//,'1679','text');ws
             $updateditems .= 'Includes Free<br>';
         }
 
@@ -508,13 +508,14 @@ class FormTable
         //Find New properties and call corresponding inserts
     }
 
-    public function updateAttribute($entityid,$value,$attributeid,$tableType){
-
+    public function updateAttribute($entityid,$value,$attributeid,$tableType)
+    {
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-
-        $update = $this->sql->update('productattribute_'.$tableType)->set(array('value' => $value,'dataState' => '1', 'changedby' => $user))->where(array('entity_id ='.$entityid, 'attribute_id ='.$attributeid));
+        $update = $this->sql->update('productattribute_'.$tableType)
+                            ->set(array('value' => $value,'dataState' => '1', 'changedby' => $user, 'lastModifiedDate'=>date('Y-m-d h:i:s')))
+                            ->where(array('entity_id ='.$entityid, 'attribute_id ='.$attributeid));
         $statement = $this->sql->prepareStatementForSqlObject($update);
         return $statement->execute();
 
@@ -563,7 +564,8 @@ class FormTable
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-        $logger = array(
+        //logger
+        $fieldMap = array(
             'entity_id' => 'entity_id',
             'oldvalue'  =>  'oldvalue',
             'newvalue'  =>  'newvalue',
@@ -572,8 +574,8 @@ class FormTable
             'changedby' =>  'changedby',
             'property'  =>  'property',
         );
-
-        $columnMap = array(
+        //columnMap
+        $fieldValueMap = array(
             'entity_id' =>  $entityid,
             'oldvalue'  =>  $oldValue,
             'newvalue'  =>  $newValue,
@@ -583,16 +585,14 @@ class FormTable
             'property'  =>  $property,
         );
         $mapping = array(
-            'extra' =>  $logger,
+            'extra' =>  $fieldMap,
         );
 
-        $myLog = array(
-            'extra' =>  $columnMap,
-        );
-        $this->setMapping($mapping);
-        $this->setColumnMap($myLog);
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'fields' => $mapping, 'extra'=> $fieldValueMap);
+//        $loggerMake = array('dbAdapter'=> $this->adapter, 'mapping' => $fieldMap, 'extra'=> $fieldValueMap);
+//        $this->getEventManager()->trigger('loggerConstruct', null, $loggerMake);
+        //I have no idea what the second argument is for. It's supposed to be target, but in reference or context to what? This class or the class where the attach method is located.
 
-        $eventWritables = array('dbAdapter'=> $this->adapter, 'mapping' => $mapping, 'extra'=> $myLog['extra']);
-        $this->getEventManager()->trigger('log', null, $eventWritables);
+        $this->getEventManager()->trigger('constructLog', null, array('makeFields'=>$eventWritables));
     }
 }
