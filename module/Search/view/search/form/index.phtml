@@ -850,26 +850,10 @@
         echo '<input type="hidden" name="imageGallery[][][filename]" value ="'.$image->getFilename().'">';
         echo '<td><input type="text" class="form-control" name="imageGallery[][][label]" value="'.$image->getLabel().'"></td>';
         echo '<td><input type="text" class="form-control" name="imageGallery[][][position]" value="'.$image->getPosition().'"></td>';
-        echo '<td>
-            <label>
-                <input type="radio" name="imageGallery[][][thumbnail]" value="1">
-
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="imageGallery[][][small_image]" value="1">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="imageGallery[][][image]" value="1">
-            </label>
-        </td>
-        <td>
-            <a href="javascript:;" class="imageremove btn default btn-sm">
-                <i class="fa fa-times"></i> Remove </a>
-        </td></tr>';
+        echo '<td><label><input type="radio" name="imageGallery[][][thumbnail]" value="1"></label></td>
+        <td><label><input type="radio" name="imageGallery[][][small_image]" value="1"></label></td>
+        <td><label><input type="radio" name="imageGallery[][][image]" value="1"></label></td>
+        <td><a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td></tr>';
 
 
 

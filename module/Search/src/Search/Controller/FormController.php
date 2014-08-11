@@ -14,6 +14,7 @@ use Zend\View\Model\ViewModel;
 use Search\Entity\Form;
 use Zend\Session\Container;
 use Search\Model\EntityCompare;
+use Search\Model\ImageTable;
 
 
 /**
@@ -142,32 +143,45 @@ class FormController extends AbstractActionController {
  * todo create imageHandler to save images
  * todo get imageHandle reponse and encode in JSON
  */
+        $request = $this->getRequest();
+
+        if($request -> isPost()){
+            $imageData = $request->getFiles()->toArray();
 
 
-        $arr =json_decode($jmes);
-        $message = array('files'=>
-            array(array(
-                'name'        => 'this pic',
-                'size'          => '10000',
-                'url'           => 'http://google.com',
-                'thumbnailurl'  => 'http://google.com',
-                'deleteURL'     => 'http://google.com',
-                'deleteType'    => 'DELETE')),
 
-            array(array('name'        => 'this pic',
-                'size'          => '10000',
-                'url'           => 'http://google.com',
-                'thumbnailurl'  => 'http://google.com',
-                'deleteURL'     => 'http://google.com',
-                'deleteType'    => 'DELETE')));
-//        echo '<pre>';
-//        var_dump($arr);
-//        die();
-        $result = json_encode($message);
-        $event    = $this->getEvent();
-        $response = $event->getResponse();
-        $response->setContent($result);
-        return $response;
+
+            //save image
+            $imageHandler = new imageTable();
+            $imageResponse = $imageHandler->saveImageFile($imageData);
+
+
+            /*
+             * Image response structre
+            $message = array('files'=>
+                array(array(
+                    'name'        => 'this pic',
+                    'size'          => '10000',
+                    'url'           => 'http://google.com',
+                    'thumbnailurl'  => 'http://google.com',
+                    'deleteURL'     => 'http://google.com',
+                    'deleteType'    => 'DELETE')),
+
+                array(array('name'        => 'this pic',
+                    'size'          => '10000',
+                    'url'           => 'http://google.com',
+                    'thumbnailurl'  => 'http://google.com',
+                    'deleteURL'     => 'http://google.com',
+                    'deleteType'    => 'DELETE')));
+
+            */
+
+            $result = json_encode($imageResponse);
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
 
     }
 
