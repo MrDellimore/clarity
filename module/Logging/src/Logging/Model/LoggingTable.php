@@ -14,8 +14,16 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Where;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\EventManagerAwareTrait;
 
-class LoggingTable {
+class LoggingTable
+{
+    use EventManagerAwareTrait;
+
+    protected $adapter;
+
+    protected $sql;
 
     public function __construct(Adapter $adapter)
     {
@@ -23,6 +31,100 @@ class LoggingTable {
         $this->sql = new Sql($this->adapter);
     }
 
+
+    /**
+     * Description: this method revert any changes that had taken place in the logging history.
+     * @params array();
+     */
+    public function undo($params = array())
+    {
+        $select = $this->sql->select();
+        $select->columns(
+            array(
+                'attId' =>  'attribute_id',
+                'dataType'  =>  'backend_type',
+            ));
+        $select->from('productattribute_lookup');
+        $select->where(
+            array(
+                'attribute_code'=> $params['property'] == 'title' ? 'name' : $params['property']
+            ));
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $selectResult = $resultSet->toArray();
+        $attributeId = $selectResult[0]['attId'];
+        $tableType  = $selectResult[0]['dataType'];
+//      Might have to user the trigger here instead of the update.
+        $logger = array(
+            'entity_id' => 'entity_id',
+            'oldvalue'  =>  'oldvalue',
+            'newvalue'  =>  'newvalue',
+            'manufacturer'  =>  'manufacturer',
+            'datechanged'   =>  'datechanged',
+            'changedby' =>  'changedby',
+            'property'  =>  'property',
+        );
+
+        $columnMap = array(
+            'entity_id' =>  $params['eid'],
+            'oldvalue'  =>  $params['new'],
+            'newvalue'  =>  $params['old'],
+            'manufacturer'  =>  $params['manOpId'],
+            'datechanged'   => date('Y-m-d h:i:s'),
+            'changedby' =>  $params['user'],
+            'property'  =>  $params['property'],
+        );
+        $mapping = array(
+            'extra' =>  $logger,
+        );
+
+        $myLog = array(
+            'extra' =>  $columnMap,
+        );
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'mapping' => $mapping, 'extra'=> $myLog['extra']);
+        $this->getEventManager()->trigger('log', null, $eventWritables);
+
+//        $update = $this->sql->update('logger');
+//        $update->set(
+//            array(
+//                'oldvalue'=>$params['new'],
+//                'newvalue'=>$params['old'],
+//                'changedby'=>$params['user'],
+//                'datechanged'=>date('Y-m-d h:i:s'),
+//            ));
+//        $update->where(array('id'=>$params['pk']));
+//        $statement = $this->sql->prepareStatementForSqlObject($update);
+//        $result = $statement->execute();
+//        $resultSet = new ResultSet;
+//        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//            $resultSet->initialize($result);
+//        }
+        $update = $this->sql->update('productattribute_'.$tableType);
+        $update->set(
+            array(
+                'dataState'=>1,
+                'lastModifiedDate'=>date('Y-m-d h:i:s'),
+                'changedby'=>$params['user'],
+                'value'=>$params['old'],
+            )
+        );
+        $update->where(array('attribute_id'=>$attributeId, 'entity_id'=>$params['eid']));
+        $statement = $this->sql->prepareStatementForSqlObject($update);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+    }
+
+    /**
+     * Description: this method will return a list of all rows in logger table.
+     * @return array|\Zend\Db\Adapter\Driver\ResultInterface $result array()
+     */
     public function listUser()
     {
         $select = $this->sql->select();
@@ -45,11 +147,18 @@ class LoggingTable {
 
     }
 
+    /**
+     * Description: this method will use the search sku input box as a basis to return only those rows with the sku.
+     * @param $searchParam array();
+     * @return $response array()
+     */
+
     public function lookupLoggingInfo($searchParams = array())
     {
         $select = $this->sql->select();
         $select->from('logger');
         $select->columns(array(
+            'id'  =>  'id',
             'entityID'  =>  'entity_id',
             'oldValue'  =>  'oldvalue',
             'newValue'  =>  'newvalue',
@@ -88,10 +197,14 @@ class LoggingTable {
             $manufacturer = $logs[$key]['manufacturer'];
 //            $entityId = $logs[$key]['entityID'];
 
+
+            $response[$key]['id'] = $logs[$key]['id'];
             $response[$key]['entityID'] = $logs[$key]['entityID'];
             $response[$key]['oldValue'] = $logs[$key]['oldValue'];
             $response[$key]['newValue'] = $logs[$key]['newValue'];
-            $response[$key]['manufacturer'] = $logs[$key]['manufacturer'];
+            $response[$key]['manufacturerID'] = $manufacturer;
+
+//            $response[$key]['manufacturer'] = $logs[$key]['manufacturer'];
             $response[$key]['dataChanged'] = $logs[$key]['dataChanged'];
             $response[$key]['property'] = $logs[$key]['property'];
 

@@ -26,6 +26,7 @@ class LoggingController extends AbstractActionController
         $request = $this->getRequest();
         if($request->isPost()) {
             $logsInfo = $request->getPost();
+//            var_dump($logsInfo);
             $draw = $logsInfo['draw'];
             $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
 
@@ -69,13 +70,34 @@ class LoggingController extends AbstractActionController
 
     public function revertAction()
     {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        $userID = $userLogin['userid'];
+//        var_dump($userLogin);
         $revert = $this->getLoggingTable();
         $request = $this->getRequest();
         if($request->isPost()) {
             $logsInfo = $request->getPost();
+//            var_dump($logsInfo);
             $draw = $logsInfo['draw'];
-            $oldValue = $logsInfo['oldValue'];
-            $newValue = $logsInfo['newValue'];
+            $oldValue = $logsInfo['old'];
+            $newValue = $logsInfo['new'];
+            $entityId = $logsInfo['eid'];
+            $pk = $logsInfo['pk'];
+            $manOpId = $logsInfo['manOpId'];
+            $property = $logsInfo['property'];
+            $searchParams = array(
+                'old'=>$oldValue,
+                'new'=>$newValue,
+                'eid'=>$entityId,
+                'pk'=>$pk,
+                'property'=>$property,
+                'user'=>$userID,
+                'manOpId'=>$manOpId,
+            );
+            $revert->undo($searchParams);
+            $this->redirect()->toRoute('logging');
+
         }
     }
 

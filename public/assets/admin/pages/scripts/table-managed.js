@@ -81,9 +81,9 @@ var TableManaged = function () {
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     };
     var populateSkuHistory = function () {
-        var table = $('#skuHistoryDisplay');
+//        var table = $('#skuHistoryDisplay');
 
-        var filterDateRange;
+//        var filterDateRange;
 
 
 //        console.log('haha','hoho', filterDateRange);
@@ -99,12 +99,12 @@ var TableManaged = function () {
 //            console.log(filterDateRange);
 //        });
 
-        table.dataTable({
+        var table = $('#skuHistoryDisplay').dataTable({
 
             "processing": true,
             "serverSide": true,
 
-            "ajax": {
+            ajax: {
                 "url": "/sku-history",
                 "type": 'POST',
                 "data": function (d){
@@ -113,16 +113,38 @@ var TableManaged = function () {
             },
 
             "columns": [
-                { "data": "entityID" },
-                { "data": "oldValue" },
-                { "data": "newValue" },
-                { "data": "manufacturer" },
-                { "data": "user" },
-                { "data": "dataChanged" },
-                { "data": "property" },
-//                { "data": "user" },
                 {
-                    "class":    "revert",
+                    "class": 'hidden entityId',
+                    "data": 'id'
+                },
+                {
+                    "class": "entity_id",
+                    "data": "entityID"
+                },
+                {
+                    "class":"old_value",
+                    "data": "oldValue"
+                },
+                {
+                    "class":"new_value",
+                    "data": "newValue"
+                },
+                {
+                    "class": "hidden manId",
+                    "data": "manufacturerID"
+                },
+
+                { "data": "manufacturer" },
+                {
+                    "data": "user"
+                },
+                { "data": "dataChanged" },
+                {
+                    "class": 'property_name',
+                    "data": "property"
+                },
+                {
+                    "class":"revert",
                     "orderable":    false,
                     "data": null,
                     "defaultContent":   "<td><a href='#'>Revert</a></td>"
@@ -144,72 +166,34 @@ var TableManaged = function () {
                     "next": "Next",
                     "last": "Last",
                     "first": "First"
+                }
             }
-            }/*,
-            "columnDefs": [{  // set default column settings
-                'orderable': false,
-                'targets': [0]
-            }, {
-                "searchable": false,
-                "targets": [0]
-            }]
-            /*
-            "order": [
-                [1, "asc"]
-            ] */// set first column as a default sort by asc
         });
-//        }).columnFilter({
-//            sPlaceHolder: "head:before",
-//            aoColumns: [ 	{ type: "text" },
-//                { type: "date-range" }
-//            ]
-//
-//        });
-//            table.ajax.reload({
-//                "url": "/sku-history",
-//                "type": 'POST'
-//            });
-        table.on('click.dt', '.revert', function (e) {
+
+//        alert( 'Data source: '+ table.api().ajax.url() );
+//        table.columns[0].attr('class','entityId');
+//        table.columns[4].attr('class','manId');
+        $('#skuHistoryDisplay tbody').on('click', 'td.revert',function (e) {
             e.preventDefault();
-            var oldValue = $('tr > td:eq(1)').text();
-            var newValue = $('tr > td:eq(2)').text();
-//            $.post('/sku-history/revert',{'old':oldValue, 'new': newValue}, function(data){
-            table.dataTable({
-                "processing": true,
-                "serverSide": true,
-
-                "ajax": {
-                    "url": "/sku-history/revert",
-                    "type": 'POST',
-                    "data": function (d){
-                        d.oldValue = oldValue;
-                        d.newValue = newValue;
-                    }
-                },
-
-                "columns": [
-                    { "data": "entityID" },
-                    { "data": "oldValue" },
-                    { "data": "newValue" },
-                    { "data": "manufacturer" },
-                    { "data": "user" },
-                    { "data": "dataChanged" },
-                    { "data": "property" },
-//                { "data": "user" },
-                    {
-                        "class":    "revert",
-                        "orderable":    false,
-                        "data": null,
-                        "defaultContent":   "<td><a href='#'>Revert</a></td>"
-                    }
-
-                ]
+            var revert= $(this);
+            var oldValue = revert.siblings('td.old_value').text();
+            var newValue = revert.siblings('td.new_value').text();
+            var entityID = revert.siblings('td.entity_id').text();
+            var property = revert.siblings('td.property_name').text();
+            var pk = revert.siblings('td.entityId').text();
+            var manOptionID = revert.siblings('td.manId').text();
+            var params = {
+                'old'   :   oldValue,
+                'new'   :   newValue,
+                'eid'   :   entityID,
+                'pk'    :   pk,
+                'property': property,
+                'manOpId': manOptionID
+            };
+            $.post('/sku-history/revert', params, function(data){
+                //nothing should happen except redraw the table.
+                table.api().draw();
             });
-//        });
-//            });
-//            /sku-history/revert
-
-//            console.log('haha');
         });
     };
 

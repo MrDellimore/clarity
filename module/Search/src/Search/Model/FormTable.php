@@ -23,6 +23,10 @@ class FormTable
     protected $skuFields = array();
     protected $form;
 
+    protected $mapping = array();
+
+    protected $columnMap = array();
+
     /**
      * @var EventManagerInterface
      */
@@ -533,6 +537,26 @@ class FormTable
         return $this->eventManager;
     }
 
+    public function setMapping($mapping = array())
+    {
+        $this->mapping = $mapping;
+    }
+
+    public function getMapping()
+    {
+        return $this->mapping;
+    }
+
+    public function setColumnMap($columnMap = array())
+    {
+        $this->columnMap = $columnMap;
+    }
+
+    public function getColumnMap()
+    {
+        return $this->columnMap;
+    }
+
 
     public function insertLogging($entityid ,$newValue, $oldValue, $manufacturer, $property)//, $attributeid,$tableType)
     {
@@ -563,9 +587,10 @@ class FormTable
         );
 
         $myLog = array(
-            'message'   =>  'some msg',
             'extra' =>  $columnMap,
         );
+        $this->setMapping($mapping);
+        $this->setColumnMap($myLog);
 
         $eventWritables = array('dbAdapter'=> $this->adapter, 'mapping' => $mapping, 'extra'=> $myLog['extra']);
         $this->getEventManager()->trigger('log', null, $eventWritables);

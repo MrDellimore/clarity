@@ -2,7 +2,6 @@
 namespace Search;
 
 use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceManager;
 use Zend\EventManager\Event;
 use Zend\EventManager\StaticEventManager;
 use Zend\Log\Logger;
