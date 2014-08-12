@@ -30,21 +30,6 @@ trait Spex {
         return $resultSet->toArray();
     }
 
-//    public function productAttribute(Sql $sql, array $columns = array(), array $where = array(), $tableType )
-//    {
-//        $select = $sql->select();
-//        $select->columns($columns);
-//        $select->from('productattribute_'. $tableType);
-//        $select->where($where);
-//        $statement = $sql->prepareStatementForSqlObject($select);
-//        $result = $statement->execute();
-//        $resultSet = new ResultSet;
-//        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-//            $resultSet->initialize($result);
-//        }
-//        return $resultSet->toArray();
-//    }
-
     public function productUpdateaAttributes(Sql $sql, $tableType, array $set = array(), array $where = array())
     {
         $update = $sql->update('productattribute_'.$tableType);
