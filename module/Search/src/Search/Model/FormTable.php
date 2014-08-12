@@ -564,17 +564,7 @@ class FormTable
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-        //logger
-        $fieldMap = array(
-            'entity_id' => 'entity_id',
-            'oldvalue'  =>  'oldvalue',
-            'newvalue'  =>  'newvalue',
-            'manufacturer'  =>  'manufacturer',
-            'datechanged'   =>  'datechanged',
-            'changedby' =>  'changedby',
-            'property'  =>  'property',
-        );
-        //columnMap
+
         $fieldValueMap = array(
             'entity_id' =>  $entityid,
             'oldvalue'  =>  $oldValue,
@@ -584,15 +574,8 @@ class FormTable
             'changedby' =>  $user,
             'property'  =>  $property,
         );
-        $mapping = array(
-            'extra' =>  $fieldMap,
-        );
 
-        $eventWritables = array('dbAdapter'=> $this->adapter, 'fields' => $mapping, 'extra'=> $fieldValueMap);
-//        $loggerMake = array('dbAdapter'=> $this->adapter, 'mapping' => $fieldMap, 'extra'=> $fieldValueMap);
-//        $this->getEventManager()->trigger('loggerConstruct', null, $loggerMake);
-        //I have no idea what the second argument is for. It's supposed to be target, but in reference or context to what? This class or the class where the attach method is located.
-
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,
         $this->getEventManager()->trigger('constructLog', null, array('makeFields'=>$eventWritables));
     }
 }

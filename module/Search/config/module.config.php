@@ -109,6 +109,19 @@ return array(
                                                  'Search\Controller\Form'   => 'Search\Controller\FormController'
                                                 )
     ),
+    'event_listener_construct' =>  array(
+        'logger'  =>  array(
+            'extra'    =>  array(
+                'entity_id' => 'entity_id',
+                'oldvalue'  =>  'oldvalue',
+                'newvalue'  =>  'newvalue',
+                'manufacturer'  =>  'manufacturer',
+                'datechanged'   =>  'datechanged',
+                'changedby' =>  'changedby',
+                'property'  =>  'property',
+            ),
+        ),
+    ),
 
     'view_manager' => array('template_path_stack' => array(__DIR__ . '/../view')),
 

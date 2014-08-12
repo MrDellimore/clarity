@@ -16,10 +16,11 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Where;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareTrait;
+use Search\Tables\Spex;
 
 class LoggingTable
 {
-    use EventManagerAwareTrait;
+    use EventManagerAwareTrait, Spex;
 
     protected $adapter;
 
@@ -38,37 +39,17 @@ class LoggingTable
      */
     public function undo($params = array())
     {
-        $select = $this->sql->select();
-        $select->columns(
-            array(
-                'attId' =>  'attribute_id',
-                'dataType'  =>  'backend_type',
-            ));
-        $select->from('productattribute_lookup');
-        $select->where(
-            array(
-                'attribute_code'=> $params['property'] == 'title' ? 'name' : $params['property']
-            ));
-        $statement = $this->sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
-        }
-        $selectResult = $resultSet->toArray();
+        $columns = array(
+            'attId' =>  'attribute_id',
+            'dataType'  =>  'backend_type',
+        );
+        $where = array(
+             'attribute_code'=> $params['property'] == 'title' ? 'name' : $params['property']
+        );
+        $selectResult = $this->productAttribute($this->sql,$columns, $where, 'lookup');
+
         $attributeId = $selectResult[0]['attId'];
         $tableType  = $selectResult[0]['dataType'];
-//      Might have to user the trigger here instead of the update.
-        $logger = array(
-            'entity_id' => 'entity_id',
-            'oldvalue'  =>  'oldvalue',
-            'newvalue'  =>  'newvalue',
-            'manufacturer'  =>  'manufacturer',
-            'datechanged'   =>  'datechanged',
-            'changedby' =>  'changedby',
-            'property'  =>  'property',
-        );
-
         $columnMap = array(
             'entity_id' =>  $params['eid'],
             'oldvalue'  =>  $params['new'],
@@ -78,47 +59,17 @@ class LoggingTable
             'changedby' =>  $params['user'],
             'property'  =>  $params['property'],
         );
-        $mapping = array(
-            'extra' =>  $logger,
-        );
 
-        $myLog = array(
-            'extra' =>  $columnMap,
-        );
-        $eventWritables = array('dbAdapter'=> $this->adapter, 'mapping' => $mapping, 'extra'=> $myLog['extra']);
-        $this->getEventManager()->trigger('log', null, $eventWritables);
-
-//        $update = $this->sql->update('logger');
-//        $update->set(
-//            array(
-//                'oldvalue'=>$params['new'],
-//                'newvalue'=>$params['old'],
-//                'changedby'=>$params['user'],
-//                'datechanged'=>date('Y-m-d h:i:s'),
-//            ));
-//        $update->where(array('id'=>$params['pk']));
-//        $statement = $this->sql->prepareStatementForSqlObject($update);
-//        $result = $statement->execute();
-//        $resultSet = new ResultSet;
-//        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-//            $resultSet->initialize($result);
-//        }
-        $update = $this->sql->update('productattribute_'.$tableType);
-        $update->set(
-            array(
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $columnMap);//'fields' => $mapping,
+        $this->getEventManager()->trigger('constructLog', null, array('makeFields'=>$eventWritables));
+         $set = array(
                 'dataState'=>1,
                 'lastModifiedDate'=>date('Y-m-d h:i:s'),
                 'changedby'=>$params['user'],
                 'value'=>$params['old'],
-            )
-        );
-        $update->where(array('attribute_id'=>$attributeId, 'entity_id'=>$params['eid']));
-        $statement = $this->sql->prepareStatementForSqlObject($update);
-        $result = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
-        }
+            );
+        $where = array('attribute_id'=>$attributeId, 'entity_id'=>$params['eid']);
+        $this->productUpdateaAttributes($this->sql, $tableType, $set, $where);
     }
 
     /**
@@ -167,7 +118,6 @@ class LoggingTable
             'user'  =>  'changedby',
             'property'  =>  'property',
         ));
-//        var_dump($sku);
         if( isset($searchParams['sku']) || isset($searchParams['from']) || isset($searchParams['to']) ) {
             $entityId = new Expression('p.entity_id = logger.entity_id');
             $select->join(array('p' => 'product'), $entityId ,array('entityID' => 'entity_id'));

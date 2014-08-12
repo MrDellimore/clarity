@@ -36,13 +36,17 @@ class Module
         $eventManager       = $event->getApplication()->getEventManager();
         $sharedEventManager = $eventManager->getSharedManager();
         $sharedEventManager->attach('*', 'log', function($e){
-            $writer = new Db($e->getParam('dbAdapter'), 'logger', $e->getParam('fields'));
+            $fields = $this->getConfig()['event_listener_construct']['logger'];
+            $writer = new Db($e->getParam('dbAdapter'), 'logger', $fields);//$e->getParam('fields')
             $logger = new Logger();
             $logger->addWriter($writer);
             $logger->info(null,$e->getParam('extra'));
         },100);
         $sharedEventManager->attach('*', 'constructLog', function($e){
-                $this->getEventManager()->trigger('log', null, $e->getParam('makeFields'));
+            $fields = $this->getConfig()['event_listener_construct']['logger'];
+//            $makeFields = $e->getParam('makeFields');
+            $eventWritables = array('dbAdapter'=>$e->getParam('makeFields')['dbAdapter'], 'fields'=>$fields, 'extra'=>$e->getParam('makeFields')['extra'] );
+            $this->getEventManager()->trigger('log', null, $eventWritables);
         },100);
     }
 
