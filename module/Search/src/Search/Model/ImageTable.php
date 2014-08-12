@@ -96,10 +96,9 @@ class ImageTable{
         $update->set(array('label' => $image->getLabel(),'position'=>$image->getPosition(),'disabled'=>$image->getDisabled(),'dataState' => '1', 'changedby' => $user));
         $update->where(array('value_id' => $image->getId() ));
         $statement = $this->sql->prepareStatementForSqlObject($update);
-
         $statement->execute();
 
-        return $image->getLabel() ." has been updated";
+        return $image->getLabel() ." has been updated <br />";
     }
 
 }
