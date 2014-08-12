@@ -87,4 +87,19 @@ class ImageTable{
 
     }
 
+    public function updateImage(Images $image){
+        $loginSession= new Container('login');
+        $userData = $loginSession->sessionDataforUser;
+        $user = $userData['userid'];
+
+        $update = $this->sql->update('productattribute_images');
+        $update->set(array('label' => $image->getLabel(),'position'=>$image->getPosition(),'disabled'=>$image->getDisabled(),'dataState' => '1', 'changedby' => $user));
+        $update->where(array('value_id' => $image->getId() ));
+        $statement = $this->sql->prepareStatementForSqlObject($update);
+
+        $statement->execute();
+
+        return $image->getLabel() ." has been updated";
+    }
+
 }

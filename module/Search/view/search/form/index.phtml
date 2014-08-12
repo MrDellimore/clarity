@@ -857,43 +857,13 @@ $i=0;
         <td><label><input type="radio" name="imageGallery[][image]" value="1"></label></td>
         <td><a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td></tr>';
         //id of item
-        echo '<input type="hidden" name="imageGallery['.$i.'][id]" value="'.$image->getID().'">';
+        echo '<input type="hidden" name="imageGallery['.$i.'][id]" value="'.$image->getId().'">';
+        echo '<input type="hidden" name="imageGallery['.$i.'][domain]" value="'.$image->getDomain().'">';
         $i++;
     }
 
     ?>
-    <!--<tr>
-        <td>
-            <a href="../../assets/admin/pages/media/works/img1.jpg" class="fancybox-button" data-rel="fancybox-button">
-                <img class="img-responsive" src="../../assets/admin/pages/media/works/img1.jpg" alt="">
-            </a>
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][1][label]" value="Thumbnail image">
-        </td>
-        <td>
-            <input type="text" class="form-control" name="product[images][1][sort_order]" value="1">
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][1][image_type]" value="1">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][1][image_type]" value="2">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="product[images][1][image_type]" value="3" checked>
-            </label>
-        </td>
-        <td>
-            <a href="javascript:;" class="btn default btn-sm">
-                <i class="fa fa-times"></i> Remove </a>
-        </td>
-    </tr>-->
+
 
     </tbody>
 </table>

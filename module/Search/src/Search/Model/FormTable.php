@@ -476,6 +476,16 @@ class FormTable{
             $updateditems .= 'Visibility<br>';
         }
 
+        //update Images
+        if(!(is_null($form->getImageGallery()))) {
+            $imageHandler = new ImageTable($this->adapter);
+            foreach($form->getImageGallery() as  $value){
+                $result=$imageHandler->updateImage($value);
+                $updateditems .= $result;
+            }
+        }
+
+
         if($updateditems != ''){
             $updateditems = $startMessage.$updateditems;
         }
