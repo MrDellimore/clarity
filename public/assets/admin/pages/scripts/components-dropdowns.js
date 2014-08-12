@@ -16,7 +16,6 @@ var ComponentsDropdowns = function () {
                 //Save old option to set in list
                 var brandSet = $("#manufacturerDropdown option:selected").text();
 
-                //$el.empty(); // remove old options
                 $.each(data, function(key, value) {
                     //dont add if set
                     if (value.brand != brandSet){
@@ -46,7 +45,6 @@ var ComponentsDropdowns = function () {
             //Save old option to set in list
             var mfcset = $("#manufacturerDropdown option:selected").text();
 
-            //$el.empty(); // remove old options
             $.each(data, function(key, value) {
                 //dont add if set
                 if (value.mfc != mfcset){

@@ -9,6 +9,8 @@ var FormFileUpload = function () {
             $('#fileupload').fileupload({
                 disableImageResize: false,
                 autoUpload: false,
+                imageMinWidth: 500,
+                imageMinHeight: 500,
                 disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
                 maxFileSize: 5000000,
                 acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
@@ -75,14 +77,18 @@ var FormFileUpload = function () {
                 var url = data.jqXHR.responseJSON.files[0].url;
                 var name = data.jqXHR.responseJSON.files[0].name;
 
+                var rowcount = $('#currentImages tr').length;
+                rowcount--;
+
+
                 //create string to append to table
                 var newImage = '<tr><td><img class="img-responsive" src="'+url+'" alt="'+name+'"></td>';
-                newImage += '<input type="hidden" name="imageGallery[][][filename]" value ="'+url+'">';
-                newImage += '<td><input type="text" class="form-control" name="imageGallery[][][label]" value="'+name+'"></td>';
-                newImage += '<td><input type="text" class="form-control" name="imageGallery[][][position]" value=""></td>';
-                newImage += '<td><label><input type="radio" name="imageGallery[][][thumbnail]" value="1"></label></td>';
-                newImage += '<td><label><input type="radio" name="imageGallery[][][small_image]" value="1"></label></td>';
-                newImage += '<td><label><input type="radio" name="imageGallery[][][image]" value="1"></label></td>';
+                newImage += '<input type="hidden" name="imageGallery['+rowcount+'][filename]" value ="'+url+'">';
+                newImage += '<td><input type="text" class="form-control" name="imageGallery['+rowcount+'][label]" value="'+name+'"></td>';
+                newImage += '<td><input type="text" class="form-control" name="imageGallery['+rowcount+'][position]" value=""></td>';
+                newImage += '<td><label><input type="radio" name="imageGallery['+rowcount+'][thumbnail]" value="1"></label></td>';
+                newImage += '<td><label><input type="radio" name="imageGallery['+rowcount+'][small_image]" value="1"></label></td>';
+                newImage += '<td><label><input type="radio" name="imageGallery['+rowcount+'][image]" value="1"></label></td>';
                 newImage += '<td><a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td></tr>';
 
 

@@ -26,7 +26,7 @@ class Form {
 
     protected $status;
 
-    protected $manufacturer;
+    protected $manufacturer = array();
 
     protected $visibility;
 
@@ -148,7 +148,7 @@ class Form {
 
     protected $prismType;
 
-    protected $brand;
+    protected $brand = array();
 
     protected $website;
 

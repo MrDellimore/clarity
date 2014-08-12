@@ -27,6 +27,9 @@ class Images {
 
     protected $image;
 
+    protected $disabled;
+
+
 
     /**
      * @param mixed $domain
@@ -155,6 +158,24 @@ class Images {
     {
         return $this->thumbnail;
     }
+
+    /**
+     * @param mixed $disabled
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
+
+
 
 
 

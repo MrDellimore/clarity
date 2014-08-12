@@ -2,10 +2,19 @@
 
 namespace Search\Model;
 
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Sql;
+use Zend\Session\Container;
+use Search\Entity\Images;
 
 
 
 class ImageTable{
+
+    public function __construct(Adapter $adapter){
+        $this->adapter = $adapter;
+        $this->sql = new Sql($this->adapter);
+    }
 
     public function saveImageFile($data){
 
@@ -51,6 +60,31 @@ class ImageTable{
 
 
         return $message;
+    }
+
+    public function createImage(Images $image,$entityid){
+        $loginSession= new Container('login');
+        $userData = $loginSession->sessionDataforUser;
+        $user = $userData['userid'];
+
+        $insert = $this->sql->insert('productattribute_images');
+        $insert->columns(array('entity_id','label','position','disabled','domain','filename','datastate','changedby'));
+        $insert->values(array(
+            'entity_id' => $entityid,
+            'label' => $image->getLabel(),
+            'position' => $image->getPosition(),
+            'disabled' => 0,
+            'domain' => '',
+            'filename' => $image->getFilename(),
+            'datastate' => 2,
+            'changedby' => $user
+        ));
+
+        $statement = $this->sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
+
+        return $image->getLabel() ." has been uploaded";
+
     }
 
 }

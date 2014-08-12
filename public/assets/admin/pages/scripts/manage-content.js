@@ -20,13 +20,22 @@ var ManageContent = function () {
 
         $( "#submitForm" ).click(function( event ) {
             event.preventDefault();
-            var formData = $('#generalForm').serializeArray();
+            //forms from content page
+            var generalForm = $('#generalForm').serializeArray();
+            var imageForm = $('#imageForm').serializeArray();
+
+            var formData
+            formData = generalForm.concat(imageForm);
+
+           // console.log(formData);
+
+
             var goodData = [];
 
            // var badIndex = new Array(crossSellDisplay_length]);
             for(var i = 0; i < formData.length; i++) {
                 if(formData[i].name.slice(0,7) !== 'product' && formData[i].name !=='_wysihtml5_mode' && formData[i].name !=='acessoriesDisplay_length' && formData[i].name !=='crossSellDisplay_length' ){
-                    console.log(formData[i]);
+                    //console.log(formData[i]);
                     goodData.push(formData[i]);
                 }
             };
@@ -43,7 +52,7 @@ var ManageContent = function () {
 
                     toastr.success(data);
 
-                    //console.log(data);
+                   //console.log(data);
                 });
         });
     }

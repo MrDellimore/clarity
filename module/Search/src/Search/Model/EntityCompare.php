@@ -8,48 +8,89 @@
 namespace Search\Model;
 
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
+use Search\Entity\Form;
 
 
 class EntityCompare {
 
+    /*
+     * returns Form entity with properties that need to be updated
+     */
     public function dirtCheck($oldData, $newData){
         //dehydate objects to arrays
         $hydrator = new cHydrator;
-        $oldData = $hydrator->extract($oldData);
-        $newData = $hydrator->extract($newData);
-        $dirt = Array();
-
-        foreach($oldData as $key => $value){
-            if($value != $newData[$key] && $value != null && $value != ''){
-                $dirt[$key] = $newData[$key];
-            }
-            if(is_array($newData[$key])){
-                if($value != $newData[$key][0] && $value != null && $value != ''){
-                    $dirt[$key] = $newData[$key][0];
-                }
-            }
+        if(is_object($oldData)){
+            $oldData = $hydrator->extract($oldData);
         }
+        if(is_object($newData)){
+            $newData = $hydrator->extract($newData);
+        }
+
+
+
+        //compare arrays
+        $dirt = $this->getDirtArray($oldData,$newData);
+
+
 
         $dirtyEntity = new Form();
         $hydrator->hydrate($dirt,$dirtyEntity);
         $dirtyEntity->setId($oldData['id']);
 
         return $dirtyEntity;
-
     }
 
+
+
+
+    public function getDirtArray($oldData,$newData){
+        $dirt = Array();
+        $hydrator = new cHydrator;
+        foreach($oldData as $key => $value){
+             if(array_key_exists($key,$newData)){
+                //recursively if item is an object
+                if(is_object($newData[$key])){
+                    //hydrate and call again
+                    $value = $hydrator->extract($value);
+                    $newData[$key] = $hydrator->extract($newData[$key]);
+                    $recursiveresult = $this->getDirtArray($value,$newData[$key]);
+
+                    if(!(empty($recursiveresult))){
+                        $dirt[$key] = $recursiveresult;
+                    }
+                }
+
+                //recursively call if array
+                if(is_array($newData[$key]) && !(is_object($newData[$key]))  ){
+                    $recursiveresult = $this->getDirtArray($value,$newData[$key]);
+
+                    if(!(empty($recursiveresult))){
+                        $dirt[$key] = $recursiveresult;
+                    }
+                }
+
+                //actual dirty comparison
+                if($value != $newData[$key] && $value != null && $value != '' && !(is_array($newData[$key])) ){
+                    $dirt[$key] = $newData[$key];
+                }
+            }
+        }
+        return $dirt;
+    }
+
+
+
+
+    /*
+     * returns and entity with properties that need to be inserted
+     */
     public function newCheck($old, $newData){
         //dehydate objects to arrays
         $hydrator = new cHydrator;
         $old = $hydrator->extract($old);
         $newData = $hydrator->extract($newData);
-        $newArray = Array();
 
-        foreach($old as $key => $value){
-            if(($newData[$key] !='' || $newData[$key] !='') && ($value == null || $value !='')){
-                $newArray[$key] = $newData[$key];
-            }
-        }
+        $newArray = $this->getNewArray($old,$newData);
 
         $newEntity = new Form();
         $hydrator->hydrate($newArray,$newEntity);
@@ -57,4 +98,51 @@ class EntityCompare {
         return $newEntity;
 
     }
+
+
+
+    public function getNewArray($oldData,$newData){
+        $newArray = Array();
+        $hydrator = new cHydrator;
+        foreach($newData as $key => $value){
+
+            if(array_key_exists($key,$oldData)){
+
+                //recursively if item is an object
+                if(is_object($value)){
+                    //hydrate and call again
+                    $value = $hydrator->extract($value);
+                    $oldData[$key] = $hydrator->extract($oldData[$key]);
+
+                    $recursiveresult = $this->getNewArray($oldData[$key],$value);
+
+                    if(!(empty($recursiveresult))){
+                        $newArray[$key] = $recursiveresult;
+                    }
+                }
+
+                //recursively call if array
+                if(is_array($value) && !(is_object($value))  ){
+                    $recursiveresult = $this->getNewArray($oldData[$key],$value);
+
+                    if(!(empty($recursiveresult))){
+                        $newArray[$key] = $recursiveresult;
+                    }
+                }
+
+                //actual new comparison
+                if($value != $oldData[$key] && $value != null && $value != '' && !(is_array($oldData[$key])) && $oldData[$key] == null ){
+                    $newArray[$key] = $value;
+                }
+            }
+            else{
+                if(is_object($value)){
+                    $value = $hydrator->extract($value);
+                    $newArray[$key] = $value;
+                }
+            }
+        }
+        return $newArray;
+    }
+
 }

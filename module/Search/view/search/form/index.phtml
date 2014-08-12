@@ -154,9 +154,10 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">Manufacturer</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium" id="manufacturerDropdown" data-placeholder="No Manufacturer Set" name="manufacturer">
-                            <option value="<?= array_keys(current($this->data->getManufacturer())); ?>" selected><?= current($this->data->getManufacturer()); ?></option>
+                        <select class="form-control input-medium" id="manufacturerDropdown" data-placeholder="No Manufacturer Set" name="manufacturer[option]">
+                            <option value="<?= $this->data->getManufacturer()['option']; ?>" selected><?= $this->data->getManufacturer()['value']; ?></option>
                         </select>
+                        <input type="hidden" name="manufacturer[value]" value="<?= $this->data->getManufacturer()['value']; ?>">
                     </div>
                 </div>
             </div>
@@ -183,9 +184,10 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">Brand</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium" id="brandDropdown" data-placeholder="No Brand Set" name="brand">
-                            <option value="<?= array_keys(current($this->data->getBrand())); ?>" selected><?= current($this->data->getBrand()); ?></option>
+                        <select class="form-control input-medium" id="brandDropdown" data-placeholder="No Brand Set" name="brand[option]">
+                            <option value="<?= $this->data->getBrand()['option']; ?>" selected><?= $this->data->getBrand()['value']; ?></option>
                         </select>
+                        <input type="hidden" name="brand[value]" value="<?= $this->data->getBrand()['value']; ?>">
                     </div>
                 </div>
             </div>
@@ -844,19 +846,19 @@
     <tbody>
 
     <?php
-
+$i=0;
     foreach($this->data->getImageGallery() as $image){
-        echo '<tr><td><img class="img-responsive" src="http://www.focuscamera.com/media/catalog/product'.$image->getFilename().'" alt=""></td>';
-        echo '<input type="hidden" name="imageGallery[][][filename]" value ="'.$image->getFilename().'">';
-        echo '<td><input type="text" class="form-control" name="imageGallery[][][label]" value="'.$image->getLabel().'"></td>';
-        echo '<td><input type="text" class="form-control" name="imageGallery[][][position]" value="'.$image->getPosition().'"></td>';
-        echo '<td><label><input type="radio" name="imageGallery[][][thumbnail]" value="1"></label></td>
-        <td><label><input type="radio" name="imageGallery[][][small_image]" value="1"></label></td>
-        <td><label><input type="radio" name="imageGallery[][][image]" value="1"></label></td>
+        echo '<tr><td><img class="img-responsive" src="'.$image->getDomain().$image->getFilename().'" alt=""></td>';
+        echo '<input type="hidden" name="imageGallery['.$i.'][filename]" value ="'.$image->getFilename().'">';
+        echo '<td><input type="text" class="form-control" name="imageGallery['.$i.'][label]" value="'.$image->getLabel().'"></td>';
+        echo '<td><input type="text" class="form-control" name="imageGallery['.$i.'][position]" value="'.$image->getPosition().'"></td>';
+        echo '<td><label><input type="radio" name="imageGallery[][thumbnail]" value="1"></label></td>
+        <td><label><input type="radio" name="imageGallery[][small_image]" value="1"></label></td>
+        <td><label><input type="radio" name="imageGallery[][image]" value="1"></label></td>
         <td><a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td></tr>';
-
-
-
+        //id of item
+        echo '<input type="hidden" name="imageGallery['.$i.'][id]" value="'.$image->getID().'">';
+        $i++;
     }
 
     ?>

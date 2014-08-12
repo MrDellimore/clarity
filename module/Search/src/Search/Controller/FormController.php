@@ -14,7 +14,7 @@ use Zend\View\Model\ViewModel;
 use Search\Entity\Form;
 use Zend\Session\Container;
 use Search\Model\EntityCompare;
-use Search\Model\ImageTable;
+//use Search\Model\ImageTable;
 
 
 /**
@@ -24,8 +24,8 @@ use Search\Model\ImageTable;
 class FormController extends AbstractActionController {
 
     protected $formTable;
+    protected $imageTable;
 
-    //protected $skuData = array();
     /**
      * @return ViewModel
      */
@@ -51,21 +51,10 @@ class FormController extends AbstractActionController {
             $hydrator = new cHydrator;
             $hydrator->hydrate($skuData,$queriedData);
 
-
-/* Removing custom hydrator and using std Classmethod hydrator
-            foreach($this->skuData as $key => $value){
-//		echo 'key ' . $key . ' value ' . $value . "\n"; 
-                $method = 'set'.ucfirst($key);
-                $queriedData->$method($value);
-            }
-*/
-
-
             //stash object in container
             $container->data = $queriedData;
         }
-//echo "<pre>";
-//        var_dump($queriedData);
+
         $view = new ViewModel(array('data'=>$queriedData));
         return $view;
     }
@@ -84,18 +73,24 @@ class FormController extends AbstractActionController {
             $formData = (array) $request->getPost();
             //fix dates on post...
 
+
+
+
             //Hydrate into object
             $hydrator = new cHydrator;
             $hydrator->hydrate($formData,$postData);
+
+
             //Find dirty and new entities
             $comp = new EntityCompare();
             $dirtyData = $comp->dirtCheck($container->data, $postData);
             $newData = $comp->newCheck($container->data, $postData);
 
-            //run update or insert data
+
+            // update/insert data
             $form = $this->getFormTable();
             $result = $form->dirtyHandle($dirtyData);
-            $form->newHandle($newData);
+            $result .= $form->newHandle($newData);
 
             if($result == ''){
                 $result = 'No changes to sku made.';
@@ -107,8 +102,6 @@ class FormController extends AbstractActionController {
 
             return $response;
 
-
-            //return $this->redirect()->toRoute("search", array('action'=>'index'));
         }
     }
 
@@ -138,43 +131,14 @@ class FormController extends AbstractActionController {
 
     public function imageSaveAction(){
 
-/*
- * todo get files from POST
- * todo create imageHandler to save images
- * todo get imageHandle reponse and encode in JSON
- */
         $request = $this->getRequest();
 
         if($request -> isPost()){
             $imageData = $request->getFiles()->toArray();
 
-
-
-
             //save image
-            $imageHandler = new imageTable();
+            $imageHandler = $this->getImageTable();
             $imageResponse = $imageHandler->saveImageFile($imageData);
-
-
-            /*
-             * Image response structre
-            $message = array('files'=>
-                array(array(
-                    'name'        => 'this pic',
-                    'size'          => '10000',
-                    'url'           => 'http://google.com',
-                    'thumbnailurl'  => 'http://google.com',
-                    'deleteURL'     => 'http://google.com',
-                    'deleteType'    => 'DELETE')),
-
-                array(array('name'        => 'this pic',
-                    'size'          => '10000',
-                    'url'           => 'http://google.com',
-                    'thumbnailurl'  => 'http://google.com',
-                    'deleteURL'     => 'http://google.com',
-                    'deleteType'    => 'DELETE')));
-
-            */
 
             $result = json_encode($imageResponse);
             $event    = $this->getEvent();
@@ -192,5 +156,13 @@ class FormController extends AbstractActionController {
             $this->formTable = $sm->get('Search\Model\FormTable');
         }
         return $this->formTable;
+    }
+
+    public function getImageTable(){
+        if (!$this->imageTable) {
+            $sm = $this->getServiceLocator();
+            $this->imageTable = $sm->get('Search\Model\ImageTable');
+        }
+        return $this->imageTable;
     }
 }

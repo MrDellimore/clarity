@@ -7,9 +7,11 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
+use Search\Entity\Form;
 //use Zend\Db\Sql\Expression;
 //use Zend\Db\Sql\Select;
 //use Search\Helper\FormatFields;
+
 
 class FormTable{
 
@@ -18,6 +20,7 @@ class FormTable{
     protected $sql;
     protected $skuFields = array();
     protected $form;
+    protected $imageTable;
 
     public function __construct(Adapter $adapter){
         $this->adapter = $adapter;
@@ -170,19 +173,19 @@ class FormTable{
         //Fetch Manufacturer Option
         $newAttibute = $this->fetchAttribute($entityid,'int','102','manufacturer');
         $newOption = $this->fetchOption(current($newAttibute),'102','manufacturer');
-        $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
+        $result[array_keys($newAttibute)[0]]['option'] = current($newAttibute);
+        $result[array_keys($newAttibute)[0]]['value'] = current($newOption);
 
         //Fetch Brand Option
         $newAttibute = $this->fetchAttribute($entityid,'int','1641','brand');
         $newOption = $this->fetchOption(current($newAttibute),'1641','brand');
-        $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
+        $result[array_keys($newAttibute)[0]]['option'] = current($newAttibute);
+        $result[array_keys($newAttibute)[0]]['value'] = current($newOption);
 
 
         //Fetch Images
         $images = $this->fetchImages($entityid);
         $result['imageGallery'] = $images;
-
-
 
 
         return $result;
@@ -217,7 +220,6 @@ class FormTable{
         return $result;
     }
 
-
     public function fetchOption($option,$attributeid,$property){
         $select = $this->sql->select();
 
@@ -251,8 +253,8 @@ class FormTable{
         $select = $this->sql->select();
 
         $select->from('productattribute_images');
-        $select->columns(array('id' => 'entity_id','label' => 'label','position' => 'position', 'filename' =>'filename'));
-        $select->where(array('entity_id' => $entityid));
+        $select->columns(array('id' => 'value_id','label' => 'label','position' => 'position','domain' => 'domain', 'filename' =>'filename'));
+        $select->where(array('entity_id' => $entityid, 'disabled' => 0));
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -404,7 +406,8 @@ class FormTable{
         $startMessage = 'The following fields have been updated :<br>';
         $updateditems = '';
 
-        //update sku
+        //update sku (will prob never happen)
+
         //update Title
         if(!(is_null($form->getTitle()))) {
             $this->updateAttribute($form->getId(),$form->getTitle(),'96','varchar');
@@ -415,14 +418,16 @@ class FormTable{
             $this->updateAttribute($form->getId(),$form->getDescription(),'97','text');
             $updateditems .= 'Description<br>';
         }
-        //update inventory
-        //update url Key
+        //update inventory (should be static)
+        //update url Key (can this be updated through the API)
+
         //update status
         if(!(is_null($form->getStatus()))) {
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
             $updateditems .= 'Status<br>';
         }
         //update manufacturer
+
         //update visibility
         if(!(is_null($form->getVisibility()))) {
             $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
@@ -435,17 +440,7 @@ class FormTable{
             $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
             $updateditems .= 'Stock Status<br>';
         }
-        //update price
-        //update cost
-        //update rebate price
-        //update rebatestartenddate
-        //update special price
-        //update special startenddate
-        //update main in rebate price
-        //update weight
-        //update shipping
-        //update text
-        //update In Box
+
         if(!(is_null($form->getInBox()))) {
             $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
             $updateditems .= 'In Box<br>';
@@ -493,7 +488,22 @@ class FormTable{
      * Handle isNew Form entities
      */
     public function newHandle(Form $form){
-        //Find New properties and call corresponding inserts
+
+        $inserteditems='';
+
+        //Create new Image
+        if(!(is_null($form->getImageGallery()))) {
+            $imageHandler = new ImageTable($this->adapter);
+                //$this->getImageTable();
+            $images = $form->getImageGallery();
+            foreach($images as  $value){
+                $result=$imageHandler->createImage($value,$form->getId());
+                $inserteditems .= $result;
+            }
+        }
+
+
+        return $inserteditems;
     }
 
     public function updateAttribute($entityid,$value,$attributeid,$tableType){
@@ -505,6 +515,10 @@ class FormTable{
         $update = $this->sql->update('productattribute_'.$tableType)->set(array('value' => $value,'dataState' => '1', 'changedby' => $user))->where(array('entity_id ='.$entityid, 'attribute_id ='.$attributeid));
         $statement = $this->sql->prepareStatementForSqlObject($update);
         return $statement->execute();
+
+    }
+
+    public function insertAttributes($entityid,$value,$attributeid,$tableType){
 
     }
 }
