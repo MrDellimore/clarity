@@ -80,7 +80,122 @@ var TableManaged = function () {
 
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     };
+    var populateSkuHistory = function () {
+//        var table = $('#skuHistoryDisplay');
 
+//        var filterDateRange;
+
+
+//        console.log('haha','hoho', filterDateRange);
+//        $('#filterDateRange').on('focusout',function(){
+//            var that = $(this);
+//            $('.applyBtn').on("click", function(){
+//                filterDateRange = $('#filterDateRange').val();
+//            });
+//            $('#btnDateRange').click(function(){
+//                filterDateRange = that.val();
+//                console.log('haha',filterDateRange);
+//            });
+//            console.log(filterDateRange);
+//        });
+
+        var table = $('#skuHistoryDisplay').dataTable({
+
+            "processing": true,
+            "serverSide": true,
+
+            ajax: {
+                "url": "/sku-history",
+                "type": 'POST',
+                "data": function (d){
+                    d.filterDateRange =  $('#filterDateRange').val()
+                }
+            },
+
+            "columns": [
+                {
+                    "class": 'hidden entityId',
+                    "data": 'id'
+                },
+                {
+                    "class": "entity_id",
+                    "data": "entityID"
+                },
+                {
+                    "class":"old_value",
+                    "data": "oldValue"
+                },
+                {
+                    "class":"new_value",
+                    "data": "newValue"
+                },
+                {
+                    "class": "hidden manId",
+                    "data": "manufacturerID"
+                },
+
+                { "data": "manufacturer" },
+                {
+                    "data": "user"
+                },
+                { "data": "dataChanged" },
+                {
+                    "class": 'property_name',
+                    "data": "property"
+                },
+                {
+                    "class":"revert",
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td><a href='#'>Revert</a></td>"
+                }
+
+            ],
+
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "lengthMenu": "_MENU_ records",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }
+        });
+
+//        alert( 'Data source: '+ table.api().ajax.url() );
+//        table.columns[0].attr('class','entityId');
+//        table.columns[4].attr('class','manId');
+        $('#skuHistoryDisplay tbody').on('click', 'td.revert',function (e) {
+            e.preventDefault();
+            var revert= $(this);
+            var oldValue = revert.siblings('td.old_value').text();
+            var newValue = revert.siblings('td.new_value').text();
+            var entityID = revert.siblings('td.entity_id').text();
+            var property = revert.siblings('td.property_name').text();
+            var pk = revert.siblings('td.entityId').text();
+            var manOptionID = revert.siblings('td.manId').text();
+            var params = {
+                'old'   :   oldValue,
+                'new'   :   newValue,
+                'eid'   :   entityID,
+                'pk'    :   pk,
+                'property': property,
+                'manOpId': manOptionID
+            };
+            $.post('/sku-history/revert', params, function(data){
+                //nothing should happen except redraw the table.
+                table.api().draw();
+            });
+        });
+    };
     var initAcessoryDisplay = function () {
 
         var table = $('#acessoriesDisplay');
@@ -217,7 +332,7 @@ var TableManaged = function () {
             initTable1();
             initAcessoryDisplay();
             initCrossSellDisplay();
-
+            populateSkuHistory();
         }
 
     };
