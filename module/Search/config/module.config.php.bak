@@ -34,11 +34,12 @@ return array(
                         'action'     => 'index',
                     ),
                 ),
-            ),
-            'quicksearch'  => array(
+                'may_terminate' => true,
+                'child_routes'  =>  array(
+                    'quicksearch'  => array(
                         'type'  => 'Zend\Mvc\Router\Http\Literal',
                         'options'    => array(
-                            'route' =>  '/search/quicksearch',
+                            'route' =>  '/quicksearch',
                             'defaults'  =>  array(
                                 'controller'    => 'Search\Controller\Search',
                                 'action'        =>  'quicksearch',
@@ -46,10 +47,21 @@ return array(
                             ),
                         ),
                     ),
-
+                ),
+            ),
 //            'may_terminate' => true,
-//            ),
             'form'  => array(
+                'type'  => 'literal',
+                'options'    => array(
+                    'route' =>  '/form',
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\Controller\Form',
+                        'action'        =>  'index',
+                    ),
+                ),
+//                'may_terminate' =>  true,
+                'child_routes'  =>  array(
+                    'form'  => array(
                         'type'  => 'segment',
                         'options'    => array(
                             'route' =>  '/form[/][/:sku]',
@@ -62,63 +74,53 @@ return array(
                             ),
                         ),
                     ),
-            'mfcload'  => array(
-                'type'  => 'Zend\Mvc\Router\Http\Literal',
-                'options'    => array(
-                    'route' =>  '/form/manufacturerload',
-
-                    'defaults'  =>  array(
-                        'controller'    => 'Search\Controller\Form',
-                        'action'        =>  'manufacturerLoad',
-
-                    ),
-                ),
-            ),
-
-            'brand'  => array(
+                    'mfcload'  => array(
                         'type'  => 'Zend\Mvc\Router\Http\Literal',
                         'options'    => array(
-                            'route' =>  '/form/brandload',
+                            'route' =>  '/manufacturerload',
+
+                            'defaults'  =>  array(
+                                'controller'    => 'Search\Controller\Form',
+                                'action'        =>  'manufacturerLoad',
+
+                            ),
+                        ),
+                    ),
+                    'brand'  => array(
+                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'options'    => array(
+                            'route' =>  '/brandload',
                             'defaults'  =>  array(
                                 'controller'    => 'Search\Controller\Form',
                                 'action'        =>  'brandLoad',
                             ),
                         ),
                     ),
-            'loadaccessories'  => array(
-                'type'  => 'Zend\Mvc\Router\Http\Literal',
-                'options'    => array(
-                    'route' =>  '/form/accessories',
-                    'defaults'  =>  array(
-                        'controller'    => 'Search\Controller\Form',
-                        'action'        =>  'loadAccessories',
+                    'loadaccessories'  => array(
+                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'options'    => array(
+                            'route' =>  '/accessories',
+                            'defaults'  =>  array(
+                                'controller'    => 'Search\Controller\Form',
+                                'action'        =>  'loadAccessories',
+                            ),
+                        ),
+                    ),
+                    'submitform'  => array(
+                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'options'    => array(
+                            'route' =>  '/submit',
+                            'defaults'  =>  array(
+                                'controller'    => 'Search\Controller\Form',
+                                'action'        =>  'submitForm',
+
+                            ),
+                        ),
                     ),
                 ),
             ),
 
-            'imagesave'  => array(
-                'type'  => 'Zend\Mvc\Router\Http\Literal',
-                'options'    => array(
-                    'route' =>  '/form/imagesave',
 
-                    'defaults'  =>  array(
-                        'controller'    => 'Search\Controller\Form',
-                        'action'        =>  'imageSave',
-                    ),
-                ),
-            ),
-
-            'submitform'  => array(
-                'type'  => 'Zend\Mvc\Router\Http\Literal',
-                'options'    => array(
-                    'route' =>  '/form/submit',
-                    'defaults'  =>  array(
-                        'controller'    => 'Search\Controller\Form',
-                        'action'        =>  'submitForm',
-
-                    ),
-                ),
-            ),
 //            quicksearch was here
 
 //            mfcload was here
@@ -131,19 +133,6 @@ return array(
     'controllers' => array('invokables' => array('Search\Controller\Search' => 'Search\Controller\SearchController',
                                                  'Search\Controller\Form'   => 'Search\Controller\FormController'
                                                 )
-    ),
-    'event_listener_construct' =>  array(
-        'logger'  =>  array(
-            'extra'    =>  array(
-                'entity_id' => 'entity_id',
-                'oldvalue'  =>  'oldvalue',
-                'newvalue'  =>  'newvalue',
-                'manufacturer'  =>  'manufacturer',
-                'datechanged'   =>  'datechanged',
-                'changedby' =>  'changedby',
-                'property'  =>  'property',
-            ),
-        ),
     ),
 
     'view_manager' => array(

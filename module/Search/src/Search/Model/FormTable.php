@@ -7,6 +7,8 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
+use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Expression;
 use Zend\EventManager\EventManagerAwareTrait;
 use Zend\EventManager\EventManager;
 use Zend\Log\Writer\Db;
@@ -413,6 +415,38 @@ class FormTable{
 
         return $resultSet->toArray();
     }
+
+    public function lookupAccessories($searchValue, $limit)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from('product');
+        $select->columns(array('entityID'=>'entity_id','Sku' => 'productid'));
+        $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
+        $priceJoin = new Expression('p.entity_id = product.entity_id and p.attribute_id = 99');
+        $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
+
+        $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'));
+
+        $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'));
+
+        $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'));
+        $where = new Where();
+        $where->like('product.productid',$searchValue.'%');
+        $select->where($where);
+        $select->limit($limit);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $searchResults = $resultSet->toArray();
+        return $searchResults;
+    }
+
 
 
     /**

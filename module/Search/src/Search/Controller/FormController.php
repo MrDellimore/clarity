@@ -51,14 +51,51 @@ class FormController extends AbstractActionController {
             $hydrator = new cHydrator;
             $hydrator->hydrate($skuData,$queriedData);
 
+/* Removing custom hydrator and using std Classmethod hydrator
+            foreach($this->skuData as $key => $value){
+//		echo 'key ' . $key . ' value ' . $value . "\n"; 
+                $method = 'set'.ucfirst($key);
+                $queriedData->$method($value);
+            }
+*/
+
+
             //stash object in container
             $container->data = $queriedData;
         }
-
+//echo "<pre>";
+//        var_dump($queriedData);
         $view = new ViewModel(array('data'=>$queriedData));
         return $view;
     }
 
+    public function loadAccessoriesAction()
+    {
+        $form = $this->getFormTable();
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $loadAccessories = $request->getPost();
+            $draw = $loadAccessories['draw'];
+            $sku = $loadAccessories['search']['value'];
+            $limit = $loadAccessories['length'];
+            if($limit == '-1'){
+                $limit = 100;
+            }
+            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
+            $result = json_encode(
+                array(
+                    'draw'  =>  (int)$draw,
+                    'data'  =>  $loadedAccessories,
+                    'recordsTotal'  =>  1000,
+                    'recordsFiltered'   =>  $limit,
+                )
+            );
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
+    }
 
 
 
