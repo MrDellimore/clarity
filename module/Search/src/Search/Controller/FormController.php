@@ -11,10 +11,9 @@ namespace Search\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 use Zend\View\Model\ViewModel;
-use Search\Entity\Form;
+use Search\Model\Form;
 use Zend\Session\Container;
 use Search\Model\EntityCompare;
-//use Search\Model\ImageTable;
 
 
 /**
@@ -26,6 +25,7 @@ class FormController extends AbstractActionController {
     protected $formTable;
     protected $imageTable;
 
+    //protected $skuData = array();
     /**
      * @return ViewModel
      */
@@ -97,10 +97,13 @@ class FormController extends AbstractActionController {
 
             return $response;
 
+
+            //return $this->redirect()->toRoute("search", array('action'=>'index'));
         }
     }
 
-    public function brandLoadAction(){
+    public function brandLoadAction()
+    {
         $form = $this->getFormTable();
         $brandList = $form->brandDropDown();
         $result = json_encode($brandList);

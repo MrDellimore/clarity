@@ -7,11 +7,15 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
+use Zend\EventManager\EventManagerAwareTrait;
+use Zend\EventManager\EventManager;
+use Zend\Log\Writer\Db;
+use Zend\EventManager\EventManagerInterface;
+use Zend\Log\Logger;
 use Search\Entity\Form;
 //use Zend\Db\Sql\Expression;
 //use Zend\Db\Sql\Select;
 //use Search\Helper\FormatFields;
-
 
 class FormTable{
 
@@ -21,6 +25,18 @@ class FormTable{
     protected $skuFields = array();
     protected $form;
     protected $imageTable;
+
+    protected $mapping = array();
+
+    protected $columnMap = array();
+
+    /**
+     * @var EventManagerInterface
+     */
+    protected $eventManager;
+
+    use EventManagerAwareTrait;
+
 
     public function __construct(Adapter $adapter){
         $this->adapter = $adapter;
@@ -173,14 +189,12 @@ class FormTable{
         //Fetch Manufacturer Option
         $newAttibute = $this->fetchAttribute($entityid,'int','102','manufacturer');
         $newOption = $this->fetchOption(current($newAttibute),'102','manufacturer');
-        $result[array_keys($newAttibute)[0]]['option'] = current($newAttibute);
-        $result[array_keys($newAttibute)[0]]['value'] = current($newOption);
+        $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
 
         //Fetch Brand Option
         $newAttibute = $this->fetchAttribute($entityid,'int','1641','brand');
         $newOption = $this->fetchOption(current($newAttibute),'1641','brand');
-        $result[array_keys($newAttibute)[0]]['option'] = current($newAttibute);
-        $result[array_keys($newAttibute)[0]]['value'] = current($newOption);
+        $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
 
 
         //Fetch Images
@@ -219,6 +233,7 @@ class FormTable{
 
         return $result;
     }
+
 
     public function fetchOption($option,$attributeid,$property){
         $select = $this->sql->select();
@@ -344,6 +359,8 @@ class FormTable{
 
 
 
+
+
     /**
      * Manufacturer Drop Down list
      */
@@ -406,73 +423,102 @@ class FormTable{
         $startMessage = 'The following fields have been updated :<br>';
         $updateditems = '';
 
-        //update sku (will prob never happen)
-
+        //update sku
         //update Title
         if(!(is_null($form->getTitle()))) {
+            $property = 'title';
             $this->updateAttribute($form->getId(),$form->getTitle(),'96','varchar');
+            $this->insertLogging($form->getId(),$form->getTitle(), $oldData->getTitle(), $oldData->getManufacturer(), $property);//,'96','varchar');
             $updateditems .= 'Title<br>';
         }
         //update description
         if(!(is_null($form->getDescription()))) {
+            $property = 'description';
             $this->updateAttribute($form->getId(),$form->getDescription(),'97','text');
+            $this->insertLogging($form->getId(),$form->getDescription(), $oldData->getDescription(), $oldData->getManufacturer(), $property);//'97','text');
             $updateditems .= 'Description<br>';
         }
-        //update inventory (should be static)
-        //update url Key (can this be updated through the API)
-
+        //update inventory
+        //update url Key
         //update status
         if(!(is_null($form->getStatus()))) {
+            $property = 'status';
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
+            $this->insertLogging($form->getId(),$form->getStatus(), $oldData->getStatus(), $oldData->getManufacturer(), $property);//,'273','int');
             $updateditems .= 'Status<br>';
         }
         //update manufacturer
-
         //update visibility
         if(!(is_null($form->getVisibility()))) {
+            $property = 'visibility';
             $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
+            $this->insertLogging($form->getId(),$form->getVisibility(), $oldData->getVisibility(),$oldData->getManufacturer(), $property);//,'526','int');
             $updateditems .= 'Visibility<br>';
         }
         //update condition
         //update tax class
         //update stock status
         if(!(is_null($form->getStockStatus()))) {
+            $property = 'stock status';
             $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
+            $this->insertLogging($form->getId(),$form->getStockStatus(), $oldData->getStockStatus(),$oldData->getManufacturer(), $property);//,'1661','int');
             $updateditems .= 'Stock Status<br>';
         }
-
+        //update price
+        //update cost
+        //update rebate price
+        //update rebatestartenddate
+        //update special price
+        //update special startenddate
+        //update main in rebate price
+        //update weight
+        //update shipping
+        //update text
+        //update In Box
         if(!(is_null($form->getInBox()))) {
+            $property = 'inbox';
             $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
+            $this->insertLogging($form->getId(),$form->getInBox(), $oldData->getInBox(),$oldData->getManufacturer(), $property);//,'1633','text');
             $updateditems .= 'In Box<br>';
         }
 
         //update Includes Free
         if(!(is_null($form->getIncludesFree()))) {
+            $property = 'includes free';
             $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
+            $this->insertLogging($form->getId(),$form->getIncludesFree(), $oldData->getIncludesFree(), $oldData->getManufacturer(), $property);//,'1679','text');ws
             $updateditems .= 'Includes Free<br>';
         }
 
         //update Meta Description
         if(!(is_null($form->getMetaDescription()))) {
+            $property = 'meta description';
             $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
+            $this->insertLogging($form->getId(),$form->getMetaDescription(), $oldData->getMetaDescription(), $oldData->getManufacturer(), $property);//,'105','varchar');
             $updateditems .= 'Meta Description<br>';
         }
 
         //update Original Content
         if(!(is_null($form->getOriginalContent()))) {
+            $property = 'original content';
             $this->updateAttribute($form->getId(),$form->getOriginalContent(),'1659','int');
+            $this->insertLogging($form->getId(),$form->getOriginalContent(), $oldData->getOriginalContent(), $oldData->getManufacturer(), $property);//,'1659','int');
             $updateditems .= 'Original Content<br>';
         }
 
         //update Content Reviewed
         if(!(is_null($form->getContentReviewed()))) {
+            $property = 'content reviewed';
             $this->updateAttribute($form->getId(),$form->getContentReviewed(),'1676','int');
+            $this->insertLogging($form->getId(),$form->getContentReviewed(), $oldData->getContentReviewed(), $oldData->getManufacturer(), $property);//,'1676','int');
             $updateditems .= 'Content Reviewed<br>';
         }
 
         //update Short Description
         if(!(is_null($form->getShortDescription()))) {
+            $property = 'short description';
             $this->updateAttribute($form->getId(),$form->getShortDescription(),'506','text');
+            $this->insertLogging($form->getId(),$form->getShortDescription(), $oldData->getShortDescription(), $oldData->getManufacturer(), $property);//,'506','text');
             $updateditems .= 'Visibility<br>';
         }
 
@@ -523,8 +569,9 @@ class FormTable{
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-
-        $update = $this->sql->update('productattribute_'.$tableType)->set(array('value' => $value,'dataState' => '1', 'changedby' => $user))->where(array('entity_id ='.$entityid, 'attribute_id ='.$attributeid));
+        $update = $this->sql->update('productattribute_'.$tableType)
+                            ->set(array('value' => $value,'dataState' => '1', 'changedby' => $user, 'lastModifiedDate'=>date('Y-m-d h:i:s')))
+                            ->where(array('entity_id ='.$entityid, 'attribute_id ='.$attributeid));
         $statement = $this->sql->prepareStatementForSqlObject($update);
         return $statement->execute();
 
@@ -532,5 +579,63 @@ class FormTable{
 
     public function insertAttributes($entityid,$value,$attributeid,$tableType){
 
+    }
+
+    public function setEventManager(EventManagerInterface $eventManager)
+    {
+        $eventManager->addIdentifiers(array(
+            get_called_class()
+        ));
+        $this->eventManager = $eventManager;
+    }
+
+    public function getEventManager()
+    {
+        if (null === $this->eventManager) {
+            $this->setEventManager(new EventManager());
+        }
+
+        return $this->eventManager;
+    }
+
+    public function setMapping($mapping = array())
+    {
+        $this->mapping = $mapping;
+    }
+
+    public function getMapping()
+    {
+        return $this->mapping;
+    }
+
+    public function setColumnMap($columnMap = array())
+    {
+        $this->columnMap = $columnMap;
+    }
+
+    public function getColumnMap()
+    {
+        return $this->columnMap;
+    }
+
+
+    public function insertLogging($entityid ,$newValue, $oldValue, $manufacturer, $property)//, $attributeid,$tableType)
+    {
+        $loginSession= new Container('login');
+        $userData = $loginSession->sessionDataforUser;
+        $user = $userData['userid'];
+
+        $fieldValueMap = array(
+            'entity_id' =>  $entityid,
+            'oldvalue'  =>  $oldValue,
+            'newvalue'  =>  $newValue,
+            'manufacturer'  =>  current(array_keys($manufacturer)),
+            'datechanged'   => date('Y-m-d h:i:s'),
+            'changedby' =>  $user,
+            'property'  =>  $property,
+        );
+
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,
+        $this->getEventManager()->trigger('constructLog', null, array('makeFields'=>$eventWritables));
     }
 }
