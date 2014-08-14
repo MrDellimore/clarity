@@ -27,7 +27,7 @@ var ManageContent = function () {
             var formData
             formData = generalForm.concat(imageForm);
 
-           // console.log(formData);
+            //console.log(formData);
 
 
             var goodData = [];
@@ -50,9 +50,9 @@ var ManageContent = function () {
                     //expty content div and display results
                     //$('#contentdiv').empty().append(data);
 
-                   //toastr.success(data);
+                   toastr.success(data);
 
-                   console.log(data);
+                   //console.log(data);
                 });
         });
     }

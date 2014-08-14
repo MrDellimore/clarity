@@ -73,19 +73,14 @@ class FormController extends AbstractActionController {
             $formData = (array) $request->getPost();
             //fix dates on post...
 
-
-
-
             //Hydrate into object
             $hydrator = new cHydrator;
             $hydrator->hydrate($formData,$postData);
-
 
             //Find dirty and new entities
             $comp = new EntityCompare();
             $dirtyData = $comp->dirtCheck($container->data, $postData);
             $newData = $comp->newCheck($container->data, $postData);
-
 
             // update/insert data
             $form = $this->getFormTable();
@@ -105,8 +100,7 @@ class FormController extends AbstractActionController {
         }
     }
 
-    public function brandLoadAction()
-    {
+    public function brandLoadAction(){
         $form = $this->getFormTable();
         $brandList = $form->brandDropDown();
         $result = json_encode($brandList);

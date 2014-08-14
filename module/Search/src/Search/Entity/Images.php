@@ -21,15 +21,41 @@ class Images {
 
     protected $label;
 
-    protected $small_image;
-
-    protected $thumbnail;
-
-    protected $image;
+    protected $default;
 
     protected $disabled;
 
+    /**
+     * @param mixed $default
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * @param mixed $disabled
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
 
     /**
      * @param mixed $domain
@@ -111,69 +137,7 @@ class Images {
         return $this->position;
     }
 
-    /**
-     * @param mixed $image
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * @param mixed $small_image
-     */
-    public function setSmallImage($small_image)
-    {
-        $this->small_image = $small_image;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSmallImage()
-    {
-        return $this->small_image;
-    }
-
-    /**
-     * @param mixed $thumbnail
-     */
-    public function setThumbnail($thumbnail)
-    {
-        $this->thumbnail = $thumbnail;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getThumbnail()
-    {
-        return $this->thumbnail;
-    }
-
-    /**
-     * @param mixed $disabled
-     */
-    public function setDisabled($disabled)
-    {
-        $this->disabled = $disabled;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDisabled()
-    {
-        return $this->disabled;
-    }
 
 
 

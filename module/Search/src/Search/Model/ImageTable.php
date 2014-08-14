@@ -67,8 +67,16 @@ class ImageTable{
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
 
+        /*
+        if(is_null($image->getDefault())){
+            $defaultimg = 0;
+        }
+        else
+            $defaultimg = 1;
+        */
+
         $insert = $this->sql->insert('productattribute_images');
-        $insert->columns(array('entity_id','label','position','disabled','domain','filename','datastate','changedby'));
+        $insert->columns(array('entity_id','label','position','disabled','domain','filename','default','datastate','changedby'));
         $insert->values(array(
             'entity_id' => $entityid,
             'label' => $image->getLabel(),
@@ -76,6 +84,7 @@ class ImageTable{
             'disabled' => 0,
             'domain' => '',
             'filename' => $image->getFilename(),
+            'default' => is_null($image->getDefault())?0:1,
             'datastate' => 2,
             'changedby' => $user
         ));
@@ -91,14 +100,43 @@ class ImageTable{
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
+        $setArray= array();
+        $message = '';
 
-        $update = $this->sql->update('productattribute_images');
-        $update->set(array('label' => $image->getLabel(),'position'=>$image->getPosition(),'disabled'=>$image->getDisabled(),'dataState' => '1', 'changedby' => $user));
-        $update->where(array('value_id' => $image->getId() ));
-        $statement = $this->sql->prepareStatementForSqlObject($update);
-        $statement->execute();
+        //check that each feild updating is not null
+        if(!(is_null($image->getLabel()))){
+            $setArray['label'] = $image->getLabel();
+        }
+        if(!(is_null($image->getPosition()))){
+            $setArray['position'] = $image->getPosition();
+        }
+        if(!(is_null($image->getDisabled()))){
+            $setArray['disabled'] = $image->getDisabled();
+        }
+        if(!(is_null($image->getDisabled()))){
+            $setArray['default'] = $image->getDefault();
+        }
 
-        return $image->getLabel() ." has been updated <br />";
+        if((is_null($image->getId()))){
+            unset($setArray);
+        }
+
+
+
+        if(!empty($setArray)){
+            $setArray['datastate'] = 1;
+            $setArray['changedby'] = $user;
+
+            $update = $this->sql->update('productattribute_images');
+            $update->set($setArray);
+            $update->where(array('value_id' => $image->getId() ));
+            $statement = $this->sql->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $message .= $image->getLabel() ." has been updated <br />";
+        }
+
+        return $message;
     }
 
 }

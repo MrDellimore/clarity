@@ -253,7 +253,9 @@ class FormTable{
         $select = $this->sql->select();
 
         $select->from('productattribute_images');
-        $select->columns(array('id' => 'value_id','label' => 'label','position' => 'position','domain' => 'domain', 'filename' =>'filename'));
+        $select->columns(array( 'id' => 'value_id','label' => 'label','position' => 'position',
+                                'domain' => 'domain', 'filename' =>'filename',
+                                'disabled' => 'disabled','default'=> 'default'));
         $select->where(array('entity_id' => $entityid, 'disabled' => 0));
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
@@ -269,8 +271,6 @@ class FormTable{
         return $result;
 
     }
-
-
 
 
 
@@ -479,6 +479,8 @@ class FormTable{
         //update Images
         if(!(is_null($form->getImageGallery()))) {
             $imageHandler = new ImageTable($this->adapter);
+
+
             foreach($form->getImageGallery() as  $value){
                 $result=$imageHandler->updateImage($value);
                 $updateditems .= $result;

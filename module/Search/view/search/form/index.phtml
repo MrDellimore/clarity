@@ -821,25 +821,19 @@
 <table id="currentImages" class="table table-bordered table-hover">
     <thead>
     <tr role="row" class="heading">
-        <th width="8%">
+        <th width="13%">
             Image
         </th>
-        <th width="25%">
+        <th width="35%">
             Label
         </th>
         <th width="8%">
             Sort Order
         </th>
         <th width="10%">
-            Base Image
+            Default Image
         </th>
-        <th width="10%">
-            Small Image
-        </th>
-        <th width="10%">
-            Thumbnail
-        </th>
-        <th width="10%">
+        <th width="15%">
         </th>
     </tr>
     </thead>
@@ -848,17 +842,26 @@
     <?php
 $i=0;
     foreach($this->data->getImageGallery() as $image){
+        $defaultImage='';
+        if($image->getDefault() == 1){
+            $defaultImage = 'checked = "checked"';
+        }
+        //echo '<div class="trRow" style="display: none; background-color:Silver; position:absolute; z-index:10000; opacity:0.5;"></div>';
         echo '<tr><td><img class="img-responsive" src="'.$image->getDomain().$image->getFilename().'" alt=""></td>';
         echo '<input type="hidden" name="imageGallery['.$i.'][filename]" value ="'.$image->getFilename().'">';
         echo '<td><input type="text" class="form-control" name="imageGallery['.$i.'][label]" value="'.$image->getLabel().'"></td>';
         echo '<td><input type="text" class="form-control" name="imageGallery['.$i.'][position]" value="'.$image->getPosition().'"></td>';
-        echo '<td><label><input type="radio" name="imageGallery[][thumbnail]" value="1"></label></td>
-        <td><label><input type="radio" name="imageGallery[][small_image]" value="1"></label></td>
-        <td><label><input type="radio" name="imageGallery[][image]" value="1"></label></td>
-        <td><a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td></tr>';
+        echo '<td><label><input type="radio" name="imageGallery['.$i.'][default]" value="1" '.$defaultImage.' class="defaultRadio"/></label></td>';
+
+        echo'<td><input type="hidden" name="imageGallery['.$i.'][disabled]" value="'.$image->getDisabled().'">
+        <a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td>';
+
         //id of item
         echo '<input type="hidden" name="imageGallery['.$i.'][id]" value="'.$image->getId().'">';
-        echo '<input type="hidden" name="imageGallery['.$i.'][domain]" value="'.$image->getDomain().'">';
+        //domain
+        echo '<input type="hidden" name="imageGallery['.$i.'][domain]" value="'.$image->getDomain().'"></div></tr>';
+
+
         $i++;
     }
 

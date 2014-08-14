@@ -58,17 +58,34 @@ var FormFileUpload = function () {
             });
 
 
-            //remove rows from table
+            //remove rows from table and set input field as disabled
             var buttonSelector= $('.imageremove');
-/*
-            $('#currentImages').on('click', buttonSelector, function(){
-                console.log("hi");
-                //$(this).closest('tr').remove();
-            });
-*/
             buttonSelector.on('click', function(){
-                //console.log("hi");
-                $(this).closest('tr').remove();
+                var enabled = $(this).closest('tr').css('opacity');
+
+                if(enabled == 1){
+                    $(this).prev('input').val(1);
+                    $(this).closest('tr').fadeTo( "slow", 0.33 );
+                    $(this).text('Undo');
+                }
+                else{
+                    $(this).prev('input').val(0);
+                    $(this).closest('tr').fadeTo( "slow", 1 );
+                    $(this).text('Remove');
+                }
+
+            });
+
+            //handle radio buttons
+            $('#currentImages').on('click', '.defaultRadio', function() {
+                var name = this.getAttribute('name');
+
+
+                $( '.defaultRadio' ).each(function() {
+                    if(this.getAttribute('name') != name){
+                        $(this).prop("checked",false);
+                    }
+                });
             });
 
             //function to check if item is uploaded
@@ -78,21 +95,17 @@ var FormFileUpload = function () {
                 var name = data.jqXHR.responseJSON.files[0].name;
 
                 var rowcount = $('#currentImages tr').length;
+                var position = rowcount;
                 rowcount--;
-
 
                 //create string to append to table
                 var newImage = '<tr><td><img class="img-responsive" src="'+url+'" alt="'+name+'"></td>';
                 newImage += '<input type="hidden" name="imageGallery['+rowcount+'][filename]" value ="'+url+'">';
                 newImage += '<td><input type="text" class="form-control" name="imageGallery['+rowcount+'][label]" value="'+name+'"></td>';
-                newImage += '<td><input type="text" class="form-control" name="imageGallery['+rowcount+'][position]" value=""></td>';
-                newImage += '<td><label><input type="radio" name="imageGallery['+rowcount+'][thumbnail]" value="1"></label></td>';
-                newImage += '<td><label><input type="radio" name="imageGallery['+rowcount+'][small_image]" value="1"></label></td>';
-                newImage += '<td><label><input type="radio" name="imageGallery['+rowcount+'][image]" value="1"></label></td>';
-                newImage += '<td><a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td></tr>';
-
-
-
+                newImage += '<td><input type="text" class="form-control" name="imageGallery['+rowcount+'][position]" value="'+position+'"></td>';
+                newImage += '<td><input type="radio" name="imageGallery['+rowcount+'][default]" value="1" class="defaultRadio"></td>';
+                newImage += '<td><input type="hidden" name="imageGallery['+rowcount+'][disabled]" value="0">';
+                newImage += '<a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td></tr>';
 
                 //append to table/form
                 $('#currentImages').append(newImage);
