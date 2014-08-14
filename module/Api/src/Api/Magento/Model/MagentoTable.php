@@ -438,7 +438,6 @@ class MagentoTable {
                         $sku = $data[$key]['item'];
                         array_shift($data[$key]);
                         $attributeField = current(array_keys($data[$key]));
-                        echo $attributeField . ' 123' ;
                         $attributeField = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeField  ));
 
                         $columns = array('attributeId' => 'attribute_id', 'backendType' => 'backend_type');
@@ -446,7 +445,6 @@ class MagentoTable {
                         $results = $this->productAttribute($this->sql, $columns, $where, 'lookup');
 //                        echo "<pre>";
 //                        var_dump($results);
-
                         $attributeId = $results[0]['attributeId'];
                         $tableType = $results[0]['backendType'];
                         $set = array('dataState'=>'0');
@@ -454,7 +452,6 @@ class MagentoTable {
                         $result = $this->productUpdateaAttributes($this->sql, $tableType, $set, $where);
                     }
             }
-//            die();
             return $result;
         }
 }
