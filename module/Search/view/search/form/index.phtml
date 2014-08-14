@@ -142,9 +142,9 @@
                     <label class="control-label col-md-3">Status</label>
                     <div class="col-md-9">
                         <select class="form-control input-medium" name="status">
-                            <option value="0" <?= $this->data->getStatus() == 0 ? 'selected' :''  ?>>Status Not Set</option>
-                            <option value="1" <?= $this->data->getStatus() == 1 ? 'selected' :''  ?>>Enabled</option>
-                            <option value="2" <?= $this->data->getStatus() == 2 ? 'selected' :''  ?>>Disabled</option>
+                            <option value="0" <?=  $this->data->getStatus() == 0 ? 'selected' :''  ?> >Status Not Set</option>
+                            <option value="1" <?=  $this->data->getStatus() == 1 ? 'selected' :''  ?> >Enabled</option>
+                            <option value="2" <?=  $this->data->getStatus() == 2 ? 'selected' :''  ?> >Disabled</option>
                         </select>
                     </div>
                 </div>
@@ -613,7 +613,7 @@
                                         Add Acessory <i class="fa fa-plus"></i></a>
                                 </div>
                              </div>
-                            <table class="table table-striped table-bordered table-hover" id="accessoriesDisplay">
+                            <table class="table table-striped table-bordered table-hover" id="acessoriesDisplay">
                                 <thead>
                                 <tr><th>id</th>
                                     <th>Sku</th>
@@ -1083,74 +1083,393 @@ $i=0;
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Sensor Size</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Pack">
-                                    <option value="0">Two</option>
-                                    <option value="1">Three</option>
-                                    <option value="1">four</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4" style = "display: none;">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Zoom/Prime [Lens]</label>
-                            <div class="col-md-9">
-                                <select class="form-control input-small" data-placeholder="Select Capaciaty">
-                                    <option value="0">8 GB</option>
-                                    <option value="1">16 GB</option>
-                                    <option value="2">32 GB</option>
-                                    <option value="3">64 GB</option>
-                                    <option value="4">128 GB</option>
-                                    <option value="5">256 GB</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
-
-
-
+<div class="portlet-body">
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Color</label>
+            <div class="col-md-6">
+                <select name="color" class="form-control input-small" data-placeholder="Select Color">
+                    <option value="22" <?= $this->data->getColor() == 22 ? 'selected' : ''?> >Green</option>
+                    <option value="23" <?= $this->data->getColor() == 23 ? 'selected' : ''?> >Silver</option>
+                    <option value="24" <?= $this->data->getColor() == 24 ? 'selected' : ''?> >Black</option>
+                    <option value="25" <?= $this->data->getColor() == 25 ? 'selected' : ''?> >Blue</option>
+                    <option value="26" <?= $this->data->getColor() == 26 ? 'selected' : ''?> >Red</option>
+                    <option value="57" <?= $this->data->getColor() == 57 ? 'selected' : ''?> >Pink</option>
+                    <option value="58" <?= $this->data->getColor() == 58 ? 'selected' : ''?> >Magenta</option>
+                    <option value="59" <?= $this->data->getColor() == 59 ? 'selected' : ''?> >Brown</option>
+                    <option value="60" <?= $this->data->getColor() == 60 ? 'selected' : ''?> >White</option>
+                    <option value="61" <?= $this->data->getColor() == 61 ? 'selected' : ''?> >Gray</option>
+                </select>
             </div>
-
-
-
         </div>
-
-
-
-
-
-
-
-
-
-        </div>
-        </div>
-
     </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Packs</label>
+            <div class="col-md-6">
+                <select name="packs" class="form-control input-small" data-placeholder="Select Pack">
+                    <option value="4276" <?= $this->data->getPacks() == 4276 ? 'selected' : ''?> >Two</option>
+                    <option value="4277" <?= $this->data->getPacks() == 4277 ? 'selected' : ''?> >Three</option>
+                    <option value="4278" <?= $this->data->getPacks() == 4278 ? 'selected' : ''?> >Four</option>
+
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Capacity</label>
+            <div class="col-md-6">
+                <select name="capacity" class="form-control input-small" data-placeholder="Select Capacity">
+                    <option value="4280" <?= $this->data->getCapacity() == 4280 ? 'selected' : ''?> >8 GB</option>
+                    <option value="4281" <?= $this->data->getCapacity() == 4281 ? 'selected' : ''?> >16 GB</option>
+                    <option value="4282" <?= $this->data->getCapacity() == 4282 ? 'selected' : ''?> >32 GB</option>
+                    <option value="4283" <?= $this->data->getCapacity() == 4283 ? 'selected' : ''?> >64 GB</option>
+                    <option value="4284" <?= $this->data->getCapacity() == 4284 ? 'selected' : ''?> >128 GB</option>
+                    <option value="4279" <?= $this->data->getCapacity() == 4279 ? 'selected' : ''?> >256 GB</option>
+                </select>
+            </div>
+        </div>
     </div>
 </div>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Network</label>
+            <div class="col-md-6">
+                <select name="network" class="form-control input-small" data-placeholder="Select Network">
+                    <option value="4286" <?= $this->data->getNetwork() == 4286 ? 'selected' : ''?> >GSM</option>
+                    <option value="4287" <?= $this->data->getNetwork() == 4287 ? 'selected' : ''?> >CDMA</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Size[Cloths]</label>
+            <div class="col-md-6">
+                <select name="sizeCloths" class="form-control input-small" data-placeholder="Select Size [Cloths]">
+                    <option value="4289" <?= $this->data->getSizeCloths() == 4289 ? 'selected' : ''?> >Small</option>
+                    <option value="4290" <?= $this->data->getSizeCloths() == 4290 ? 'selected' : ''?> >Medium</option>
+                    <option value="4291" <?= $this->data->getSizeCloths() == 4291 ? 'selected' : ''?> >Large</option>
+                    <option value="4292" <?= $this->data->getSizeCloths() == 4292 ? 'selected' : ''?> >Extra-Large</option>
+                    <!---->
+                </select>
+            </div>
+        </div>
+    </div>
+    <!--This part down is where it may not work -->
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Size(mm)[Sunglasses]</label>
+            <div class="col-md-6">
+                <select name="sizeSunglasses" class="form-control input-small" data-placeholder="Select Size(mm)[Sunglasses]">
+                    <option value="4293" <?= $this->data->getSizeSunglasses() == 4293 ? 'selected' : ''?> >49mm</option>
+                    <option value="4294" <?= $this->data->getSizeSunglasses() == 4294 ? 'selected' : ''?> >50mm</option>
+                    <option value="4295" <?= $this->data->getSizeSunglasses() == 4295 ? 'selected' : ''?> >51mm</option>
+                    <option value="4296" <?= $this->data->getSizeSunglasses() == 4296 ? 'selected' : ''?> >52mm</option>
+                    <option value="4297" <?= $this->data->getSizeSunglasses() == 4297 ? 'selected' : ''?> >53mm</option>
+                    <option value="4298" <?= $this->data->getSizeSunglasses() == 4298 ? 'selected' : ''?> >54mm</option>
+                    <option value="4299" <?= $this->data->getSizeSunglasses() == 4299 ? 'selected' : ''?> >55mm</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
 </div>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Resolution [camera]</label>
+            <div class="col-md-6">
+                <select name="resolution" class="form-control input-small" data-placeholder="Select Resolution [camera]">
+                    <option value="4383" <?= $this->data->getResolution() == 4383 ? 'selected' : ''?> >Up to 7Megapixels</option>
+                    <option value="4384" <?= $this->data->getResolution() == 4384 ? 'selected' : ''?> >8-10Megapixels</option>
+                    <option value="4385" <?= $this->data->getResolution() == 4385 ? 'selected' : ''?> >11-15Megapixels</option>
+                    <option value="4386" <?= $this->data->getResolution() == 4386 ? 'selected' : ''?> >16-18Megapixels</option>
+                    <option value="4387" <?= $this->data->getResolution() == 4387 ? 'selected' : ''?> >19-22Megapixels</option>
+                    <option value="4388" <?= $this->data->getResolution() == 4388 ? 'selected' : ''?> >23Megapixelsandover</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Sensor Size</label>
+            <div class="col-md-6">
+                <select name="sensorSize" class="form-control input-small" data-placeholder="Select Sensor Size">
+                    <option value="4390" <?= $this->data->getSensorSize() == 4390 ? 'selected' : ''?> >FullFrame</option>
+                    <option value="4391" <?= $this->data->getSensorSize() == 4391 ? 'selected' : ''?> >APS-C</option>
+                    <option value="4392" <?= $this->data->getSensorSize() == 4392 ? 'selected' : ''?> >FourThirds</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-
-
+    <div class="col-md-4">
+        <!--                <div class="col-md-4" style="display: none;">-->
+        <div class="form-group">
+            <label class="control-label col-md-6">Zoom/Prime [Lens]</label>
+            <div class="col-md-6">
+                <select name="zoomPrime" class="form-control input-small" data-placeholder="Select Zoom/Prime [Lens]">
+                    <option value="4393" <?= $this->data->getZoomPrime() == 4393 ? 'selected' : ''?> >Zoom</option>
+                    <option value="4394" <?= $this->data->getZoomPrime() == 4394 ? 'selected' : ''?> >Prime</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Focal Length[Lens]</label>
+            <div class="col-md-6">
+                <select name="focalLengh" class="form-control input-small" data-placeholder="Select Focal Length[Lens]">
+                    <option value="4395" <?= $this->data->getFocalLength() == 4395 ? 'selected' : ''?> >IfZoomdropdownrange</option>
+                    <option value="4396" <?= $this->data->getFocalLength() == 4396 ? 'selected' : ''?> >IfPrimedropdownFixed</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Cine[Lens]</label>
+            <div class="col-md-6">
+                <select name="cineLens" class="form-control input-small" data-placeholder="Select Cine[Lens]">
+                    <option value="4397" <?= $this->data->getCineLens() == 4397 ? 'selected' : ''?> >Yes</option>
+                    <option value="4398" <?= $this->data->getCineLens() == 4398 ? 'selected' : ''?> >No</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Aperture[Lens]</label>
+            <div class="col-md-6">
+                <select name="apertureLens" class="form-control input-small" data-placeholder="Select Aperture[Lens]">
+                    <option value="4399" <?= $this->data->getApertureLens() == 4399 ? 'selected' : ''?> >Range</option>
+                    <option value="4400" <?= $this->data->getApertureLens() == 4400 ? 'selected' : ''?> >Fixed</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Video Resolution</label>
+            <div class="col-md-6">
+                <select name="videoResolution" class="form-control input-small" data-placeholder="Select Video Resolution">
+                    <option value="4401" <?= $this->data->getVideoResolution() == 4401 ? 'selected' : ''?> >720p</option>
+                    <option value="4402" <?= $this->data->getVideoResolution() == 4402 ? 'selected' : ''?> >1080p</option>
+                    <option value="4403" <?= $this->data->getVideoResolution() == 4403 ? 'selected' : ''?> >4K</option>
+                    <option value="4404" <?= $this->data->getVideoResolution() == 4404 ? 'selected' : ''?> >SD</option>
+                    <option value="4405" <?= $this->data->getVideoResolution() == 4405 ? 'selected' : ''?> >8K</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Camera Style</label>
+            <div class="col-md-6">
+                <select name="cameraStyle" class="form-control input-small" data-placeholder="Select Camera Style">
+                    <option value="4406" <?= $this->data->getCameraStyle() == 4406 ? 'selected' : ''?> >PointandShoot/Compact</option>
+                    <option value="4407" <?= $this->data->getCameraStyle() == 4407 ? 'selected' : ''?> >DSLR</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Head Type [tripod]</label>
+            <div class="col-md-6">
+                <select name="headType" class="form-control input-small" data-placeholder="Select Head Type [tripod]">
+                    <option value="4408" <?= $this->data->getHeadType() == 4408 ? 'selected' : ''?> >BallHead</option>
+                    <option value="4409" <?= $this->data->getHeadType() == 4409 ? 'selected' : ''?> >Pan/TiltHead</option>
+                    <option value="4410" <?= $this->data->getHeadType() == 4410 ? 'selected' : ''?> >GripActionHead</option>
+                    <option value="4411" <?= $this->data->getHeadType() == 4411 ? 'selected' : ''?> >GearedHead</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div clas="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Leg Lock Type[tripod]</label>
+            <div class="col-md-6">
+                <select name="legLockTypeTripod" class="form-control input-small" data-placeholder="Select Leg Lock Type[tripod]">
+                    <option value="4412" <?= $this->data->getLegLockTypeTripod() == 4412 ? 'selected' : ''?> >FlipLock</option>
+                    <option value="4413" <?= $this->data->getLegLockTypeTripod() == 4413 ? 'selected' : ''?> >TwistLock</option>
+                    <option value="4414" <?= $this->data->getLegLockTypeTripod() == 4414 ? 'selected' : ''?> >Other</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Max Height[tripod]</label>
+            <div class="col-md-6">
+                <select name="maxHeightTripod" class="form-control input-small" data-placeholder="Select Max Height[tripod]">
+                    <option value="4415" <?= $this->data->getMaxHeightTripod() == 4415 ? 'selected' : ''?> >30''and under</option>
+                    <option value="4416" <?= $this->data->getMaxHeightTripod() == 4416 ? 'selected' : ''?> >31''-45''</option>
+                    <option value="4417" <?= $this->data->getMaxHeightTripod() == 4417 ? 'selected' : ''?> >46-55''</option>
+                    <option value="4418" <?= $this->data->getMaxHeightTripod() == 4418 ? 'selected' : ''?> >56-60''</option>
+                    <option value="4419" <?= $this->data->getMaxHeightTripod() == 4419 ? 'selected' : ''?> >61''-65''</option>
+                    <option value="4420" <?= $this->data->getMaxHeightTripod() == 4420 ? 'selected' : ''?> >66-70''</option>
+                    <option value="4421" <?= $this->data->getMaxHeightTripod() == 4421 ? 'selected' : ''?> >71-over</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Folded Length[tripod]</label>
+            <div class="col-md-6">
+                <select name="foldedLengthTripod" class="form-control input-small" data-placeholder="Select Folded Length[tripod]">
+                    <option value="4422" <?= $this->data->getFoldedLengthTripod() == 4422 ? 'selected' : ''?> >9''to46''brokenoutto3''options</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Support Weight[tripod]</label>
+            <div class="col-md-6">
+                <select name="supportWeightTripod" class="form-control input-small" data-placeholder="Select Support Weight[tripod]">
+                    <option value="4423" <?= $this->data->getSupportWeightTripod() == 4423 ? 'selected' : ''?> >2lb - 49lb</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Material[tripod]</label>
+            <div class="col-md-6">
+                <select name="materialTripod" class="form-control input-small" data-placeholder="Select Material[tripod]">
+                    <option value="4424" <?= $this->data->getMaterialTripod() == 4424 ? 'selected' : ''?> >Aluminum</option>
+                    <option value="4425" <?= $this->data->getMaterialTripod() == 4425 ? 'selected' : ''?> >CarbonFiber</option>
+                    <option value="4426" <?= $this->data->getMaterialTripod() == 4426 ? 'selected' : ''?> >Titanium</option>
+                    <option value="4427" <?= $this->data->getMaterialTripod() == 4427 ? 'selected' : ''?> >Magnesium</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Type of Bag</label>
+            <div class="col-md-6">
+                <select name="typeOfBag" class="form-control input-small" data-placeholder="Select Type of Bag[Camera Bags]">
+                    <option value="4428" <?= $this->data->getTypeOfBag() == 4428 ? 'selected' : ''?> >ShoulderBags</option>
+                    <option value="4429" <?= $this->data->getTypeOfBag() == 4429 ? 'selected' : ''?> >BackpacksandSlings</option>
+                    <option value="4430" <?= $this->data->getTypeOfBag() == 4430 ? 'selected' : ''?> >Fittedcases</option>
+                    <option value="4431" <?= $this->data->getTypeOfBag() == 4431 ? 'selected' : ''?> >CameraBagsforWomen</option>
+                    <option value="4432" <?= $this->data->getTypeOfBag() == 4432 ? 'selected' : ''?> >RollingCases</option>
+                    <option value="4433" <?= $this->data->getTypeOfBag() == 4433 ? 'selected' : ''?> >WaistBags</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Flash Type</label>
+            <div class="col-md-6">
+                <select name="flashType" class="form-control input-small" data-placeholder="Select Flash Type[On Camera Flashes]">
+                    <option value="4434" <?= $this->data->getFlashType() == 4434 ? 'selected' : ''?> >TTL</option>
+                    <option value="4435" <?= $this->data->getFlashType() == 4435 ? 'selected' : ''?> >Auto(nonTTL)</option>
+                    <option value="4436" <?= $this->data->getFlashType() == 4436 ? 'selected' : ''?> >Manual</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Power [Binoculars]</label>
+            <div class="col-md-6">
+                <select name="power" class="form-control input-small" data-placeholder="Select Power [Binoculars]">
+                    <option value="4437" <?= $this->data->getPower() == 4437 ? 'selected' : ''?> >Options10x-32x</option>
+                    <option value="4438" <?= $this->data->getPower() == 4438 ? 'selected' : ''?> >Zoom</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Objective Diameter[Binoculars]</label>
+            <div class="col-md-6">
+                <select name="objectiveDiameter" class="form-control input-small" data-placeholder="Select Objective Diameter [Binoculars]">
+                    <option value="4439" <?= $this->data->getObjectiveDiameter() == 4439 ? 'selected' : ''?> >15-82</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<!--                -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Prism Type</label>
+            <div class="col-md-6">
+                <select name="prismType" class="form-control input-small" data-placeholder="Select Prism Type[Binoculars]">
+                    <option value="4440" <?=$this->data->getPrismType() == 4440 ? 'selected' : ''?> >Porro</option>
+                    <option value="4441" <?=$this->data->getPrismType() == 4441 ? 'selected' : ''?> >Roof</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Use[Binoculars]</label>
+            <div class="col-md-6">
+                <select name="useBinoculars" class="form-control input-small" data-placeholder="Select use [Binoculars]">
+                    <option value="4442" <?=$this->data->getUseBinoculars() == 4442 ? 'selected' : ''?> >Opera</option>
+                    <option value="4443" <?=$this->data->getUseBinoculars() == 4443 ? 'selected' : ''?> >Sports</option>
+                    <option value="4444" <?=$this->data->getUseBinoculars() == 4444 ? 'selected' : ''?> >Marine</option>
+                    <option value="4445" <?=$this->data->getUseBinoculars() == 4445 ? 'selected' : ''?> >Outdoor</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-6">Size</label>
+            <div class="col-md-6">
+                <select name="size" class="form-control input-small" data-placeholder="Select Size">
+                    <option value="4446" <?=$this->data->getSize() == 4446 ? 'selected' : ''?> >Compact</option>
+                    <option value="4447" <?=$this->data->getSize() == 4447 ? 'selected' : ''?> >Standard</option>
+                    <option value="4448" <?=$this->data->getSize() == 4448 ? 'selected' : ''?> >Large</option>
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 </div>
-
-
-
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 

@@ -22,7 +22,8 @@ var UITree = function () {
             }, {
                 "id": "p1c1c5",
                 "text": "Build Your Own Kit"
-            }, {
+            }]},
+            {
                 "id": "p1c2",
                 "text": "Camera Accessories",
                 "children": [{
@@ -41,35 +42,35 @@ var UITree = function () {
                     "id": "p1c2c5",
                     "text": "Tripods"
                 }, {
-                    "id": "p1c2c5",
+                    "id": "p1c2c6",
                     "text": "Filters",
                     "children": [{
-                        "id": "p1c2c5c1",
+                        "id": "p1c2c6c1",
                         "text": "Protective/UV/Skylight"
                     }, {
-                        "id": "p1c2c5c2",
+                        "id": "p1c2c6c2",
                         "text": "Polarizing"
                     }, {
-                        "id": "p1c2c5c3",
+                        "id": "p1c2c6c3",
                         "text": "Specialty",
                         "children": [{
-                            "id": "p1c2c5c3c1",
+                            "id": "p1c2c6c3c1",
                             "text": "Black & White Contrast Filters"
                         }, {
-                            "id": "p1c2c5c3c2",
+                            "id": "p1c2c6c3c2",
                             "text": "Color Conversion Filters"
                         }, {
-                            "id": "p1c2c5c3c3",
+                            "id": "p1c2c6c3c3",
                             "text": "Infrared Filters"
                         }, {
-                            "id": "p1c2c5c3c4",
+                            "id": "p1c2c6c3c4",
                             "text": "Special Effects Filters"
                         }]
                     }, {
-                        "id": "p1c2c5c4",
+                        "id": "p1c2c6c4",
                         "text": "Neutral Density Filters"
                     }, {
-                        "id": "p1c2c5c5",
+                        "id": "p1c2c6c5",
                         "text": "Filter Kits"
                     }]
                 }]
@@ -118,9 +119,9 @@ var UITree = function () {
                     "id": "p1c5c1",
                     "text": "Media & Storage"
                 }]
-            }]
+//            }]
         }]
-    }, {
+        }, {
         "id": "p2",
         "text": "Scopes and Optics",
         "children": [{
@@ -373,7 +374,8 @@ var UITree = function () {
             "text": "Lighting & Studio"},
 
         {"id":"p5",
-            "text": "Electronics & Computing"}];
+            "text": "Electronics & Computing"}
+    ];
     /*[{
      "id": "p1",
      "text": "Photo & Video",
@@ -462,7 +464,111 @@ var UITree = function () {
 
      "id":"p16",
      "text": "Health & Wellness"*/
-
+    var aSaveNewData = [{
+        "id": "p1",
+        "text": "Category",
+        "children": [{
+            "id": "p1c1",
+            "text": "Home"},
+            {
+                "id": "p1c2",
+                "text": "Electronics & Gadgets"
+            }, {
+                "id": "p1c3",
+                "text": "Outdoors & Survival"
+            }, {
+                "id": "p1c4",
+                "text": "Music",
+                "children": [{
+                    "id": "p1c4c1",
+                    "text": "Creating"
+                }, {
+                    "id": "p1c4c2",
+                    "text": "Enjoying"
+                }]
+            }, {
+                "id": "p1c5",
+                "text": "Office"
+            }]}, {
+        "id": "p2",
+        "text": "Collections",
+        "children": [{
+            "id": "p2c1",
+            "text": "Coffee Lover"
+        }, {
+            "id": "p2c2",
+            "text": "Fashionista"
+        }, {
+            "id": "p2c3",
+            "text": "Aspiring Gourmet"
+        }, {
+            "id": "p2c4",
+            "text": "Explore the Outdoors"
+        }, {
+            "id": "p2c5",
+            "text": "Go Go Gizmo"
+        },{
+            "id": "p2c6",
+            "text": "Music is the Answer"
+        }]}, {
+        "id": "p3",
+        "text": "Gift Ideas",
+        "children": [{
+            "id": "p3c1",
+            "text": "Gift Finder"
+        }, {
+            "id": "p3c2",
+            "text": "$1 - $50"
+        }, {
+            "id": "p3c3",
+            "text": "$50 - $100"
+        }, {
+            "id": "p3c4",
+            "text": "$100 - $250"
+        },{
+            "id": "p3c5",
+            "text": "$250 or More"
+        },{
+            "id": "p3c6",
+            "text": "Him"
+        },{
+            "id": "p3c7",
+            "text": "Her"
+        },{
+            "id": "p3c8",
+            "text": "Kids & Baby"
+        }]}, {
+        "id": "p4",
+        "text": "Occasion",
+        "children": [{
+            "id": "p4c1",
+            "text": "Birthday"
+        }, {
+            "id": "p4c2",
+            "text": "Housewarming"
+        },{
+            "id": "p4c3",
+            "text": "Wedding & Anniversary"
+        },{
+            "id": "p4c4",
+            "text": "New Baby"
+        },{
+            "id": "p4c5",
+            "text": "Graduation"
+        },{
+            "id": "p4c6",
+            "text": "Congratulations"
+        },{
+            "id": "p4c7",
+            "text": "Get Well"
+        },{
+            "id": "p4c8",
+            "text": "Thank you"
+        },{
+            "id": "p4c9",
+            "text": "Placeholder for Holiday"
+        }
+        ]}];
 
     var focustree = function () {
         $('#tree_2').jstree({
@@ -575,6 +681,64 @@ var UITree = function () {
         });
 
     }
+    var asavenewtree = function () {
+        $('#newasave').jstree({
+            'plugins': ["wholerow", "checkbox", "types"],
+            'core': {
+                "themes" : {
+                    "responsive": false
+                },
+                'data': aSaveNewData},
+            "types" : {
+                "default" : {
+                    "icon" : "fa fa-folder icon-state-warning icon-lg"
+                },
+                "file" : {
+                    "icon" : "fa fa-file icon-state-warning icon-lg"
+                }
+            }
+        });
+        //check if checked
+        $('#newasave').on('changed.jstree', function (e, data) {
+            //for (i = 0; i < data.selected.length; i++) {
+            //    console.log(data.selected[i]);
+           // }
+
+            var wtf = data.selected.toString();
+            wtf = wtf.split(",")
+
+            var displayDivs  =[{"photo": false},{"bino": false}];
+            for (i = 0; i < wtf.length; i++) {
+                if(wtf[i].substring(0,2) == "p1"){
+                    displayDivs['photo']=true;
+                }
+
+                if(wtf[i].substring(0,2) == "p2"){
+                    displayDivs['bino']=true;
+
+                }
+            }
+            //display attributes
+            if(displayDivs['photo'] == true){
+                $('#photoAtt').css( "display", "block" );
+                $('#photoAtt').css( "float", "top" );
+            }
+            else{
+                $('#photoAtt').css( "display", "none" );
+            }
+
+            if(displayDivs['bino'] == true){
+                $('#binocularsAtt').css( "display", "block" );
+                $('#binocularsAtt').css( "float", "top" );
+            }
+            else{
+                $('#binocularsAtt').css( "display", "none" );
+            }
+
+            console.log(wtf);
+        });
+
+    }
         var focusnewtree = function () {
             $('#newfocus').jstree({
                 'plugins': ["wholerow", "checkbox", "types"],
@@ -636,7 +800,7 @@ Create JSON/ with categories and corresponding attributes
 if cat is checked loop though and display corresponding attributes.
 Nest if statement to see if input is already listed.
  */
-                console.log(wtf);
+//                console.log(wtf);
             });
     }
 
@@ -649,6 +813,7 @@ Nest if statement to see if input is already listed.
             focustree();
             asavetree();
             focusnewtree();
+            asavenewtree();
             //contextualMenuSample();
             //ajaxTreeSample();
 
