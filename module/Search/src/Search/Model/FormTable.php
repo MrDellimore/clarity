@@ -452,7 +452,7 @@ class FormTable{
     /**
      * Handle isDirty Form entities
      */
-    public function dirtyHandle(Form $form){
+    public function dirtyHandle(Form $form, Form $oldData){
         //Find Dirty properties and call corresponding updates
         $startMessage = 'The following fields have been updated :<br>';
         $updateditems = '';

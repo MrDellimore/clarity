@@ -43,9 +43,6 @@ trait Spex {
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-<<<<<<< HEAD
-=======
         return $resultSet;
->>>>>>> soap_kpi
     }
 } 
