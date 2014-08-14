@@ -12,6 +12,9 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Predicate\Predicate;
+use Zend\Db\Sql\ExpressionInterface;
+use Zend\Db\Sql\Where;
+
 
 trait Spex {
 
@@ -20,8 +23,14 @@ trait Spex {
         $select = $sql->select();
         $select->columns($columns);
         $select->from('productattribute_'. $tableType);
-        if( count($where)){
-            $select->where($where);
+        if( count($where) ){
+            if( $where instanceof ExpressionInterface ) {
+                $filter = new Where();
+                $filter->notEqualTo($where);
+                $select->where($filter);
+            } else{
+                $select->where($where);
+            }
         }
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

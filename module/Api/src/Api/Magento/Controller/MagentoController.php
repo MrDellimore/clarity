@@ -32,6 +32,7 @@ class MagentoController  extends AbstractActionController {
         $this->skuData = $this->getMagentoTable()->lookupDirt();
         $cleanCount = $this->getMagentoTable()->lookupClean();
         $newCount = $this->getMagentoTable()->lookupNew();
+        $images = $this->getMagentoTable()->lookupNewUpdatedImages();
         $session = new Container('dirty_skus');
         $dirtySkus = array();
         $session->dirtyProduct = $this->skuData;

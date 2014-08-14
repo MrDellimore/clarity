@@ -91,6 +91,14 @@ class MagentoTable {
         return $resultSet->count();
     }
 
+    public function lookupNewUpdatedImages()
+    {
+//        public function productAttribute(Sql $sql, array $columns = array(), array $where = array(),  $tableType )
+
+        $where = array('dataState', 0);
+        $this->productAttribute($this->sql,array(), $where, 'images');
+    }
+
     public function lookupDirt()
     {
         $select = $this->sql->select();
