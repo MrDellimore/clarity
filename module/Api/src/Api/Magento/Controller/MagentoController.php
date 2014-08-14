@@ -31,6 +31,7 @@ class MagentoController  extends AbstractActionController {
         $this->skuData = array();
         $this->skuData = $this->getMagentoTable()->lookupDirt();
         $cleanCount = $this->getMagentoTable()->lookupClean();
+        $newCount = $this->getMagentoTable()->lookupNew();
         $session = new Container('dirty_skus');
         $dirtySkus = array();
         $session->dirtyProduct = $this->skuData;
@@ -38,7 +39,8 @@ class MagentoController  extends AbstractActionController {
             array(
                 'sku'   =>  $this->skuData,
                 'cleanCount'    => $cleanCount,
-                'dirtyCount' => $this->getMagentoTable()->getDirtyCount()
+                'newCount'    => $newCount,
+                'dirtyCount' => $this->getMagentoTable()->getDirtyItems()
             )
         );
     }
@@ -55,6 +57,7 @@ class MagentoController  extends AbstractActionController {
         if( $response = $this->getMagentoTable()->soapContent($dirtyData) ){
 
             foreach($response as $soapResponse){
+//                echo $soapResponse;
                 if( preg_match('/Product/', $soapResponse)){
                     $res = $soapResponse;
                 }
@@ -69,8 +72,9 @@ class MagentoController  extends AbstractActionController {
             }
 
             if($res === true){
+//                TODO have to find what out what the update statement actually returns.
               if($this->getMagentoTable()->updateToClean($dirtyData)){
-                  return $this->redirect()->toRoute('apis', array('action'=>'magento'));
+                  return $this->redirect()->toRoute('apis');
               }
             }
         }

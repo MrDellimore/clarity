@@ -20,7 +20,9 @@ trait Spex {
         $select = $sql->select();
         $select->columns($columns);
         $select->from('productattribute_'. $tableType);
-        $select->where($where);
+        if( count($where)){
+            $select->where($where);
+        }
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -41,5 +43,9 @@ trait Spex {
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
+<<<<<<< HEAD
+=======
+        return $resultSet;
+>>>>>>> soap_kpi
     }
 } 
