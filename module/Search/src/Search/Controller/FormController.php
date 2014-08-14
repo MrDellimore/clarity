@@ -11,7 +11,7 @@ namespace Search\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 use Zend\View\Model\ViewModel;
-use Search\Model\Form;
+use Search\Entity\Form;
 use Zend\Session\Container;
 use Search\Model\EntityCompare;
 
