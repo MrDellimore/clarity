@@ -11,7 +11,7 @@ namespace Api\Magento\Model;
 use Zend\Db\Adapter\Adapter;
 use SoapClient;
 use Zend\Db\Sql\Sql;
-//use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Search\Tables\Spex;
@@ -327,7 +327,6 @@ class MagentoTable {
             }
             $this->setAggregateAttributeDirtyCount($resultSet->count());
             $result = $resultSet->toArray();
-//var_dump($resultSet);
 
             //check if array passed or value given
             if(!(is_array($result)) || current($result)[$property] == ''){
@@ -388,7 +387,6 @@ class MagentoTable {
                     $i++;
                 }
             }
-            //die();
             $a = 0;
             while( $a < count($updateBatch) ){
                 $x = 0;

@@ -11,7 +11,6 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Expression;
 
 
-
 class SearchTable{
 
     public function __construct(Adapter $adapter){
@@ -19,6 +18,8 @@ class SearchTable{
     }
 
 //grab first 10 Skus to display in table
+
+/* Deprecated
     public function populate(){
 
         $sql = new Sql($this->adapter);
@@ -52,11 +53,12 @@ class SearchTable{
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-//echo '<pre>';
-//var_dump($resultSet->toArray());
+
         return $resultSet->toArray();
 
     }
+
+*/
 
 
 
@@ -69,12 +71,13 @@ class SearchTable{
 
         $select->from('product');
 
-        $select->columns(array('id' => 'entity_id', 'sku' => 'productid','site' => 'website','visibility' => 'visibility'));
+        $select->columns(array('id' => 'entity_id', 'sku' => 'productid','site' => 'website'));
 
         $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
         $priceJoin = new Expression('p.entity_id = product.entity_id and p.attribute_id = 99');
         $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
         $statusJoin = new Expression('s.entity_id = product.entity_id and s.attribute_id = 273');
+        $visibilityJoin = new Expression('v.entity_id = product.entity_id and v.attribute_id = 526');
 
 
         $select->join(array('t' => 'productattribute_varchar'), $titleJoin,array('title' => 'value'));
@@ -84,6 +87,8 @@ class SearchTable{
         $select->join(array('q' => 'productattribute_int'), $quantityJoin,array('quantity' => 'value'));
 
         $select->join(array('s' => 'productattribute_int'), $statusJoin,array('status' => 'value'));
+
+        $select->join(array('v' => 'productattribute_int'), $visibilityJoin,array('visibility' => 'value'));
 
 
         $filter = new Where();

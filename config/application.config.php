@@ -16,6 +16,7 @@ return array(
         'Search',
         'Users',
         'Api',
+        'Logging',
         ),
     'module_listener_options' => array(
         'config_glob_paths' => array('config/autoload/{,*.}{global,local}.php'),

@@ -41,7 +41,6 @@ class SearchController extends AbstractActionController{
 
         if($request -> isPost()){
             $queryData = $request->getPost();
-
             $draw = $queryData['draw'];
             $sku = $queryData['search']['value'];
             $limit = $queryData['length'];

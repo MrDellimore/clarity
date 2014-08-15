@@ -11,7 +11,7 @@ namespace Search\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 use Zend\View\Model\ViewModel;
-use Search\Model\Form;
+use Search\Entity\Form;
 use Zend\Session\Container;
 use Search\Model\EntityCompare;
 
@@ -23,6 +23,7 @@ use Search\Model\EntityCompare;
 class FormController extends AbstractActionController {
 
     protected $formTable;
+    protected $imageTable;
 
     //protected $skuData = array();
     /**
@@ -46,12 +47,9 @@ class FormController extends AbstractActionController {
             //lookupdata
             $skuData = $form->lookupForm($entityID);
 
-
-
             //hydrate data to form entity
             $hydrator = new cHydrator;
             $hydrator->hydrate($skuData,$queriedData);
-
 
 /* Removing custom hydrator and using std Classmethod hydrator
             foreach($this->skuData as $key => $value){
@@ -65,11 +63,39 @@ class FormController extends AbstractActionController {
             //stash object in container
             $container->data = $queriedData;
         }
-
+//echo "<pre>";
+//        var_dump($queriedData);
         $view = new ViewModel(array('data'=>$queriedData));
         return $view;
     }
 
+    public function loadAccessoriesAction()
+    {
+        $form = $this->getFormTable();
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $loadAccessories = $request->getPost();
+            $draw = $loadAccessories['draw'];
+            $sku = $loadAccessories['search']['value'];
+            $limit = $loadAccessories['length'];
+            if($limit == '-1'){
+                $limit = 100;
+            }
+            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
+            $result = json_encode(
+                array(
+                    'draw'  =>  (int)$draw,
+                    'data'  =>  $loadedAccessories,
+                    'recordsTotal'  =>  1000,
+                    'recordsFiltered'   =>  $limit,
+                )
+            );
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
+    }
 
 
 
@@ -93,10 +119,10 @@ class FormController extends AbstractActionController {
             $dirtyData = $comp->dirtCheck($container->data, $postData);
             $newData = $comp->newCheck($container->data, $postData);
 
-            //run update or insert data
+            // update/insert data
             $form = $this->getFormTable();
-            $result = $form->dirtyHandle($dirtyData);
-            $form->newHandle($newData);
+            $result = $form->dirtyHandle($dirtyData, $container->data);
+            $result .= $form->newHandle($newData);
 
             if($result == ''){
                 $result = 'No changes to sku made.';
@@ -113,23 +139,48 @@ class FormController extends AbstractActionController {
         }
     }
 
-
-
-
+    public function brandLoadAction()
+    {
+        $form = $this->getFormTable();
+        $brandList = $form->brandDropDown();
+        $result = json_encode($brandList);
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+        return $response;
+    }
 
     public function manufacturerLoadAction(){
 
         $form = $this->getFormTable();
-        $manufacturerlist =$form->manufacturerDropDown();
+        $manufacturerlist = $form->manufacturerDropDown();
 
         $result = json_encode($manufacturerlist);
-
-
         $event    = $this->getEvent();
         $response = $event->getResponse();
         $response->setContent($result);
 
         return $response;
+    }
+
+    public function imageSaveAction(){
+
+        $request = $this->getRequest();
+
+        if($request -> isPost()){
+            $imageData = $request->getFiles()->toArray();
+
+            //save image
+            $imageHandler = $this->getImageTable();
+            $imageResponse = $imageHandler->saveImageFile($imageData);
+
+            $result = json_encode($imageResponse);
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
+
     }
 
 
@@ -139,5 +190,13 @@ class FormController extends AbstractActionController {
             $this->formTable = $sm->get('Search\Model\FormTable');
         }
         return $this->formTable;
+    }
+
+    public function getImageTable(){
+        if (!$this->imageTable) {
+            $sm = $this->getServiceLocator();
+            $this->imageTable = $sm->get('Search\Model\ImageTable');
+        }
+        return $this->imageTable;
     }
 }
