@@ -161,6 +161,41 @@ class Form {
     protected $originalContent;
 
     protected $thumbnail;
+    protected $headType;
+
+    protected $supportWeightTripod;
+
+    /**
+     * @param mixed $headType
+     */
+    public function setHeadType($headType)
+    {
+        $this->headType = $headType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeadType()
+    {
+        return $this->headType;
+    }
+
+    /**
+     * @param mixed $supportWeightTripod
+     */
+    public function setSupportWeightTripod($supportWeightTripod)
+    {
+        $this->supportWeightTripod = $supportWeightTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSupportWeightTripod()
+    {
+        return $this->supportWeightTripod;
+    }
 
     protected $thumbnail_label;
 
