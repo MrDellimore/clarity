@@ -912,6 +912,15 @@ $i=0;
                     <div class="row">
                         <div class="tab-content">
 
+                            <form id="categoriesForm">
+                                <?php
+                                foreach($this->data->getCategories() as $value){
+                                    echo '<input type="hidden" name = "categories[]" value ="'.$value['category_id'].'">';
+                                }
+                                ?>
+
+                            </form>
+
 
 
                             <!-- Focus categories-->

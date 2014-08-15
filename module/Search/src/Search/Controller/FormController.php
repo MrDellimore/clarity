@@ -69,8 +69,7 @@ class FormController extends AbstractActionController {
         return $view;
     }
 
-    public function loadAccessoriesAction()
-    {
+    public function loadAccessoriesAction(){
         $form = $this->getFormTable();
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -95,6 +94,16 @@ class FormController extends AbstractActionController {
             $response->setContent($result);
             return $response;
         }
+    }
+
+    public function loadCategoriesAction(){
+        $form = $this->getFormTable();
+        $categoryList = $form->fetchCategoriesStructure();
+        $result = json_encode($categoryList);
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+        return $response;
     }
 
 

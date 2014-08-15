@@ -162,6 +162,8 @@ class Form {
 
     protected $thumbnail;
 
+    protected  $categories = array();
+
     /**
      * @param mixed $headType
      */
@@ -1458,8 +1460,21 @@ class Form {
         return $this->thumbnail_label;
     }
 
+    /**
+     * @param array $categories
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
+    }
 
-
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
 
 
 } 
