@@ -118,8 +118,12 @@ var TableManaged = function () {
                     "data": 'id'
                 },
                 {
-                    "class": "entity_id",
+                    "class": "hidden entity_id",
                     "data": "entityID"
+                },
+                {
+                    "class": "sku",
+                    "data": "sku"
                 },
                 {
                     "class":"old_value",
@@ -129,10 +133,10 @@ var TableManaged = function () {
                     "class":"new_value",
                     "data": "newValue"
                 },
-                {
-                    "class": "hidden manId",
-                    "data": "manufacturerID"
-                },
+//                {
+//                    "class": "hidden manId",
+//                    "data": "manufacturerID"
+//                },
 
                 { "data": "manufacturer" },
                 {
@@ -180,15 +184,17 @@ var TableManaged = function () {
             var newValue = revert.siblings('td.new_value').text();
             var entityID = revert.siblings('td.entity_id').text();
             var property = revert.siblings('td.property_name').text();
+            var sku = revert.siblings('td.sku').text();
             var pk = revert.siblings('td.entityId').text();
-            var manOptionID = revert.siblings('td.manId').text();
+//            var manOptionID = revert.siblings('td.manId').text();
             var params = {
                 'old'   :   oldValue,
                 'new'   :   newValue,
                 'eid'   :   entityID,
                 'pk'    :   pk,
                 'property': property,
-                'manOpId': manOptionID
+                'sku':  sku
+//                'manOpId': manOptionID
             };
             $.post('/sku-history/revert', params, function(data){
                 //nothing should happen except redraw the table.
