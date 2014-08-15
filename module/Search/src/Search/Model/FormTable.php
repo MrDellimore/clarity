@@ -203,6 +203,10 @@ class FormTable{
         $images = $this->fetchImages($entityid);
         $result['imageGallery'] = $images;
 
+        //Fetch Category
+        $categories = $this->fetchCategories($entityid);
+        $result['categories'] = $categories;
+
 
         return $result;
     }
@@ -287,6 +291,44 @@ class FormTable{
 
         return $result;
 
+    }
+
+    public function fetchCategories($entityid){
+        $select = $this->sql->select();
+        $select->from('productcategory');
+        $select->columns(array('category_id' =>'category_id','title' =>'title'));
+
+        $select->where(array('entity_id' => $entityid));
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $result = $resultSet->toArray();
+
+        return $result;
+    }
+
+
+    public function fetchCategoriesStructure(){
+        $select = $this->sql->select();
+        $select->from('category');
+        $select->columns(array('id'=>'category_id','parent'=>'parent_id','text'=>'title'));
+//where for site
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $result = $resultSet->toArray();
+
+        return $result;
     }
 
 
@@ -459,7 +501,6 @@ class FormTable{
 
         //update sku
         //update Title
-
         if(!(is_null($form->getTitle()))) {
             $property = 'title';
             $this->updateAttribute($form->getId(),$form->getTitle(),'96','varchar');
@@ -496,7 +537,7 @@ class FormTable{
         if(!(is_null($form->getStockStatus()))) {
             $property = 'stock status';
             $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStockStatus(), $oldData->getStockStatus(),/*$oldData->getManufacturer(),*/ $property);//,'1661','int');
+            $this->insertLogging($form->getId(),$form->getStockStatus(), $oldData->getStockStatus(),$oldData->getManufacturer(), $property);//,'1661','int');
             $updateditems .= 'Stock Status<br>';
         }
         //update price
@@ -589,7 +630,7 @@ class FormTable{
             $imageHandler = new ImageTable($this->adapter);
                 //$this->getImageTable();
             $images = $form->getImageGallery();
-            foreach($images as  $key => $value){
+            foreach($images as  $value){
                 $result=$imageHandler->createImage($value,$form->getId());
                 $inserteditems .= $result;
             }

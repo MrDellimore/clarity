@@ -75,6 +75,19 @@ return array(
                 ),
             ),
 
+            'categoryload'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/form/categoryload',
+
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\Controller\Form',
+                        'action'        =>  'loadCategories',
+
+                    ),
+                ),
+            ),
+
             'brand'  => array(
                         'type'  => 'Zend\Mvc\Router\Http\Literal',
                         'options'    => array(
