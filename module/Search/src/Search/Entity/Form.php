@@ -162,6 +162,20 @@ class Form {
 
     protected $thumbnail;
 
+    protected $thumbnail_label;
+
+    protected $small_image;
+
+    protected $small_image_label;
+
+    protected $image;
+
+    protected $image_label;
+
+    protected $imageGallery = array();
+
+    protected $categories = array();
+
     /**
      * @param mixed $headType
      */
@@ -193,18 +207,6 @@ class Form {
     {
         return $this->supportWeightTripod;
     }
-
-    protected $thumbnail_label;
-
-    protected $small_image;
-
-    protected $small_image_label;
-
-    protected $image;
-
-    protected $image_label;
-
-    protected $imageGallery = array();
 
 
     /**
@@ -1458,8 +1460,20 @@ class Form {
         return $this->thumbnail_label;
     }
 
+    /**
+     * @param array $categories
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
+    }
 
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
 
-
-
-} 
+}
