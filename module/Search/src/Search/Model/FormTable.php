@@ -595,7 +595,7 @@ class FormTable{
             $property = 'short description';
             $this->updateAttribute($form->getId(),$form->getShortDescription(),'506','text');
             $this->insertLogging($form->getId(),$form->getShortDescription(), $oldData->getShortDescription(), $oldData->getManufacturer(), $property);//,'506','text');
-            $updateditems .= 'Visibility<br>';
+            $updateditems .= 'Short Description<br>';
         }
 
         //update Images

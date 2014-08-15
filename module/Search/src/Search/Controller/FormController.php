@@ -51,20 +51,11 @@ class FormController extends AbstractActionController {
             $hydrator = new cHydrator;
             $hydrator->hydrate($skuData,$queriedData);
 
-/* Removing custom hydrator and using std Classmethod hydrator
-            foreach($this->skuData as $key => $value){
-//		echo 'key ' . $key . ' value ' . $value . "\n"; 
-                $method = 'set'.ucfirst($key);
-                $queriedData->$method($value);
-            }
-*/
-
 
             //stash object in container
             $container->data = $queriedData;
         }
-//echo "<pre>";
-//        var_dump($queriedData);
+
         $view = new ViewModel(array('data'=>$queriedData));
         return $view;
     }
@@ -132,6 +123,9 @@ class FormController extends AbstractActionController {
             $form = $this->getFormTable();
             $result = $form->dirtyHandle($dirtyData, $container->data);
             $result .= $form->newHandle($newData);
+
+            //destroy session
+            $container->offsetUnset('data');;
 
             if($result == ''){
                 $result = 'No changes to sku made.';
