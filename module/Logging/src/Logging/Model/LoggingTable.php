@@ -52,9 +52,9 @@ class LoggingTable
         $tableType  = $selectResult[0]['dataType'];
         $columnMap = array(
             'entity_id' =>  $params['eid'],
+            'sku' =>  $params['sku'],
             'oldvalue'  =>  $params['new'],
             'newvalue'  =>  $params['old'],
-            'manufacturer'  =>  $params['manOpId'],
             'datechanged'   => date('Y-m-d h:i:s'),
             'changedby' =>  $params['user'],
             'property'  =>  $params['property'],
@@ -111,10 +111,11 @@ class LoggingTable
         $select->columns(array(
             'id'  =>  'id',
             'entityID'  =>  'entity_id',
+            'sku'   =>  'sku',
             'oldValue'  =>  'oldvalue',
             'newValue'  =>  'newvalue',
             'dataChanged'   =>  'datechanged',
-            'manufacturer'  =>  'manufacturer',
+//            'manufacturer'  =>  'manufacturer',
             'user'  =>  'changedby',
             'property'  =>  'property',
         ));
@@ -130,6 +131,15 @@ class LoggingTable
             }
             $select->where($filter);
         }
+//        $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
+//        $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'));
+
+//        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+        $intTable = new Expression('i.entity_id = logger.entity_id and attribute_id = 102');
+        $optionTable = new Expression('o.attribute_id = 102 and o.option_id = i.value');
+
+        $select->join(array('i' => 'productattribute_int'), $intTable ,array('attributeId' => 'attribute_id','optionID' => 'value'));
+        $select->join(array('o' => 'productattribute_option'), $optionTable ,array('manufacturer'=>'value'));
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -144,39 +154,41 @@ class LoggingTable
 
         foreach($logs as $key => $value){
             $user = $logs[$key]['user'];
+
             $manufacturer = $logs[$key]['manufacturer'];
 //            $entityId = $logs[$key]['entityID'];
 
 
             $response[$key]['id'] = $logs[$key]['id'];
+            $response[$key]['sku'] = $logs[$key]['sku'];
             $response[$key]['entityID'] = $logs[$key]['entityID'];
             $response[$key]['oldValue'] = $logs[$key]['oldValue'];
             $response[$key]['newValue'] = $logs[$key]['newValue'];
-            $response[$key]['manufacturerID'] = $manufacturer;
+            $response[$key]['manufacturer'] = $manufacturer;
 
 //            $response[$key]['manufacturer'] = $logs[$key]['manufacturer'];
             $response[$key]['dataChanged'] = $logs[$key]['dataChanged'];
             $response[$key]['property'] = $logs[$key]['property'];
 
             //Selects from options table;
-            $selectMan= $this->sql->select();
-            $selectMan->from('productattribute_option');
-            $selectMan->columns(array(
-                'manufacturer' => 'value',
-            ));
-            $selectMan->where(array('option_id'=>$manufacturer));
-            $manufacturerStatement = $this->sql->prepareStatementForSqlObject($selectMan);
-            $manufacturerResult = $manufacturerStatement->execute();
-
-            $manufacturerResultSet = new ResultSet;
-            if ($manufacturerResult instanceof ResultInterface && $manufacturerResult->isQueryResult()) {
-                $manufacturerResultSet->initialize($manufacturerResult);
-            }
-            $manufacturerResults = $manufacturerResultSet->toArray();
-            if( !count($manufacturerResults) ) $response[$key]['manufacturer'] = 'N/A';
-            foreach($manufacturerResults  as $op => $man){
-                $response[$key]['manufacturer'] = (!$manufacturerResults[$op]['manufacturer']) ? "N/A" : $manufacturerResults[$op]['manufacturer'] ;
-            }
+//            $selectMan= $this->sql->select();
+//            $selectMan->from('productattribute_option');
+//            $selectMan->columns(array(
+//                'manufacturer' => 'value',
+//            ));
+//            $selectMan->where(array('option_id'=>$manufacturer));
+//            $manufacturerStatement = $this->sql->prepareStatementForSqlObject($selectMan);
+//            $manufacturerResult = $manufacturerStatement->execute();
+//
+//            $manufacturerResultSet = new ResultSet;
+//            if ($manufacturerResult instanceof ResultInterface && $manufacturerResult->isQueryResult()) {
+//                $manufacturerResultSet->initialize($manufacturerResult);
+//            }
+//            $manufacturerResults = $manufacturerResultSet->toArray();
+//            if( !count($manufacturerResults) ) $response[$key]['manufacturer'] = 'N/A';
+//            foreach($manufacturerResults  as $op => $man){
+//                $response[$key]['manufacturer'] = (!$manufacturerResults[$op]['manufacturer']) ? "N/A" : $manufacturerResults[$op]['manufacturer'] ;
+//            }
 
             //Selects from users table;
             $userListings = $this->sql->select();

@@ -459,17 +459,18 @@ class FormTable{
 
         //update sku
         //update Title
+
         if(!(is_null($form->getTitle()))) {
             $property = 'title';
             $this->updateAttribute($form->getId(),$form->getTitle(),'96','varchar');
-            $this->insertLogging($form->getId(),$form->getTitle(), $oldData->getTitle(), $oldData->getManufacturer(), $property);//,'96','varchar');
+            $this->insertLogging($form->getId(),$oldData->getSku(), $form->getTitle(), $oldData->getTitle(), /*$oldData->getManufacturer(),*/ $property);//,'96','varchar');
             $updateditems .= 'Title<br>';
         }
         //update description
         if(!(is_null($form->getDescription()))) {
             $property = 'description';
             $this->updateAttribute($form->getId(),$form->getDescription(),'97','text');
-            $this->insertLogging($form->getId(),$form->getDescription(), $oldData->getDescription(), $oldData->getManufacturer(), $property);//'97','text');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getDescription(), $oldData->getDescription(), /*$oldData->getManufacturer(),*/ $property);//'97','text');
             $updateditems .= 'Description<br>';
         }
         //update inventory
@@ -478,7 +479,7 @@ class FormTable{
         if(!(is_null($form->getStatus()))) {
             $property = 'status';
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
-            $this->insertLogging($form->getId(),$form->getStatus(), $oldData->getStatus(), $oldData->getManufacturer(), $property);//,'273','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStatus(), $oldData->getStatus(), /*$oldData->getManufacturer(),*/ $property);//,'273','int');
             $updateditems .= 'Status<br>';
         }
         //update manufacturer
@@ -486,7 +487,7 @@ class FormTable{
         if(!(is_null($form->getVisibility()))) {
             $property = 'visibility';
             $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
-            $this->insertLogging($form->getId(),$form->getVisibility(), $oldData->getVisibility(),$oldData->getManufacturer(), $property);//,'526','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getVisibility(), $oldData->getVisibility(),/*$oldData->getManufacturer(),*/ $property);//,'526','int');
             $updateditems .= 'Visibility<br>';
         }
         //update condition
@@ -495,7 +496,7 @@ class FormTable{
         if(!(is_null($form->getStockStatus()))) {
             $property = 'stock status';
             $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
-            $this->insertLogging($form->getId(),$form->getStockStatus(), $oldData->getStockStatus(),$oldData->getManufacturer(), $property);//,'1661','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStockStatus(), $oldData->getStockStatus(),/*$oldData->getManufacturer(),*/ $property);//,'1661','int');
             $updateditems .= 'Stock Status<br>';
         }
         //update price
@@ -512,7 +513,7 @@ class FormTable{
         if(!(is_null($form->getInBox()))) {
             $property = 'inbox';
             $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
-            $this->insertLogging($form->getId(),$form->getInBox(), $oldData->getInBox(),$oldData->getManufacturer(), $property);//,'1633','text');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getInBox(), $oldData->getInBox(),/*$oldData->getManufacturer(),*/ $property);//,'1633','text');
             $updateditems .= 'In Box<br>';
         }
 
@@ -520,7 +521,7 @@ class FormTable{
         if(!(is_null($form->getIncludesFree()))) {
             $property = 'includes free';
             $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
-            $this->insertLogging($form->getId(),$form->getIncludesFree(), $oldData->getIncludesFree(), $oldData->getManufacturer(), $property);//,'1679','text');ws
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getIncludesFree(), $oldData->getIncludesFree(), /*$oldData->getManufacturer(),*/ $property);//,'1679','text');ws
             $updateditems .= 'Includes Free<br>';
         }
 
@@ -528,7 +529,7 @@ class FormTable{
         if(!(is_null($form->getMetaDescription()))) {
             $property = 'meta description';
             $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
-            $this->insertLogging($form->getId(),$form->getMetaDescription(), $oldData->getMetaDescription(), $oldData->getManufacturer(), $property);//,'105','varchar');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaDescription(), $oldData->getMetaDescription(), /*$oldData->getManufacturer(),*/ $property);//,'105','varchar');
             $updateditems .= 'Meta Description<br>';
         }
 
@@ -536,7 +537,7 @@ class FormTable{
         if(!(is_null($form->getOriginalContent()))) {
             $property = 'original content';
             $this->updateAttribute($form->getId(),$form->getOriginalContent(),'1659','int');
-            $this->insertLogging($form->getId(),$form->getOriginalContent(), $oldData->getOriginalContent(), $oldData->getManufacturer(), $property);//,'1659','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getOriginalContent(), $oldData->getOriginalContent(), /*$oldData->getManufacturer(),*/ $property);//,'1659','int');
             $updateditems .= 'Original Content<br>';
         }
 
@@ -544,7 +545,7 @@ class FormTable{
         if(!(is_null($form->getContentReviewed()))) {
             $property = 'content reviewed';
             $this->updateAttribute($form->getId(),$form->getContentReviewed(),'1676','int');
-            $this->insertLogging($form->getId(),$form->getContentReviewed(), $oldData->getContentReviewed(), $oldData->getManufacturer(), $property);//,'1676','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getContentReviewed(), $oldData->getContentReviewed(), /*$oldData->getManufacturer(),*/ $property);//,'1676','int');
             $updateditems .= 'Content Reviewed<br>';
         }
 
@@ -552,7 +553,7 @@ class FormTable{
         if(!(is_null($form->getShortDescription()))) {
             $property = 'short description';
             $this->updateAttribute($form->getId(),$form->getShortDescription(),'506','text');
-            $this->insertLogging($form->getId(),$form->getShortDescription(), $oldData->getShortDescription(), $oldData->getManufacturer(), $property);//,'506','text');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getShortDescription(), $oldData->getShortDescription(), /*$oldData->getManufacturer(),*/ $property);//,'506','text');
             $updateditems .= 'Visibility<br>';
         }
 
@@ -632,28 +633,7 @@ class FormTable{
         return $this->eventManager;
     }
 
-    public function setMapping($mapping = array())
-    {
-        $this->mapping = $mapping;
-    }
-
-    public function getMapping()
-    {
-        return $this->mapping;
-    }
-
-    public function setColumnMap($columnMap = array())
-    {
-        $this->columnMap = $columnMap;
-    }
-
-    public function getColumnMap()
-    {
-        return $this->columnMap;
-    }
-
-
-    public function insertLogging($entityid ,$newValue, $oldValue, $manufacturer, $property)//, $attributeid,$tableType)
+    public function insertLogging($entityid, $sku ,$newValue, $oldValue, /*$manufacturer, */$property)//, $attributeid,$tableType)
     {
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
@@ -661,9 +641,10 @@ class FormTable{
 
         $fieldValueMap = array(
             'entity_id' =>  $entityid,
+            'sku'   =>  $sku,
             'oldvalue'  =>  $oldValue,
             'newvalue'  =>  $newValue,
-            'manufacturer'  =>  current(array_keys($manufacturer)),
+//            'manufacturer'  =>  current(array_keys($manufacturer)),
             'datechanged'   => date('Y-m-d h:i:s'),
             'changedby' =>  $user,
             'property'  =>  $property,

@@ -78,22 +78,14 @@ class LoggingController extends AbstractActionController
         $request = $this->getRequest();
         if($request->isPost()) {
             $logsInfo = $request->getPost();
-//            var_dump($logsInfo);
-            $draw = $logsInfo['draw'];
-            $oldValue = $logsInfo['old'];
-            $newValue = $logsInfo['new'];
-            $entityId = $logsInfo['eid'];
-            $pk = $logsInfo['pk'];
-            $manOpId = $logsInfo['manOpId'];
-            $property = $logsInfo['property'];
             $searchParams = array(
-                'old'=>$oldValue,
-                'new'=>$newValue,
-                'eid'=>$entityId,
-                'pk'=>$pk,
-                'property'=>$property,
+                'old'=>$logsInfo['old'],
+                'new'=>$logsInfo['new'],
+                'eid'=>$logsInfo['eid'],
+                'pk'=>$logsInfo['pk'],
+                'property'=>$logsInfo['property'],
                 'user'=>$userID,
-                'manOpId'=>$manOpId,
+                'sku'=>$logsInfo['sku'],
             );
             $revert->undo($searchParams);
             $this->redirect()->toRoute('logging');
