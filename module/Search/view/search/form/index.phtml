@@ -244,19 +244,13 @@
             <div class="col-md-6">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <div class="checker">
-                            <span><input name = "orginalContent" type="checkbox"></span>
-                        </div>
-                        Original Content
+                            <input name = "orginalContent" type="checkbox"> Original Content
                     </div>
                 </div><div class="col-md-4">
                     <div class="form-group">
-                        <div class="checker">
-                            <span><input name="contentReviewed" type="checkbox"></span>
-                        </div>
-                        Content Reviewed
+                        <input name="contentReviewed" type="checkbox">Content Reviewed
+
                     </div>
-                </div>
             </div>
 
         </div>
@@ -560,7 +554,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3" for="searchTerms">Includes Free</label>
                             <div class="col-md-11">
-                                <textarea class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> <?php $this->data->getIncludesFree() ?> </textarea>
+                                <textarea id="includesfreewys" class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> <?php $this->data->getIncludesFree() ?> </textarea>
                             </div>
                         </div>
 
