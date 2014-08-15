@@ -45,7 +45,7 @@
                             Items Requiring Update
                         </div>
                     </div>
-                    <a class="more" href="">
+                    <a class="more show-updates" href="">
                         Show Updates<i class="m-icon-swapright m-icon-white"></i>
                     </a>
                 </div>
@@ -76,14 +76,14 @@
                     </div>
                     <div class="details">
                         <div class="number">
-                            <?=$this->cleanCount?>
+                            <?=$this->newImages?>
                         </div>
                         <div class="desc">
-                            New/Updated Images
+                            New Images
                         </div>
                     </div>
-                    <a class="more" href="#">
-                        &nbsp;<i class="m-icon-swapright m-icon-white"></i>
+                    <a class="more show-images" href="">
+                        Show Images<i class="m-icon-swapright m-icon-white"></i>
                     </a>
                 </div>
             </div>
@@ -107,10 +107,19 @@
             </div>
         </div>
 
-                <div class="row">
+                <div class="row magento-updates">
                     <div class="col-md-4">
-                        <a href="/api-feeds/magento" class="btn blue btn-block btn-lg m-icon-big">
+                        <a href="/api-feeds/magento/items" class="btn blue btn-block btn-lg m-icon-big">
                             Push All Items <i class="m-icon-big-swapright m-icon-white"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="row magento-images">
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/api-feeds/magento/images" class="btn blue btn-block btn-lg m-icon-big">
+                            Push All Images <i class="m-icon-big-swapright m-icon-white"></i>
                         </a>
                     </div>
                 </div>

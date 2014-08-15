@@ -46,7 +46,7 @@ class LoggingTable
         $where = array(
              'attribute_code'=> $params['property'] == 'title' ? 'name' : $params['property']
         );
-        $selectResult = $this->productAttribute($this->sql,$columns, $where, 'lookup');
+        $selectResult = $this->productAttribute($this->sql,$columns, $where, 'lookup')->toArray();
 
         $attributeId = $selectResult[0]['attId'];
         $tableType  = $selectResult[0]['dataType'];

@@ -11,14 +11,10 @@ namespace Api\Magento\Model;
 use Zend\Db\Adapter\Adapter;
 use SoapClient;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Where;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Search\Tables\Spex;
-//use Zend\Db\Sql\Expression;
-//use Zend\Filter\Null;
-//use Zend\Db\Sql\AbstractSql;
-
 
 class MagentoTable {
 
@@ -42,6 +38,11 @@ class MagentoTable {
     {
         $this->adapter = $adapter;
         $this->sql = new Sql($this->adapter);
+    }
+
+    public function fetchImages()
+    {
+        return $this->productAttribute($this->sql,array(),array(),'images')->toArray();
     }
 
     public function lookupClean()
@@ -94,9 +95,10 @@ class MagentoTable {
     public function lookupNewUpdatedImages()
     {
 //        public function productAttribute(Sql $sql, array $columns = array(), array $where = array(),  $tableType )
-
-        $where = array('dataState', 0);
-        $this->productAttribute($this->sql,array(), $where, 'images');
+//        $where = new Where();
+        $where = array('left'=>'dataState', 'right'=>0);
+        $filter = new Where;
+        return $this->productAttribute($this->sql, array(), $where, 'images', $filter)->count();
     }
 
     public function lookupDirt()
@@ -364,7 +366,10 @@ class MagentoTable {
 //
 //        }
 
-
+        public function soapMedia()
+        {
+//            PRODUCT_ADD_MEDIA
+        }
         public function soapContent($data)
         {
             $soapClient = new SoapClient(SOAP_URL);
@@ -401,28 +406,6 @@ class MagentoTable {
             return $result;
         }
 
-//        public function fetchAttributeID($attributeField)
-//        {
-//            switch($attributeField){
-//                case 'title':
-//                    return 96;
-//                case 'description':
-//                    return 97;
-////                case 'short_descrition':
-////                    return 506;
-//            }
-//        }
-//        public function fetchTableType($tableType)
-//        {
-//            switch($tableType){
-//                case 'title':
-//                    return 'varchar';
-//                case 'description':
-////                case 'short_descrition':
-//                    return 'text';
-//            }
-//        }
-
         public function updateToClean($data)
         {
             $result = '';
@@ -441,7 +424,7 @@ class MagentoTable {
                         }
                     } else {
                         $entityId = $data[$key]['id'];
-                        $sku = $data[$key]['item'];
+//                        $sku = $data[$key]['item'];
                         array_shift($data[$key]);
                         $attributeField = current(array_keys($data[$key]));
                         $attributeField = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeField  ));
@@ -449,8 +432,6 @@ class MagentoTable {
                         $columns = array('attributeId' => 'attribute_id', 'backendType' => 'backend_type');
                         $where = array('attribute_code' => ($attributeField == 'title') ? 'name' : $attributeField);
                         $results = $this->productAttribute($this->sql, $columns, $where, 'lookup');
-//                        echo "<pre>";
-//                        var_dump($results);
                         $attributeId = $results[0]['attributeId'];
                         $tableType = $results[0]['backendType'];
                         $set = array('dataState'=>'0');

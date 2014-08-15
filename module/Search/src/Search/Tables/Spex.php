@@ -18,19 +18,18 @@ use Zend\Db\Sql\Where;
 
 trait Spex {
 
-    public function productAttribute(Sql $sql, array $columns = array(), array $where = array(),  $tableType )
+    public function productAttribute(Sql $sql, array $columns = array(), $where = null,  $tableType, $filter = null )
     {
         $select = $sql->select();
-        $select->columns($columns);
+        if(count($columns)) {
+            $select->columns($columns);
+        }
         $select->from('productattribute_'. $tableType);
-        if( count($where) ){
-            if( $where instanceof ExpressionInterface ) {
-                $filter = new Where();
-                $filter->notEqualTo($where);
-                $select->where($filter);
-            } else{
-                $select->where($where);
-            }
+        if( $filter instanceof Where ) {
+            $filter->notEqualTo($where['left'],$where['right']);
+            $select->where($filter);
+        } else {
+            $select->where($where);
         }
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -38,7 +37,8 @@ trait Spex {
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-        return $resultSet->toArray();
+        return $resultSet;
+
     }
 
     public function productUpdateaAttributes(Sql $sql, $tableType, array $set = array(), array $where = array())

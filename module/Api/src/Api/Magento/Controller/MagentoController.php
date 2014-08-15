@@ -41,12 +41,13 @@ class MagentoController  extends AbstractActionController {
                 'sku'   =>  $this->skuData,
                 'cleanCount'    => $cleanCount,
                 'newCount'    => $newCount,
+                'newImages'    => $images,
                 'dirtyCount' => $this->getMagentoTable()->getDirtyItems()
             )
         );
     }
 
-    protected function soapAction()
+    protected function soapItemAction()
     {
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
@@ -79,6 +80,19 @@ class MagentoController  extends AbstractActionController {
               }
             }
         }
+    }
+
+    public function soapImagesAction()
+    {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
+        $images = $this->getMagentoTable()->fetchImages();
+        echo "<pre>";
+        var_dump($images);
+        die();
     }
 
     public function getMagentoTable()

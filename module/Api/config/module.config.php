@@ -18,13 +18,23 @@ return array(
                     ),
                 ),
             ),
-            'api-magento'   =>  array(
+            'api-magento-items'   =>  array(
                 'type'  =>  'Zend\Mvc\Router\Http\Literal',
                 'options'   =>  array(
-                    'route' =>  '/api-feeds/magento',
+                    'route' =>  '/api-feeds/magento/items',
                     'defaults'  =>  array(
                         'controller'    =>  'Api\Magento\Controller\Magento',
-                        'action'        =>  'soap',
+                        'action'        =>  'soapItem',
+                    ),
+                ),
+            ),
+            'api-magento-images'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/magento/images',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'soapImages',
                     ),
                 ),
             ),

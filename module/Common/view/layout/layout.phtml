@@ -657,6 +657,7 @@
 <!-- toaster popups-->
 <script src="../../assets/global/plugins/bootstrap-toastr/toastr.min.js"></script>
 <script src="../../assets/admin/pages/scripts/ui-toastr.js"></script>
+<script src="../../assets/admin/pages/scripts/magento-api.js"></script>
 
 
 <script>
@@ -682,9 +683,10 @@
         //Tree
         UITree.init();
         //form submitting
-        ManageContent.init()
+        ManageContent.init();
         //toaster messages
         UIToastr.init();
+        MagentoApi();
     });
 </script>
 <!-- END JAVASCRIPTS -->
