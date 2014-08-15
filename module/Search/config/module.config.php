@@ -136,9 +136,9 @@ return array(
         'logger'  =>  array(
             'extra'    =>  array(
                 'entity_id' => 'entity_id',
+                'sku'   =>  'sku',
                 'oldvalue'  =>  'oldvalue',
                 'newvalue'  =>  'newvalue',
-                'manufacturer'  =>  'manufacturer',
                 'datechanged'   =>  'datechanged',
                 'changedby' =>  'changedby',
                 'property'  =>  'property',
