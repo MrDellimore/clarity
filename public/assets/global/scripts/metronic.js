@@ -152,8 +152,8 @@ var Metronic = function () {
         if (!$().uniform) {
             return;
         }
-       //var test = $("input[type=checkbox]:not(.toggle, .make-switch), input[type=radio]:not(.toggle, .star, .make-switch)");
-       var test = $("input[type=checkbox]:not(.toggle, .make-switch)");
+       var test = $("input[type=checkbox]:not(.toggle, .make-switch), input[type=radio]:not(.toggle, .star, .make-switch)");
+       //var test = $("input[type=checkbox]:not(.toggle, .make-switch)");
         if (test.size() > 0) {
             test.each(function () {
                 if ($(this).parents(".checker").size() == 0) {
@@ -335,7 +335,7 @@ var Metronic = function () {
             handleOnResize(); // set and handle responsive    
             
             //UI Component handlers            
-            handleUniform(); // hanfle custom radio & checkboxes
+            //handleUniform(); // hanfle custom radio & checkboxes
             handleBootstrapSwitch(); // handle bootstrap switch plugin
             handleScrollers(); // handles slim scrolling contents 
             handleFancybox() // handle fancy box

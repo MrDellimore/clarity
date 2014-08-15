@@ -43,6 +43,19 @@ var ComponentsEditors = function () {
         }
     }
 
+    var includesfree = function () {
+        if (!jQuery().wysihtml5) {
+            return;
+        }
+        var currentValue = $('textarea#includesfreewys').text();
+        if ($('#includesfreewys').size() > 0) {
+            $('#includesfreewys').wysihtml5({
+                "placeholderText": currentValue,
+                "stylesheets": ["../../assets/global/plugins/bootstrap-wysihtml5/wysiwyg-color.css"]
+            });
+        }
+    }
+
 
 
 
@@ -69,6 +82,7 @@ var ComponentsEditors = function () {
         init: function () {
             description();
             inBox();
+            includesfree();
             shortDescription();
             metadescription();
         }

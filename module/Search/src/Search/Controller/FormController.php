@@ -121,7 +121,7 @@ class FormController extends AbstractActionController {
 
             // update/insert data
             $form = $this->getFormTable();
-            $result = $form->dirtyHandle($dirtyData);
+            $result = $form->dirtyHandle($dirtyData, $container->data);
             $result .= $form->newHandle($newData);
 
             if($result == ''){

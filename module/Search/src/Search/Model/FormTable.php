@@ -191,12 +191,12 @@ class FormTable{
         //Fetch Manufacturer Option
         $newAttibute = $this->fetchAttribute($entityid,'int','102','manufacturer');
         $newOption = $this->fetchOption(current($newAttibute),'102','manufacturer');
-        $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
+        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
 
         //Fetch Brand Option
         $newAttibute = $this->fetchAttribute($entityid,'int','1641','brand');
         $newOption = $this->fetchOption(current($newAttibute),'1641','brand');
-        $result[array_keys($newAttibute)[0]] = array(current($newAttibute)=>current($newOption));
+        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
 
 
         //Fetch Images
@@ -588,7 +588,7 @@ class FormTable{
             $imageHandler = new ImageTable($this->adapter);
                 //$this->getImageTable();
             $images = $form->getImageGallery();
-            foreach($images as  $value){
+            foreach($images as  $key => $value){
                 $result=$imageHandler->createImage($value,$form->getId());
                 $inserteditems .= $result;
             }
