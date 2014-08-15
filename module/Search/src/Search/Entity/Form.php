@@ -146,6 +146,10 @@ class Form {
 
     protected $typeOfBag;
 
+    protected $headType;
+
+    protected $supportWeightTripod;
+
     protected $prismType;
 
     protected $brand = array();
@@ -157,9 +161,19 @@ class Form {
     protected $originalContent;
 
     protected $thumbnail;
-    protected $headType;
 
-    protected $supportWeightTripod;
+    protected $thumbnail_label;
+
+    protected $small_image;
+
+    protected $small_image_label;
+
+    protected $image;
+
+    protected $image_label;
+
+    protected $imageGallery = array();
+
 
     /**
      * @param mixed $headType
@@ -192,20 +206,6 @@ class Form {
     {
         return $this->supportWeightTripod;
     }
-
-    protected $thumbnail_label;
-
-    protected $small_image;
-
-    protected $small_image_label;
-
-    protected $image;
-
-    protected $image_label;
-
-    protected $imageGallery = array();
-
-
 
     /**
      * @param mixed $asiaFirstClass
