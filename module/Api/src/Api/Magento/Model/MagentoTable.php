@@ -45,7 +45,7 @@ class MagentoTable {
 
     public function fetchImages()
     {
-        return $this->productAttribute($this->sql,array(),array(),'images')->toArray();
+        return $this->productAttribute($this->sql,array(),array('dataState'=>1),'images')->toArray();
     }
 
     public function lookupClean()
@@ -343,8 +343,6 @@ class MagentoTable {
             array(
                 array('u' => 'users'),'u.userid = productattribute_'.$tableType. ' .changedby ',array('fName' => 'firstname', 'lName' => 'lastname'))
         );
-//        echo "<pre>";
-//        var_dump($joinTables);
         $resultSet = $this->productAttribute($this->sql, $columns, $where, $tableType, null, $joinTables);
 //die();
 //        $select = $this->sql->select();
@@ -416,9 +414,13 @@ class MagentoTable {
 //            if $options does not work for logging in then try the following.
             $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
             foreach($media as $key => $imgFileName){
+                $imgDomain = $media[$key]['domain'];
                 $imgName = $media[$key]['filename'];
                 $entityId = $media[$key]['entity_id'];
-                $imgPath = IMAGES_DIR . $imgName;
+                $imgPath = $imgDomain.$imgName;
+                echo $imgDomain . ' ' . $imgName . "<br />";
+
+                echo $imgPath . '<br />';
                 $fileContents = file_get_contents($imgPath);
                 $fileContentsEncoded = base64_encode($fileContents);
                 $file = array(
@@ -429,6 +431,7 @@ class MagentoTable {
                 $imageBatch[$key]['imageFile'] = $file;
 
             }
+            die();
             foreach($imageBatch as $key => $batch){
                 $entityId = $imageBatch[$key]['entityId'];
                 $fileContents = $imageBatch[$key]['imageFile'];
