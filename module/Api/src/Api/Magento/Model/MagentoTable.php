@@ -17,6 +17,7 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Search\Tables\Spex;
 use Zend\Loader\Exception\InvalidArgumentException;
 use Zend\Soap\Client;
+use Search\Entity\Images;
 
 class MagentoTable {
 
@@ -402,7 +403,7 @@ class MagentoTable {
 //
 //        }
 
-        public function soapMedia($media = array())
+        public function soapMedia($media = array(), Images $images)
         {
             $imageBatch = array();
             if(!is_array($media)) {
@@ -446,9 +447,9 @@ class MagentoTable {
                     $sku,
                     array(
                         'file'  =>  $fileContents,
-                        'label' =>  'no label',
-                        'position'  =>  '0',
-                        'types' =>  array('thumbnail'),
+                        'label' =>  $images->getLabel(),//'no label',
+                        'position'  =>  $images->getPosition(),//'0',
+                        'types' =>  array('thumbnail'), //what kind of images is this?
                         'excludes'  =>  0,
                     )
                 );
