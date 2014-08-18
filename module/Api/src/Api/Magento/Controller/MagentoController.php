@@ -87,17 +87,16 @@ class MagentoController  extends AbstractActionController {
     public function soapImagesAction()
     {
         $loginSession= new Container('login');
-        $sm = $this->getServiceLocator()->get('ServiceManager');
-        $img = $sm->get('Search\Entity\Images');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $images = $this->getMagentoTable()->fetchImages();
-        $this->getMagentoTable()->soapMedia($images, $img);
-//        echo "<pre>";
-//        var_dump($images);
-//        die();
+        if($this->getMagentoTable()->soapMedia($images)) {
+            if($this->getMagentoTable()->updateImagesToClean()){
+                return $this->redirect()->toRoute('apis', array('action'=>'magento'));
+            }
+        }
     }
 
     public function getMagentoTable()

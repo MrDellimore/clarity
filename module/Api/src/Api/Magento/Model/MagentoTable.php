@@ -35,6 +35,8 @@ class MagentoTable {
 
     protected $dirtyItems;
 
+    protected $imgPk = array();
+
     use Spex;
 
     public function __construct(Adapter $adapter)
@@ -45,7 +47,7 @@ class MagentoTable {
 
     public function fetchImages()
     {
-        return $this->productAttribute($this->sql,array(),array('dataState'=>1),'images')->toArray();
+        return $this->productAttribute($this->sql,array(),array('dataState'=>2),'images')->toArray();
     }
 
     public function lookupClean()
@@ -401,7 +403,7 @@ class MagentoTable {
 //
 //        }
 
-        public function soapMedia($media = array(), Images $images)
+        public function soapMedia($media = array())
         {
             $imageBatch = array();
             if(!is_array($media)) {
@@ -414,15 +416,19 @@ class MagentoTable {
 //            if $options does not work for logging in then try the following.
             $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
             foreach($media as $key => $imgFileName) {
-//                $imgDomain = $media[$key]['domain'];
+//                $imgDomain = $media[$key]['domain'];//this will change to whatever cdn we will have.
                 $imgName = $media[$key]['filename'];
+                $imageBatch[$key]['position'] = $media[$key]['position'];
+                $imageBatch[$key]['label'] = $media[$key]['label'];
+                $imageBatch[$key]['disabled'] = $media[$key]['disabled'];
+                $imageBatch[$key]['value_id'] = $media[$key]['value_id'];
                 $entityId = $media[$key]['entity_id'];
-                $imgPath = 'http://www.focuscamera.com/media/catalog/product'.$imgName;
-//                echo $imgDomain . ' ' . $imgName . "<br />";
+                $imgPath = file_get_contents("public".$imgName);
+//                $imgPath = 'http://www.focuscamera.com/media/catalog/product'.$imgName;
 
-                echo $imgPath . '<br />';
-                $fileContents = file_get_contents($imgPath);
-                $fileContentsEncoded = base64_encode($fileContents);
+//                $fileContents = file_get_contents($imgPath);
+                $fileContentsEncoded = base64_encode($imgPath);
+//                $fileContentsEncoded = base64_encode($fileContents);
                 $file = array(
                     'content'   =>  $fileContentsEncoded,
                     'mime'  =>  'image/jpeg',
@@ -431,10 +437,14 @@ class MagentoTable {
                 $imageBatch[$key]['imageFile'] = $file;
 
             }
-            die();
+            $results = array();
             foreach($imageBatch as $key => $batch){
                 $entityId = $imageBatch[$key]['entityId'];
+                $this->imgPk[] = $imageBatch[$key]['value_id'];
                 $fileContents = $imageBatch[$key]['imageFile'];
+                $position = $imageBatch[$key]['position'];
+                $disabled = $imageBatch[$key]['disabled'];
+                $label = $imageBatch[$key]['label'];
                 $select = $this->sql->select();
                 $select->from('product')->columns(array('sku'=>'productid'))->where(array('entity_id'=>$entityId));
                 $statement = $this->sql->prepareStatementForSqlObject($select);
@@ -445,28 +455,22 @@ class MagentoTable {
                 }
                 $products = $resultSet->toArray();
                 $sku = $products[0]['sku'];
-//                $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
                 $packet = array(
                     $sku,
                     array(
                         'file'  =>  $fileContents,
-                        'label' =>  $images->getLabel(),//'no label',
-                        'position'  =>  $images->getPosition(),//'0',
-                        'types' =>  array('thumbnail'), //what kind of images is this?
+                        'label' =>  $label,//'no label',
+                        'position'  =>  $position,//'0',
+//                        'types' =>  array('thumbnail'), //what kind of images is this?
                         'excludes'  =>  0,
+                        'remove'    =>  0,
+                        'disabled'  =>  0,
                     )
                 );
                 $batch = array($session, PRODUCT_ADD_MEDIA, $packet);
-                $soapHandle->call('call', $batch);
+                $results[] = $soapHandle->call('call', $batch);
             }
-//            $result = $proxy->call(
-//                $session,
-//                'catalog_product_attribute_media.create',
-//                array(
-//                    $productId,
-//                    array('file'=>$file, 'label'=>'Label', 'position'=>'100', 'types'=>array('thumbnail'), 'exclude'=>0)
-//                )
-//            );
+            return $results;
         }
         public function soapContent($data)
         {
@@ -503,6 +507,15 @@ class MagentoTable {
             }
             return $result;
         }
+
+    public function updateImagesToClean()
+    {
+        $result ='';
+        foreach($this->imgPk as $pk){
+            $result = $this->productUpdateaAttributes($this->sql, 'images', array('dataState'=>0), array('value_id'=>$pk));
+        }
+        return $result;
+    }
 
         public function updateToClean($data)
         {
