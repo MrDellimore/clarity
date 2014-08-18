@@ -413,12 +413,12 @@ class MagentoTable {
             $soapHandle = new Client(SOAP_URL);
 //            if $options does not work for logging in then try the following.
             $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
-            foreach($media as $key => $imgFileName){
-                $imgDomain = $media[$key]['domain'];
+            foreach($media as $key => $imgFileName) {
+//                $imgDomain = $media[$key]['domain'];
                 $imgName = $media[$key]['filename'];
                 $entityId = $media[$key]['entity_id'];
-                $imgPath = $imgDomain.$imgName;
-                echo $imgDomain . ' ' . $imgName . "<br />";
+                $imgPath = 'http://www.focuscamera.com/media/catalog/product'.$imgName;
+//                echo $imgDomain . ' ' . $imgName . "<br />";
 
                 echo $imgPath . '<br />';
                 $fileContents = file_get_contents($imgPath);
