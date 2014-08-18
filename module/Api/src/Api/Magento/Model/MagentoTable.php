@@ -15,6 +15,8 @@ use Zend\Db\Sql\Where;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Search\Tables\Spex;
+use Zend\Loader\Exception\InvalidArgumentException;
+use Zend\Soap\Client;
 
 class MagentoTable {
 
@@ -122,167 +124,189 @@ class MagentoTable {
         $result = $resultSet->toArray();
 //        TODO have to add my trait for product attribute look up to select table type attribute id and attribute code.
 //        TODO from there I would use the table type to access each table using the attribute id.
-//        $results = $this->productAttribute($this->sql, $columns, $where, 'lookup');
+        $columns = array('dataType'=>'backend_type','attributeId'=>'attribute_id','attributeCode'=>'attribute_code');
 
-        //Fetch Title
-        $newAttribute = $this->fetchAttribute( 'varchar','96','title');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-
-        //Fetch Price
-        $newAttribute = $this->fetchAttribute( 'decimal','99','price');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-
-        //Fetch Inventory
-        $newAttribute = $this->fetchAttribute( 'int','1','Inventory');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as  $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Status
-        $newAttribute = $this->fetchAttribute( 'int','273','Status');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch URLkey
-        $newAttribute = $this->fetchAttribute( 'varchar','481','url_key');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Cost
-        $newAttribute = $this->fetchAttribute( 'decimal','100','cost');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Rebate Price
-        $newAttribute = $this->fetchAttribute( 'decimal','1590','rebate');
-//        $result[array_keys($newAttribute[0]] = $newAttribute;
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Mail in Rebate Price
-        $newAttribute = $this->fetchAttribute( 'decimal','1593','mailinRebate');
-//        $result[array_keys($newAttribute[0]] = $newAttribute;
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Special Price
-        $newAttribute = $this->fetchAttribute( 'decimal','567','specialPrice');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
+        $results = $this->productAttribute($this->sql, $columns, array(), 'lookup')->toArray();
+//        $dataType = $results[0]['dataType'];
+//        $attributeId = $results[0]['attributeId'];
+//        $attributeCode = $results[0]['attributeCode'] === 'name' ? 'title' : $results[0]['attributeCode'];
+        foreach($results as $key => $arg){
+            $dataType = $results[$key]['dataType'];
+            $attributeId = $results[$key]['attributeId'];
+            $attributeCode = $results[$key]['attributeCode'] === 'name' ? 'title' : $results[$key]['attributeCode'];
+            $newAttribute = $this->fetchAttribute( $dataType,$attributeId,$attributeCode);
+            if(is_array($newAttribute)){
+                foreach($newAttribute as $newAtt){
+                    $result[] = $newAtt;
+                }
             }
         }
 
-        //Fetch Special Start Date
-        $newAttribute = $this->fetchAttribute( 'datetime','568','specialEndDate');
-//        $result[array_keys($newAttribute[0]] = $newAttribute;
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Special End Date
-        $newAttribute = $this->fetchAttribute( 'datetime','569','specialStartDate');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-
-        //Fetch Rebate Start Date
-        $newAttribute = $this->fetchAttribute( 'datetime','1591','rebateEndDate');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-
-        //Fetch Rebate End Date
-        $newAttribute = $this->fetchAttribute( 'datetime','1592','rebateStartDate');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-
-        //Fetch Mail in Start Date
-        $newAttribute = $this->fetchAttribute( 'datetime','1594','mailinEndDate');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Mail in  End Date
-        $newAttribute = $this->fetchAttribute( 'datetime','1595','mailinStartDate');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch metaTitle
-        $newAttribute = $this->fetchAttribute( 'varchar','103','meta_title');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-
-        //Fetch metaDescription
-        $newAttribute = $this->fetchAttribute( 'varchar','105','meta_description');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Description
-        $newAttribute = $this->fetchAttribute( 'text','97','description');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch inBox
-        $newAttribute = $this->fetchAttribute('text','1633','inBox');
-        // die(print_r($newAttribute);
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-
-        //Fetch includesFree
-        $newAttribute = $this->fetchAttribute( 'text','1679','includesFree');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-                $result[] = $newAtt;
-            }
-        }
-        //Fetch Short Description
-        $newAttribute = $this->fetchAttribute( 'text','506','short_description');
-        if(is_array($newAttribute)){
-            foreach($newAttribute as $newAtt){
-               $result[] = $newAtt;
-            }
-        }
+//        $newAttribute = $this->fetchAttribute( $dataType,$attributeId,$attributeCode);
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Title
+//        $newAttribute = $this->fetchAttribute( 'varchar','96','title');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//
+//        //Fetch Price
+//        $newAttribute = $this->fetchAttribute( 'decimal','99','price');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//
+//        //Fetch Inventory
+//        $newAttribute = $this->fetchAttribute( 'int','1','Inventory');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as  $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Status
+//        $newAttribute = $this->fetchAttribute( 'int','273','Status');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch URLkey
+//        $newAttribute = $this->fetchAttribute( 'varchar','481','url_key');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Cost
+//        $newAttribute = $this->fetchAttribute( 'decimal','100','cost');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Rebate Price
+//        $newAttribute = $this->fetchAttribute( 'decimal','1590','rebate');
+////        $result[array_keys($newAttribute[0]] = $newAttribute;
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Mail in Rebate Price
+//        $newAttribute = $this->fetchAttribute( 'decimal','1593','mailinRebate');
+////        $result[array_keys($newAttribute[0]] = $newAttribute;
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Special Price
+//        $newAttribute = $this->fetchAttribute( 'decimal','567','specialPrice');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//
+//        //Fetch Special Start Date
+//        $newAttribute = $this->fetchAttribute( 'datetime','568','specialEndDate');
+////        $result[array_keys($newAttribute[0]] = $newAttribute;
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Special End Date
+//        $newAttribute = $this->fetchAttribute( 'datetime','569','specialStartDate');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//
+//        //Fetch Rebate Start Date
+//        $newAttribute = $this->fetchAttribute( 'datetime','1591','rebateEndDate');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//
+//        //Fetch Rebate End Date
+//        $newAttribute = $this->fetchAttribute( 'datetime','1592','rebateStartDate');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//
+//        //Fetch Mail in Start Date
+//        $newAttribute = $this->fetchAttribute( 'datetime','1594','mailinEndDate');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Mail in  End Date
+//        $newAttribute = $this->fetchAttribute( 'datetime','1595','mailinStartDate');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch metaTitle
+//        $newAttribute = $this->fetchAttribute( 'varchar','103','meta_title');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//
+//        //Fetch metaDescription
+//        $newAttribute = $this->fetchAttribute( 'varchar','105','meta_description');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Description
+//        $newAttribute = $this->fetchAttribute( 'text','97','description');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch inBox
+//        $newAttribute = $this->fetchAttribute('text','1633','inBox');
+//        // die(print_r($newAttribute);
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//
+//        //Fetch includesFree
+//        $newAttribute = $this->fetchAttribute( 'text','1679','includesFree');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//                $result[] = $newAtt;
+//            }
+//        }
+//        //Fetch Short Description
+//        $newAttribute = $this->fetchAttribute( 'text','506','short_description');
+//        if(is_array($newAttribute)){
+//            foreach($newAttribute as $newAtt){
+//               $result[] = $newAtt;
+//            }
+//        }
         $this->setDirtyItems($this->getDirtyCount(), $this->getAggregateAttributeDirtyCount());
         return $result;
     }
@@ -310,31 +334,43 @@ class MagentoTable {
 
     public function fetchAttribute($tableType, $attributeid, $property)
     {
-            $select = $this->sql->select();
+        $columns = array('id'=>'entity_id', $property => 'value', 'ldate' => 'lastModifiedDate');
+        $where = array( 'attribute_id' => $attributeid, 'productattribute_'.$tableType. '.dataState'=> '1');
+        $joinTables = array(
+            array(
+                array('prod' => 'product'),'prod.entity_id = productattribute_'.$tableType. ' .entity_id ' ,array('item' => 'productid')),
+            array(
+                array('u' => 'users'),'u.userid = productattribute_'.$tableType. ' .changedby ',array('fName' => 'firstname', 'lName' => 'lastname'))
+        );
+//        echo "<pre>";
+//        var_dump($joinTables);
+        $resultSet = $this->productAttribute($this->sql, $columns, $where, $tableType, null, $joinTables);
+//die();
+//        $select = $this->sql->select();
+//
+//        $select->from('productattribute_'.$tableType);
+//
+//        $select->columns(array('id'=>'entity_id', $property => 'value', 'ldate' => 'lastModifiedDate'));
+//        $select->join(array('p' => 'product'),'p.entity_id = productattribute_'.$tableType. ' .entity_id ' ,array('item' => 'productid'));
+//        $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType. ' .changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+//        $select->where(array( 'attribute_id' => $attributeid, 'productattribute_'.$tableType. '.dataState'=> '1'));
+//
+//        $statement = $this->sql->prepareStatementForSqlObject($select);
+//        $result = $statement->execute();
+//
+//        $resultSet = new ResultSet;
+//
+//        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//            $resultSet->initialize($result);
+//        }
+        $this->setAggregateAttributeDirtyCount($resultSet->count());
+        $result = $resultSet->toArray();
 
-            $select->from('productattribute_'.$tableType);
+        //check if array passed or value given
+        if(!(is_array($result)) || current($result)[$property] == ''){
+            $result = null;
 
-            $select->columns(array('id'=>'entity_id', $property => 'value', 'ldate' => 'lastModifiedDate'));
-            $select->join(array('p' => 'product'),'p.entity_id = productattribute_'.$tableType. ' .entity_id ' ,array('item' => 'productid'));
-            $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType. ' .changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
-            $select->where(array( 'attribute_id' => $attributeid, 'productattribute_'.$tableType. '.dataState'=> '1'));
-
-            $statement = $this->sql->prepareStatementForSqlObject($select);
-            $result = $statement->execute();
-
-            $resultSet = new ResultSet;
-
-            if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                $resultSet->initialize($result);
-            }
-            $this->setAggregateAttributeDirtyCount($resultSet->count());
-            $result = $resultSet->toArray();
-
-            //check if array passed or value given
-            if(!(is_array($result)) || current($result)[$property] == ''){
-                $result = null;
-
-            }
+        }
 
         return $result;
     }
@@ -366,9 +402,67 @@ class MagentoTable {
 //
 //        }
 
-        public function soapMedia()
+        public function soapMedia($media = array())
         {
-//            PRODUCT_ADD_MEDIA
+            $imageBatch = array();
+            if(!is_array($media)) {
+                throw new \InvalidArgumentException(
+                    sprintf("Bad argument in class %s for function %s in line %s.",__CLASS__, __FUNCTION__, __LINE__)
+                );
+            }
+//            $options = array('login'=>SOAP_USER, 'password'=>SOAP_USER_PASS);
+            $soapHandle = new Client(SOAP_URL);
+//            if $options does not work for logging in then try the following.
+            $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
+            foreach($media as $key => $imgFileName){
+                $imgName = $media[$key]['filename'];
+                $entityId = $media[$key]['entity_id'];
+                $imgPath = IMAGES_DIR . $imgName;
+                $fileContents = file_get_contents($imgPath);
+                $fileContentsEncoded = base64_encode($fileContents);
+                $file = array(
+                    'content'   =>  $fileContentsEncoded,
+                    'mime'  =>  'image/jpeg',
+                );
+                $imageBatch[$key]['entityId'] = $entityId;
+                $imageBatch[$key]['imageFile'] = $file;
+
+            }
+            foreach($imageBatch as $key => $batch){
+                $entityId = $imageBatch[$key]['entityId'];
+                $fileContents = $imageBatch[$key]['imageFile'];
+                $select = $this->sql->select();
+                $select->from('product')->columns(array('sku'=>'productid'))->where(array('entity_id'=>$entityId));
+                $statement = $this->sql->prepareStatementForSqlObject($select);
+                $result = $statement->execute();
+                $resultSet = new ResultSet;
+                if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                    $resultSet->initialize($result);
+                }
+                $products = $resultSet->toArray();
+                $sku = $products[0]['sku'];
+//                $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
+                $packet = array(
+                    $sku,
+                    array(
+                        'file'  =>  $fileContents,
+                        'label' =>  'no label',
+                        'position'  =>  '0',
+                        'types' =>  array('thumbnail'),
+                        'excludes'  =>  0,
+                    )
+                );
+                $batch = array($session, PRODUCT_ADD_MEDIA, $packet);
+                $soapHandle->call('call', $batch);
+            }
+//            $result = $proxy->call(
+//                $session,
+//                'catalog_product_attribute_media.create',
+//                array(
+//                    $productId,
+//                    array('file'=>$file, 'label'=>'Label', 'position'=>'100', 'types'=>array('thumbnail'), 'exclude'=>0)
+//                )
+//            );
         }
         public function soapContent($data)
         {

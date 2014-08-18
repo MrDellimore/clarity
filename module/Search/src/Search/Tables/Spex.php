@@ -18,11 +18,19 @@ use Zend\Db\Sql\Where;
 
 trait Spex {
 
-    public function productAttribute(Sql $sql, array $columns = array(), $where = null,  $tableType, $filter = null )
+    public function productAttribute(Sql $sql, array $columns = array(), $where = null,  $tableType, $filter = null, array $joins = array() )
     {
         $select = $sql->select();
         if(count($columns)) {
             $select->columns($columns);
+        }
+        if($joinTables = count($joins)) {
+            for($i = 0; $i < $joinTables; $i++){
+                $alias = $joins[$i][0];
+                $on = $joins[$i][1];
+                $cols = $joins[$i][2];
+                $select->join($alias, $on, $cols);
+            }
         }
         $select->from('productattribute_'. $tableType);
         if( $filter instanceof Where ) {

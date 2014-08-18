@@ -30,17 +30,19 @@ class MagentoController  extends AbstractActionController {
         }
         $this->skuData = array();
         $this->skuData = $this->getMagentoTable()->lookupDirt();
-        $cleanCount = $this->getMagentoTable()->lookupClean();
-        $newCount = $this->getMagentoTable()->lookupNew();
+//        $cleanCount = $this->getMagentoTable()->lookupClean();
+//        $newCount = $this->getMagentoTable()->lookupNew();
         $images = $this->getMagentoTable()->lookupNewUpdatedImages();
+        $tableHeaders = array('ID','SKU','Attribute Field','New Attribute Value','Last Modified Date','Changed By');
         $session = new Container('dirty_skus');
         $dirtySkus = array();
         $session->dirtyProduct = $this->skuData;
         return new ViewModel(
             array(
+                'updateHeaders' => $tableHeaders,
                 'sku'   =>  $this->skuData,
-                'cleanCount'    => $cleanCount,
-                'newCount'    => $newCount,
+//                'cleanCount'    => $cleanCount,
+//                'newCount'    => $newCount,
                 'newImages'    => $images,
                 'dirtyCount' => $this->getMagentoTable()->getDirtyItems()
             )
@@ -85,14 +87,20 @@ class MagentoController  extends AbstractActionController {
     public function soapImagesAction()
     {
         $loginSession= new Container('login');
+        $sm = $this->getServiceLocator()->get('ServiceManager');
+        $images = $sm->get('Images');
+        echo get_class($images);
+        die();
+
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $images = $this->getMagentoTable()->fetchImages();
-        echo "<pre>";
-        var_dump($images);
-        die();
+        $this->getMagentoTable()->soapMedia($images);
+//        echo "<pre>";
+//        var_dump($images);
+//        die();
     }
 
     public function getMagentoTable()

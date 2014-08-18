@@ -1,33 +1,34 @@
 /**
  * Created by wsalazar on 8/15/14.
  */
-//jQuery(document).ready(function() {
 var magentoItems = $('.magento-updates');
 var magentoImages = $('.magento-images');
 magentoItems.hide();
 magentoImages.hide();
-var MagentoApi = function () {
+//var MagentoApi = function () {
 
-//    return {
-        //main function to initiate the module
-//        init: function () {
-
-            $('.show-updates').on('click',function(e){
-                e.preventDefault();
-                magentoItems.show();
-                magentoImages.hide();
-            });
-            $('.show-images').on('click',function(e){
-                e.preventDefault();
-                magentoItems.hide();
-                magentoImages.show();
-            });
-
-
-//        }
-
+//    var showUpdates = function (){
+//        console.log('haha');
+        $('.show-updates').on('click',function(e){
+            e.preventDefault();
+            console.log('haha');
+            magentoItems.show();
+            magentoImages.hide();
+        });
 //    };
 
-};
-
-//});
+//    var showImages = function (){
+//        console.log('haha');
+        $('.show-images').on('click',function(e){
+            e.preventDefault();
+            magentoItems.hide();
+            magentoImages.show();
+        });
+//    };
+//    return {
+//        init: function () {
+//            showUpdates();
+//            showImages();
+//        }
+//    };
+//}();

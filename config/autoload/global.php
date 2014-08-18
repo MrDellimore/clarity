@@ -11,6 +11,8 @@
  * file.
  */
 
+use Zend\ServiceManager\ServiceLocatorInterface;
+
 return array(
     'navigation' => array(
         'default' => array(
@@ -38,6 +40,20 @@ return array(
         'factories' => array(
             'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
             'Zend\Db\Adapter\Adapter' =>'Zend\Db\Adapter\AdapterServiceFactory',
+            'sessionService'    =>  function (ServiceLocatorInterface $serviceLocator){
+                    $sessionNames  =  array(
+                        'intranet',
+                        'login',
+                        'dirty_skus',
+                    );
+                    foreach($sessionNames as $sessions){
+                        $sessionContainer = new \Zend\Session\Container($sessions);
+                        $sessionService = new SessionService();
+                        $sessionService->setSessionContainer($sessionContainer);
+                    }
+                    return $sessionService;
+
+                }
         ),
     )
      

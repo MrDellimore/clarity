@@ -93,7 +93,7 @@ class LoggingController extends AbstractActionController
         }
     }
 
-    public function listUsersACtion()
+    public function listUsersAction()
     {
         $users = $this->getLoggingTable();
         $userList = $users->listUser();
