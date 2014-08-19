@@ -48,7 +48,7 @@
     </li>
     <li>
         <a href="#tab_acessories" data-toggle="tab">
-            Accessories </a>
+            Acessories </a>
     </li>
     <li>
         <a href="#tab_images" data-toggle="tab">
@@ -57,7 +57,7 @@
     </li>
     <li>
         <a href="#tab_categories" data-toggle="tab">
-            Categories
+            Catagories
         </a>
     </li>
 </ul>
@@ -897,16 +897,16 @@ $i=0;
                 <div class="portlet-tabs">
                     <ul class="nav nav-tabs">
                         <li>
-                            <a href="#portlet_inbox" data-toggle="tab">New aSavings</a>
+                            <a href="#portlet_newasave" data-toggle="tab">New aSavings</a>
                         </li>
                         <li>
                             <a href="#portlet_newfocus" data-toggle="tab">New Focus</a>
                         </li>
                         <li>
-                            <a href="#portlet_asave" data-toggle="tab">aSavings</a>
+                            <a href="#portlet_newfocus" data-toggle="tab">aSavings</a>
                         </li>
                         <li  class="active">
-                            <a href="#portlet_focus" data-toggle="tab">Focus</a>
+                            <a href="#portlet_newfocus" data-toggle="tab">Focus</a>
                         </li>
                     </ul>
                     <div class="row">
@@ -914,8 +914,11 @@ $i=0;
 
                             <form id="categoriesForm">
                                 <?php
+                                $i=0;
                                 foreach($this->data->getCategories() as $value){
-                                    echo '<input type="hidden" name = "categories[]" value ="'.$value['category_id'].'">';
+                                    echo '<input type="hidden" name = "categories['.$i.'][categoryid]" value ="'.$value->getCategoryid().'">';
+                                    echo '<input type="hidden" name = "categories['.$i.'][id]" value ="">';
+                                    $i++;
                                 }
                                 ?>
 
@@ -923,27 +926,42 @@ $i=0;
 
 
 
-                            <!-- Focus categories-->
+                            <!-- Focus categories
                             <div class="tab-pane col-md-11 active" id="portlet_focus">
                                 <h3>Focus Camera Categories</h3>
                                 <div id="tree_2" class="tree-demo"></div>
                             </div>
 
 
-                            <!-- aSave Categories-->
+                             aSave Categories
                             <div class="tab-pane col-md-11" id="portlet_asave">
                                 <div class="form-body">
                                     <h3>aSavings Categories</h3>
                                     <div id="asave" class="tree-demo"></div>
                                 </div>
                             </div>
-
+-->
 
                             <!-- newFocus categories-->
                             <div class="tab-pane col-md-11" id="portlet_newfocus">
                                 <h3>Focus Camera Categories (New Site)</h3>
                                 <div id="newfocus" class="tree-demo"></div>
                             </div>
+
+
+                            <!-- newAsave categories-->
+                            <div class="tab-pane col-md-11" id="portlet_newasave">
+                                <h3>aSavings Categories (New Site)</h3>
+                                <div id="newasave" class="tree-demo"></div>
+                            </div>
+
+
+
+
+
+
+
+
 
                         </div><!--end tab content-->
 

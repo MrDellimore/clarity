@@ -24,9 +24,10 @@ var ManageContent = function () {
             //forms from content page
             var generalForm = $('#generalForm').serializeArray();
             var imageForm = $('#imageForm').serializeArray();
+            var categoryForm = $('#categoriesForm').serializeArray();
 
             var formData
-            formData = generalForm.concat(imageForm);
+            formData = generalForm.concat(imageForm).concat(categoryForm);
 
             //console.log(formData);
             var goodData = [];

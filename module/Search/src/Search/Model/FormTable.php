@@ -296,7 +296,7 @@ class FormTable{
     public function fetchCategories($entityid){
         $select = $this->sql->select();
         $select->from('productcategory');
-        $select->columns(array('category_id' =>'category_id','title' =>'title'));
+        $select->columns(array('category_id' =>'category_id'));
 
         $select->where(array('entity_id' => $entityid));
         $statement = $this->sql->prepareStatementForSqlObject($select);
@@ -628,10 +628,19 @@ class FormTable{
         //Create new Image
         if(!(is_null($form->getImageGallery()))) {
             $imageHandler = new ImageTable($this->adapter);
-                //$this->getImageTable();
             $images = $form->getImageGallery();
             foreach($images as  $value){
                 $result=$imageHandler->createImage($value,$form->getId());
+                $inserteditems .= $result;
+            }
+        }
+
+        //Add new Category
+        if(!(is_null($form->getCategories()))) {
+            $categoryHandler = new CategoryTable($this->adapter);
+            $category = $form->getCategories();
+            foreach($category as  $value){
+                $result=$categoryHandler->addCategory($value,$form->getId());
                 $inserteditems .= $result;
             }
         }
@@ -656,6 +665,20 @@ class FormTable{
     public function insertAttributes($entityid,$value,$attributeid,$tableType){
 
     }
+
+
+    public function rinseHandle(Form $form){
+        $rinsedItems = '';
+        if(!(is_null($form->getCategories()))) {
+            $categoryHandler = new CategoryTable($this->adapter);
+            $category = $form->getCategories();
+            foreach($category as  $value){
+                $result=$categoryHandler->removeCategory($value,$form->getId());
+                $rinsedItems .= $result;
+            }
+        }
+    }
+
 
     public function setEventManager(EventManagerInterface $eventManager)
     {

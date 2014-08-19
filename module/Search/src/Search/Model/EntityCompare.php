@@ -9,17 +9,12 @@ namespace Search\Model;
 
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 use Search\Entity\Form;
-use Search\Entity\Images;
+
 
 
 class EntityCompare {
 
-    protected $imageVars;
 
-    public function __construct(){
-        $tempImage = new Images();
-        $this->imageVars = get_object_vars($tempImage);
-    }
 
     /*
      * returns Form entity with properties that need to be updated
@@ -159,4 +154,10 @@ class EntityCompare {
         return $newArray;
     }
 
+
+    public function rinseCheck($oldData,$newData){
+
+        return $this->newCheck($newData,$oldData);
+
+    }
 }
