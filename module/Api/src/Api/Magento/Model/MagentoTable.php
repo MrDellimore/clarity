@@ -12,12 +12,12 @@ use Zend\Db\Adapter\Adapter;
 use SoapClient;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Search\Tables\Spex;
 use Zend\Loader\Exception\InvalidArgumentException;
 use Zend\Soap\Client;
-use Search\Entity\Images;
 
 class MagentoTable {
 
@@ -377,15 +377,15 @@ class MagentoTable {
     }
 
 
-        public function setDirtyCount($dirtyCount)
-        {
-            $this->dirtyCount = $dirtyCount;
-        }
+    public function setDirtyCount($dirtyCount)
+    {
+        $this->dirtyCount = $dirtyCount;
+    }
 
-        public function getDirtyCount()
-        {
-            return $this->dirtyCount;
-        }
+    public function getDirtyCount()
+    {
+        return $this->dirtyCount;
+    }
 
 
 //        public function lookupAttribute($key)
@@ -403,110 +403,159 @@ class MagentoTable {
 //
 //        }
 
-        public function soapMedia($media = array())
-        {
-            $imageBatch = array();
-            if(!is_array($media)) {
-                throw new \InvalidArgumentException(
-                    sprintf("Bad argument in class %s for function %s in line %s.",__CLASS__, __FUNCTION__, __LINE__)
-                );
-            }
+    public function soapMedia($media = array())
+    {
+        $imageBatch = array();
+        if(!is_array($media)) {
+            throw new \InvalidArgumentException(
+                sprintf("Bad argument in class %s for function %s in line %s.",__CLASS__, __FUNCTION__, __LINE__)
+            );
+        }
 //            $options = array('login'=>SOAP_USER, 'password'=>SOAP_USER_PASS);
-            $soapHandle = new Client(SOAP_URL);
+        $soapHandle = new Client(SOAP_URL);
 //            if $options does not work for logging in then try the following.
-            $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
-            foreach($media as $key => $imgFileName) {
+        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
+        foreach($media as $key => $imgFileName) {
 //                $imgDomain = $media[$key]['domain'];//this will change to whatever cdn we will have.
-                $imgName = $media[$key]['filename'];
-                $imageBatch[$key]['position'] = $media[$key]['position'];
-                $imageBatch[$key]['label'] = $media[$key]['label'];
-                $imageBatch[$key]['disabled'] = $media[$key]['disabled'];
-                $imageBatch[$key]['value_id'] = $media[$key]['value_id'];
-                $entityId = $media[$key]['entity_id'];
-                $imgPath = file_get_contents("public".$imgName);
+            $imgName = $media[$key]['filename'];
+            $imageBatch[$key]['position'] = $media[$key]['position'];
+            $imageBatch[$key]['label'] = $media[$key]['label'];
+            $imageBatch[$key]['disabled'] = $media[$key]['disabled'];
+            $imageBatch[$key]['value_id'] = $media[$key]['value_id'];
+            $entityId = $media[$key]['entity_id'];
+            $imgPath = file_get_contents("public".$imgName);
 //                $imgPath = 'http://www.focuscamera.com/media/catalog/product'.$imgName;
 
 //                $fileContents = file_get_contents($imgPath);
-                $fileContentsEncoded = base64_encode($imgPath);
+            $fileContentsEncoded = base64_encode($imgPath);
 //                $fileContentsEncoded = base64_encode($fileContents);
-                $file = array(
-                    'content'   =>  $fileContentsEncoded,
-                    'mime'  =>  'image/jpeg',
-                );
-                $imageBatch[$key]['entityId'] = $entityId;
-                $imageBatch[$key]['imageFile'] = $file;
+            $file = array(
+                'content'   =>  $fileContentsEncoded,
+                'mime'  =>  'image/jpeg',
+            );
+            $imageBatch[$key]['entityId'] = $entityId;
+            $imageBatch[$key]['imageFile'] = $file;
 
-            }
-            $results = array();
-            foreach($imageBatch as $key => $batch){
-                $entityId = $imageBatch[$key]['entityId'];
-                $this->imgPk[] = $imageBatch[$key]['value_id'];
-                $fileContents = $imageBatch[$key]['imageFile'];
-                $position = $imageBatch[$key]['position'];
-                $disabled = $imageBatch[$key]['disabled'];
-                $label = $imageBatch[$key]['label'];
-                $select = $this->sql->select();
-                $select->from('product')->columns(array('sku'=>'productid'))->where(array('entity_id'=>$entityId));
-                $statement = $this->sql->prepareStatementForSqlObject($select);
-                $result = $statement->execute();
-                $resultSet = new ResultSet;
-                if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                    $resultSet->initialize($result);
-                }
-                $products = $resultSet->toArray();
-                $sku = $products[0]['sku'];
-                $packet = array(
-                    $sku,
-                    array(
-                        'file'  =>  $fileContents,
-                        'label' =>  $label,//'no label',
-                        'position'  =>  $position,//'0',
-//                        'types' =>  array('thumbnail'), //what kind of images is this?
-                        'excludes'  =>  0,
-                        'remove'    =>  0,
-                        'disabled'  =>  0,
-                    )
-                );
-                $batch = array($session, PRODUCT_ADD_MEDIA, $packet);
-                $results[] = $soapHandle->call('call', $batch);
-            }
-            return $results;
         }
-        public function soapContent($data)
-        {
-            $soapClient = new SoapClient(SOAP_URL);
-            $session = $soapClient->login(SOAP_USER, SOAP_USER_PASS);
-            $i = 0;
-            $updateBatch = array();
-            foreach($data as $key => $value){
-                if( isset($value['id']) ) {
-                    $entityID = $value['id'];
-                    array_shift($value);
-                    $updatedValue = current($value);
+        $results = array();
+        foreach($imageBatch as $key => $batch){
+            $entityId = $imageBatch[$key]['entityId'];
+            $this->imgPk[] = $imageBatch[$key]['value_id'];
+            $fileContents = $imageBatch[$key]['imageFile'];
+            $position = $imageBatch[$key]['position'];
+            $disabled = $imageBatch[$key]['disabled'];
+            $label = $imageBatch[$key]['label'];
+            $select = $this->sql->select();
+            $select->from('product')->columns(array('sku'=>'productid'))->where(array('entity_id'=>$entityId));
+            $statement = $this->sql->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+            $resultSet = new ResultSet;
+            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                $resultSet->initialize($result);
+            }
+            $products = $resultSet->toArray();
+            $sku = $products[0]['sku'];
+            $packet = array(
+                $sku,
+                array(
+                    'file'  =>  $fileContents,
+                    'label' =>  $label,//'no label',
+                    'position'  =>  $position,//'0',
+//                        'types' =>  array('thumbnail'), //what kind of images is this?
+                    'excludes'  =>  0,
+                    'remove'    =>  0,
+                    'disabled'  =>  0,
+                )
+            );
+            $batch = array($session, PRODUCT_ADD_MEDIA, $packet);
+            $results[] = $soapHandle->call('call', $batch);
+        }
+        return $results;
+    }
+
+    public function fetchCategoriesSoap()
+    {
+        $select = $this->sql->select();
+        $filter = new Where();
+        $filter->in('productcategory.dataState',array(2,3));
+        $select->from('productcategory')
+               ->columns(array('entityId'=>'entity_id','categortyId'=>'category_id', 'dataState'=>'dataState'))
+               ->join( array('p'=>'product'), 'p.entity_id=productcategory.entity_id',array('sku'=>'productid'))
+//               ->where(array('productcategory.dataState'=>2,'productcategory.dataState'=>3),PredicateSet::OP_OR);
+               ->where($filter);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        //TODO have to implement a count feature for this.
+//        $resultSet->count()
+        return $resultSet->toArray();
+    }
+
+    public function soapCategoriesUpdate($categories)
+    {
+        $results = false;
+        $soapHandle = new Client(SOAP_URL);
+        $packet = array();
+        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
+        foreach($categories as $key => $fields){
+            $entityId = $categories[$key]['entityId'];
+            $sku = $categories[$key]['sku'];
+            $dataState = (int)$categories[$key]['dataState'];
+            $categortyId = $categories[$key]['categortyId'];
+            if( 3 === $dataState ){
+                $packet[$key] = array($session, PRODUCT_DELETE_CATEGORY, array('categoryId'=>$categortyId,'product'=>$entityId ));
+            }
+            if( 2 === $dataState ){
+                $packet[$key] = array($session, PRODUCT_ASSIGN_CATEGORY, array('categoryId'=>$categortyId,'product'=>$entityId ));
+            }
+        }
+        foreach($packet as $key => $batch){
+//         echo '<pre>';
+//            var_dump($batch);
+            $results = $soapHandle->call('call', $batch );
+        }
+//        die();
+        return $results;
+    }
+
+    public function soapContent($data)
+    {
+        $soapClient = new SoapClient(SOAP_URL);
+        $session = $soapClient->login(SOAP_USER, SOAP_USER_PASS);
+        $i = 0;
+        $updateBatch = array();
+        foreach($data as $key => $value){
+            if( isset($value['id']) ) {
+                $entityID = $value['id'];
+                array_shift($value);
+                $updatedValue = current($value);
 //                    $this->productAttribute();
 //                    $attributeCode = lcfirst(current(array_keys($value)));
-                    $attributeCode =  current(array_keys($value));
-                    $attributeCode = $attributeCode == 'title' ? 'name' : $attributeCode;
-                    $attributeCode = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeCode  ));
-                    //$updatedKey = $this->lookupAttribute(lcfirst(current(array_keys($value))));
+                $attributeCode =  current(array_keys($value));
+                $attributeCode = $attributeCode == 'title' ? 'name' : $attributeCode;
+                $attributeCode = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeCode  ));
+                //$updatedKey = $this->lookupAttribute(lcfirst(current(array_keys($value))));
 //                    echo $updatedKey . ' ' ;
-                    $updateBatch[$i] = array('entity_id' => $entityID, array($attributeCode => $updatedValue));
-                    $i++;
-                }
+                $updateBatch[$i] = array('entity_id' => $entityID, array($attributeCode => $updatedValue));
+                $i++;
             }
-            $a = 0;
-            while( $a < count($updateBatch) ){
-                $x = 0;
-                while($x < 10 && $a < count($updateBatch)){
-                    $queueBatch[$x] = array(PRODUCT_UPDATE, $updateBatch[$a]);
-                    $x++;
-                    $a++;
-                }
-                sleep(15);
-                $result = $soapClient->multiCall($session, $queueBatch);
-            }
-            return $result;
         }
+        $a = 0;
+        while( $a < count($updateBatch) ){
+            $x = 0;
+            while($x < 10 && $a < count($updateBatch)){
+                $queueBatch[$x] = array(PRODUCT_UPDATE, $updateBatch[$a]);
+                $x++;
+                $a++;
+            }
+            sleep(15);
+            $result = $soapClient->multiCall($session, $queueBatch);
+        }
+        return $result;
+    }
 
     public function updateImagesToClean()
     {
@@ -517,39 +566,60 @@ class MagentoTable {
         return $result;
     }
 
-        public function updateToClean($data)
-        {
-            $result = '';
-            foreach($data as $key => $value){
-                //this sku part might have to be refactored
-                    if(array_key_exists('sku', $data[$key])){
-                        $update = $this->sql->update();
-                        $update->table('product');
-                        $update->set(array('dataState'=>'0'));
-                        $update->where(array('productid'=>$data[$key]['sku']));
-                        $statement = $this->sql->prepareStatementForSqlObject($update);
-                        $result = $statement->execute();
-                        $resultSet = new ResultSet;
-                        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                            $resultSet->initialize($result);
-                        }
-                    } else {
-                        $entityId = $data[$key]['id'];
-//                        $sku = $data[$key]['item'];
-                        array_shift($data[$key]);
-                        $attributeField = current(array_keys($data[$key]));
-                        $attributeField = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeField  ));
-
-                        $columns = array('attributeId' => 'attribute_id', 'backendType' => 'backend_type');
-                        $where = array('attribute_code' => ($attributeField == 'title') ? 'name' : $attributeField);
-                        $results = $this->productAttribute($this->sql, $columns, $where, 'lookup');
-                        $attributeId = $results[0]['attributeId'];
-                        $tableType = $results[0]['backendType'];
-                        $set = array('dataState'=>'0');
-                        $where = array('entity_id'=>$entityId, 'attribute_id'=>$attributeId);
-                        $result = $this->productUpdateaAttributes($this->sql, $tableType, $set, $where);
-                    }
+    public function updateProductCategories($catsToUpdate)
+    {
+        $result ='';
+        foreach($catsToUpdate as $key => $fields){
+            $dataState = (int)$catsToUpdate[$key]['dataState'];
+            if( $dataState === 2){
+                $update = $this->sql->update('productcategory');
+                $update->set(array('dataState'=>0))
+                       ->where(array('entity_id'=>$catsToUpdate[$key]['entityId'], 'category_id'=>$catsToUpdate[$key]['categortyId']));
+                $statement = $this->sql->prepareStatementForSqlObject($update);
+                $result = $statement->execute();
+            } else {
+                $delete = $this->sql->delete('productcategory');
+                $delete->where(array('entity_id'=>$catsToUpdate[$key]['entityId'], 'category_id'=>$catsToUpdate[$key]['categortyId']));
+                $statement = $this->sql->prepareStatementForSqlObject($delete);
+                $result = $statement->execute();
             }
-            return $result;
         }
+        return $result;
+    }
+
+    public function updateToClean($data)
+    {
+        $result = '';
+        foreach($data as $key => $value){
+            //this sku part might have to be refactored
+                if(array_key_exists('sku', $data[$key])){
+                    $update = $this->sql->update();
+                    $update->table('product');
+                    $update->set(array('dataState'=>'0'));
+                    $update->where(array('productid'=>$data[$key]['sku']));
+                    $statement = $this->sql->prepareStatementForSqlObject($update);
+                    $result = $statement->execute();
+                    $resultSet = new ResultSet;
+                    if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                        $resultSet->initialize($result);
+                    }
+                } else {
+                    $entityId = $data[$key]['id'];
+//                        $sku = $data[$key]['item'];
+                    array_shift($data[$key]);
+                    $attributeField = current(array_keys($data[$key]));
+                    $attributeField = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeField  ));
+
+                    $columns = array('attributeId' => 'attribute_id', 'backendType' => 'backend_type');
+                    $where = array('attribute_code' => ($attributeField == 'title') ? 'name' : $attributeField);
+                    $results = $this->productAttribute($this->sql, $columns, $where, 'lookup');
+                    $attributeId = $results[0]['attributeId'];
+                    $tableType = $results[0]['backendType'];
+                    $set = array('dataState'=>'0');
+                    $where = array('entity_id'=>$entityId, 'attribute_id'=>$attributeId);
+                    $result = $this->productUpdateaAttributes($this->sql, $tableType, $set, $where);
+                }
+        }
+        return $result;
+    }
 }

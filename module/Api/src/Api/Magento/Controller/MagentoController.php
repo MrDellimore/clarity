@@ -8,6 +8,7 @@
 
 namespace Api\Magento\Controller;
 
+use Zend\Db\Exception\UnexpectedValueException;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
@@ -23,6 +24,10 @@ class MagentoController  extends AbstractActionController {
 
     public function magentoAction()
     {
+        $mtime = microtime();
+        $mtime = explode(" ",$mtime);
+        $mtime = $mtime[1] + $mtime[0];
+        $starttime = $mtime;
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
@@ -37,8 +42,14 @@ class MagentoController  extends AbstractActionController {
         $session = new Container('dirty_skus');
         $dirtySkus = array();
         $session->dirtyProduct = $this->skuData;
+        $mtime = microtime();
+        $mtime = explode(" ",$mtime);
+        $mtime = $mtime[1] + $mtime[0];
+        $finishtime = $mtime;
+        $totalTime = round(($finishtime-$starttime),4);
         return new ViewModel(
             array(
+                'loadTime'  =>  $totalTime,
                 'updateHeaders' => $tableHeaders,
                 'sku'   =>  $this->skuData,
 //                'cleanCount'    => $cleanCount,
@@ -51,6 +62,7 @@ class MagentoController  extends AbstractActionController {
 
     protected function soapItemAction()
     {
+        $categorySoapResponse = $response = false;
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
@@ -58,10 +70,26 @@ class MagentoController  extends AbstractActionController {
         }
         $session = new Container('dirty_skus');
         $dirtyData = $session->dirtyProduct;
-        if( $response = $this->getMagentoTable()->soapContent($dirtyData) ){
+
+        /*Fetch categories*/
+        $categories = $this->getMagentoTable()->fetchCategoriesSoap();
+        $relatedProds = $this->getMagentoTable()->fetchRelatedProducts();
+        if(!empty($categories)){
+            /*Make api call to delete and update Sku with new category*/
+            $categorySoapResponse = $this->getMagentoTable()->soapCategoriesUpdate($categories);
+        }
+        if(!empty($dirtyData)){
+            /*Update Mage with up-to-date products*/
+            $response = $this->getMagentoTable()->soapContent($dirtyData);
+        }
+        if(!empty($relatedProds)){
+            /*Update Mage with up-to-date products*/
+            $response = $this->getMagentoTable()->soapRelatedProducts($relatedProds);
+        }
+
+        if( $categorySoapResponse || $response){
 
             foreach($response as $soapResponse){
-//                echo $soapResponse;
                 if( preg_match('/Product/', $soapResponse)){
                     $res = $soapResponse;
                 }
@@ -75,11 +103,18 @@ class MagentoController  extends AbstractActionController {
                 }
             }
 
-            if($res === true){
+            if($res === true || (!is_null($categorySoapResponse) &&  $categorySoapResponse === true) ){
 //                TODO have to find what out what the update statement actually returns.
-              if($this->getMagentoTable()->updateToClean($dirtyData)){
-                  return $this->redirect()->toRoute('apis');
+                $updateCategories = $this->getMagentoTable()->updateProductCategories($categories);
+                $updateFields = $this->getMagentoTable()->updateToClean($dirtyData);
+                if($updateFields || $updateCategories){
+                    return $this->redirect()->toRoute('apis');
               }
+            }
+            if( preg_match('/Category not exist/',$categorySoapResponse) ){
+//            'Category not exist' for $categorySoapResponse
+                trigger_error('Category does not exist for Magento Admin');
+                throw new \UnexpectedValueException('Category does not exist in Magento Admin');
             }
         }
     }
