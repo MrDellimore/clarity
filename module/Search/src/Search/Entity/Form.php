@@ -9,7 +9,6 @@
 namespace Search\Entity;
 
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Search\Entity\Images;
 
 
 class Form {
@@ -162,7 +161,19 @@ class Form {
 
     protected $thumbnail;
 
-    protected  $categories = array();
+    protected $categories = array();
+
+    protected $thumbnail_label;
+
+    protected $small_image;
+
+    protected $small_image_label;
+
+    protected $image;
+
+    protected $image_label;
+
+    protected $imageGallery = array();
 
     /**
      * @param mixed $headType
@@ -195,18 +206,6 @@ class Form {
     {
         return $this->supportWeightTripod;
     }
-
-    protected $thumbnail_label;
-
-    protected $small_image;
-
-    protected $small_image_label;
-
-    protected $image;
-
-    protected $image_label;
-
-    protected $imageGallery = array();
 
 
     /**
@@ -1465,7 +1464,10 @@ class Form {
      */
     public function setCategories($categories)
     {
-        $this->categories = $categories;
+        $hydrator = new ClassMethods();
+        foreach ($categories as  $value) {
+          $this->categories[] = $hydrator->hydrate($value, new Category());
+        }
     }
 
     /**

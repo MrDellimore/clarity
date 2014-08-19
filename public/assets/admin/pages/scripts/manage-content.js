@@ -23,9 +23,10 @@ var ManageContent = function () {
             //forms from content page
             var generalForm = $('#generalForm').serializeArray();
             var imageForm = $('#imageForm').serializeArray();
+            var categoryForm = $('#categoriesForm').serializeArray();
 
             var formData
-            formData = generalForm.concat(imageForm);
+            formData = generalForm.concat(imageForm).concat(categoryForm);
 
             //console.log(formData);
 
@@ -50,9 +51,9 @@ var ManageContent = function () {
                     //expty content div and display results
                     //$('#contentdiv').empty().append(data);
 
-                   toastr.success(data);
+                   //toastr.success(data);
 
-                   //console.log(data);
+                   console.log(data);
                 });
         });
     }

@@ -67,14 +67,6 @@ class ImageTable{
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
 
-        /*
-        if(is_null($image->getDefault())){
-            $defaultimg = 0;
-        }
-        else
-            $defaultimg = 1;
-        */
-
         $insert = $this->sql->insert('productattribute_images');
         $insert->columns(array('entity_id','label','position','disabled','domain','filename','default','datastate','changedby'));
         $insert->values(array(

@@ -51,20 +51,10 @@ class FormController extends AbstractActionController {
             $hydrator = new cHydrator;
             $hydrator->hydrate($skuData,$queriedData);
 
-/* Removing custom hydrator and using std Classmethod hydrator
-            foreach($this->skuData as $key => $value){
-//		echo 'key ' . $key . ' value ' . $value . "\n"; 
-                $method = 'set'.ucfirst($key);
-                $queriedData->$method($value);
-            }
-*/
-
-
             //stash object in container
             $container->data = $queriedData;
         }
-//echo "<pre>";
-//        var_dump($queriedData);
+
         $view = new ViewModel(array('data'=>$queriedData));
         return $view;
     }
@@ -99,7 +89,21 @@ class FormController extends AbstractActionController {
     public function loadCategoriesAction(){
         $form = $this->getFormTable();
         $categoryList = $form->fetchCategoriesStructure();
+
+        foreach($categoryList as $key => $value){
+
+
+            if($value['text'] == "Root Catalog"){
+                $categoryList[$key]['parent'] ='#';
+                $categoryList[$key]['state'] =array('opened' => true);
+
+            }
+        }
+
+
         $result = json_encode($categoryList);
+
+
         $event    = $this->getEvent();
         $response = $event->getResponse();
         $response->setContent($result);
@@ -119,19 +123,27 @@ class FormController extends AbstractActionController {
             $formData = (array) $request->getPost();
             //fix dates on post...
 
+
+
+
             //Hydrate into object
             $hydrator = new cHydrator;
             $hydrator->hydrate($formData,$postData);
+
+
 
             //Find dirty and new entities
             $comp = new EntityCompare();
             $dirtyData = $comp->dirtCheck($container->data, $postData);
             $newData = $comp->newCheck($container->data, $postData);
+            $rinseData = $comp->rinseCheck($container->data, $postData);
+
 
             // update/insert data
             $form = $this->getFormTable();
             $result = $form->dirtyHandle($dirtyData, $container->data);
             $result .= $form->newHandle($newData);
+            $result .= $form->rinseHandle($rinseData);
 
             if($result == ''){
                 $result = 'No changes to sku made.';
@@ -143,8 +155,6 @@ class FormController extends AbstractActionController {
 
             return $response;
 
-
-            //return $this->redirect()->toRoute("search", array('action'=>'index'));
         }
     }
 
