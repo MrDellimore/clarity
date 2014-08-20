@@ -132,6 +132,19 @@ return array(
                     ),
                 ),
             ),
+
+            'webassignment'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/webassignment',
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\WebAssignment\Controller\Index',
+                        'action'        =>  'index',
+
+                    ),
+                ),
+            ),
+
 //            quicksearch was here
 
 //            mfcload was here
@@ -142,7 +155,8 @@ return array(
     ),
 
     'controllers' => array('invokables' => array('Search\Controller\Search' => 'Search\Controller\SearchController',
-                                                 'Search\Controller\Form'   => 'Search\Controller\FormController'
+                                                 'Search\Controller\Form'   => 'Search\Controller\FormController',
+                                                 'Search\WebAssignment\Controller\Index'   => 'Search\WebAssignment\Controller\IndexController',
                                                 )
     ),
     'event_listener_construct' =>  array(
