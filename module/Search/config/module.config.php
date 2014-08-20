@@ -144,6 +144,18 @@ return array(
                     ),
                 ),
             ),
+
+            'webassignmentsubmit'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/websiteassignment/submit',
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\WebAssignment\Controller\Index',
+                        'action'        =>  'submitForm',
+
+                    ),
+                ),
+            ),
         ),
     ),
 

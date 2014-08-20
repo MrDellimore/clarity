@@ -17,26 +17,47 @@ class IndexController extends AbstractActionController{
 
     protected $webassignTable;
 
-    public function indexAction(){
+    public function indexAction()
+    {
         //check if logged in
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-
         $web = $this->getWebTable()->accessWeb();
-
-        $viewResult = new ViewModel();
+        $viewResult = new ViewModel(array('web'=>$web));
         return $viewResult;
 
     }
 
-    public function getWebTable(){
+    public function getWebTable()
+    {
         if (!$this->webassignTable) {
             $sm = $this->getServiceLocator();
             $this->webassignTable = $sm->get('Search\WebAssignment\Model\WebAssignTable');
         }
         return $this->webassignTable;
+    }
+
+    public function submitFormAction()
+    {
+        $result = '';
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        $request = $this->getRequest();
+        if($request->isPost()) {
+//            var_dump($request->getPost());
+            $simpleProd = $request->getPost();
+           $result = $this->getWebTable()->updateWebsiteTable($simpleProd['mfc'], $simpleProd['website'], $userLogin['userid']);
+        }
+        if($result == ''){
+            $result = 'No changes to sku made.';
+        }
+
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+        return $response;
     }
 }
