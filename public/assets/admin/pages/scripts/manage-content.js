@@ -1,6 +1,9 @@
 var ManageContent = function () {
 
-    var submitHandle = function () {
+
+
+
+    var contentFormHandle = function () {
         toastr.options = {
             "closeButton": true,
             "debug": false,
@@ -17,7 +20,7 @@ var ManageContent = function () {
         toastr.options.onHidden = function() { window.location = '/search'; };
 
 
-
+//submitting content form
         $( "#generalForm" ).submit(function( event ) {
             event.preventDefault();
 
@@ -57,6 +60,52 @@ var ManageContent = function () {
         });
     }
 
+    var websiteAssignmentHandle = function () {
+        $( "#websiteassignmentform" ).submit(function( event ) {
+            event.preventDefault();
+
+            var form = $('#websiteassignmentform').serializeArray();
+            console.log(form);
+
+
+
+            var url = '/websiteassignment/submit';
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: goodData})
+                .done(function( data ) {
+                    //toastr.success(data);
+
+                    console.log(data);
+                });
+
+             toastr.options = {
+             "closeButton": true,
+             "debug": false,
+             "positionClass": "toast-top-full-width",
+             "showDuration": "2000",
+             "hideDuration": "1000",
+             "timeOut": "5000",
+             "extendedTimeOut": "1000",
+             "showEasing": "swing",
+             "hideEasing": "linear",
+             "showMethod": "fadeIn",
+             "hideMethod": "fadeOut"
+             };
+             toastr.options.onHidden = function() { window.location = '/search'; };
+        });
+
+    }
+
+
+
+
+
+
+//submitting website form
+
+
 
 
 
@@ -64,7 +113,8 @@ var ManageContent = function () {
     return {
         //main function to initiate the module
         init: function () {
-            submitHandle();
+            contentFormHandle();
+            websiteAssignmentHandle();
         }
     };
 

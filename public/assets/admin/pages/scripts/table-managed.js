@@ -80,24 +80,10 @@ var TableManaged = function () {
 
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     };
+
+
+
     var populateSkuHistory = function () {
-//        var table = $('#skuHistoryDisplay');
-
-//        var filterDateRange;
-
-
-//        console.log('haha','hoho', filterDateRange);
-//        $('#filterDateRange').on('focusout',function(){
-//            var that = $(this);
-//            $('.applyBtn').on("click", function(){
-//                filterDateRange = $('#filterDateRange').val();
-//            });
-//            $('#btnDateRange').click(function(){
-//                filterDateRange = that.val();
-//                console.log('haha',filterDateRange);
-//            });
-//            console.log(filterDateRange);
-//        });
 
         var table = $('#skuHistoryDisplay').dataTable({
 
@@ -202,6 +188,7 @@ var TableManaged = function () {
             });
         });
     };
+
     var initAcessoryDisplay = function () {
 
         var table = $('#acessoriesDisplay');
@@ -327,6 +314,54 @@ var TableManaged = function () {
         //tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     };
 
+
+    var webassignmentTable = function () {
+
+        var table = $('#webassignmenttable');
+
+        table.dataTable({
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "lengthMenu": "_MENU_ records",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }});
+
+        //populate edit popup
+        $('.mfcedit').on('click', function(){
+            var manufacturer = $(this).closest('tr').find('td').eq(0).text();
+            var site = $(this).closest('tr').find('td').eq(1).text();
+            $('#mfcLabel').text(manufacturer);
+            $('#mfcInput').val(manufacturer);
+
+
+            var sitecode;
+            switch (site){
+                case "Focus": sitecode = 1;
+                    break;
+                case "aSavings": sitecode = 0;
+                    break;
+                case "Focus / aSavings": sitecode = 2;
+                    break;
+            }
+            $('#webID').val(sitecode);
+        });
+    };
+
     return {
 
         //main function to initiate the module
@@ -339,6 +374,7 @@ var TableManaged = function () {
             initAcessoryDisplay();
             initCrossSellDisplay();
             populateSkuHistory();
+            webassignmentTable();
         }
 
     };

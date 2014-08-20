@@ -25,8 +25,18 @@ class IndexController extends AbstractActionController{
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
 
+        //Load assignments
+        //Push to view
+
         $viewResult = new ViewModel();
         return $viewResult;
 
+    }
+
+    public function submitFormAction(){
+        //grab data from post
+        //submit data
+        //Sort-Circuit MVC
+        //return data for Toast
     }
 }

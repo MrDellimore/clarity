@@ -145,6 +145,18 @@ return array(
                 ),
             ),
 
+            'webassignmentsubmit'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/webassignment/submit',
+                    'defaults'  =>  array(
+                        'controller'    => 'Search\WebAssignment\Controller\Index',
+                        'action'        =>  'submitForm',
+
+                    ),
+                ),
+            ),
+
 //            quicksearch was here
 
 //            mfcload was here

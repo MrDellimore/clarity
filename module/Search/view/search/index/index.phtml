@@ -15,9 +15,7 @@ Website Assignment <small></small>
                 <a href="">Website Assignment</a>
                 <i class="fa fa-angle-right"></i>
             </li>
-<!--            <li>-->
-<!--                <a href="">Product Edit</a>-->
-<!--            </li>-->
+
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -26,10 +24,6 @@ Website Assignment <small></small>
 <!-- BEGIN PAGE CONTENT-->
 <div class="row">
 
-<!--<div class="col-md-12">-->
-<!--    <div class="portlet">-->
-<!--        <div class="portlet-title">-->
-<!--        </div>-->
     <div class="portlet-body">
 
 
@@ -49,29 +43,81 @@ Website Assignment <small></small>
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-12">
-                             <table class="table table-striped table-bordered table-hover" id="websiteAssignment">
+                             <table class="table table-striped table-bordered table-hover" id="webassignmenttable">
                                 <thead>
                                 <tr>
                                     <th>Manufacturer</th>
                                     <th>Site</th>
                                     <th>Date Assigned</th>
+                                    <th>Changed By</th>
                                     <th>Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-
-                                                                            <td>3 legged beast</td>
-                                                                            <td>Focus</td>
-                                                                            <td>today</td>
-                                                                            <td>Edit</td>
-                                        <!--                                    <td></td>-->
-                                        <!--                                    <td></td>-->
-                                        <!--                                    <td><a class="delete" href="javascript:;">Delete</a></td>-->
+                                    <td>3 legged beast</td>
+                                    <td>Focus</td>
+                                    <td>today</td>
+                                    <td>me</td>
+                                    <td><a class="btn green mfcedit" data-toggle="modal" href="#crossModal">
+                                            Edit <i class="fa fa-plus"></i></a></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+
+
+
+                        <div class="modal fade" id="crossModal" tabindex="-1" role="crossModal" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Edit Website Assignment</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+
+                                        <div class="row">
+                                            <div class="col-md-11">
+                                                <form id="websiteassignmentform">
+                                                <div class="col-md-5">
+                                                    Manufacturer:
+                                                    <br />
+
+                                                <label id="mfcLabel"></label>
+                                                    <input type="hidden" id="mfcInput" name="mfc" value = "">
+
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                Select Website:
+                                                <select id="webID" name="website" class="form-control input-small" data-placeholder="Select Website">
+                                                    <option value="0">aSavings</option>
+                                                    <option value="1">Focus</option>
+                                                    <option value="2">Focus / aSavings</option>
+                                                </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                                        <input type="submit" class="btn blue" value="Save Changes">
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+
+
+
                     </div>
                 </div>
             </div>
