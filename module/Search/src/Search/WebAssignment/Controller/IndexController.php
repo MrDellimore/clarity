@@ -25,8 +25,18 @@ class IndexController extends AbstractActionController{
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
 
+        $web = $this->getWebTable()->accessWeb();
+
         $viewResult = new ViewModel();
         return $viewResult;
 
+    }
+
+    public function getWebTable(){
+        if (!$this->webassignTable) {
+            $sm = $this->getServiceLocator();
+            $this->webassignTable = $sm->get('Search\WebAssignment\Model\WebAssignTable');
+        }
+        return $this->webassignTable;
     }
 }

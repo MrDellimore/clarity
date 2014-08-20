@@ -144,13 +144,6 @@ return array(
                     ),
                 ),
             ),
-
-//            quicksearch was here
-
-//            mfcload was here
-//            brandload was here
-//            loadaccessories was here
-//            submitform was here
         ),
     ),
 
