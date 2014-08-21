@@ -38,13 +38,26 @@ class WebAssignTable
 
     public function updateWebsiteTable($manufacturer, $website, $userid)
     {
+        $select = $this->sql->select();
+        $select->from('webassignment')->columns(array('website'=>'website'))->where(array('manufacturer'=>$manufacturer));
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $webResults = $resultSet->toArray();
+        $site = $webResults[0]['website'];
+        if($site == $website){
+            return '';
+        }
         $update = $this->sql->update('webassignment');
-        $update->set(array('website'=>$website,'changedby'=>$userid))->where(array('manufacturer'=>$manufacturer));
+        $update->set(array('website'=>$website,'changedby'=>$userid, 'dataState'=>1))->where(array('manufacturer'=>$manufacturer));
         $statement = $this->sql->prepareStatementForSqlObject($update);
         $statement->execute();
         if($website == 0 ) $site = 'aSavings';
         if($website == 1 ) $site = 'Focus';
         if($website == 2 ) $site = 'Focus / aSavings';
-        return 'Successfully changed '. $manufacturer . ' to ' . $site;
+        return "Successfully changed Manufacturer '". $manufacturer . "' to Website: '" . $site . "'";
     }
 }

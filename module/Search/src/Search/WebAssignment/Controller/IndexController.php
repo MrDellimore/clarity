@@ -52,7 +52,7 @@ class IndexController extends AbstractActionController{
            $result = $this->getWebTable()->updateWebsiteTable($simpleProd['mfc'], $simpleProd['website'], $userLogin['userid']);
         }
         if($result == ''){
-            $result = 'No changes to sku made.';
+            $result = 'No changes to Manufacturer have been made.';
         }
 
         $event    = $this->getEvent();
