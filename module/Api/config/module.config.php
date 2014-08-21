@@ -38,6 +38,16 @@ return array(
                     ),
                 ),
             ),
+            'api-magento-new-items'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/magento/new-items',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'soapNewItems',
+                    ),
+                ),
+            ),
         ),
     ),
     'controllers'   =>  array(

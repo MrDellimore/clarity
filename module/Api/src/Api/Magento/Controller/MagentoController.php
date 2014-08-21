@@ -12,9 +12,12 @@ use Zend\Db\Exception\UnexpectedValueException;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
+use Search\Controller\FormController;
+use Search\Tables\Spex;
 
-
-class MagentoController  extends AbstractActionController {
+class MagentoController  extends AbstractActionController
+{
+    use Spex;
 
     protected $magentoTable;
 
@@ -117,6 +120,20 @@ class MagentoController  extends AbstractActionController {
                 throw new \UnexpectedValueException('Category does not exist in Magento Admin');
             }
         }
+    }
+
+    public function soapNewItemsAction()
+    {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
+        $newProducts = $this->getMagentoTable()->fetchNewItems();
+        $this->getMagentoTable()->soapAddProducts($newProducts);
+//        $form = $controller->getFormTable();
+//        $this->productAttribute()
+//        $form->
     }
 
     public function soapImagesAction()

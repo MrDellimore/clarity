@@ -3,32 +3,25 @@
  */
 var magentoItems = $('.magento-updates');
 var magentoImages = $('.magento-images');
+var magentoNewItems = $('.magento-new-items');
 magentoItems.hide();
 magentoImages.hide();
-//var MagentoApi = function () {
-
-//    var showUpdates = function (){
-//        console.log('haha');
+magentoNewItems.hide();
         $('.show-updates').on('click',function(e){
             e.preventDefault();
-            console.log('haha');
             magentoItems.show();
             magentoImages.hide();
+            magentoNewItems.hide();
         });
-//    };
-
-//    var showImages = function (){
-//        console.log('haha');
         $('.show-images').on('click',function(e){
             e.preventDefault();
             magentoItems.hide();
             magentoImages.show();
+            magentoNewItems.hide();
         });
-//    };
-//    return {
-//        init: function () {
-//            showUpdates();
-//            showImages();
-//        }
-//    };
-//}();
+        $('.new-items').on('click',function(e){
+            e.preventDefault();
+            magentoItems.hide();
+            magentoImages.hide();
+            magentoNewItems.show();
+        });

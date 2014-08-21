@@ -11,6 +11,7 @@ namespace Api\Magento\Model;
 use Zend\Db\Adapter\Adapter;
 use SoapClient;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\ResultSet\ResultSet;
@@ -18,6 +19,8 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Search\Tables\Spex;
 use Zend\Loader\Exception\InvalidArgumentException;
 use Zend\Soap\Client;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Adapter\Platform\Mysql;
 
 class MagentoTable {
 
@@ -621,5 +624,104 @@ class MagentoTable {
                 }
         }
         return $result;
+    }
+
+    public function soapAddProducts($newProds)
+    {
+        echo '<pre>';
+//var_dump($newProds);
+        $results = false;
+        $soapHandle = new Client(SOAP_URL);
+        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
+        $fetchAttributeList = [$session, 'product_attribute_set.list'];
+        $attributeSets = $soapHandle->call('call', $fetchAttributeList);
+        $attributeSet = current($attributeSets);
+        $count = 0;
+        $batchCount = 0;
+        $batch = [];
+        foreach($newProds as $index => $fields){
+            foreach($fields as $key => $values){
+                $entityId = $newProds[$index][$key]['entityId'];
+                $sku = $newProds[$index][$key]['sku'];
+                $attributeKey = $newProds[$index][$key]['key'];
+                $attributeValue = $newProds[$index][$key]['attCodeValue'];
+                $packet[$count] = [$session, 'catalog_product.create', 'simple', $attributeSet['set_id'], $sku,[
+                    $attributeKey   => $attributeKey == 'website' ? [$attributeValue] : $attributeValue //will also have to implement categores in condition as an array
+                    ]
+                ];
+                $count++;
+                if(count($packet) < 10){
+                    $batch[$batchCount] = $packet;
+                    $count = 0;
+                    $batchCount++;
+                }
+            }
+        }
+        $count = 0;
+        while($count < $batchCount){
+//            var_dump($batch[$count]);
+//            $results = $soapHandle->call('multiCall', $batch[$count] );
+//            sleep(2);
+            $count++;
+        }
+        die();
+        return $results;
+    }
+
+    public function fetchNewItems()
+    {
+        //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
+        $results = $this->productAttribute($this->sql,['attributeId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code'],[],'lookup')->toArray();
+        $rows = array();
+        foreach($results as $key => $fields){
+            $tableType = $results[$key]['dataType'];
+            $attributeId = (int)$results[$key]['attributeId'];
+            $cmpdCondTable = new Expression(
+                substr($tableType,0, 1).'.entity_id = product.entity_id and '. substr($tableType,0, 1) . '.dataState=2 and ' . substr($tableType,0, 1).'.attribute_id = '.$attributeId );
+            $select = $this->sql->select()->from('product')->columns([
+                'entityId'  =>  'entity_id',
+                'sku'   =>  'productid',
+                'productType'  =>  'product_type',
+                'dateCreated'   =>  'creationdate'
+            ])->where(array('product.dataState'=>2))
+              ->join([substr($tableType,0, 1)=>'productattribute_'.$tableType],$cmpdCondTable,[$results[$key]['attCode']=>'value']);
+//            $select->join(['o'=>'productattribute_option'], $optionDataState,['manufacturer'=>'value']);
+            if($attributeId == 102){
+                $optionDataState = new Expression('o.option_id=i.value and o.attribute_id = ' . $attributeId); //initially had  and o.dataState = 2 but we dont want that because we want all of the option_ids
+                $select->join(['o'=>'productattribute_option'], $optionDataState,['manufacturer'=>'value'])
+                       ->join(['m'=>'webassignment'],'m.manufacturer=o.value',['website'=>'website']);
+            }
+            $select->quantifier(Select::QUANTIFIER_DISTINCT);
+            $statement = $this->sql->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+            $resultSet = new ResultSet;
+            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                $resultSet->initialize($result);
+            }
+//            echo '<pre>';
+//            $driver = new Mysql(new \PDO($this->adapter));
+//            echo $select->getSqlString($driver). '<br />';
+//            var_dump($resultSet->toArray())
+            $rows[] = $resultSet->toArray();
+
+        }
+        $newProducts = array();
+        foreach ($rows as $index => $value ){
+            foreach($value as $key => $vals){
+                $newProducts[$index][$key]['entityId'] = $rows[$index][$key]['entityId'];
+                $entityId = $newProducts[$index][$key]['entityId'];
+                $newProducts[$index][$key]['key'] = $results[$index]['attCode'];
+                $attributeCode = $newProducts[$index][$key]['key'];
+                $count = count($newProducts[$index][$key]);
+                $attributeCodeNext = $newProducts[$index][$key++]['key'];
+                if(  )
+                $newProducts[$index][$key]['sku'] = $rows[$index][$key]['sku'];
+                if (isset ($rows[$index][$key]['site'])){
+                    $newProducts[$index][$key]['site'] = $rows[$index][$key]['site'];
+                }
+                $newProducts[$index][$key]['attCodeValue'] = $rows[$index][$key][$results[$index]['attCode']];
+            }
+        }
+        return $newProducts;
     }
 }
