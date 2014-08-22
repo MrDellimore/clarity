@@ -673,24 +673,29 @@ class MagentoTable {
         //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
         $results = $this->productAttribute($this->sql,['attributeId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code'],[],'lookup')->toArray();
         $rows = array();
+        echo '<pre>';
+        $products = [];
         foreach($results as $key => $fields){
             $tableType = $results[$key]['dataType'];
             $attributeId = (int)$results[$key]['attributeId'];
-            $cmpdCondTable = new Expression(
-                substr($tableType,0, 1).'.entity_id = product.entity_id and '. substr($tableType,0, 1) . '.dataState=2 and ' . substr($tableType,0, 1).'.attribute_id = '.$attributeId );
+            $attributeCode = $results[$key]['attCode'];
+//            $cmpdCondTable = new Expression(
+//                substr($tableType,0, 1).'.entity_id = product.entity_id and '. substr($tableType,0, 1) . '.dataState=2 and ' . substr($tableType,0, 1).'.attribute_id = '.$attributeId );
             $select = $this->sql->select()->from('product')->columns([
                 'entityId'  =>  'entity_id',
                 'sku'   =>  'productid',
                 'productType'  =>  'product_type',
                 'dateCreated'   =>  'creationdate'
-            ])->where(array('product.dataState'=>2))
-              ->join([substr($tableType,0, 1)=>'productattribute_'.$tableType],$cmpdCondTable,[$results[$key]['attCode']=>'value']);
+            ])->where(array('product.dataState'=>2))->quantifier(Select::QUANTIFIER_DISTINCT);
+
+
+//              ->join([substr($tableType,0, 1)=>'productattribute_'.$tableType],$cmpdCondTable,[$results[$key]['attCode']=>'value']);
 //            $select->join(['o'=>'productattribute_option'], $optionDataState,['manufacturer'=>'value']);
-            if($attributeId == 102){
-                $optionDataState = new Expression('o.option_id=i.value and o.attribute_id = ' . $attributeId); //initially had  and o.dataState = 2 but we dont want that because we want all of the option_ids
-                $select->join(['o'=>'productattribute_option'], $optionDataState,['manufacturer'=>'value'])
-                       ->join(['m'=>'webassignment'],'m.manufacturer=o.value',['website'=>'website']);
-            }
+//            if($attributeId == 102){
+//                $optionDataState = new Expression('o.option_id=i.value and o.attribute_id = ' . $attributeId); //initially had  and o.dataState = 2 but we dont want that because we want all of the option_ids
+//                $select->join(['o'=>'productattribute_option'], $optionDataState,['manufacturer'=>'value'])
+//                       ->join(['m'=>'webassignment'],'m.manufacturer=o.value',['website'=>'website']);
+//            }
             $select->quantifier(Select::QUANTIFIER_DISTINCT);
             $statement = $this->sql->prepareStatementForSqlObject($select);
             $result = $statement->execute();
@@ -698,30 +703,70 @@ class MagentoTable {
             if ($result instanceof ResultInterface && $result->isQueryResult()) {
                 $resultSet->initialize($result);
             }
+            $products = $resultSet->toArray();
+
+            foreach( $products  as $index => $values ) {
+                $entityId = current($products[$index]) ;
+//                echo $entityId . ' ' ;
+//                $entityId = $products[$index]['entityId'];
+                $attributeResults = $this->productAttribute(
+                    $this->sql,[$attributeCode=>'value'],
+                    ['dataState'=>2,'entity_id'=>$entityId, 'attribute_id'=>$attributeId],
+                    $tableType
+                    )->toArray();
+//                var_dump($attributeResults);
+                if(isset($attributeResults[0][$attributeCode])){
+                    $products[array_keys($attributeResults)[0][$attributeCode]] = current($attributeResults) ;
+                }
+                var_dump($products);
+
+//                echo $products[array_keys($attributeResults)[$key][$attributeCode]] . '<br />';
+//                var_dump($products);
+//                var_dump($attributeResults);
+//                $products[array_keys($attributeResults)[0]] = current($attributeResults);
+//                echo $attributeCode . ' ' . $products[array_keys($attributeResults)[0]] . '<br /> ';
+//                foreach( $attributeResults as $ky => $vl){
+//                    echo $products[$index]['entityId'] . ' ' ;
+
+//                    echo $attributeCode . ' ' . $attributeResults[$ky][$attributeCode] . '<br />';
+//                }
+            }
+//            $entityId = $results[0]['entityId'];
+//            echo $entityId. ' ' ;
+
+//            foreach( $results as $index => $val){
+//              }
+//
+        }
+
+//        var_dump($products);
+
 //            echo '<pre>';
 //            $driver = new Mysql(new \PDO($this->adapter));
 //            echo $select->getSqlString($driver). '<br />';
 //            var_dump($resultSet->toArray())
-            $rows[] = $resultSet->toArray();
+//            $rows[] = $resultSet->toArray();
 
-        }
-        $newProducts = array();
-        foreach ($rows as $index => $value ){
-            foreach($value as $key => $vals){
-                $newProducts[$index][$key]['entityId'] = $rows[$index][$key]['entityId'];
-                $entityId = $newProducts[$index][$key]['entityId'];
-                $newProducts[$index][$key]['key'] = $results[$index]['attCode'];
-                $attributeCode = $newProducts[$index][$key]['key'];
-                $count = count($newProducts[$index][$key]);
-                $attributeCodeNext = $newProducts[$index][$key++]['key'];
-                if(  )
-                $newProducts[$index][$key]['sku'] = $rows[$index][$key]['sku'];
-                if (isset ($rows[$index][$key]['site'])){
-                    $newProducts[$index][$key]['site'] = $rows[$index][$key]['site'];
-                }
-                $newProducts[$index][$key]['attCodeValue'] = $rows[$index][$key][$results[$index]['attCode']];
-            }
-        }
-        return $newProducts;
+
+//        return $rows;
+//        $newProducts = array();
+//        foreach ($rows as $index => $value ){
+//            foreach($value as $key => $vals){
+//                $newProducts[$index][$key]['entityId'] = $rows[$index][$key]['entityId'];
+//                $entityId = $newProducts[$index][$key]['entityId'];
+//                $newProducts[$index][$key]['key'] = $results[$index]['attCode'];
+//                $attributeCode = $newProducts[$index][$key]['key'];
+//                $count = count($newProducts[$index][$key]);
+//                $attributeCodeNext = $newProducts[$index][$key++]['key'];
+//                if(  )
+//                $newProducts[$index][$key]['sku'] = $rows[$index][$key]['sku'];
+//                if (isset ($rows[$index][$key]['site'])){
+//                    $newProducts[$index][$key]['site'] = $rows[$index][$key]['site'];
+//                }
+//                $newProducts[$index][$key]['attCodeValue'] = $rows[$index][$key][$results[$index]['attCode']];
+//            }
+//        }
+//        return $newProducts;
     }
+
 }

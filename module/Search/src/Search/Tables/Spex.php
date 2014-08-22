@@ -9,6 +9,7 @@
 namespace Search\Tables;
 
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Predicate\Predicate;
@@ -39,6 +40,7 @@ trait Spex {
         } else {
             $select->where($where);
         }
+        $select->quantifier(Select::QUANTIFIER_DISTINCT);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
