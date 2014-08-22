@@ -630,6 +630,8 @@ class MagentoTable {
     {
         echo '<pre>';
 //var_dump($newProds);
+//        die();
+
         $results = false;
         $soapHandle = new Client(SOAP_URL);
         $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
@@ -640,13 +642,17 @@ class MagentoTable {
         $batchCount = 0;
         $batch = [];
         foreach($newProds as $index => $fields){
-            foreach($fields as $key => $values){
-                $entityId = $newProds[$index][$key]['entityId'];
-                $sku = $newProds[$index][$key]['sku'];
-                $attributeKey = $newProds[$index][$key]['key'];
-                $attributeValue = $newProds[$index][$key]['attCodeValue'];
+                $keys = array_keys($newProds[$index]);
+                var_dump($keys);
+//            foreach($fields as $key => $values){
+                $entityId = $newProds[$index]['entityId'];
+                $sku = $newProds[$index]['sku'];
+//                $attributeKey = $newProds[$index]['key'];
+
+                $attributeValue = $newProds[$index]['attCodeValue'];
                 $packet[$count] = [$session, 'catalog_product.create', 'simple', $attributeSet['set_id'], $sku,[
-                    $attributeKey   => $attributeKey == 'website' ? [$attributeValue] : $attributeValue //will also have to implement categores in condition as an array
+//                    $attributeKey   =>  $attributeValue //will also have to implement categores in condition as an array
+                    //$attributeKey == 'website' ? [$attributeValue] :
                     ]
                 ];
                 $count++;
@@ -655,7 +661,7 @@ class MagentoTable {
                     $count = 0;
                     $batchCount++;
                 }
-            }
+//            }
         }
         $count = 0;
         while($count < $batchCount){
@@ -670,103 +676,81 @@ class MagentoTable {
 
     public function fetchNewItems()
     {
-        //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
-        $results = $this->productAttribute($this->sql,['attributeId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code'],[],'lookup')->toArray();
-        $rows = array();
         echo '<pre>';
-        $products = [];
-        foreach($results as $key => $fields){
-            $tableType = $results[$key]['dataType'];
-            $attributeId = (int)$results[$key]['attributeId'];
-            $attributeCode = $results[$key]['attCode'];
-//            $cmpdCondTable = new Expression(
-//                substr($tableType,0, 1).'.entity_id = product.entity_id and '. substr($tableType,0, 1) . '.dataState=2 and ' . substr($tableType,0, 1).'.attribute_id = '.$attributeId );
-            $select = $this->sql->select()->from('product')->columns([
-                'entityId'  =>  'entity_id',
-                'sku'   =>  'productid',
-                'productType'  =>  'product_type',
-                'dateCreated'   =>  'creationdate'
-            ])->where(array('product.dataState'=>2))->quantifier(Select::QUANTIFIER_DISTINCT);
-
-
-//              ->join([substr($tableType,0, 1)=>'productattribute_'.$tableType],$cmpdCondTable,[$results[$key]['attCode']=>'value']);
-//            $select->join(['o'=>'productattribute_option'], $optionDataState,['manufacturer'=>'value']);
-//            if($attributeId == 102){
-//                $optionDataState = new Expression('o.option_id=i.value and o.attribute_id = ' . $attributeId); //initially had  and o.dataState = 2 but we dont want that because we want all of the option_ids
-//                $select->join(['o'=>'productattribute_option'], $optionDataState,['manufacturer'=>'value'])
-//                       ->join(['m'=>'webassignment'],'m.manufacturer=o.value',['website'=>'website']);
-//            }
-            $select->quantifier(Select::QUANTIFIER_DISTINCT);
-            $statement = $this->sql->prepareStatementForSqlObject($select);
-            $result = $statement->execute();
-            $resultSet = new ResultSet;
-            if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                $resultSet->initialize($result);
-            }
-            $products = $resultSet->toArray();
-
-            foreach( $products  as $index => $values ) {
-                $entityId = current($products[$index]) ;
-//                echo $entityId . ' ' ;
-//                $entityId = $products[$index]['entityId'];
-                $attributeResults = $this->productAttribute(
-                    $this->sql,[$attributeCode=>'value'],
-                    ['dataState'=>2,'entity_id'=>$entityId, 'attribute_id'=>$attributeId],
-                    $tableType
-                    )->toArray();
-//                var_dump($attributeResults);
-                if(isset($attributeResults[0][$attributeCode])){
-                    $products[array_keys($attributeResults)[0][$attributeCode]] = current($attributeResults) ;
-                }
-                var_dump($products);
-
-//                echo $products[array_keys($attributeResults)[$key][$attributeCode]] . '<br />';
-//                var_dump($products);
-//                var_dump($attributeResults);
-//                $products[array_keys($attributeResults)[0]] = current($attributeResults);
-//                echo $attributeCode . ' ' . $products[array_keys($attributeResults)[0]] . '<br /> ';
-//                foreach( $attributeResults as $ky => $vl){
-//                    echo $products[$index]['entityId'] . ' ' ;
-
-//                    echo $attributeCode . ' ' . $attributeResults[$ky][$attributeCode] . '<br />';
-//                }
-            }
-//            $entityId = $results[0]['entityId'];
-//            echo $entityId. ' ' ;
-
-//            foreach( $results as $index => $val){
-//              }
-//
+        //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
+        $soapBundle = [];
+        $select = $this->sql->select()->from('product')->columns([
+            'entityId'  =>  'entity_id',
+            'sku'   =>  'productid',
+            'productType'  =>  'product_type',
+            'website'   =>  'website',
+            'dateCreated'   =>  'creationdate',
+        ])->where(array('dataState'=>2))->quantifier(Select::QUANTIFIER_DISTINCT);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
         }
+        $products = $resultSet->toArray();
+        foreach($products as $index => $value){
+            $entityId = $products[$index]['entityId'];
+//            echo $entityId. ' ';
+            $attributes = $this->productAttribute($this->sql,['attributeId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code'],[],'lookup')->toArray();
 
-//        var_dump($products);
+//            $this->fetchAttributeValues($entityId, 'varchar',96, 'name');
+//
+//            $this->fetchAttributeValues($entityId, 'text',97, 'description');
+//
+//            $this->fetchAttributeValues($entityId, 'decimal',99, 'price');
+//            $this->fetchAttributeValues($entityId, 'decimal',100, 'cost');
+//
+//            $this->fetchAttributeValues($entityId, 'varchar',103, 'meta_title');
+//
+//            $this->fetchAttributeValues($entityId, 'varchar',481, 'meta_description');
+//
+//            $this->fetchAttributeValues($entityId, 'text',506, 'short_description');
+//
+//            $this->fetchAttributeValues($entityId, 'int',102, 'manufacturer');
+//
+//            $this->fetchAttributeValues($entityId, 'int',1641, 'brand');
 
-//            echo '<pre>';
-//            $driver = new Mysql(new \PDO($this->adapter));
-//            echo $select->getSqlString($driver). '<br />';
-//            var_dump($resultSet->toArray())
-//            $rows[] = $resultSet->toArray();
 
 
-//        return $rows;
-//        $newProducts = array();
-//        foreach ($rows as $index => $value ){
-//            foreach($value as $key => $vals){
-//                $newProducts[$index][$key]['entityId'] = $rows[$index][$key]['entityId'];
-//                $entityId = $newProducts[$index][$key]['entityId'];
-//                $newProducts[$index][$key]['key'] = $results[$index]['attCode'];
-//                $attributeCode = $newProducts[$index][$key]['key'];
-//                $count = count($newProducts[$index][$key]);
-//                $attributeCodeNext = $newProducts[$index][$key++]['key'];
-//                if(  )
-//                $newProducts[$index][$key]['sku'] = $rows[$index][$key]['sku'];
-//                if (isset ($rows[$index][$key]['site'])){
-//                    $newProducts[$index][$key]['site'] = $rows[$index][$key]['site'];
-//                }
-//                $newProducts[$index][$key]['attCodeValue'] = $rows[$index][$key][$results[$index]['attCode']];
-//            }
-//        }
-//        return $newProducts;
+            foreach($attributes as $key => $fields){
+                $tableType = $attributes[$key]['dataType'];
+                $attributeId = (int)$attributes[$key]['attributeId'];
+                $attributeCode = $attributes[$key]['attCode'];
+//                echo $tableType. ' ' . $attributeId . ' ' . $soapBundle[$index]['key ']. ' ';
+//                $this->fetchAttributeValues($entityId, $tableType,$attributeId, $attributeCode);
+
+                $attributeValues = $this->productAttribute($this->sql, [$attributeCode=>'value'],['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2],$tableType)->toArray();
+
+                    foreach($attributeValues as $keyValue => $valueOption){
+//                         echo $attributeValues[$keyValue][$attributeCode]. '<br />';
+                        $soapBundle[$index]['entityId'] = $entityId;
+                        $soapBundle[$index]['dataState'] = $products[$index]['dataState'];
+                        $soapBundle[$index]['sku'] = $products[$index]['sku'];
+                        $soapBundle[$index]['website'] = $products[$index]['website'];
+//                        $soapBundle[$index]['attCodeValue '] = $attributeValues[$keyValue][$attributeCode];
+                        $soapBundle[$index][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+                        $optionID = $attributeValues[$keyValue][$attributeCode];
+//                        echo $attributeValues[$keyValue]['manufacturer']. ' ' ;
+//                        $this->productAttribute($this->sql, ['manufacturer'=>'value'],['option_id'=>$optionID] ,'option')->toArray();
+//                    }
+                }
+            }
+        }
+//        die();
+
+        return $soapBundle;
+//var_dump($soapBundle);
+//die();
+//        $rows = array();
+//        echo '<pre>';
+//        $products = [];
+
+
     }
 
 }

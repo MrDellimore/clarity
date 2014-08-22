@@ -38,6 +38,9 @@ class MagentoController  extends AbstractActionController
         }
         $this->skuData = array();
         $this->skuData = $this->getMagentoTable()->lookupDirt();
+//        echo '<pre>';
+//        var_dump($this->skuData);
+//        die();
 //        $cleanCount = $this->getMagentoTable()->lookupClean();
 //        $newCount = $this->getMagentoTable()->lookupNew();
         $images = $this->getMagentoTable()->lookupNewUpdatedImages();
@@ -45,14 +48,14 @@ class MagentoController  extends AbstractActionController
         $session = new Container('dirty_skus');
         $dirtySkus = array();
         $session->dirtyProduct = $this->skuData;
-        $mtime = microtime();
-        $mtime = explode(" ",$mtime);
-        $mtime = $mtime[1] + $mtime[0];
-        $finishtime = $mtime;
-        $totalTime = round(($finishtime-$starttime),4);
+//        $mtime = microtime();
+//        $mtime = explode(" ",$mtime);
+//        $mtime = $mtime[1] + $mtime[0];
+//        $finishtime = $mtime;
+//        $totalTime = round(($finishtime-$starttime),4);
         return new ViewModel(
             array(
-                'loadTime'  =>  $totalTime,
+//                'loadTime'  =>  $totalTime,
                 'updateHeaders' => $tableHeaders,
                 'sku'   =>  $this->skuData,
 //                'cleanCount'    => $cleanCount,
