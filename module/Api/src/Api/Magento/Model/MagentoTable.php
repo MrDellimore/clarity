@@ -728,8 +728,8 @@ class MagentoTable {
 
                     foreach($attributeValues as $keyValue => $valueOption){
 //                         echo $attributeValues[$keyValue][$attributeCode]. '<br />';
-                        $soapBundle[$index]['entityId'] = $entityId;
-                        $soapBundle[$index]['dataState'] = $products[$index]['dataState'];
+//                        $soapBundle[$index]['entityId'] = $entityId;
+//                        $soapBundle[$index]['dataState'] = $products[$index]['dataState'];
                         $soapBundle[$index]['sku'] = $products[$index]['sku'];
                         $soapBundle[$index]['website'] = $products[$index]['website'];
 //                        $soapBundle[$index]['attCodeValue '] = $attributeValues[$keyValue][$attributeCode];
