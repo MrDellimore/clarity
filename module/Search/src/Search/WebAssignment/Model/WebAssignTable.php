@@ -38,6 +38,10 @@ class WebAssignTable
 
     public function updateWebsiteTable($manufacturer, $website, $userid)
     {
+
+        //What is the purpose of this first select statement?
+        //validation?  if so this can be done client side instead of a new DB call
+        /*
         $select = $this->sql->select();
         $select->from('webassignment')->columns(array('website'=>'website'))->where(array('manufacturer'=>$manufacturer));
         $statement = $this->sql->prepareStatementForSqlObject($select);
@@ -51,6 +55,8 @@ class WebAssignTable
         if($site == $website){
             return '';
         }
+        */
+
         $update = $this->sql->update('webassignment');
         $update->set(array('website'=>$website,'changedby'=>$userid, 'dataState'=>1))->where(array('manufacturer'=>$manufacturer));
         $statement = $this->sql->prepareStatementForSqlObject($update);

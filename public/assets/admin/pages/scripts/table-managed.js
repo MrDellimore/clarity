@@ -342,7 +342,7 @@ var TableManaged = function () {
             }});
 
         //populate edit popup
-        $('.mfcedit').on('click', function(){
+        $('#webassignmenttable tbody').on('click', 'tr', function(){
             var manufacturer = $(this).closest('tr').find('td').eq(0).text();
             var site = $(this).closest('tr').find('td').eq(1).text();
             $('#mfcLabel').text(manufacturer);
