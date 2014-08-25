@@ -629,48 +629,66 @@ class MagentoTable {
     public function soapAddProducts($newProds)
     {
         echo '<pre>';
-//var_dump($newProds);
-//        die();
-
         $results = false;
+        $packet = [];
         $soapHandle = new Client(SOAP_URL);
         $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
         $fetchAttributeList = [$session, 'product_attribute_set.list'];
         $attributeSets = $soapHandle->call('call', $fetchAttributeList);
         $attributeSet = current($attributeSets);
-        $count = 0;
-        $batchCount = 0;
-        $batch = [];
-        foreach($newProds as $index => $fields){
-                $keys = array_keys($newProds[$index]);
-                var_dump($keys);
-//            foreach($fields as $key => $values){
-                $entityId = $newProds[$index]['entityId'];
-                $sku = $newProds[$index]['sku'];
-//                $attributeKey = $newProds[$index]['key'];
+//        $set = array(
+//            'name'    =>  '11" MB Air Kate Spade Dots',
+//            'description'   =>  'Kate Spade MacBook Air Slip Sleeve 11" Dots/Polyurethane',
+//        );
+//        $packet = [$session, 'catalog_product.create', ['simple', $attributeSet['set_id'], '031460', $set]];
+//        try{
+//            $results = $soapHandle->call('call', $packet );
+//        } catch (\SoapFault $e){
+//            trigger_error($e->getMessage(), E_USER_ERROR ); //should possibly go in log file?
+//            $results = $e->getCode(); //should be return to controller?
+//        }
+//        return $results;
 
-                $attributeValue = $newProds[$index]['attCodeValue'];
-                $packet[$count] = [$session, 'catalog_product.create', 'simple', $attributeSet['set_id'], $sku,[
-//                    $attributeKey   =>  $attributeValue //will also have to implement categores in condition as an array
-                    //$attributeKey == 'website' ? [$attributeValue] :
-                    ]
-                ];
-                $count++;
-                if(count($packet) < 10){
-                    $batch[$batchCount] = $packet;
-                    $count = 0;
-                    $batchCount++;
-                }
-//            }
-        }
         $count = 0;
-        while($count < $batchCount){
-//            var_dump($batch[$count]);
-//            $results = $soapHandle->call('multiCall', $batch[$count] );
-//            sleep(2);
+        $set = [];
+        foreach($newProds as $index => $fields){
+            $keys = array_keys($newProds[$index]);
+            $sku = $newProds[$index]['sku'];
+            array_shift($keys);
+            array_shift($newProds[$index]);
+            $packetCount = 0;
+            foreach($keys as $ind => $attFields){
+                $set[$packetCount] = [
+                    $keys[$ind]   =>  $keys[$ind] == 'website' ? [$newProds[$index][$keys[$ind]]] : $newProds[$index][$keys[$ind]],
+                ];
+                $packetCount++;
+            }
+            $packet[$count] = [$session, 'catalog_product.create', ['simple', $attributeSet['set_id'], $sku, $set]];
+            if( $count < 1 ){
+                var_dump($packet);
+                die();
+            }
             $count++;
         }
-        die();
+//        die();
+        $count = 0;
+        $batch = [];
+        while($count < count($packet)){
+            $packetCount = 0;
+            while($packetCount < 10 && $count < count($packet)){
+                $batch[$packetCount] = $packet[$count];
+//                if($count < 1){
+//                    var_dump($batch);
+//                }
+                $packetCount++;
+                $count++;
+//                die();
+            }
+//
+            $results = $soapHandle->call('multiCall', $batch[$packetCount] );
+            sleep(2);
+        }
+//        die();
         return $results;
     }
 
@@ -730,6 +748,7 @@ class MagentoTable {
 //                         echo $attributeValues[$keyValue][$attributeCode]. '<br />';
 //                        $soapBundle[$index]['entityId'] = $entityId;
 //                        $soapBundle[$index]['dataState'] = $products[$index]['dataState'];
+//                        $soapBundle[$index]['entityId'] = $products[$index]['entityId'];
                         $soapBundle[$index]['sku'] = $products[$index]['sku'];
                         $soapBundle[$index]['website'] = $products[$index]['website'];
 //                        $soapBundle[$index]['attCodeValue '] = $attributeValues[$keyValue][$attributeCode];
@@ -751,6 +770,48 @@ class MagentoTable {
 //        $products = [];
 
 
+    }
+
+    public function updateNewItems($newProducts)
+    {
+        foreach($newProducts as $index => $fields){
+            $update = $this->sql->update('product');
+            $update->set(['dataState'=>0]);
+            $update->where(['productid'=>$newProducts[$index]['sku']]);
+            $statement = $this->sql->prepareStatementForSqlObject($update);
+            $result = $statement->execute();
+            $resultSet = new ResultSet;
+            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                $resultSet->initialize($result);
+            }
+            return $resultSet;
+        }
+        foreach($newProducts as $key => $product){
+            $select = $this->sql->select();
+            $select->from('product')->columns(['entityId'=>'entity_id'])->where(['productid'=>$newProducts[$key]['sku']]);
+            $statement = $this->sql->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+            $resultSet = new ResultSet;
+            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                $resultSet->initialize($result);
+            }
+            $entityId = $resultSet->toArray();
+            $shiftedProducts = array_shift($newProducts[$key]['website']);
+            $productKeys = array_keys($shiftedProducts);
+            foreach($productKeys as $keys => $attCodes){
+                $lookup = $this->productAttributeLookup($this->sql, ['attribute_code'=>$productKeys[$keys]]);
+                $update = $this->sql->update('productattribute_'.$lookup[0]['backend_type']);
+                $update->set(['dataState'=>0]);
+                $update->where(['entity_id'=>$entityId[0]['entityId'],'attribute_id'=>$lookup[0]['attribute_id']]);
+                $updateStmt = $this->sql->prepareStatementForSqlObject($update);
+                $upRes = $updateStmt->execute();
+                $updateSet = new ResultSet;
+                if ($upRes instanceof ResultInterface && $upRes->isQueryResult()) {
+                    $resultSet->initialize($result);
+                }
+                return $updateSet;
+            }
+        }
     }
 
 }

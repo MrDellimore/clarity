@@ -133,10 +133,29 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $newProducts = $this->getMagentoTable()->fetchNewItems();
-        $this->getMagentoTable()->soapAddProducts($newProducts);
-//        $form = $controller->getFormTable();
-//        $this->productAttribute()
-//        $form->
+        if( $newProductResponse = $this->getMagentoTable()->soapAddProducts($newProducts) ){
+            switch((int)$newProductResponse){
+                case 100:
+                    throw new \UnexpectedValueException('Requested Store View not Found');
+                    break;
+                case 102:
+                    throw new \UnexpectedValueException('Invalid data given');
+                    break;
+                case 104:
+                    throw new \UnexpectedValueException('Product Type is not in allowed types');
+                    break;
+                case 105:
+                    throw new \UnexpectedValueException('Product attribute set is not existed');
+                    break;
+                case 106:
+                    throw new \UnexpectedValueException('Product attribute set is not belong catalog product entity type');
+                    break;
+                default:
+                    $this->getMagentoTable()->updateNewItems($newProducts);
+                    return $this->redirect()->toRoute('apis', array('action'=>'magento'));
+                    break;
+            }
+        }
     }
 
     public function soapImagesAction()

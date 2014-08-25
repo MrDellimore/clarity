@@ -15,7 +15,7 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\ExpressionInterface;
 use Zend\Db\Sql\Where;
-
+use Zend\Db\Sql\Expression;
 
 trait Spex {
 
@@ -49,6 +49,23 @@ trait Spex {
         }
         return $resultSet;
 
+    }
+
+    public function productAttributeLookup(Sql $sql, $where = null)
+    {
+        $select = $sql->select();
+        $select->from('productattribute_lookup');
+        $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code']);
+        if(count($where)){
+            $select->where($where);
+        }
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        return $resultSet->toArray();
     }
 
     public function productUpdateaAttributes(Sql $sql, $tableType, array $set = array(), array $where = array())
