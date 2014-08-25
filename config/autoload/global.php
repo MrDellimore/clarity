@@ -21,16 +21,31 @@ return array(
                 'route' => 'home',
             ),
             array(
-                'label' => 'Webtools',
+                'label' => 'Manage Content',
                 'route' => 'home',
+                'pages' => array(
+                    array(
+                        'label' => 'Search',
+                        'route' => 'search',
+                    ),
+                   /* array(
+                        'label' => 'Create Configurable',
+                        'route' => 'home',
+                    ),
+                   */
+                    array(
+                        'label' => 'Website Assignment',
+                        'route' => 'webassignment',
+                    ),
+                ),
             ),
             array(
-                'label' => 'SellerCloud',
-                'route' => 'home',
+                'label' => 'API Calls',
+                'route' => 'apis',
             ),
             array(
-                'label' => 'Login',
-                'route' => 'home',
+                'label' => 'History',
+                'route' => 'logging',
             ),
               
              
