@@ -16,7 +16,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Where;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareTrait;
-use Search\Tables\Spex;
+use Content\Products\Tables\Spex;
 
 class LoggingTable
 {

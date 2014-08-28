@@ -15,8 +15,7 @@ use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
-use Search\Tables\Spex;
-use Zend\Loader\Exception\InvalidArgumentException;
+use Content\ContentForm\Tables\Spex;
 use Zend\Soap\Client;
 
 class MagentoTable {

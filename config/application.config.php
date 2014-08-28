@@ -12,7 +12,7 @@ return array(
 //        'DoctrineORMModule',
         'Authenticate',
         'Common',
-        'Search',
+        'Content',
         'Users',
         'Api',
         'Logging',
