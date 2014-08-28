@@ -36,7 +36,7 @@ var UITree = function () {
     */
     var focusnewtree = function () {
 //load tree
-        var url = '/form/categoryload';
+        var url = '/content/product/categoryload';
         $.ajax({
             url: url,
             dataType: "json"})
@@ -112,7 +112,7 @@ var UITree = function () {
 
     var asavenewtree = function () {
 //load tree
-        var url = '/form/categoryload';
+        var url = '/content/product/categoryload';
         $.ajax({
             url: url,
             dataType: "json"})

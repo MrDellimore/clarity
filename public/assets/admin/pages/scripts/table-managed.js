@@ -12,7 +12,7 @@ var TableManaged = function () {
             "serverSide": true,
 
             "ajax": {
-                url: "/search/quicksearch",
+                url: "/content/search/quicksearch",
                 type: 'POST'
 
             },
@@ -199,7 +199,7 @@ var TableManaged = function () {
             "serverSide": true,
 
             "ajax": {
-                url: "/form/accessories",
+                url: "/content/product/accessories",
                 type: 'POST'
             },
             "columns": [
@@ -260,7 +260,7 @@ var TableManaged = function () {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: "/form/accessories",
+                url: "/content/product/accessories",
                 type: 'POST'
             },
             "columns": [
