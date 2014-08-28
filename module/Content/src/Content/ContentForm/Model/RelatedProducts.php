@@ -6,7 +6,7 @@
  * Time: 12:46 PM
  */
 
-namespace Content\ContentForm\Products\Model;
+namespace Content\ContentForm\Model;
 
 
 class RelatedProducts {

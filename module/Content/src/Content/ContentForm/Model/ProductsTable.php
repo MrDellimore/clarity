@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\ContentForm\Products\Model;
+namespace Content\ContentForm\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
@@ -14,10 +14,7 @@ use Zend\EventManager\EventManager;
 use Zend\Log\Writer\Db;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Log\Logger;
-use Content\ContentForm\Products\Entity\Products as Form;
-//use Zend\Db\Sql\Expression;
-//use Zend\Db\Sql\Select;
-//use Search\Helper\FormatFields;
+use Content\ContentForm\Entity\Products as Form;
 
 class ProductsTable{
 

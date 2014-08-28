@@ -6,7 +6,7 @@
  * Time: 12:47 PM
  */
 
-namespace Content\ContentForm\Products\Tables;
+namespace Content\ContentForm\Tables;
 
 use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;

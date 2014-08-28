@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Content\ContentForm\Products\Entity;
+namespace Content\ContentForm\Entity;
 
 
 class Category{

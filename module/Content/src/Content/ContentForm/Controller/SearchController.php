@@ -6,7 +6,7 @@
  * Time: 6:25 PM
  */
 
-namespace Content\ContentForm\Search\Controller;
+namespace Content\ContentForm\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;

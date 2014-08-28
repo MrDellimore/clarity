@@ -9,13 +9,11 @@
 namespace Content\AJAXLoader\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Content\ContentForm\Products\Entity\Products as Form;
+use Content\ContentForm\Entity\Products as Form;
 use Zend\Session\Container;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 
-
-
-class IndexController extends AbstractActionController
+class AjaxLoaderController extends AbstractActionController
 {
     protected $searchTable;
 
@@ -66,14 +64,14 @@ class IndexController extends AbstractActionController
     public function getSearchTable(){
         if (!$this->searchTable) {
             $sm = $this->getServiceLocator();
-            $this->searchTable = $sm->get('Content\ContentForm\Search\Model\SearchTable');
+            $this->searchTable = $sm->get('Content\ContentForm\Model\SearchTable');
         }
         return $this->searchTable;
     }
 
     public function loadAccessoriesAction()
     {
-        $form = $this->getServiceLocator()->get('Content\ContentForm\Products\Model\ProductsTable');//getFormTable();
+        $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');//getFormTable();
         $request = $this->getRequest();
         if($request->isPost()) {
             $loadAccessories = $request->getPost();
@@ -101,7 +99,7 @@ class IndexController extends AbstractActionController
 
     public function loadCategoriesAction()
     {
-        $form = $this->getServiceLocator()->get('Content\ContentForm\Products\Model\ProductsTable');
+        $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
         $categoryList = $form->fetchCategoriesStructure();
 
         foreach($categoryList as $key => $value){
@@ -144,14 +142,14 @@ class IndexController extends AbstractActionController
 
 
             //Find dirty and new entities
-            $comp = $this->getServiceLocator()->get('Content\ContentForm\Products\Model\EntityCompare');
+            $comp = $this->getServiceLocator()->get('Content\ContentForm\Model\EntityCompare');
             $dirtyData = $comp->dirtCheck($container->data, $postData);
             $newData = $comp->newCheck($container->data, $postData);
             $rinseData = $comp->rinseCheck($container->data, $postData);
 
 
             // update/insert data
-            $form = $this->getServiceLocator()->get('Content\ContentForm\Products\Model\ProductsTable');
+            $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
             $result = $form->dirtyHandle($dirtyData, $container->data);
             $result .= $form->newHandle($newData);
             $result .= $form->rinseHandle($rinseData);
@@ -170,7 +168,7 @@ class IndexController extends AbstractActionController
     }
     public function brandLoadAction()
     {
-        $form = $this->getServiceLocator()->get('Content\ContentForm\Products\Model\ProductsTable');
+        $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
         $brandList = $form->brandDropDown();
         $result = json_encode($brandList);
         $event    = $this->getEvent();
@@ -181,7 +179,7 @@ class IndexController extends AbstractActionController
 
     public function manufacturerLoadAction(){
 
-        $form = $this->getServiceLocator()->get('Content\ContentForm\Products\Model\ProductsTable');
+        $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
         $manufacturerlist = $form->manufacturerDropDown();
 
         $result = json_encode($manufacturerlist);
@@ -200,7 +198,7 @@ class IndexController extends AbstractActionController
             $imageData = $request->getFiles()->toArray();
 
             //save image
-            $imageHandler = $this->getServiceLocator()->get('Content\ContentForm\Products\Model\ImageTable');
+            $imageHandler = $this->getServiceLocator()->get('Content\ContentForm\Model\ImageTable');
             $imageResponse = $imageHandler->saveImageFile($imageData);
 
             $result = json_encode($imageResponse);

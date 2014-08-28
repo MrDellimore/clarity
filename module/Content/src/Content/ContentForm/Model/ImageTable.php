@@ -1,11 +1,11 @@
 <?php
 
-namespace Content\ContentForm\Products\Model;
+namespace Content\ContentForm\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Session\Container;
-use Content\ContentForm\Products\Entity\Images;
+use Content\ContentForm\Entity\Images;
 
 
 

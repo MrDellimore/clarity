@@ -6,7 +6,7 @@
  * Time: 2:49 PM
  */
 
-namespace Content\Search\Helper;
+namespace Content\ContentForm\Helper;
 
 
 class FormatFields {

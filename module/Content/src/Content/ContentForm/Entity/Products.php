@@ -6,7 +6,7 @@
  * Time: 4:51 PM
  */
 
-namespace Content\ContentForm\Products\Entity;
+namespace Content\ContentForm\Entity;
 
 use Zend\Stdlib\Hydrator\ClassMethods;
 

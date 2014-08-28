@@ -6,7 +6,7 @@
  * Time: 12:50 PM
  */
 
-namespace Content\ContentForm\Products\Entity;
+namespace Content\ContentForm\Entity;
 
 
 class Images {

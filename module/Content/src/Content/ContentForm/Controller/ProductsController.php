@@ -39,6 +39,9 @@ class ProductsController extends AbstractActionController {
         $queriedData = new Form();
         $sku = $this->params()->fromRoute('sku');
         $form = $this->getFormTable();
+        if(!$sku){
+            return $this->redirect()->toRoute('search');
+        }
 
         if($sku){
             $entityID = $form->validateSku($sku);
@@ -74,7 +77,7 @@ class ProductsController extends AbstractActionController {
     public function getFormTable(){
         if (!$this->formTable) {
             $sm = $this->getServiceLocator();
-            $this->formTable = $sm->get('Content\ContentForm\Products\Model\ProductsTable');
+            $this->formTable = $sm->get('Content\ContentForm\Model\ProductsTable');
         }
         return $this->formTable;
     }
@@ -82,7 +85,7 @@ class ProductsController extends AbstractActionController {
     public function getImageTable(){
         if (!$this->imageTable) {
             $sm = $this->getServiceLocator();
-            $this->imageTable = $sm->get('Content\ContentForm\Products\Model\ImageTable');
+            $this->imageTable = $sm->get('Content\ContentForm\Model\ImageTable');
         }
         return $this->imageTable;
     }

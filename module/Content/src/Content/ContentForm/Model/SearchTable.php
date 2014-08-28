@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Content\ContentForm\Search\Model;
+namespace Content\ContentForm\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;

@@ -57,9 +57,9 @@ class Module
                 'EventListeners' =>  'Listeners\Event\Listener',
             ),
             'factories' => array(
-                'Content\Search\Model\SearchTable' => function($sm) {
+                'Content\ContentForm\Model\SearchTable' => function($sm) {
                         $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                        $table = new \Content\Search\Model\SearchTable($dbAdapter);
+                        $table = new \Content\ContentForm\Model\SearchTable($dbAdapter);
                         return $table;
                     },
             ),

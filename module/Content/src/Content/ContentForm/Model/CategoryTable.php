@@ -6,12 +6,12 @@
  * Time: 5:25 PM
  */
 
-namespace Content\ContentForm\Products\Model;
+namespace Content\ContentForm\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Session\Container;
-use Content\ContentForm\Products\Entity\Category;
+use Content\ContentForm\Entity\Category;
 
 class CategoryTable{
 

@@ -5,10 +5,10 @@
  * Time: 7:32 PM
  */
 
-namespace Content\ContentForm\Products\Model;
+namespace Content\ContentForm\Model;
 
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
-use Content\ContentForm\Products\Entity\Products as Form;
+use Content\ContentForm\Entity\Products as Form;
 
 
 

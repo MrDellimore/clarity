@@ -30,7 +30,7 @@ return array(
                 'options' => array(
                     'route'    => '/content/search',
                     'defaults' => array(
-                        'controller' => 'Content\ContentForm\Search\Controller\Search',
+                        'controller' => 'Content\ContentForm\Controller\Search',
                         'action'     => 'index',
                     ),
                 ),
@@ -40,7 +40,7 @@ return array(
                         'options'    => array(
                             'route' =>  '/content/search/quicksearch',
                             'defaults'  =>  array(
-                                'controller'    => 'Content\AJAXLoader\Controller\Index',
+                                'controller'    => 'Content\AJAXLoader\Controller\AjaxLoader',
                                 'action'        =>  'quicksearch',
 
                             ),
@@ -68,7 +68,7 @@ return array(
                     'route' =>  '/content/product/manufacturerload',
 
                     'defaults'  =>  array(
-                        'controller'    => 'Content\AJAXLoader\Controller\Index',
+                        'controller'    => 'Content\AJAXLoader\Controller\AjaxLoader',
                         'action'        =>  'manufacturerLoad',
 
                     ),
@@ -81,7 +81,7 @@ return array(
                     'route' =>  '/content/product/categoryload',
 
                     'defaults'  =>  array(
-                        'controller'    => 'Content\AJAXLoader\Controller\Index',
+                        'controller'    => 'Content\AJAXLoader\Controller\AjaxLoader',
                         'action'        =>  'loadCategories',
 
                     ),
@@ -93,7 +93,7 @@ return array(
                         'options'    => array(
                             'route' =>  '/content/product/brandload',
                             'defaults'  =>  array(
-                                'controller'    => 'Content\AJAXLoader\Controller\Index',
+                                'controller'    => 'Content\AJAXLoader\Controller\AjaxLoader',
                                 'action'        =>  'brandLoad',
                             ),
                         ),
@@ -103,7 +103,7 @@ return array(
                 'options'    => array(
                     'route' =>  '/content/product/accessories',
                     'defaults'  =>  array(
-                        'controller'    => 'Content\AJAXLoader\Controller\Index',
+                        'controller'    => 'Content\AJAXLoader\Controller\AjaxLoader',
                         'action'        =>  'loadAccessories',
                     ),
                 ),
@@ -115,7 +115,7 @@ return array(
                     'route' =>  '/content/products/imagesave',
 
                     'defaults'  =>  array(
-                        'controller'    => 'Content\AJAXLoader\Controller\Index',
+                        'controller'    => 'Content\AJAXLoader\Controller\AjaxLoader',
                         'action'        =>  'imageSave',
                     ),
                 ),
@@ -126,7 +126,7 @@ return array(
                 'options'    => array(
                     'route' =>  '/content/product/submit',
                     'defaults'  =>  array(
-                        'controller'    => 'Content\AJAXLoader\Controller\Index',
+                        'controller'    => 'Content\AJAXLoader\Controller\AjaxLoader',
                         'action'        =>  'submitForm',
 
                     ),
@@ -160,9 +160,9 @@ return array(
     ),
 
     'controllers' => array('invokables' => array('Content\ContentForm\Controller\Products' => 'Content\ContentForm\Controller\ProductsController',
-                                                 'Content\ContentForm\Search\Controller\Search'   => 'Content\ContentForm\Search\Controller\SearchController',
+                                                 'Content\ContentForm\Controller\Search'   => 'Content\ContentForm\Controller\SearchController',
                                                  'Content\WebAssignment\Controller\Index'   => 'Content\WebAssignment\Controller\IndexController',
-                                                 'Content\AJAXLoader\Controller\Index'   => 'Content\AJAXLoader\Controller\IndexController',
+                                                 'Content\AJAXLoader\Controller\AjaxLoader'   => 'Content\AJAXLoader\Controller\AjaxLoaderController',
                                                 )
     ),
     'event_listener_construct' =>  array(
