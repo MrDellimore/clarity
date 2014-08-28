@@ -105,7 +105,7 @@ class AjaxLoaderController extends AbstractActionController
         foreach($categoryList as $key => $value){
 
 
-            if($value['text'] == "Root Catalog"){
+            if($value['text'] == "Root"){
                 $categoryList[$key]['parent'] ='#';
                 $categoryList[$key]['state'] =array('opened' => true);
 

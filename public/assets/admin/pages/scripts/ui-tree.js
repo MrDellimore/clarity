@@ -1,7 +1,7 @@
 var UITree = function () {
     var cattree = function () {
 //load tree
-        var url = '/form/categoryload';
+        var url = '/content/product/categoryload';
         $.ajax({
             url: url,
             dataType: "json"})

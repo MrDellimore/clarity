@@ -6,12 +6,12 @@
  * Time: 5:25 PM
  */
 
-namespace Search\Model;
+namespace Content\ContentForm\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Session\Container;
-use Search\Entity\Category;
+use Content\ContentForm\Entity\Category;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 
@@ -22,10 +22,10 @@ class CategoryTable{
         $this->sql = new Sql($this->adapter);
     }
 
-/*
- * todo make select statement to check if category assignment is there
- *
- */
+    /*
+     * todo make select statement to check if category assignment is there
+     *
+     */
     public function checkCategory(Category $cat,$entityid){
         $select = $this->sql->select();
         $select->from('productcategory');
