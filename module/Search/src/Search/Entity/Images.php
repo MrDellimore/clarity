@@ -13,6 +13,8 @@ class Images {
 
     protected $id;
 
+    protected $entityid;
+
     protected $filename;
 
     protected $domain;
@@ -24,6 +26,24 @@ class Images {
     protected $default;
 
     protected $disabled;
+
+    /**
+     * @param mixed $entityid
+     */
+    public function setEntityid($entityid)
+    {
+        $this->entityid = $entityid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntityid()
+    {
+        return $this->entityid;
+    }
+
+
 
     /**
      * @param mixed $default

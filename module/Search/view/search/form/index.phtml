@@ -85,7 +85,7 @@
 
         </div>
     </div>
-
+    <input type="hidden" class="form-control" name="id" value="<?= $this->data->getId(); ?>">
 
     <div class="portlet-body">
         <div class="row">
@@ -895,20 +895,22 @@ $i=0;
 
             <div class="portlet-body">
                 <div class="portlet-tabs">
+                    <!--
                     <ul class="nav nav-tabs">
                         <li>
-                            <a href="#portlet_newasave" data-toggle="tab">New aSavings</a>
+                            <a href="#">New aSavings</a>
                         </li>
                         <li>
-                            <a href="#portlet_newfocus" data-toggle="tab">New Focus</a>
+                            <a href="#">New Focus</a>
                         </li>
-                        <li>
-                            <a href="#portlet_newfocus" data-toggle="tab">aSavings</a>
+                        <li class="active selectedcat">
+                            <a href="#">aSavings</a>
                         </li>
-                        <li  class="active">
-                            <a href="#portlet_newfocus" data-toggle="tab">Focus</a>
+                        <li  class="active selectedcat">
+                            <a href="#">Focus</a>
                         </li>
                     </ul>
+                    -->
                     <div class="row">
                         <div class="tab-content">
 
@@ -916,8 +918,8 @@ $i=0;
                                 <?php
                                 $i=0;
                                 foreach($this->data->getCategories() as $value){
-                                    echo '<input type="hidden" name = "categories['.$i.'][categoryid]" value ="'.$value->getCategoryid().'">';
-                                    echo '<input type="hidden" name = "categories['.$i.'][id]" value ="">';
+                                    echo '<input type="hidden" name = "categories['.$i.'][id]" value ="'.$value->getId().'">';
+                                    echo '<input type="hidden" name = "categories['.$i.'][entityid]" value ="">';
                                     $i++;
                                 }
                                 ?>
@@ -925,34 +927,10 @@ $i=0;
                             </form>
 
 
-
-                            <!-- Focus categories
-                            <div class="tab-pane col-md-11 active" id="portlet_focus">
-                                <h3>Focus Camera Categories</h3>
-                                <div id="tree_2" class="tree-demo"></div>
-                            </div>
-
-
-                             aSave Categories
-                            <div class="tab-pane col-md-11" id="portlet_asave">
-                                <div class="form-body">
-                                    <h3>aSavings Categories</h3>
-                                    <div id="asave" class="tree-demo"></div>
-                                </div>
-                            </div>
--->
-
-                            <!-- newFocus categories-->
-                            <div class="tab-pane col-md-11" id="portlet_newfocus">
-                                <h3>Focus Camera Categories (New Site)</h3>
-                                <div id="newfocus" class="tree-demo"></div>
-                            </div>
-
-
-                            <!-- newAsave categories-->
-                            <div class="tab-pane col-md-11" id="portlet_newasave">
-                                <h3>aSavings Categories (New Site)</h3>
-                                <div id="newasave" class="tree-demo"></div>
+                            <!--categories-->
+                            <div class="col-md-11">
+                                <!--<h3>aSavings Categories (New Site)</h3>-->
+                                <div id="cattree" class="tree-demo"></div>
                             </div>
 
 

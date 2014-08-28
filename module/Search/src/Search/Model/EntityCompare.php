@@ -108,45 +108,48 @@ class EntityCompare {
 
     }
 
-
-
     public function getNewArray($oldData,$newData){
         $newArray = Array();
         $hydrator = new cHydrator;
+        //loop through newArray
         foreach($newData as $key => $value){
-
-            if(array_key_exists($key,$oldData)){
-
-                //recursively if item is an object
-                if(is_object($value)){
-                    //hydrate and call again
-                    $value = $hydrator->extract($value);
-                    $oldData[$key] = $hydrator->extract($oldData[$key]);
-
-                    $recursiveresult = $this->getNewArray($oldData[$key],$value);
-
-                    if(!(empty($recursiveresult))){
-                        $newArray[$key] = $recursiveresult;
-                    }
-                }
-
-                //recursively call if array
-                if(is_array($value) && !(is_object($value))  ){
-                    $recursiveresult = $this->getNewArray($oldData[$key],$value);
-
-                    if(!(empty($recursiveresult))){
-                        $newArray[$key] = $recursiveresult;
-                    }
-                }
-
-                //actual new comparison
-                if($value != $oldData[$key] && $value != null && $value != '' && !(is_array($oldData[$key])) && $oldData[$key] == null ){
-                    $newArray[$key] = $value;
-                }
+            //set items to array if object
+            /*
+            if(is_object($value)){
+                $value = $hydrator->extract($value);
+                $oldData[$key] = $hydrator->extract($oldData[$key]);
             }
+*/
+            if(is_array($value)){
+                if(array_key_exists($key,$oldData) && !(empty($oldData[$key])) ){
+                    foreach($value as $key2 => $newValue){
+                        $newFlag = true;
+                        if(is_object($newValue)){
+                            $newValue = $hydrator->extract($newValue);
+                        }
+
+                        foreach($oldData[$key] as $oldValue){
+                            if(is_object($oldValue)){
+                                $oldValue = $hydrator->extract($oldValue);
+                            }
+
+                            //var_dump($newValue['id']);
+                            if($newValue['id'] == $oldValue['id']){
+                                $newFlag = false;
+                            }
+                        }
+                        if($newFlag){
+                            $newArray[$key][$key2] = $newValue;
+                        }
+                    }
+                }
+                else
+                    $newArray[$key] = $value;
+            }
+
+            //not an array or object
             else{
-                if(is_object($value)){
-                    $value = $hydrator->extract($value);
+                if(($value != null && $value != '' && !(is_array($oldData[$key])) && $oldData[$key] == null) || ( !(array_key_exists($key,$oldData)) ) ){
                     $newArray[$key] = $value;
                 }
             }
@@ -154,10 +157,10 @@ class EntityCompare {
         return $newArray;
     }
 
-
     public function rinseCheck($oldData,$newData){
 
         return $this->newCheck($newData,$oldData);
 
     }
+
 }

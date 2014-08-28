@@ -6,24 +6,24 @@ namespace Search\Entity;
 
 class Category{
 
+    protected $entityid;
+
     protected $id;
 
-    protected $categoryid;
-
     /**
-     * @param mixed $categoryid
+     * @param mixed $entityid
      */
-    public function setCategoryid($categoryid)
+    public function setEntityid($entityid)
     {
-        $this->categoryid = $categoryid;
+        $this->entityid = $entityid;
     }
 
     /**
      * @return mixed
      */
-    public function getCategoryid()
+    public function getEntityid()
     {
-        return $this->categoryid;
+        return $this->entityid;
     }
 
     /**
@@ -41,6 +41,11 @@ class Category{
     {
         return $this->id;
     }
+
+
+
+
+
 
 
 }

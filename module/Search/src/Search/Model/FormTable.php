@@ -9,6 +9,7 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate\Operator;
 use Zend\EventManager\EventManagerAwareTrait;
 use Zend\EventManager\EventManager;
 use Zend\Log\Writer\Db;
@@ -274,7 +275,7 @@ class FormTable{
         $select = $this->sql->select();
 
         $select->from('productattribute_images');
-        $select->columns(array( 'id' => 'value_id','label' => 'label','position' => 'position',
+        $select->columns(array( 'id' => 'value_id','label' => 'label','position' => 'position','entityid' =>'entity_id',
                                 'domain' => 'domain', 'filename' =>'filename',
                                 'disabled' => 'disabled','default'=> 'default'));
         $select->where(array('entity_id' => $entityid, 'disabled' => 0));
@@ -296,9 +297,14 @@ class FormTable{
     public function fetchCategories($entityid){
         $select = $this->sql->select();
         $select->from('productcategory');
-        $select->columns(array('category_id' =>'category_id'));
+        $select->columns(array('entityid' => 'entity_id', 'id' =>'category_id'));
 
-        $select->where(array('entity_id' => $entityid));
+        $filter = new Where();
+        $filter->equalTo('entity_id', $entityid);
+        $pred = new Operator('dataState', Operator::OPERATOR_NOT_EQUAL_TO, 3);
+        $filter->addPredicate($pred);
+
+        $select->where($filter);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -317,7 +323,7 @@ class FormTable{
         $select = $this->sql->select();
         $select->from('category');
         $select->columns(array('id'=>'category_id','parent'=>'parent_id','text'=>'title'));
-//where for site
+
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -670,13 +676,16 @@ class FormTable{
     public function rinseHandle(Form $form){
         $rinsedItems = '';
         if(!(is_null($form->getCategories()))) {
+
             $categoryHandler = new CategoryTable($this->adapter);
             $category = $form->getCategories();
+
             foreach($category as  $value){
                 $result=$categoryHandler->removeCategory($value,$form->getId());
                 $rinsedItems .= $result;
             }
         }
+        return $rinsedItems;
     }
 
 

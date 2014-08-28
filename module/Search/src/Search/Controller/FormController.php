@@ -14,6 +14,7 @@ use Zend\View\Model\ViewModel;
 use Search\Entity\Form;
 use Zend\Session\Container;
 use Search\Model\EntityCompare;
+use Search\Entity\Category;
 
 
 /**
@@ -93,7 +94,7 @@ class FormController extends AbstractActionController {
         foreach($categoryList as $key => $value){
 
 
-            if($value['text'] == "Root Catalog"){
+            if($value['text'] == "Root"){
                 $categoryList[$key]['parent'] ='#';
                 $categoryList[$key]['state'] =array('opened' => true);
 
@@ -109,10 +110,6 @@ class FormController extends AbstractActionController {
         $response->setContent($result);
         return $response;
     }
-
-
-
-
 
     public function submitFormAction(){
 
@@ -131,12 +128,44 @@ class FormController extends AbstractActionController {
             $hydrator->hydrate($formData,$postData);
 
 
+            //*********Testing********
+            //create new category entity
+            //$postedCat = new Category();
+            //$oldCat = new Category();
+
+            //$oldArray = $hydrator->extract($container->data->getCategories()[0]);
+
+            //$hydrator->hydrate($oldArray['categories'],$oldCat);
+
+            //call rinse to troubleshoot
+
+           // var_dump($formData['categories'][0]);
+//            $comp = new EntityCompare();
+//
+//            $cats= $container->data->getCategories();
+//            $old[] = $cats;
+//            $cats = $postData->getCategories();
+//            $new[] = $cats;
+//
+//            $rinseData = $comp->getNewArray($old, $new);
+//            //var_dump($container->data->getCategories());
+//            //var_dump($postData->getCategories());
+//            var_dump($rinseData);
+//
+//            die();
+
+            ////End Testing
+
+
+
 
             //Find dirty and new entities
             $comp = new EntityCompare();
             $dirtyData = $comp->dirtCheck($container->data, $postData);
             $newData = $comp->newCheck($container->data, $postData);
             $rinseData = $comp->rinseCheck($container->data, $postData);
+
+
 
 
             // update/insert data

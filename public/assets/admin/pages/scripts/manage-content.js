@@ -75,9 +75,9 @@ var ManageContent = function () {
                 type: "POST",
                 data: form})
                 .done(function( data ) {
-                    toastr.success(data);
+                    //toastr.success(data);
 
-//                    console.log(data);
+//                    //console.log(data);
                 });
 
              toastr.options = {
