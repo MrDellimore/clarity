@@ -17,9 +17,9 @@ class AttributesController extends AbstractActionController{
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
 
-        $lookupTable = $this->getServiceLocator()->get('Content\ContentForm\Model\AttributesTable')->fetchLookupTable();
-        $viewResult = new ViewModel(array('lookup'=>$lookupTable));
-        return $viewResult;
+//        $lookupTable = $this->getServiceLocator()->get('Content\ContentForm\Model\AttributesTable')->fetchLookupTable();
+//        $viewResult = new ViewModel(array('lookup'=>$lookupTable));
+//        return $viewResult;
     }
 
 

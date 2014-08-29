@@ -13,9 +13,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 
 class AttributesAjaxController extends AbstractActionController
 {
-    protected $searchTable;
 
-    public function quicksearchAction()
+    public function attributesQuickSearchAction()
     {
         $result = '';
         $request = $this->getRequest();
@@ -23,19 +22,13 @@ class AttributesAjaxController extends AbstractActionController
         if($request -> isPost()){
             $queryData = $request->getPost();
             $draw = $queryData['draw'];
-            $sku = $queryData['search']['value'];
+            $attribute = $queryData['search']['value'];
             $limit = $queryData['length'];
 
             if($limit == '-1'){
                 $limit = 100;
             }
-
-
-            $search = $this->getSearchTable();
-
-            $searchResult = $search->skulookup($sku,$limit);
-            $searchResult = $this->updatequicksearch($searchResult);
-
+            $lookupTable = $this->getServiceLocator()->get('Content\ManageAttributes\Model\AttributesTable')->fetchAttributes($attribute);
 
             $result = json_encode(
                 array(
@@ -43,7 +36,7 @@ class AttributesAjaxController extends AbstractActionController
                     'recordsTotal' => 1000,
                     'recordsFiltered' => $limit,
                     //results
-                    'data' => $searchResult));
+                    'data' => $lookupTable));
         }
         $event    = $this->getEvent();
         $response = $event->getResponse();
@@ -53,18 +46,36 @@ class AttributesAjaxController extends AbstractActionController
 
     }
 
-    public function updatequicksearch(Array $r){
-        foreach($r as $key => $value){
-            $r[$key]['sku'] = '<a href = "/content/product/'.$value['sku'].'">'.$value['sku'].'</a>';
+
+    public function optionsQuickSearchAction()
+    {
+        $result = '';
+        $request = $this->getRequest();
+
+        if($request -> isPost()){
+            $queryData = $request->getPost();
+            $draw = $queryData['draw'];
+            $optionValue = $queryData['search']['value'];
+            $limit = $queryData['length'];
+
+            if($limit == '-1'){
+                $limit = 100;
+            }
+            $optionsTable = $this->getServiceLocator()->get('Content\ManageAttributes\Model\OptionTable')->fetchOptions($optionValue, 102);
+            $result = json_encode(
+                array(
+                    'draw' => $draw,
+                    'recordsTotal' => 1000,
+                    'recordsFiltered' => $limit,
+                    //results
+                    'data' => $optionsTable));
         }
-        return $r;
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+
+        return $response;
+
     }
 
-    public function getSearchTable(){
-        if (!$this->searchTable) {
-            $sm = $this->getServiceLocator();
-            $this->searchTable = $sm->get('Content\ContentForm\Model\SearchTable');
-        }
-        return $this->searchTable;
-    }
 }

@@ -168,6 +168,27 @@ return array(
                     ),
                 ),
             ),
+            'manageattributesquicksearch'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/attributemanagement/attributes/quicksearch',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\AJAXLoader\Controller\AttributesAjax',
+                        'action'        =>  'attributesQuickSearch',
+                    ),
+                ),
+            ),
+
+            'manageoptionsquicksearch'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/attributemanagement/options/quicksearch',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\AJAXLoader\Controller\AttributesAjax',
+                        'action'        =>  'optionsQuickSearch',
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -176,6 +197,7 @@ return array(
                                                  'Content\WebAssignment\Controller\Index'   => 'Content\WebAssignment\Controller\IndexController',
                                                  'Content\AJAXLoader\Controller\AjaxLoader'   => 'Content\AJAXLoader\Controller\AjaxLoaderController',
                                                  'Content\ManageAttributes\Controller\Attributes'   => 'Content\ManageAttributes\Controller\AttributesController',
+                                                 'Content\AjaxLoader\Controller\AttributesAjax'   => 'Content\AjaxLoader\Controller\AttributesAjaxController',
                                                 )
     ),
     'event_listener_construct' =>  array(
