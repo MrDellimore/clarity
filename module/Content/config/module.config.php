@@ -156,6 +156,18 @@ return array(
                     ),
                 ),
             ),
+
+            'manageattributes'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/attributemanagement',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageAttributes\Controller\Attributes',
+                        'action'        =>  'index',
+
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -163,6 +175,7 @@ return array(
                                                  'Content\ContentForm\Controller\Search'   => 'Content\ContentForm\Controller\SearchController',
                                                  'Content\WebAssignment\Controller\Index'   => 'Content\WebAssignment\Controller\IndexController',
                                                  'Content\AJAXLoader\Controller\AjaxLoader'   => 'Content\AJAXLoader\Controller\AjaxLoaderController',
+                                                 'Content\ManageAttributes\Controller\Attributes'   => 'Content\ManageAttributes\Controller\AttributesController',
                                                 )
     ),
     'event_listener_construct' =>  array(

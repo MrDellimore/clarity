@@ -21,9 +21,6 @@ class SearchController extends AbstractActionController
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-//      $search = $this->getSearchTable();
-
-//      $initialSearch = $search->populate();
       $viewResult = new ViewModel();
 
 

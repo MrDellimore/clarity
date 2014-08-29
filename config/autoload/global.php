@@ -28,11 +28,10 @@ return array(
                         'label' => 'Search',
                         'route' => 'search',
                     ),
-                   /* array(
-                        'label' => 'Create Configurable',
-                        'route' => 'home',
+                    array(
+                        'label' => 'Attribute Management',
+                        'route' => 'manageattributes',
                     ),
-                   */
                     array(
                         'label' => 'Website Assignment',
                         'route' => 'webassignment',
