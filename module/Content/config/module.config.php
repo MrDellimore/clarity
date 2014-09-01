@@ -138,7 +138,7 @@ return array(
                 'options'    => array(
                     'route' =>  '/content/webassignment',
                     'defaults'  =>  array(
-                        'controller'    => 'Content\WebAssignment\Controller\Index',
+                        'controller'    => 'Content\WebAssignment\Controller\WebAssignment',
                         'action'        =>  'index',
 
                     ),
@@ -150,7 +150,7 @@ return array(
                 'options'    => array(
                     'route' =>  '/content/websiteassignment/submit',
                     'defaults'  =>  array(
-                        'controller'    => 'Content\WebAssignment\Controller\Index',
+                        'controller'    => 'Content\WebAssignment\Controller\WebAssignment',
                         'action'        =>  'submitForm',
 
                     ),
@@ -194,7 +194,7 @@ return array(
 
     'controllers' => array('invokables' => array('Content\ContentForm\Controller\Products' => 'Content\ContentForm\Controller\ProductsController',
                                                  'Content\ContentForm\Controller\Search'   => 'Content\ContentForm\Controller\SearchController',
-                                                 'Content\WebAssignment\Controller\Index'   => 'Content\WebAssignment\Controller\IndexController',
+                                                 'Content\WebAssignment\Controller\WebAssignment'   => 'Content\WebAssignment\Controller\WebAssignmentController',
                                                  'Content\AJAXLoader\Controller\AjaxLoader'   => 'Content\AJAXLoader\Controller\AjaxLoaderController',
                                                  'Content\ManageAttributes\Controller\Attributes'   => 'Content\ManageAttributes\Controller\AttributesController',
                                                  'Content\AjaxLoader\Controller\AttributesAjax'   => 'Content\AjaxLoader\Controller\AttributesAjaxController',

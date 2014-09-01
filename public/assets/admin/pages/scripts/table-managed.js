@@ -87,37 +87,34 @@ var TableManaged = function () {
 
         // begin first table
         table.dataTable({
-
-
             "processing": true,
             "serverSide": true,
-
             "ajax": {
                 url: "/content/attributemanagement/attributes/quicksearch",
                 type: 'POST'
 
             },
-
             "columns": [
 //                { "data": "id" },
-                { "data": "frontend" },
-                { "data": "dataType" },
+                {
+                    "class": "frontend",
+                    "data": "frontend"
+                },
+                {
+                    "class": "type",
+                    "data": "input"
+                },
                 { "data": "dateModified" },
 //                { "data": "user" }
-                { "data": "user" },
+                { "data": "fullname" },
                 {
                     "defaultContent": "<a class='btn green-haze attEdit' data-toggle='modal' href='#attributeModal'>Edit <i class='fa fa-plus'></i></a>"
                 },
                 {
-                    "class": "hidden attribute-id",
+                    "class": "hidden attribute_id",
                     "data": "attId"
-                },
-
-//                { "data": "lname" }
-//                { "data": "status" },
-//                { "data": "visibility" }
+                }
             ],
-
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here
@@ -146,60 +143,57 @@ var TableManaged = function () {
                 [1, "asc"]
             ] */// set first column as a default sort by asc
         });
+        $('#attributeTable tbody').on('click', 'a.attEdit',function (e) {
+            e.preventDefault();
+            var edit = $(this);
+            var type = edit.closest('td').siblings('td.type').text();
+            var frontend = edit.closest('td').siblings('td.frontend').text();
+            var attributeId = edit.closest('td').siblings('td.attribute_id').text();
+            var params = {
+                "attributeId" : attributeId
+            };
+            $('#frontend_label').val(frontend);
+            if(type != 'select'){
+                $('.options').hide();
+            } else{
+                $('.options').show();
+            }
+            var Type = type.replace(/^(.)|\s(.)/g, function($1){ return $1.toUpperCase( ); });
+            $('select.type option').each(function(i,e){
+                var option = $(this);
+                if (Type == option.text() ){
+                    option.prop('selected',true);
+                }
+            });
+            $.post('/content/attributemanagement/options/quicksearch', params, function(data){
+//                console.log('clicked');
+                table.api().draw();
+            });
 
-//        var tableWrapper = jQuery('#sample_1_wrapper');
-//
-//        table.find('.group-checkable').change(function () {
-//            var set = jQuery(this).attr("data-set");
-//            var checked = jQuery(this).is(":checked");
-//            jQuery(set).each(function () {
-//                if (checked) {
-//                    $(this).attr("checked", true);
-//                    $(this).parents('tr').addClass("active");
-//                } else {
-//                    $(this).attr("checked", false);
-//                    $(this).parents('tr').removeClass("active");
-//                }
-//            });
-//            jQuery.uniform.update(set);
-//        });
-//
-//        table.on('change', 'tbody tr .checkboxes', function () {
-//            $(this).parents('tr').toggleClass("active");
-//        });
-//
-//        tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-        $('#attributeTable tbody').on('click', 'a.revert',function (e) {
-            console.log('haha');
         });
+
     };
     var optionsPopulate = function () {
-
         var table = $('#optionsTable');
 
         // begin first table
         table.dataTable({
-
-
             "processing": true,
             "serverSide": true,
-
             "ajax": {
                 url: "/content/attributemanagement/options/quicksearch",
                 type: 'POST'
 
             },
-
             "columns": [
 //                { "data": "id" },
                 { "data": "options" },
                 { "data": "dateModified" },
-                { "data": "user" },
+                { "data": "fullname" },
                 {
-                    "defaultContent": "Delete"
+                    "defaultContent": "<a class='btn green-haze options_delete' data-toggle='modal' href='#optionsModal'>Delete <i class=''></i></a>"
                 }
             ],
-
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here
@@ -228,6 +222,12 @@ var TableManaged = function () {
                 [1, "asc"]
             ] */// set first column as a default sort by asc
         });
+        table.on('click', '.options_delete', function (e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            nRow.remove();
+        });
+
     };
 
 
@@ -396,9 +396,6 @@ var TableManaged = function () {
             var nRow = $(this).parents('tr')[0];
             nRow.remove();
         });
-
-        //var tableWrapper = jQuery('#sample_1_wrapper');
-        //tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     };
 
     var initCrossSellDisplay = function () {

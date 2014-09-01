@@ -22,13 +22,13 @@ class AttributesAjaxController extends AbstractActionController
         if($request -> isPost()){
             $queryData = $request->getPost();
             $draw = $queryData['draw'];
-            $attribute = $queryData['search']['value'];
+            $attributeCode = $queryData['search']['value'];
             $limit = $queryData['length'];
 
-            if($limit == '-1'){
+            if( $limit == '-1' ){
                 $limit = 100;
             }
-            $lookupTable = $this->getServiceLocator()->get('Content\ManageAttributes\Model\AttributesTable')->fetchAttributes($attribute);
+            $lookupTable = $this->getServiceLocator()->get('Content\ManageAttributes\Model\AttributesTable')->fetchAttributes($attributeCode);
 
             $result = json_encode(
                 array(
@@ -52,16 +52,17 @@ class AttributesAjaxController extends AbstractActionController
         $result = '';
         $request = $this->getRequest();
 
-        if($request -> isPost()){
+        if($request->isPost()){
             $queryData = $request->getPost();
             $draw = $queryData['draw'];
             $optionValue = $queryData['search']['value'];
             $limit = $queryData['length'];
-
-            if($limit == '-1'){
+            $attributeId = (int)trim($queryData['attributeId']);
+            if($limit == '-1') {
                 $limit = 100;
             }
-            $optionsTable = $this->getServiceLocator()->get('Content\ManageAttributes\Model\OptionTable')->fetchOptions($optionValue, 102);
+            $optionsTable = $this->getServiceLocator()->get('Content\ManageAttributes\Model\OptionTable')->fetchOptions($optionValue, 1641);
+//            $optionsTable = $this->getServiceLocator()->get('Content\ManageAttributes\Model\OptionTable')->fetchOptions($optionValue, $attributeId);
             $result = json_encode(
                 array(
                     'draw' => $draw,
