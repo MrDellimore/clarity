@@ -143,6 +143,8 @@ var TableManaged = function () {
                 [1, "asc"]
             ] */// set first column as a default sort by asc
         });
+
+
         $('#attributeTable tbody').on('click', 'a.attEdit',function (e) {
             e.preventDefault();
             var edit = $(this);
@@ -171,7 +173,6 @@ var TableManaged = function () {
             });
 
         });
-
     };
     var optionsPopulate = function () {
         var table = $('#optionsTable');
@@ -191,7 +192,11 @@ var TableManaged = function () {
                 { "data": "dateModified" },
                 { "data": "fullname" },
                 {
-                    "defaultContent": "<a class='btn green-haze options_delete' data-toggle='modal' href='#optionsModal'>Delete <i class=''></i></a>"
+                    "class": "hidden att_id",
+                    "data": "attId"
+                },
+                {
+                    "defaultContent": "<a class='btn green-haze options_delete' data-toggle='modal' href='#optionsModal'>Delete<i class='fa fa-plus'></i></a>"
                 }
             ],
             "lengthMenu": [
@@ -222,6 +227,20 @@ var TableManaged = function () {
                 [1, "asc"]
             ] */// set first column as a default sort by asc
         });
+
+
+        $('input[aria-controls=optionsTable]').on('keyup', 'td:nth-child(1)', function(){
+            var opt = $(this);
+            console.log(opt);
+            var attributeId = opt.closest('td').siblings('td.att_id').text();
+            var params = {
+                "attributeId": attributeId
+            };
+            $.post('/content/attributemanagement/options/quicksearch', params, function(data){
+                table.api().draw();
+            });
+        });
+
         table.on('click', '.options_delete', function (e) {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];

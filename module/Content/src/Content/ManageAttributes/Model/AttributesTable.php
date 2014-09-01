@@ -30,13 +30,14 @@ class AttributesTable {
      * Description: This method accesses everything from lookup table and displays it in the front end.
      * @return array
      */
-    public function fetchAttributes($attributeCode = null)
+    public function fetchAttributes($attributeCode = null )
     {
         $select = $this->_sql->select();
         $select->from('productattribute_lookup');
         $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','frontend'=>'frontend_label', 'input'=>'frontend_input', 'dateModified'=>'lastModifiedDate','user'=>'changedby']);
         $filter = new Where();
         $filter->like('productattribute_lookup.frontend_label', $attributeCode.'%');
+//        $filter->equalTo('attribute_id',$attributeId);
         $select->where($filter);
 
         $select->join(['u'=>'users'], 'u.userid = productattribute_lookup.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);

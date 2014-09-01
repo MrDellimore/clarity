@@ -178,6 +178,17 @@ return array(
                     ),
                 ),
             ),
+            'manageattributessubmit'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/attributemanagement/attributes/submit',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\AJAXLoader\Controller\AttributesAjax',
+                        'action'        =>  'attributesSubmitForm',
+                    ),
+                ),
+            ),
+
 
             'manageoptionsquicksearch'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',

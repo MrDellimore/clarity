@@ -32,7 +32,7 @@ $newProductData = [
     'manufacturer'      =>  1,
     'color'      =>  1,
 ];
-$packet = [$session, 'config_product.create', ['configurable',$attributeSetId, $productSku,$newProductData ]];
+$packet = [$session, 'dumb_create.createrandom', ['configurable',$attributeSetId, $productSku]];
 
 $entityId = $soapHandle->call('call',$packet);
 var_dump($entityId);

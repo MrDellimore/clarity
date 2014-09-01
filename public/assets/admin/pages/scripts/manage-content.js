@@ -96,7 +96,44 @@ var ManageContent = function () {
              toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
         });
 
-    }
+    };
+    var attributeManagementHandle = function () {
+        $( "#attributeForm" ).submit(function( event ) {
+            event.preventDefault();
+
+            var form = $('#attributeForm').serializeArray();
+            console.log(form);
+
+
+
+            var url = '/content/websiteassignment/submit';
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: form})
+                .done(function( data ) {
+                    toastr.success(data);
+
+//                   console.log(data);
+                });
+
+             toastr.options = {
+             "closeButton": true,
+             "debug": false,
+             "positionClass": "toast-top-full-width",
+             "showDuration": "2000",
+             "hideDuration": "1000",
+             "timeOut": "5000",
+             "extendedTimeOut": "1000",
+             "showEasing": "swing",
+             "hideEasing": "linear",
+             "showMethod": "fadeIn",
+             "hideMethod": "fadeOut"
+             };
+             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
+        });
+
+    };
 
 
 
@@ -115,6 +152,7 @@ var ManageContent = function () {
         init: function () {
             contentFormHandle();
             websiteAssignmentHandle();
+            attributeManagementHandle();
         }
     };
 

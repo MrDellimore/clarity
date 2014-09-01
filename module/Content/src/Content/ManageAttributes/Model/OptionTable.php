@@ -32,22 +32,14 @@ class OptionTable {
     {
         $select = $this->_sql->select();
         $select->from('productattribute_option');
-        $select->columns(['options'=>'value', 'dateModified'=>'lastModifiedDate','user'=>'changedby']);
+        $select->columns(['attId'=>'attribute_id','options'=>'value', 'dateModified'=>'lastModifiedDate','user'=>'changedby']);
         $filter = new Where();
-//        $mysql = new Mysql(new \PDO($this->adapter));
         if(!is_null($optionValue)){
             $filter->like('productattribute_option.value', $optionValue.'%');
         }
-//        $select->where(['attribute_id'=>$attributeId]);
-
         $filter->equalTo('attribute_id', $attributeId);
         $select->where($filter);
-
-//        echo $attributeId;
-
-//        echo $select->getSqlString($mysql). ' this is sql statement';
-
-        $select->join(['u'=>'users'], 'u.userid = productattribute_option.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
+        $select->join(['u'=>'users'], 'u.userid = productattribute_option.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);//
         $statement = $this->_sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -56,7 +48,9 @@ class OptionTable {
         }
 
         $options = $resultSet->toArray();
-//        var_dump($result);
+//        $mysql = new Mysql(new \PDO($this->adapter));
+//        echo $select->getSqlString($mysql);
+
         $opt = [];
         foreach( $options as $key => $option ) {
             $opt[$key]['options'] = $option['options'];
@@ -66,7 +60,10 @@ class OptionTable {
             } else {
                 $opt[$key]['fullname'] = 'N/A';
             }
+            $opt[$key]['attId'] = $option['attId'];
         }
+//        var_dump($opt);
+
         return $opt;
     }
 }
