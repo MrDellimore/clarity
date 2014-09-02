@@ -26,7 +26,7 @@ class AjaxLoaderController extends AbstractActionController
             $queryData = $request->getPost();
             $draw = $queryData['draw'];
             $sku = $queryData['search']['value'];
-            $limit = $queryData['length'];
+            $limit = $queryData['myKey'];
 
             if($limit == '-1'){
                 $limit = 100;

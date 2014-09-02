@@ -12,9 +12,13 @@ var TableManaged = function () {
             "serverSide": true,
 
             "ajax": {
-                url: "/content/search/quicksearch",
-                type: 'POST'
-
+                "url": "/content/search/quicksearch",
+                "type": 'POST',
+                "data": function ( d ) {
+                    d.myKey = "10";
+                    // d.custom = $('#myInput').val();
+                    // etc
+                }
             },
 
             "columns": [
