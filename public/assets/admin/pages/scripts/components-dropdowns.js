@@ -6,7 +6,7 @@ var ComponentsDropdowns = function () {
             allowClear: true
         });
 
-        var url = '/form/brandload';
+        var url = '/content/product/brandload';
         $.ajax({
             url: url,
             dataType: "json"})
@@ -55,7 +55,7 @@ var ComponentsDropdowns = function () {
         });
 
         //ajax route
-        var url = "/form/manufacturerload";
+        var url = "/content/product/manufacturerload";
         $.ajax({
             url: url,
             dataType: "json"})

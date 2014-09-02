@@ -1,0 +1,189 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Managed Attributes <small>Create and edit attributes</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li class="btn-group">
+            </li>
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/">Home</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="/">Manage Content</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="/content/attributemanagement">Attribute Management</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+
+
+<!-- BEGIN PAGE CONTENT-->
+
+<br /><br /><br />
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box purple-plum">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Attribute Management
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse">
+                    </a>
+                    <a href="#portlet-config" data-toggle="modal" class="config">
+                    </a>
+                    <a href="javascript:;" class="reload">
+                    </a>
+                    <a href="javascript:;" class="remove">
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <a class='btn green-haze' data-toggle='modal' href='#attributeModal'>Add New Attribute  <i class='fa fa-plus'></i></a>
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="attributeTable">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Last Updated</th>
+                        <th>Last Changed by</th>
+                        <th></th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Front end Label</td>
+                        <td>Front end input (user friendly values)</td>
+                        <td>Last mod date (add to productattribute_lookup)</td>
+                        <td>Last changed by (add to productattribute_lookup)</td>
+                        <td><a class='btn green-haze' data-toggle='modal' href='#attributeModal'>Edit <i class='fa fa-plus'></i></a></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--------------------Modals--------------------------->
+
+
+
+<!----            Attribute edit     -->
+<div class="modal fade" id="attributeModal" tabindex="-1" role="attributeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Attribute Form</h4>
+            </div>
+            <form id="attributeForm">
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="control-label col-md-3" for="frontend_label">Name:</label>
+
+                        <div class="col-md-9">
+                            <input type="text" name="frontend_label" value="">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="control-label col-md-3" for="type">Type:</label>
+                        <select name="type" class="form-control input-small" data-placeholder="Select Type">
+                            <option value="0">Text</option>
+                            <option value="1">TextArea</option>
+                            <option value="3">Date</option>
+                            <option value="4">Select</option>
+                            <option value="5">Weight</option>
+                            <option value="6">Boolean</option>
+                        </select>
+                    </div>
+                </div>
+
+                <br /> <hr>
+
+
+                <a class='btn green-haze' data-toggle='modal' href='#optionModal'>Add/Edit Options <i class='fa fa-plus'></i></a>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn blue" value="Save Changes">
+
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+
+
+<!---------- Option Edit ------------>
+<div class="modal fade bs-modal-lg" id="optionModal" tabindex="-1" role="optionModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Options Form</h4>
+            </div>
+            <form id="optionsForm">
+
+            <div class="modal-body">
+
+                <table class="table table-striped table-bordered table-hover" id="optionsTable">
+                    <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Last Updated</th>
+                        <th>Last Changed by</th>
+                        <th></th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <!--add hidden input for attributeid for option entity-->
+                        <td><input type="text" name="options[]" value="Option Name"></td>
+                        <td>Last mod date (add to productattribute_option)</td>
+                        <td>Last changedby (add to productattribute_option)</td>
+                        <td>Delete</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn blue" value="Save Options">
+
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

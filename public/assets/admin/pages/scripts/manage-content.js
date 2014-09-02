@@ -44,7 +44,7 @@ var ManageContent = function () {
             };
 
 
-            var url = '/form/submit';
+            var url = '/content/product/submit';
             $.ajax({
                 url: url,
                 type: "POST",
@@ -69,7 +69,7 @@ var ManageContent = function () {
 
 
 
-            var url = '/websiteassignment/submit';
+            var url = '/content/websiteassignment/submit';
             $.ajax({
                 url: url,
                 type: "POST",
@@ -77,7 +77,7 @@ var ManageContent = function () {
                 .done(function( data ) {
                     toastr.success(data);
 
-//                    console.log(data);
+//                   console.log(data);
                 });
 
              toastr.options = {
@@ -93,7 +93,7 @@ var ManageContent = function () {
              "showMethod": "fadeIn",
              "hideMethod": "fadeOut"
              };
-             toastr.options.onHidden = function() { window.location = '/search'; };
+             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
         });
 
     }

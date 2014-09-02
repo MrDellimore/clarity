@@ -12,7 +12,7 @@ var TableManaged = function () {
             "serverSide": true,
 
             "ajax": {
-                url: "/search/quicksearch",
+                url: "/content/search/quicksearch",
                 type: 'POST'
 
             },
@@ -199,7 +199,7 @@ var TableManaged = function () {
             "serverSide": true,
 
             "ajax": {
-                url: "/form/accessories",
+                url: "/content/product/accessories",
                 type: 'POST'
             },
             "columns": [
@@ -260,7 +260,7 @@ var TableManaged = function () {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: "/form/accessories",
+                url: "/content/product/accessories",
                 type: 'POST'
             },
             "columns": [
@@ -342,7 +342,7 @@ var TableManaged = function () {
             }});
 
         //populate edit popup
-        $('.mfcedit').on('click', function(){
+        $('#webassignmenttable tbody').on('click', 'tr', function(){
             var manufacturer = $(this).closest('tr').find('td').eq(0).text();
             var site = $(this).closest('tr').find('td').eq(1).text();
             $('#mfcLabel').text(manufacturer);
