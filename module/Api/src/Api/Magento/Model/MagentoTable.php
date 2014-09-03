@@ -99,16 +99,19 @@ class MagentoTable {
         return $resultSet->count();
     }
 
-    public function lookupNewUpdatedImages()
+    public function fetchImageCount()
     {
-//        public function productAttribute(Sql $sql, array $columns = array(), array $where = array(),  $tableType )
-//        $where = new Where();
-        $where = array('left'=>'dataState', 'right'=>0);
-        $filter = new Where;
-        return $this->productAttribute($this->sql, array(), $where, 'images', $filter)->count();
+        $select = $this->sql->select()->from('productattribute_images')->where(['dataState'=>2]);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        return $resultSet->count();
     }
 
-    public function lookupDirt()
+    public function fetchChangedProducts()
     {
         $select = $this->sql->select();
         $select->from('product');
@@ -339,33 +342,23 @@ class MagentoTable {
 
     public function fetchAttribute($tableType, $attributeid, $property)
     {
-        $columns = array('id'=>'entity_id', $property => 'value', 'ldate' => 'lastModifiedDate');
-        $where = array( 'attribute_id' => $attributeid, 'productattribute_'.$tableType. '.dataState'=> '1');
-        $joinTables = array(
-            array(
-                array('prod' => 'product'),'prod.entity_id = productattribute_'.$tableType. ' .entity_id ' ,array('item' => 'productid')),
-            array(
-                array('u' => 'users'),'u.userid = productattribute_'.$tableType. ' .changedby ',array('fName' => 'firstname', 'lName' => 'lastname'))
-        );
-        $resultSet = $this->productAttribute($this->sql, $columns, $where, $tableType, null, $joinTables);
-//die();
-//        $select = $this->sql->select();
-//
-//        $select->from('productattribute_'.$tableType);
-//
-//        $select->columns(array('id'=>'entity_id', $property => 'value', 'ldate' => 'lastModifiedDate'));
-//        $select->join(array('p' => 'product'),'p.entity_id = productattribute_'.$tableType. ' .entity_id ' ,array('item' => 'productid'));
-//        $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType. ' .changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
-//        $select->where(array( 'attribute_id' => $attributeid, 'productattribute_'.$tableType. '.dataState'=> '1'));
-//
-//        $statement = $this->sql->prepareStatementForSqlObject($select);
-//        $result = $statement->execute();
-//
-//        $resultSet = new ResultSet;
-//
-//        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-//            $resultSet->initialize($result);
-//        }
+        $select = $this->sql->select();
+
+        $select->from('productattribute_'.$tableType);
+
+        $select->columns(array('id'=>'entity_id', $property => 'value', 'ldate' => 'lastModifiedDate'));
+        $select->join(array('p' => 'product'),'p.entity_id = productattribute_'.$tableType. ' .entity_id ' ,array('item' => 'productid'));
+        $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType. ' .changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+        $select->where(array( 'attribute_id' => $attributeid, 'productattribute_'.$tableType. '.dataState'=> '1'));
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
         $this->setAggregateAttributeDirtyCount($resultSet->count());
         $result = $resultSet->toArray();
 
@@ -390,33 +383,16 @@ class MagentoTable {
     }
 
 
-//        public function lookupAttribute($key)
-//        {
-//            switch($key){
-//                case 'sku':
-//                    return 'product';
-//                case 'title':
-//                    return 'name';
-//                case 'description':
-//                    return $key;
-//                case 'urlKey':
-//                    return 'url_key';
-//            }
-//
-//        }
-
     public function soapMedia($media = array())
     {
         $imageBatch = array();
-        if(!is_array($media)) {
-            throw new \InvalidArgumentException(
-                sprintf("Bad argument in class %s for function %s in line %s.",__CLASS__, __FUNCTION__, __LINE__)
-            );
-        }
-//            $options = array('login'=>SOAP_USER, 'password'=>SOAP_USER_PASS);
+//        if(!is_array($media)) {
+//            throw new \InvalidArgumentException(
+//                sprintf("Bad argument in class %s for function %s in line %s.",__CLASS__, __FUNCTION__, __LINE__)
+//            );
+//        }
         $soapHandle = new Client(SOAP_URL);
-//            if $options does not work for logging in then try the following.
-        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
+        $session = $soapHandle->call('login',[SOAP_USER, SOAP_USER_PASS]);
         foreach($media as $key => $imgFileName) {
 //                $imgDomain = $media[$key]['domain'];//this will change to whatever cdn we will have.
             $imgName = $media[$key]['filename'];
@@ -439,7 +415,7 @@ class MagentoTable {
             $imageBatch[$key]['imageFile'] = $file;
 
         }
-        $results = array();
+        $results = [];
         foreach($imageBatch as $key => $batch){
             $entityId = $imageBatch[$key]['entityId'];
             $this->imgPk[] = $imageBatch[$key]['value_id'];
@@ -457,9 +433,9 @@ class MagentoTable {
             }
             $products = $resultSet->toArray();
             $sku = $products[0]['sku'];
-            $packet = array(
+            $packet = [
                 $sku,
-                array(
+                [
                     'file'  =>  $fileContents,
                     'label' =>  $label,//'no label',
                     'position'  =>  $position,//'0',
@@ -467,12 +443,13 @@ class MagentoTable {
                     'excludes'  =>  0,
                     'remove'    =>  0,
                     'disabled'  =>  0,
-                )
-            );
+                ]
+            ];
             $batch = array($session, PRODUCT_ADD_MEDIA, $packet);
             $results[] = $soapHandle->call('call', $batch);
         }
         return $results;
+
     }
 
     public function fetchCategoriesSoap()
@@ -528,7 +505,7 @@ class MagentoTable {
         $soapClient = new SoapClient(SOAP_URL);
         $session = $soapClient->login(SOAP_USER, SOAP_USER_PASS);
         $i = 0;
-        $updateBatch = array();
+        $packet = [];
         foreach($data as $key => $value){
             if( isset($value['id']) ) {
                 $entityID = $value['id'];
@@ -541,20 +518,21 @@ class MagentoTable {
                 $attributeCode = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeCode  ));
                 //$updatedKey = $this->lookupAttribute(lcfirst(current(array_keys($value))));
 //                    echo $updatedKey . ' ' ;
-                $updateBatch[$i] = array('entity_id' => $entityID, array($attributeCode => $updatedValue));
-                $i++;
+                $packet[$key] = array('entity_id' => $entityID, array($attributeCode => $updatedValue));
+//                $i++;
             }
         }
         $a = 0;
-        while( $a < count($updateBatch) ){
+        $batch = [];
+        while( $a < count($packet) ){
             $x = 0;
-            while($x < 10 && $a < count($updateBatch)){
-                $queueBatch[$x] = array(PRODUCT_UPDATE, $updateBatch[$a]);
+            while($x < 10 && $a < count($packet)){
+                $batch[$x] = array(PRODUCT_UPDATE, $packet[$a]);
                 $x++;
                 $a++;
             }
             sleep(15);
-            $result = $soapClient->multiCall($session, $queueBatch);
+            $result = $soapClient->multiCall($session, $batch);
         }
         return $result;
     }
@@ -612,11 +590,11 @@ class MagentoTable {
                     $attributeField = current(array_keys($data[$key]));
                     $attributeField = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeField  ));
 
-                    $columns = array('attributeId' => 'attribute_id', 'backendType' => 'backend_type');
+//                    $columns = array('attributeId' => 'attribute_id', 'backendType' => 'backend_type');
                     $where = array('attribute_code' => ($attributeField == 'title') ? 'name' : $attributeField);
-                    $results = $this->productAttribute($this->sql, $columns, $where, 'lookup');
-                    $attributeId = $results[0]['attributeId'];
-                    $tableType = $results[0]['backendType'];
+                    $results = $this->productAttributeLookup($this->sql, $where);
+                    $attributeId = $results[0]['attId'];
+                    $tableType = $results[0]['dataType'];
                     $set = array('dataState'=>'0');
                     $where = array('entity_id'=>$entityId, 'attribute_id'=>$attributeId);
                     $result = $this->productUpdateaAttributes($this->sql, $tableType, $set, $where);

@@ -12,8 +12,8 @@ use Zend\Db\Exception\UnexpectedValueException;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
-use Search\Controller\FormController;
-use Search\Tables\Spex;
+//use Content\ContentForm\Controller\ProductsController;
+use Content\ContentForm\Tables\Spex;
 
 class MagentoController  extends AbstractActionController
 {
@@ -37,13 +37,13 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $this->skuData = array();
-        $this->skuData = $this->getMagentoTable()->lookupDirt();
+        $this->skuData = $this->getMagentoTable()->fetchChangedProducts();
 //        echo '<pre>';
 //        var_dump($this->skuData);
 //        die();
 //        $cleanCount = $this->getMagentoTable()->lookupClean();
 //        $newCount = $this->getMagentoTable()->lookupNew();
-        $images = $this->getMagentoTable()->lookupNewUpdatedImages();
+        $images = $this->getMagentoTable()->fetchImageCount();
         $tableHeaders = array('ID','SKU','Attribute Field','New Attribute Value','Last Modified Date','Changed By');
         $session = new Container('dirty_skus');
         $dirtySkus = array();
@@ -78,11 +78,11 @@ class MagentoController  extends AbstractActionController
         $dirtyData = $session->dirtyProduct;
 
         /*Fetch categories*/
-        $categories = $this->getMagentoTable()->fetchCategoriesSoap();
-        $relatedProds = $this->getMagentoTable()->fetchRelatedProducts();
+//        $categories = $this->getMagentoTable()->fetchCategoriesSoap();
+//        $relatedProds = $this->getMagentoTable()->fetchRelatedProducts();
         if(!empty($categories)){
             /*Make api call to delete and update Sku with new category*/
-            $categorySoapResponse = $this->getMagentoTable()->soapCategoriesUpdate($categories);
+//            $categorySoapResponse = $this->getMagentoTable()->soapCategoriesUpdate($categories);
         }
         if(!empty($dirtyData)){
             /*Update Mage with up-to-date products*/
@@ -90,7 +90,7 @@ class MagentoController  extends AbstractActionController
         }
         if(!empty($relatedProds)){
             /*Update Mage with up-to-date products*/
-            $response = $this->getMagentoTable()->soapRelatedProducts($relatedProds);
+//            $response = $this->getMagentoTable()->soapRelatedProducts($relatedProds);
         }
 
         if( $categorySoapResponse || $response){
@@ -111,7 +111,7 @@ class MagentoController  extends AbstractActionController
 
             if($res === true || (!is_null($categorySoapResponse) &&  $categorySoapResponse === true) ){
 //                TODO have to find what out what the update statement actually returns.
-                $updateCategories = $this->getMagentoTable()->updateProductCategories($categories);
+//                $updateCategories = $this->getMagentoTable()->updateProductCategories($categories);
                 $updateFields = $this->getMagentoTable()->updateToClean($dirtyData);
                 if($updateFields || $updateCategories){
                     return $this->redirect()->toRoute('apis');
@@ -166,9 +166,13 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $images = $this->getMagentoTable()->fetchImages();
-        if($this->getMagentoTable()->soapMedia($images)) {
-            if($this->getMagentoTable()->updateImagesToClean()){
-                return $this->redirect()->toRoute('apis', array('action'=>'magento'));
+        if($image = $this->getMagentoTable()->soapMedia($images)) {
+            if( preg_match('/Product/',$image) ) {
+                throw new \UnexpectedValueException('Product not exist');
+            } else {
+                if($this->getMagentoTable()->updateImagesToClean()){
+                    return $this->redirect()->toRoute('apis', array('action'=>'magento'));
+                }
             }
         }
     }
