@@ -12,9 +12,13 @@ var TableManaged = function () {
             "serverSide": true,
 
             "ajax": {
-                url: "/content/search/quicksearch",
-                type: 'POST'
-
+                "url": "/content/search/quicksearch",
+                "type": 'POST',
+                "data": function ( d ) {
+                    d.myKey = "10";
+                    // d.custom = $('#myInput').val();
+                    // etc
+                }
             },
 
             "columns": [
@@ -377,6 +381,8 @@ var TableManaged = function () {
 
         var table = $('#acessoriesDisplay');
 
+
+
         table.dataTable({
 
             "processing": true,
@@ -392,17 +398,11 @@ var TableManaged = function () {
                 { "data": "title" },
                 { "data": "price" },
                 { "data": "quantity" },
-//                { "data": "category" }
                 {
-                    "orderable":    true,
-                    "data": null,
-                    "defaultContent":   "Category"
-                },
-                {
-                    "class":    "delete",
+                    "class":    "add",
                     "orderable":    false,
                     "data": null,
-                    "defaultContent":   "<td><a href='javascript:;'>Delete</a></td>"
+                    "defaultContent":   "<td><a href='javascript:;'>Add</a></td>"
                 }
             ],
             "lengthMenu": [
@@ -437,7 +437,7 @@ var TableManaged = function () {
 
         var table = $('#crossSellDisplay');
 
-        var oTable = table.dataTable({
+         table.dataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
@@ -450,17 +450,11 @@ var TableManaged = function () {
                 { "data": "title" },
                 { "data": "price" },
                 { "data": "quantity" },
-//                { "data": "category" }
                 {
-                    "orderable":    true,
-                    "data": null,
-                    "defaultContent":   "Category"
-                },
-                {
-                    "class":    "delete",
+                    "class":    "add",
                     "orderable":    false,
                     "data": null,
-                    "defaultContent":   "<td><a href='javascript:;'>Delete</a></td>"
+                    "defaultContent":   "<td><a href='javascript:;'>Add</a></td>"
                 }
             ],
             "lengthMenu": [

@@ -77,6 +77,64 @@ var ComponentsDropdowns = function () {
 
     }
 
+    var mfcDropDownMulti = function () {
+
+        $('#manufacturerDropdownmulti').select2({
+            placeholder: "Select a manufacturer",
+            allowClear: true
+        });
+
+        //ajax route
+        var url = "/content/product/manufacturerload";
+        $.ajax({
+            url: url,
+            dataType: "json"})
+            .done(function( data ) {
+                //console.log(data);
+                var $el = $("#manufacturerDropdownmulti");
+                //Save old option to set in list
+                //var mfcset = $("#manufacturerDropdownmulti option:selected").text();
+
+                $.each(data, function(key, value) {
+                    //dont add if set
+                    if (true){
+                        $el.append($("<option></option>").attr("value", value.value).text(value.mfc));
+                    }
+                });
+
+            });
+
+
+    }
+
+    var contentDrop = function () {
+
+        $('#manufacturerDropdownmulti').select2({
+            placeholder: "Select a manufacturer",
+            allowClear: true
+        });
+
+        //ajax route
+        var url = "/content/product/contentload";
+        $.ajax({
+            url: url,
+            dataType: "json"})
+            .done(function( data ) {
+                //console.log(data);
+                var $el = $("#manufacturerDropdownmulti");
+
+                $.each(data, function(key, value) {
+                    //dont add if set
+                    if (true){
+                        $el.append($("<option></option>").attr("value", value.value).text(value.mfc));
+                    }
+                });
+
+            });
+
+
+    }
+
 
 
 
@@ -87,6 +145,9 @@ var ComponentsDropdowns = function () {
             mfcDropDown();
             brandDropDown();
             skuHistoryUserDropDown();
+            mfcDropDownMulti();
+            contentDrop();
+
         }
     };
 
