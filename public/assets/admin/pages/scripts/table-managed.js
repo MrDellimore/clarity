@@ -151,7 +151,9 @@ var TableManaged = function () {
             var type = edit.closest('td').siblings('td.type').text();
             var frontend = edit.closest('td').siblings('td.frontend').text();
             var attributeId = edit.closest('td').siblings('td.attribute_id').text();
-
+            var params = {
+                "attributeId": attributeId
+            };
             $('#frontend_label').val(frontend);
             console.log('haha');
 
@@ -161,6 +163,10 @@ var TableManaged = function () {
                 console.log('hoho');
                 $('input.attributeId').val(attributeId);
                 $('.options').show();
+                $.post('/content/attributemanagement/options/quicksearch', params, function(data){
+                    //                console.log('clicked');
+                    table.api().draw();
+                });
             }
             var Type = type.replace(/^(.)|\s(.)/g, function($1){ return $1.toUpperCase( ); });
             $('select.type option').each(function(i,e){
@@ -245,10 +251,10 @@ var TableManaged = function () {
             };
             console.log($('input.attributeId').val());
 //            $.post('/content/attributemanagement/options/quicksearch', params, function(data){
-            $.post(table.reload(), params, function(data){
-                //                console.log('clicked');
-                table.api().draw();
-            });
+//            $.post('/content/attributemanagement/options/quicksearch', params, function(data){
+//                //                console.log('clicked');
+//                table.api().draw();
+//            });
         });
 
         table.on('click', '.options_delete', function (e) {
