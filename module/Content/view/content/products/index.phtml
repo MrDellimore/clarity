@@ -12,11 +12,15 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <a href="/search">Content</a>
+                <a href="/">Manage Content</a>
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <a href="">Product Edit</a>
+                <a href="/content/search">Search</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="/content/product<?= $this->data->getSku();?>">Product Edit</a>
             </li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
