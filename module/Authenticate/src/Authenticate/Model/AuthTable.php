@@ -6,8 +6,9 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
-use Users\Entity\User;
+use Authenticate\Entity\User;
 use Zend\Db\Sql\Sql;
+use Zend\Crypt\Password\Bcrypt;
 //use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter as dbTable;
 
 class AuthTable{
@@ -32,7 +33,8 @@ class AuthTable{
 
     }
 
-    public function storeUser($userId){
+    public function storeUser($userId)
+    {
         $this->userId = $userId;
         $columns = array('userid','firstname', 'lastname', 'email', 'username', 'password', 'role', 'datecreated');
         $select = $this->sql->select('users');
@@ -45,6 +47,35 @@ class AuthTable{
             $resultSet->initialize($result);
         }
         $this->storeUserSession($resultSet);
+    }
+
+    public function selectUser($username)
+    {
+        $select = $this->sql->select()->from('users')->where(['username'=>$username]);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        return $resultSet->toArray();
+    }
+
+    public function encryptPassword($register)
+    {
+        $encrypt = new Bcrypt(['cost'=>12]);
+        $hash = $encrypt->create($register['password']);
+        $registerUser = [
+            'firstname' =>  $register['firstname'],
+            'lastname'  =>  $register['lastname'],
+            'email'     =>  $register['email'],
+            'role'      =>  $register['role'],
+            'username'  =>  $register['username'],
+            'password'  =>  $hash,
+        ];
+        return $registerUser;
     }
 
 
