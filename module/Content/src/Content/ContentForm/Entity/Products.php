@@ -16,148 +16,148 @@ class Products {
     protected $id;
 
     protected $sku;
-//
-//    protected $title;
-//
-//    protected $inventory;
-//
-//    protected $urlKey;
-//
-//    protected $status;
-//
-//    protected $manufacturer = array();
-//
-//    protected $visibility;
-//
-//    protected $condition;
-//
-//    protected $taxClass;
-//
-//    protected $stockStatus;
-//
-//    protected $price;
-//
-//    protected $msrp;
-//
-//    protected $mapDisplay;
-//
-//    protected $cost;
-//
-//    protected $rebatePrice;
-//
-//    protected $rebateStartEndDate;
-//
-//    protected $specialPrice;
-//
-//    protected $specialStartEndDate;
-//
-//    protected $mailInRebate;
-//
-//    protected $mailInStartEndDate;
-//
-//    protected $weight;
-//
-//    protected $usExpedited;
-//
-//    protected $usTwoDay;
-//
-//    protected $canadaPriority;
-//
-//    protected $canadaFirstClass;
-//
-//    protected $asiaPriority;
-//
-//    protected $asiaFirstClass;
-//
-//    protected $europePriority;
-//
-//    protected $europeFirstClass;
-//
-//    protected $outsideAsiaPriority;
-//
-//    protected $outsideAsiaFirstClass;
-//
-//    protected $usOneDay;
-//
-//    protected $usStandard;
-//
-//    protected $metaTitle;
-//
-//    protected $metaKeywords;
-//
-//    protected $metaDescription;
-//
-//    protected $description;
-//
-//    protected $inBox;
-//
-//    protected $shortDescription;
-//
-//    protected $includesFree;
-//
-//    protected $color;
-//
-//    protected $packs;
-//
-//    protected $capacity;
-//
-//    protected $network;
-//
-//    protected $sizeCloths;
-//
-//    protected $sizeSunglasses;
-//
-//    protected $resolution;
-//
-//    protected $sensorSize;
-//
-//    protected $opticalDesign;
-//
-//    protected $flashType;
-//
-//    protected $power;
-//
-//    protected $objectiveDiameter;
-//
-//    protected $useBinoculars;
-//
-//    protected $size;
-//
-//    protected $cameraStyle;
-//
-//    protected $videoResolution;
-//
-//    protected $zoomPrime;
-//
-//    protected $focalLength;
-//
-//    protected $cineLens;
-//
-//    protected $apertureLens;
-//
-//    protected $legLockTypeTripod;
-//
-//    protected $maxHeightTripod;
-//
-//    protected $foldedLengthTripod;
-//
-//    protected $materialTripod;
-//
-//    protected $typeOfBag;
-//
-//    protected $headType;
-//
-//    protected $supportWeightTripod;
-//
-//    protected $prismType;
-//
-//    protected $brand = array();
-//
-//    protected $website;
-//
-//    protected $contentReviewed;
-//
-//    protected $originalContent;
+
+    protected $title;
+
+    protected $inventory;
+
+    protected $urlKey;
+
+    protected $status;
+
+    protected $manufacturer = array();
+
+    protected $visibility;
+
+    protected $condition;
+
+    protected $taxClass;
+
+    protected $stockStatus;
+
+    protected $price;
+
+    protected $msrp;
+
+    protected $mapDisplay;
+
+    protected $cost;
+
+    protected $rebatePrice;
+
+    protected $rebateStartEndDate;
+
+    protected $specialPrice;
+
+    protected $specialStartEndDate;
+
+    protected $mailInRebate;
+
+    protected $mailInStartEndDate;
+
+    protected $weight;
+
+    protected $usExpedited;
+
+    protected $usTwoDay;
+
+    protected $canadaPriority;
+
+    protected $canadaFirstClass;
+
+    protected $asiaPriority;
+
+    protected $asiaFirstClass;
+
+    protected $europePriority;
+
+    protected $europeFirstClass;
+
+    protected $outsideAsiaPriority;
+
+    protected $outsideAsiaFirstClass;
+
+    protected $usOneDay;
+
+    protected $usStandard;
+
+    protected $metaTitle;
+
+    protected $metaKeywords;
+
+    protected $metaDescription;
+
+    protected $description;
+
+    protected $inBox;
+
+    protected $shortDescription;
+
+    protected $includesFree;
+
+    protected $color;
+
+    protected $packs;
+
+    protected $capacity;
+
+    protected $network;
+
+    protected $sizeCloths;
+
+    protected $sizeSunglasses;
+
+    protected $resolution;
+
+    protected $sensorSize;
+
+    protected $opticalDesign;
+
+    protected $flashType;
+
+    protected $power;
+
+    protected $objectiveDiameter;
+
+    protected $useBinoculars;
+
+    protected $size;
+
+    protected $cameraStyle;
+
+    protected $videoResolution;
+
+    protected $zoomPrime;
+
+    protected $focalLength;
+
+    protected $cineLens;
+
+    protected $apertureLens;
+
+    protected $legLockTypeTripod;
+
+    protected $maxHeightTripod;
+
+    protected $foldedLengthTripod;
+
+    protected $materialTripod;
+
+    protected $typeOfBag;
+
+    protected $headType;
+
+    protected $supportWeightTripod;
+
+    protected $prismType;
+
+    protected $brand = array();
+
+    protected $website;
+
+    protected $contentReviewed;
+
+    protected $originalContent;
 
     protected $thumbnail;
 

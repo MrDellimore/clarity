@@ -133,9 +133,10 @@ class EntityCompare {
                                 $oldValue = $hydrator->extract($oldValue);
                             }
 
-                            //var_dump($newValue['id']);
-                            if($newValue['id'] == $oldValue['id']){
-                                $newFlag = false;
+                            if(is_array($oldValue) && is_array($newValue)){
+                                if($newValue['id'] == $oldValue['id']){
+                                    $newFlag = false;
+                                }
                             }
                         }
                         if($newFlag){

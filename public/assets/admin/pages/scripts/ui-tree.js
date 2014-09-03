@@ -9,7 +9,7 @@ var UITree = function () {
                 //console.log(data);
 
                 $('#cattree').jstree({
-                    'plugins': ["wholerow", "checkbox", "types"],
+                    'plugins': ["checkbox", "types"],
                     'core': {
                         "themes" : {
                             "responsive": false
