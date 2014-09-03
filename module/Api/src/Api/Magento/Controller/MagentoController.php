@@ -68,7 +68,7 @@ class MagentoController  extends AbstractActionController
 
     protected function soapItemAction()
     {
-        $categorySoapResponse = $response = false;
+        $categorySoapResponse = $response = $resp = Null;
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
@@ -86,30 +86,30 @@ class MagentoController  extends AbstractActionController
         }
         if(!empty($dirtyData)){
             /*Update Mage with up-to-date products*/
-            $response = $this->getMagentoTable()->soapContent($dirtyData);
+            $response = $this->getMagentoTable()->soapUpdateProducts($dirtyData);
         }
         if(!empty($relatedProds)){
             /*Update Mage with up-to-date products*/
 //            $response = $this->getMagentoTable()->soapRelatedProducts($relatedProds);
         }
 
-        if( $categorySoapResponse || $response){
-
-            foreach($response as $soapResponse){
-                if( preg_match('/Product/', $soapResponse)){
-                    $res = $soapResponse;
-                }
+            foreach( $response as $key => $soapResponse ) {
+                foreach( $soapResponse as $index => $soapRes ) {
+                    if( preg_match('/Product/', $soapRes)){
+                        $resp = $soapResponse;
+                    }
 //            SQLSTATE[40001]: Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction
 //            I suppose this happens when there is too much traffic. I think once content team moves over to zend it will not deadlock anymore.
-                if( preg_match('/Serialization failure/',$soapResponse )){
-                    $res = $soapResponse ;
-                }
-                if(true === $soapResponse){
-                    $res = $soapResponse;
+                    if( preg_match('/Serialization failure/',$soapRes )){
+                        $resp = $soapResponse ;
+                    }
+                    if(true === $soapRes){
+                        $resp = $soapRes;
+                    }
                 }
             }
 
-            if($res === true || (!is_null($categorySoapResponse) &&  $categorySoapResponse === true) ){
+            if($resp === true || (!is_null($categorySoapResponse) &&  $categorySoapResponse === true) ){
 //                TODO have to find what out what the update statement actually returns.
 //                $updateCategories = $this->getMagentoTable()->updateProductCategories($categories);
                 $updateFields = $this->getMagentoTable()->updateToClean($dirtyData);
@@ -122,7 +122,7 @@ class MagentoController  extends AbstractActionController
                 trigger_error('Category does not exist for Magento Admin');
                 throw new \UnexpectedValueException('Category does not exist in Magento Admin');
             }
-        }
+//        }
     }
 
     public function soapNewItemsAction()
@@ -167,14 +167,22 @@ class MagentoController  extends AbstractActionController
         }
         $images = $this->getMagentoTable()->fetchImages();
         if($image = $this->getMagentoTable()->soapMedia($images)) {
-            if( preg_match('/Product/',$image) ) {
-                throw new \UnexpectedValueException('Product not exist');
-            } else {
-                if($this->getMagentoTable()->updateImagesToClean()){
-                    return $this->redirect()->toRoute('apis', array('action'=>'magento'));
+//            echo '1234';
+            foreach($image as $key => $img){
+//                echo '5678';
+                foreach($img as $ind => $imgName){
+//                    echo '9ABCD';
+                    if(preg_match('/jpg/',$imgName)){
+//                        echo 'EFGH';
+                        if($updateRes = $this->getMagentoTable()->updateImagesToClean()){
+//                            echo 'IJKL';
+                            return $this->redirect()->toRoute('apis',['action'=>'magento']);
+                        }
+                    }
                 }
             }
         }
+        return $this->redirect()->toRoute('apis',['action'=>'magento']);
     }
 
     public function getMagentoTable()

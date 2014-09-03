@@ -415,7 +415,7 @@ class MagentoTable {
             $imageBatch[$key]['imageFile'] = $file;
 
         }
-        $results = [];
+        $results = $packet = [];
         foreach($imageBatch as $key => $batch){
             $entityId = $imageBatch[$key]['entityId'];
             $this->imgPk[] = $imageBatch[$key]['value_id'];
@@ -433,7 +433,7 @@ class MagentoTable {
             }
             $products = $resultSet->toArray();
             $sku = $products[0]['sku'];
-            $packet = [
+            $packet[$key] = [
                 $sku,
                 [
                     'file'  =>  $fileContents,
@@ -445,11 +445,21 @@ class MagentoTable {
                     'disabled'  =>  0,
                 ]
             ];
-            $batch = array($session, PRODUCT_ADD_MEDIA, $packet);
-            $results[] = $soapHandle->call('call', $batch);
+
+        }
+        $a = 0;
+        $batch = [];
+        while( $a < count($packet) ){
+            $x = 0;
+            while($x < 10 && $a < count($packet)){
+                $batch[$x] = array(PRODUCT_ADD_MEDIA, $packet[$a]);
+                $x++;
+                $a++;
+            }
+            sleep(15);
+            $results[] = $soapHandle->call('multiCall',array($session, $batch));
         }
         return $results;
-
     }
 
     public function fetchCategoriesSoap()
@@ -500,12 +510,13 @@ class MagentoTable {
         return $results;
     }
 
-    public function soapContent($data)
+    public function soapUpdateProducts($data)
     {
-        $soapClient = new SoapClient(SOAP_URL);
-        $session = $soapClient->login(SOAP_USER, SOAP_USER_PASS);
+        $soapHandle = new Client(SOAP_URL);
+        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
         $i = 0;
         $packet = [];
+        $result = [];
         foreach($data as $key => $value){
             if( isset($value['id']) ) {
                 $entityID = $value['id'];
@@ -532,7 +543,7 @@ class MagentoTable {
                 $a++;
             }
             sleep(15);
-            $result = $soapClient->multiCall($session, $batch);
+            $result[] = $soapHandle->call('multiCall',array($session, $batch));
         }
         return $result;
     }
