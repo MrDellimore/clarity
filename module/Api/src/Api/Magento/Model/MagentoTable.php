@@ -641,10 +641,10 @@ class MagentoTable {
                 $packetCount++;
             }
             $packet[$count] = [$session, 'catalog_product.create', ['simple', $attributeSet['set_id'], $sku, $set]];
-            if( $count < 1 ){
-                var_dump($packet);
-                die();
-            }
+//            if( $count < 1 ){
+//                var_dump($packet);
+//                die();
+//            }
             $count++;
         }
 //        die();
