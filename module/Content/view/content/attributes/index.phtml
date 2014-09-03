@@ -61,17 +61,20 @@
                         <th>Last Updated</th>
                         <th>Last Changed by</th>
                         <th></th>
+                        <th></th>
                     </tr>
 
                     </thead>
 
                     <tbody>
+
                     <tr>
-                        <td>Front end Label</td>
-                        <td>Front end input (user friendly values)</td>
-                        <td>Last mod date (add to productattribute_lookup)</td>
-                        <td>Last changed by (add to productattribute_lookup)</td>
-                        <td><a class='btn green-haze' data-toggle='modal' href='#attributeModal'>Edit <i class='fa fa-plus'></i></a></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
 
                     </tbody>
@@ -98,30 +101,31 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <label class="control-label col-md-3" for="frontend_label">Name:</label>
+                        <label class="control-label col-md-3 attribute_name" for="frontend_label">Name:</label>
 
                         <div class="col-md-9">
-                            <input type="text" name="frontend_label" value="">
+                            <input type="text" id="frontend_label" name="frontend_label" value="">
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <label class="control-label col-md-3" for="type">Type:</label>
-                        <select name="type" class="form-control input-small" data-placeholder="Select Type">
+                        <select name="type" class="form-control input-small type" data-placeholder="Select Type">
                             <option value="0">Text</option>
-                            <option value="1">TextArea</option>
+                            <option value="1">Textarea</option>
                             <option value="3">Date</option>
                             <option value="4">Select</option>
                             <option value="5">Weight</option>
                             <option value="6">Boolean</option>
                         </select>
+                        <input type="hidden" class="attributeId" />
                     </div>
                 </div>
 
                 <br /> <hr>
 
 
-                <a class='btn green-haze' data-toggle='modal' href='#optionModal'>Add/Edit Options <i class='fa fa-plus'></i></a>
+                <a class='btn green-haze options' data-toggle='modal' href='#optionModal'>Add/Edit Options <i class='fa fa-plus'></i></a>
 
 
             </div>
@@ -158,6 +162,7 @@
                         <th>Option</th>
                         <th>Last Updated</th>
                         <th>Last Changed by</th>
+                        <th>AttID</th>
                         <th></th>
                     </tr>
 
@@ -166,9 +171,10 @@
                     <tbody>
                     <tr>
                         <!--add hidden input for attributeid for option entity-->
-                        <td><input type="text" name="options[]" value="Option Name"></td>
-                        <td>Last mod date (add to productattribute_option)</td>
-                        <td>Last changedby (add to productattribute_option)</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td>Delete</td>
                     </tr>
 
