@@ -17,7 +17,7 @@ var ManageContent = function () {
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
         };
-        toastr.options.onHidden = function() { window.location = '/search'; };
+        toastr.options.onHidden = function() { window.location = '/content/search'; };
 
 
 //submitting content form

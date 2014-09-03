@@ -41,7 +41,9 @@ class CategoryTable{
             $resultSet->initialize($result);
         }
 
-        return $resultSet->valid();
+        $resultSet->count() == 0 ? $result=false : $result=true;
+
+        return $result;
     }
 
     public function addCategory(Category $cat,$entityid){
@@ -66,6 +68,7 @@ class CategoryTable{
             $statement = $this->sql->prepareStatementForSqlObject($insert);
 
             $statement->execute();
+
         }
 
 

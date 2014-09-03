@@ -27,13 +27,14 @@ var UITree = function () {
             });
 
 //set diabled nodes based on website selected
+        /*
         var cats = $('.selectedcat');
 
         for(i=0; i<cats.length; i++){
             if ($(cats[i]).text().trim() == 'Focus' || $(cats[i]).text().trim() == 'aSavings')
             console.log($(cats[i]).text().trim());
         }
-
+        */
         //case1 focus not in array
             //disable focus
         //case2 asavings not in array
