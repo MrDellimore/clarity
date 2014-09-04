@@ -61,8 +61,6 @@ var UITree = function () {
             wtf = wtf.split(",");
 
             for (i = 0; i < wtf.length; i++) {
-                getparent(wtf[i]);
-
                 function getparent (kid) {
                     if ($('#cattree').jstree('get_parent', kid) && $('#cattree').jstree('get_parent', kid) != "#" && family.indexOf($('#cattree').jstree('get_parent', kid)) == '-1') {
 
@@ -72,6 +70,8 @@ var UITree = function () {
                     else
                         return family;
                 }
+
+                getparent(wtf[i]);
             }
 //get entityid
           //  var entityid = $("input[name*='man']");

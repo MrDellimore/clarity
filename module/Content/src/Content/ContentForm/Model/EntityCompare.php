@@ -37,11 +37,10 @@ class EntityCompare {
         $hydrator->hydrate($dirt,$dirtyEntity);
 
         $dirtyEntity->setId($oldData['id']);
-
-        //loop though image gallery
-        //if image entity
-
-
+        //var_dump($oldData['zoom_focal_length']);
+        //var_dump($newData['color']);
+//        var_dump($dirt);
+//        die();
 
         return $dirtyEntity;
     }
@@ -99,8 +98,6 @@ class EntityCompare {
 
         $newArray = $this->getNewArray($old,$newData);
 
-
-
         $newEntity = new Form();
         $hydrator->hydrate($newArray,$newEntity);
         $newEntity->setId($old['id']);
@@ -128,14 +125,24 @@ class EntityCompare {
                             $newValue = $hydrator->extract($newValue);
                         }
 
-                        foreach($oldData[$key] as $oldValue){
+
+
+                        foreach($oldData[$key] as $keyold => $oldValue){
                             if(is_object($oldValue)){
                                 $oldValue = $hydrator->extract($oldValue);
                             }
 
+                            //find ids of objects.. If not there then set flag
                             if(is_array($oldValue) && is_array($newValue)){
+                                //check for new objects
                                 if($newValue['id'] == $oldValue['id']){
                                     $newFlag = false;
+                                }
+                            }
+
+                            if(array_key_exists('option',$value)){
+                                if($keyold == 'option' && ($value['option'] == $oldValue || $oldValue != "")){
+                                        $newFlag = false;
                                 }
                             }
                         }
@@ -155,7 +162,13 @@ class EntityCompare {
                 }
             }
         }
+
+        //var_dump($oldData['zoom_focal_length']);
+        //var_dump($newData['color']);
+      //  var_dump($newArray);
+    //    die();
         return $newArray;
+
     }
 
     public function rinseCheck($oldData,$newData){

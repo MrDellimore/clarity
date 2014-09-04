@@ -131,10 +131,7 @@ class LoggingTable
             }
             $select->where($filter);
         }
-//        $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
-//        $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'));
 
-//        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
         $intTable = new Expression('i.entity_id = logger.entity_id and attribute_id = 102');
         $optionTable = new Expression('o.attribute_id = 102 and o.option_id = i.value');
 
@@ -156,7 +153,7 @@ class LoggingTable
             $user = $logs[$key]['user'];
 
             $manufacturer = $logs[$key]['manufacturer'];
-//            $entityId = $logs[$key]['entityID'];
+
 
 
             $response[$key]['id'] = $logs[$key]['id'];
@@ -166,7 +163,7 @@ class LoggingTable
             $response[$key]['newValue'] = $logs[$key]['newValue'];
             $response[$key]['manufacturer'] = $manufacturer;
 
-//            $response[$key]['manufacturer'] = $logs[$key]['manufacturer'];
+
             $response[$key]['dataChanged'] = $logs[$key]['dataChanged'];
             $response[$key]['property'] = $logs[$key]['property'];
 

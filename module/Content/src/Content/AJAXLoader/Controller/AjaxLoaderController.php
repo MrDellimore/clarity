@@ -174,14 +174,9 @@ class AjaxLoaderController extends AbstractActionController
             $formData = (array) $request->getPost();
             //fix dates on post...
 
-
-
-
             //Hydrate into object
             $hydrator = new cHydrator;
             $hydrator->hydrate($formData,$postData);
-
-
 
             //Find dirty and new entities
             $comp = $this->getServiceLocator()->get('Content\ContentForm\Model\EntityCompare');
@@ -193,7 +188,7 @@ class AjaxLoaderController extends AbstractActionController
             // update/insert data
             $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
             $result = $form->dirtyHandle($dirtyData, $container->data);
-            $result .= $form->newHandle($newData);
+            $result .= $form->newHandle($newData, $container->data);
             $result .= $form->rinseHandle($rinseData);
 
             if($result == ''){
