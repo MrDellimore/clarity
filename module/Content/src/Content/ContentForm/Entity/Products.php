@@ -16,148 +16,150 @@ class Products {
     protected $id;
 
     protected $sku;
-//
-//    protected $title;
-//
-//    protected $inventory;
-//
-//    protected $urlKey;
-//
-//    protected $status;
-//
-//    protected $manufacturer = array();
-//
-//    protected $visibility;
-//
-//    protected $condition;
-//
-//    protected $taxClass;
-//
-//    protected $stockStatus;
-//
-//    protected $price;
-//
-//    protected $msrp;
-//
-//    protected $mapDisplay;
-//
-//    protected $cost;
-//
-//    protected $rebatePrice;
-//
-//    protected $rebateStartEndDate;
-//
-//    protected $specialPrice;
-//
-//    protected $specialStartEndDate;
-//
-//    protected $mailInRebate;
-//
-//    protected $mailInStartEndDate;
-//
-//    protected $weight;
-//
-//    protected $usExpedited;
-//
-//    protected $usTwoDay;
-//
-//    protected $canadaPriority;
-//
-//    protected $canadaFirstClass;
-//
-//    protected $asiaPriority;
-//
-//    protected $asiaFirstClass;
-//
-//    protected $europePriority;
-//
-//    protected $europeFirstClass;
-//
-//    protected $outsideAsiaPriority;
-//
-//    protected $outsideAsiaFirstClass;
-//
-//    protected $usOneDay;
-//
-//    protected $usStandard;
-//
-//    protected $metaTitle;
-//
-//    protected $metaKeywords;
-//
-//    protected $metaDescription;
-//
-//    protected $description;
-//
-//    protected $inBox;
-//
-//    protected $shortDescription;
-//
-//    protected $includesFree;
-//
-//    protected $color;
-//
-//    protected $packs;
-//
-//    protected $capacity;
-//
-//    protected $network;
-//
-//    protected $sizeCloths;
-//
-//    protected $sizeSunglasses;
-//
-//    protected $resolution;
-//
-//    protected $sensorSize;
-//
-//    protected $opticalDesign;
-//
-//    protected $flashType;
-//
-//    protected $power;
-//
-//    protected $objectiveDiameter;
-//
-//    protected $useBinoculars;
-//
-//    protected $size;
-//
-//    protected $cameraStyle;
-//
-//    protected $videoResolution;
-//
-//    protected $zoomPrime;
-//
-//    protected $focalLength;
-//
-//    protected $cineLens;
-//
-//    protected $apertureLens;
-//
-//    protected $legLockTypeTripod;
-//
-//    protected $maxHeightTripod;
-//
-//    protected $foldedLengthTripod;
-//
-//    protected $materialTripod;
-//
-//    protected $typeOfBag;
-//
-//    protected $headType;
-//
-//    protected $supportWeightTripod;
-//
-//    protected $prismType;
-//
-//    protected $brand = array();
-//
-//    protected $website;
-//
-//    protected $contentReviewed;
-//
-//    protected $originalContent;
+
+    protected $title;
+
+    protected $inventory;
+
+    protected $urlKey;
+
+    protected $status;
+
+    protected $manufacturer = array();
+
+    protected $visibility;
+
+    protected $condition;
+
+    protected $taxClass;
+
+    protected $stockStatus;
+
+    protected $price;
+
+    protected $msrp;
+
+    protected $mapDisplay;
+
+    protected $cost;
+
+    protected $rebatePrice;
+
+    protected $rebateStartEndDate;
+
+    protected $specialPrice;
+
+    protected $specialStartEndDate;
+
+    protected $mailInRebate;
+
+    protected $mailInStartEndDate;
+
+    protected $weight;
+
+    protected $usExpedited;
+
+    protected $usTwoDay;
+
+    protected $canadaPriority;
+
+    protected $canadaFirstClass;
+
+    protected $asiaPriority;
+
+    protected $asiaFirstClass;
+
+    protected $europePriority;
+
+    protected $europeFirstClass;
+
+    protected $outsideAsiaPriority;
+
+    protected $outsideAsiaFirstClass;
+
+    protected $usOneDay;
+
+    protected $usStandard;
+
+    protected $metaTitle;
+
+    protected $metaKeywords;
+
+    protected $metaDescription;
+
+    protected $description;
+
+    protected $inBox;
+
+    protected $shortDescription;
+
+    protected $includesFree;
+
+    protected $color;
+
+    protected $packs;
+
+    protected $capacity;
+
+    protected $network;
+
+    protected $sizeCloths;
+
+    protected $sizeSunglasses;
+
+    protected $resolution;
+
+    protected $sensorSize;
+
+    protected $opticalDesign;
+
+    protected $flashType;
+
+    protected $power;
+
+    protected $objectiveDiameter;
+
+    protected $useBinoculars;
+
+    protected $size;
+
+    protected $cameraStyle = array();
+
+    protected $videoResolution;
+
+    protected $zoomPrime;
+
+    protected $primeFocalLength = array();
+
+    protected $zoomFocalLength = array();
+
+    protected $cineLens;
+
+    protected $aperture = array();
+
+    protected $legLockTypeTripod;
+
+    protected $maxHeightTripod;
+
+    protected $foldedLengthTripod;
+
+    protected $materialTripod;
+
+    protected $typeOfBag;
+
+    protected $headType;
+
+    protected $supportWeightTripod;
+
+    protected $prismType;
+
+    protected $brand = array();
+
+    protected $website;
+
+    protected $contentReviewed;
+
+    protected $originalContent;
 
     protected $thumbnail;
 
@@ -867,17 +869,17 @@ class Products {
     /**
      * @param mixed $apertureLens
      */
-    public function setApertureLens($apertureLens)
+    public function setAperture($aperture)
     {
-        $this->apertureLens = $apertureLens;
+        $this->aperture = $aperture;
     }
 
     /**
      * @return mixed
      */
-    public function getApertureLens()
+    public function getAperture()
     {
-        return $this->apertureLens;
+        return $this->aperture;
     }
 
     /**
@@ -963,17 +965,33 @@ class Products {
     /**
      * @param mixed $focalLength
      */
-    public function setFocalLength($focalLength)
+    public function setPrimeFocalLength($primeFocalLength)
     {
-        $this->focalLength = $focalLength;
+        $this->primeFocalLength = $primeFocalLength;
     }
 
     /**
      * @return mixed
      */
-    public function getFocalLength()
+    public function getPrimeFocalLength()
     {
-        return $this->focalLength;
+        return $this->primeFocalLength;
+    }
+
+    /**
+     * @param mixed $focalLength
+     */
+    public function setZoomFocalLength($zoomFocalLength)
+    {
+        $this->zoomFocalLength = $zoomFocalLength;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getZoomFocalLength()
+    {
+        return $this->zoomFocalLength;
     }
 
     /**

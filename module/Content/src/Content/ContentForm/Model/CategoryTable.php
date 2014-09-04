@@ -22,10 +22,6 @@ class CategoryTable{
         $this->sql = new Sql($this->adapter);
     }
 
-    /*
-     * todo make select statement to check if category assignment is there
-     *
-     */
     public function checkCategory(Category $cat,$entityid){
         $select = $this->sql->select();
         $select->from('productcategory');
