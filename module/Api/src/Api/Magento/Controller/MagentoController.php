@@ -167,15 +167,10 @@ class MagentoController  extends AbstractActionController
         }
         $images = $this->getMagentoTable()->fetchImages();
         if($image = $this->getMagentoTable()->soapMedia($images)) {
-//            echo '1234';
             foreach($image as $key => $img){
-//                echo '5678';
                 foreach($img as $ind => $imgName){
-//                    echo '9ABCD';
                     if(preg_match('/jpg/',$imgName)){
-//                        echo 'EFGH';
                         if($updateRes = $this->getMagentoTable()->updateImagesToClean()){
-//                            echo 'IJKL';
                             return $this->redirect()->toRoute('apis',['action'=>'magento']);
                         }
                     }
