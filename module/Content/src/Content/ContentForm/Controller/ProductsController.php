@@ -35,13 +35,10 @@ class ProductsController extends AbstractActionController {
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-        $container = new Container('intranet');
+        $container = new Container('form');
         $queriedData = new Form();
         $sku = $this->params()->fromRoute('sku');
         $form = $this->getFormTable();
-        if(!$sku){
-            return $this->redirect()->toRoute('search');
-        }
 
         if($sku){
             $entityID = $form->validateSku($sku);
@@ -55,10 +52,22 @@ class ProductsController extends AbstractActionController {
             $hydrator->hydrate($skuData,$queriedData);
 
             //stash object in container
-            $container->data = $queriedData;
+            $container->offsetSet('formdata', $queriedData);
+        }
+        else{
+            return $this->redirect()->toRoute('search');
+        }
+
+        if($container->offsetExists('formdata')){
+//            var_dump('session isnt being created');
+//            die();
+            return $this->redirect()->toRoute('search');
+            //$this->indexAction();
+
         }
 
         $view = new ViewModel(array('data'=>$queriedData));
+
         return $view;
     }
 //  load accessories action was here
