@@ -253,6 +253,11 @@ class ProductsTable{
 
         //check if array passed or value given
         if(!(is_array($result)) || current($result)[$property] == ''){
+            //set default type for options
+            if($tableType =="int"){
+                $result = array($property => 0);
+            }
+            else
             $result = array($property => null);
         }
         else{

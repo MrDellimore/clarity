@@ -11,9 +11,8 @@ namespace Content\ContentForm\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 use Zend\View\Model\ViewModel;
-use Content\ContentForm\Entity\Products as Form;
+use Content\ContentForm\Entity\Products;
 use Zend\Session\Container;
-//use Content\\Model\EntityCompare;
 
 
 /**
@@ -35,8 +34,8 @@ class ProductsController extends AbstractActionController {
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-        $container = new Container('form');
-        $queriedData = new Form();
+
+        $queriedData = new Products();
         $sku = $this->params()->fromRoute('sku');
         $form = $this->getFormTable();
 
@@ -50,23 +49,12 @@ class ProductsController extends AbstractActionController {
             //hydrate data to form entity
             $hydrator = new cHydrator;
             $hydrator->hydrate($skuData,$queriedData);
-
-            //stash object in container
-            $container->offsetSet('formdata', $queriedData);
         }
         else{
             return $this->redirect()->toRoute('search');
         }
 
-        if($container->offsetExists('formdata')){
-//            var_dump('session isnt being created');
-//            die();
-            return $this->redirect()->toRoute('search');
-            //$this->indexAction();
-
-        }
-
-        $view = new ViewModel(array('data'=>$queriedData));
+        $view = new ViewModel(array('data'=>$queriedData,'originalData' => $skuData));
 
         return $view;
     }

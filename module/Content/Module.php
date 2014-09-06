@@ -4,7 +4,6 @@ namespace Content;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\EventManagerAwareTrait;
 use Zend\EventManager\Event;
-//use Zend\EventManager\StaticEventManager;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Db;
 

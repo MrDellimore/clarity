@@ -44,7 +44,7 @@ var UITree = function () {
 
 //set categories
         $('#cattree').on('ready.jstree', function () {
-            $("input[name$='id]']").each(function() {
+            $("#categoriesForm input[name$='id]']").each(function() {
                 if(!isNaN(this.value)) {
                     if(!($('#cattree').jstree('is_parent', this.value))){
                         $('#cattree').jstree('select_node', this.value);

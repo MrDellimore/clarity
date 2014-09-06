@@ -42,6 +42,8 @@ class EntityCompare {
 //        var_dump($dirt);
 //        die();
 
+
+
         return $dirtyEntity;
     }
 
@@ -100,6 +102,7 @@ class EntityCompare {
 
         $newEntity = new Form();
         $hydrator->hydrate($newArray,$newEntity);
+
         $newEntity->setId($old['id']);
         return $newEntity;
 
@@ -151,22 +154,30 @@ class EntityCompare {
                         }
                     }
                 }
-                else
-                    $newArray[$key] = $value;
+                else{
+                    //subEntity/array doesnt exist in other array at all
+                    foreach($value as $nonExistValue){
+                        if(is_object($nonExistValue)){
+                            $nonExistValue = $hydrator->extract($nonExistValue);
+                        }
+                        $newArray[$key][] = $nonExistValue;
+                    }
+                }
             }
 
             //not an array or object
             else{
                 if(($value != null && $value != '' && !(is_array($oldData[$key])) && $oldData[$key] == null) || ( !(array_key_exists($key,$oldData)) ) ){
+
                     $newArray[$key] = $value;
                 }
             }
         }
 
-        //var_dump($oldData['zoom_focal_length']);
         //var_dump($newData['color']);
-      //  var_dump($newArray);
-    //    die();
+       // var_dump($oldData);
+        //var_dump($newArray);
+       // die();
         return $newArray;
 
     }

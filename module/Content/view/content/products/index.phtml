@@ -46,7 +46,7 @@
 <div class="portlet-body">
 <div class="tabbable">
 <ul class="nav nav-tabs">
-    <li class="active">
+    <li >
         <a href="#tab_general" data-toggle="tab">
             General </a>
     </li>
@@ -56,10 +56,10 @@
     </li>
     <li>
         <a href="#tab_images" data-toggle="tab">
-            Images <span class="badge badge-success">
-											3 </span></a>
+            Images
+            <span class="badge badge-success"><?= count($this->data->getImageGallery())?></span></a>
     </li>
-    <li>
+    <li class="active">
         <a href="#tab_categories" data-toggle="tab">
             Catagories
         </a>
@@ -72,7 +72,7 @@
 
 
 <div class="tab-content no-space">
-<div class="tab-pane active" id="tab_general">
+<div class="tab-pane" id="tab_general">
 <br /> <br />
 <!-- General Tab info-->
 
@@ -89,7 +89,28 @@
 
         </div>
     </div>
-    <input type="hidden" class="form-control" name="id" value="<?= $this->data->getId(); ?>">
+    <!--orginal form content-->
+    <?php foreach($this->originalData as $key =>$value){
+        if(is_array($value)){
+            foreach($value as $key2 => $value2){
+                if(is_array($value2)){
+                    foreach($value2 as $key3 => $value3){
+                        echo '<input type="hidden" name="oldData['.$key.']['.$key2.']['.$key3.']" value="'.$value3.'">';
+                    }
+                }
+                else{
+                    echo '<input type="hidden" name="oldData['.$key.']['.$key2.']" value="'.$value2.'">';
+                }
+            }
+        }
+        else{
+            echo '<input type="hidden" name="oldData['.$key.']" value="'.str_replace('"','',$value).'">';
+        }
+    }
+    ?>
+
+    <input type="hidden" name="id" value="<?= $this->data->getId(); ?>">
+
 
     <div class="portlet-body">
         <div class="row">
@@ -175,7 +196,7 @@
                     <label class="control-label col-md-3" for="general_sku">Visibility</label>
                     <div class="col-md-9">
                         <select class="form-control input-medium" data-placeholder="No Visitility Set" name="visibility">
-                            <option value=""></option>
+                            <option value="0"></option>
                             <option value="1" <?= $this->data->getVisibility() == 1 ? 'selected' :''?>>Not Visible Indivdually</option>
                             <option value="2" <?= $this->data->getVisibility() == 2 ? 'selected' :''?>>Catalog</option>
                             <option value="3" <?= $this->data->getVisibility() == 3 ? 'selected' :''?>>Search</option>
@@ -882,7 +903,7 @@ $i=0;
 </div>
 
 
-<div class="tab-pane" id="tab_categories">
+<div class="tab-pane active" id="tab_categories">
     <!-- categories -->
     <div class = "row">
     <div class = "col-md-3">
@@ -967,7 +988,7 @@ $i=0;
                 <label class="control-label col-md-6" style="color:#ff0000">Zoom Focal Length</label>
                 <div class="col-md-6">
                     <select name="zoomFocalLength[option]" class="form-control input-small" data-placeholder="Select Focal Length[Lens]">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="4970" <?= $this->data->getZoomFocalLength()['option'] == 4970 ? 'selected' : ''?> >16-35mm</option>
                         <option value="4971" <?= $this->data->getZoomFocalLength()['option'] == 4971 ? 'selected' : ''?> >200mm and above</option>
                         <option value="4972" <?= $this->data->getZoomFocalLength()['option'] == 4972 ? 'selected' : ''?> >24-70mm</option>
@@ -983,7 +1004,7 @@ $i=0;
                 <label class="control-label col-md-6" style="color:#ff0000">Prime Focal Length</label>
                 <div class="col-md-6">
                     <select name="primeFocalLength[option]" class="form-control input-small" data-placeholder="Select Focal Length[Lens]">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="4395" <?= $this->data->getPrimeFocalLength()['option'] == 4395 ? 'selected' : ''?> >100mm</option>
                         <option value="4396" <?= $this->data->getPrimeFocalLength()['option'] == 4396 ? 'selected' : ''?> >14mm</option>
                         <option value="4963" <?= $this->data->getPrimeFocalLength()['option'] == 4963 ? 'selected' : ''?> >200mm</option>
@@ -1003,7 +1024,7 @@ $i=0;
                 <label class="control-label col-md-6" style="color:#ff0000">Aperture</label>
                 <div class="col-md-6">
                     <select name="aperture[option]" class="form-control input-small" data-placeholder="Select Aperture[Lens]">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="4399" <?= $this->data->getAperture()['option'] == 4399 ? 'selected' : ''?> >Range</option>
                         <option value="4400" <?= $this->data->getAperture()['option'] == 4400 ? 'selected' : ''?> >Fixed</option>
                     </select>
@@ -1016,7 +1037,7 @@ $i=0;
                 <label class="control-label col-md-6" style="color:#ff0000">Camera Style</label>
                 <div class="col-md-6">
                     <select name="cameraStyle[option]" class="form-control input-small" data-placeholder="Select Camera Style">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="4406" <?= $this->data->getCameraStyle()['option'] == 4406 ? 'selected' : ''?> >Point and Shoot/Compact</option>
                         <option value="4407" <?= $this->data->getCameraStyle()['option'] == 4407 ? 'selected' : ''?> >DSLR</option>
                     </select>
@@ -1031,7 +1052,7 @@ $i=0;
                 <label class="control-label col-md-6">Color</label>
                 <div class="col-md-6">
                     <select name="color[option]" class="form-control input-small" data-placeholder="Select Color">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="22" <?= $this->data->getColor() == 22 ? 'selected' : ''?> >Green</option>
                         <option value="23" <?= $this->data->getColor() == 23 ? 'selected' : ''?> >Silver</option>
                         <option value="24" <?= $this->data->getColor() == 24 ? 'selected' : ''?> >Black</option>
@@ -1052,7 +1073,7 @@ $i=0;
                 <label class="control-label col-md-6">Packs</label>
                 <div class="col-md-6">
                     <select name="packs" class="form-control input-small" data-placeholder="Select Pack">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="4276" <?= $this->data->getPacks() == 4276 ? 'selected' : ''?> >Two</option>
                         <option value="4277" <?= $this->data->getPacks() == 4277 ? 'selected' : ''?> >Three</option>
                         <option value="4278" <?= $this->data->getPacks() == 4278 ? 'selected' : ''?> >Four</option>
@@ -1066,7 +1087,7 @@ $i=0;
                 <label class="control-label col-md-6">Capacity</label>
                 <div class="col-md-6">
                     <select name="capacity" class="form-control input-small" data-placeholder="Select Capacity">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="4280" <?= $this->data->getCapacity() == 4280 ? 'selected' : ''?> >8 GB</option>
                         <option value="4281" <?= $this->data->getCapacity() == 4281 ? 'selected' : ''?> >16 GB</option>
                         <option value="4282" <?= $this->data->getCapacity() == 4282 ? 'selected' : ''?> >32 GB</option>
@@ -1082,7 +1103,7 @@ $i=0;
                 <label class="control-label col-md-6">Network</label>
                 <div class="col-md-6">
                     <select name="network" class="form-control input-small" data-placeholder="Select Network">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="4286" <?= $this->data->getNetwork() == 4286 ? 'selected' : ''?> >GSM</option>
                         <option value="4287" <?= $this->data->getNetwork() == 4287 ? 'selected' : ''?> >CDMA</option>
                     </select>
@@ -1097,7 +1118,7 @@ $i=0;
                 <label class="control-label col-md-6">Size[Cloths]</label>
                 <div class="col-md-6">
                     <select name="sizeCloths" class="form-control input-small" data-placeholder="Select Size [Cloths]">
-                        <option value="" >--</option>
+                        <option value="0" >--</option>
                         <option value="4289" <?= $this->data->getSizeCloths() == 4289 ? 'selected' : ''?> >Small</option>
                         <option value="4290" <?= $this->data->getSizeCloths() == 4290 ? 'selected' : ''?> >Medium</option>
                         <option value="4291" <?= $this->data->getSizeCloths() == 4291 ? 'selected' : ''?> >Large</option>

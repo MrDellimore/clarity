@@ -9,8 +9,7 @@
 namespace Content\AJAXLoader\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Content\ContentForm\Entity\Products as Form;
-use Zend\Session\Container;
+use Content\ContentForm\Entity\Products;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 
 class AjaxLoaderController extends AbstractActionController
@@ -169,27 +168,47 @@ class AjaxLoaderController extends AbstractActionController
 
         $request = $this->getRequest();
         if($request->isPost()) {
-            $postData = new Form();
-            $container = new Container('intranet');
+            $postData = new Products();
+            $oldData = new Products();
+
             $formData = (array) $request->getPost();
+
+
             //fix dates on post...
 
-            //Hydrate into object
+            //Hydrate into Old Data object
+            $hydrator = new cHydrator;
+            $hydrator->hydrate($formData['oldData'],$oldData);
+            unset($formData['oldData']);
+
+            //Hydrate into Post Data object
             $hydrator = new cHydrator;
             $hydrator->hydrate($formData,$postData);
 
+
+
+
+
             //Find dirty and new entities
             $comp = $this->getServiceLocator()->get('Content\ContentForm\Model\EntityCompare');
-            $dirtyData = $comp->dirtCheck($container->data, $postData);
-            $newData = $comp->newCheck($container->data, $postData);
-            $rinseData = $comp->rinseCheck($container->data, $postData);
+            $dirtyData = $comp->dirtCheck($oldData, $postData);
+            $newData = $comp->newCheck($oldData, $postData);
+            $rinseData = $comp->rinseCheck($oldData, $postData);
 
 
-            // update/insert data
+
+
+
+
+            //update/insert data
             $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
-            $result = $form->dirtyHandle($dirtyData, $container->data);
-            $result .= $form->newHandle($newData, $container->data);
+            $result = $form->dirtyHandle($dirtyData, $oldData);
+            $result .= $form->newHandle($newData, $oldData);
+            var_dump($newData);
+            die();
             $result .= $form->rinseHandle($rinseData);
+
+
 
             if($result == ''){
                 $result = 'No changes to sku made.';
