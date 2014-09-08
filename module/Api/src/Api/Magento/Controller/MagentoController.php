@@ -41,8 +41,8 @@ class MagentoController  extends AbstractActionController
 //        echo '<pre>';
 //        var_dump($this->skuData);
 //        die();
-//        $cleanCount = $this->getMagentoTable()->lookupClean();
-//        $newCount = $this->getMagentoTable()->lookupNew();
+        $cleanCount = $this->getMagentoTable()->fetchCleanCount();
+        $newCount = $this->getMagentoTable()->fetchNewCount();
         $images = $this->getMagentoTable()->fetchImageCount();
         $tableHeaders = array('ID','SKU','Attribute Field','New Attribute Value','Last Modified Date','Changed By');
         $session = new Container('dirty_skus');
@@ -59,7 +59,7 @@ class MagentoController  extends AbstractActionController
                 'updateHeaders' => $tableHeaders,
                 'sku'   =>  $this->skuData,
 //                'cleanCount'    => $cleanCount,
-//                'newCount'    => $newCount,
+                'newCount'    => $newCount,
                 'newImages'    => $images,
                 'dirtyCount' => $this->getMagentoTable()->getDirtyItems()
             )
@@ -68,7 +68,7 @@ class MagentoController  extends AbstractActionController
 
     protected function soapItemAction()
     {
-        $categorySoapResponse = $response = $resp = Null;
+        $categorySoapResponse = $itemSoapResponse = $resp = $linkedSoapResponse = Null;
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
@@ -78,22 +78,28 @@ class MagentoController  extends AbstractActionController
         $dirtyData = $session->dirtyProduct;
 
         /*Fetch categories*/
-//        $categories = $this->getMagentoTable()->fetchCategoriesSoap();
-//        $relatedProds = $this->getMagentoTable()->fetchRelatedProducts();
+        $categories = $this->getMagentoTable()->fetchCategoriesSoap();
+
+        /*Fetch Related Products*/
+        $linkedProds = $this->getMagentoTable()->fetchLinkedProducts();
+
         if(!empty($categories)){
             /*Make api call to delete and update Sku with new category*/
-//            $categorySoapResponse = $this->getMagentoTable()->soapCategoriesUpdate($categories);
-        }
-        if(!empty($dirtyData)){
-            /*Update Mage with up-to-date products*/
-            $response = $this->getMagentoTable()->soapUpdateProducts($dirtyData);
-        }
-        if(!empty($relatedProds)){
-            /*Update Mage with up-to-date products*/
-//            $response = $this->getMagentoTable()->soapRelatedProducts($relatedProds);
+            $categorySoapResponse = $this->getMagentoTable()->soapCategoriesUpdate($categories);
         }
 
-            foreach( $response as $key => $soapResponse ) {
+        if(!empty($linkedProds)){
+            /*Update Mage with up-to-date products*/
+            $linkedSoapResponse = $this->getMagentoTable()->soapLinkedProducts($linkedProds);
+        }
+
+        if(!empty($dirtyData)){
+            /*Update Mage with up-to-date products*/
+            $itemSoapResponse = $this->getMagentoTable()->soapUpdateProducts($dirtyData);
+        }
+        if( $categorySoapResponse || $itemSoapResponse || $linkedSoapResponse ){
+
+            foreach( $itemSoapResponse as $key => $soapResponse ) {
                 foreach( $soapResponse as $index => $soapRes ) {
                     if( preg_match('/Product/', $soapRes)){
                         $resp = $soapResponse;
@@ -108,14 +114,18 @@ class MagentoController  extends AbstractActionController
                     }
                 }
             }
+        }
 
-            if($resp === true || (!is_null($categorySoapResponse) &&  $categorySoapResponse === true) ){
-//                TODO have to find what out what the update statement actually returns.
-//                $updateCategories = $this->getMagentoTable()->updateProductCategories($categories);
+            if ( $resp === true ||
+                (!is_null($categorySoapResponse) &&  $categorySoapResponse === true) ||
+                (!is_null($linkedSoapResponse) &&  $linkedSoapResponse === true)
+            ){
+                $updateCategories = $this->getMagentoTable()->updateProductCategoriesToClean($categories);
+                $linkedFields = $this->getMagentoTable()->updateLinkedProductstoClean($linkedProds);
                 $updateFields = $this->getMagentoTable()->updateToClean($dirtyData);
-                if($updateFields || $updateCategories){
+                if( $updateFields || $updateCategories || $linkedFields ){
                     return $this->redirect()->toRoute('apis');
-              }
+                }
             }
             if( preg_match('/Category not exist/',$categorySoapResponse) ){
 //            'Category not exist' for $categorySoapResponse
@@ -151,7 +161,7 @@ class MagentoController  extends AbstractActionController
                     throw new \UnexpectedValueException('Product attribute set is not belong catalog product entity type');
                     break;
                 default:
-                    $this->getMagentoTable()->updateNewItems($newProducts);
+                    $this->getMagentoTable()->updateNewItemsToClean($newProducts);
                     return $this->redirect()->toRoute('apis', array('action'=>'magento'));
                     break;
             }

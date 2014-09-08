@@ -13,7 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 
-class IndexController extends AbstractActionController{
+class WebAssignmentController extends AbstractActionController{
 
     protected $webassignTable;
 

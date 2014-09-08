@@ -9,6 +9,7 @@ use Zend\Session\Container;
 
 
 class AttributesController extends AbstractActionController{
+
     public function indexAction(){
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
@@ -16,8 +17,9 @@ class AttributesController extends AbstractActionController{
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
 
-        $viewResult = new ViewModel();
-        return $viewResult;
+//        $lookupTable = $this->getServiceLocator()->get('Content\ContentForm\Model\AttributesTable')->fetchLookupTable();
+//        $viewResult = new ViewModel(array('lookup'=>$lookupTable));
+//        return $viewResult;
     }
 
 

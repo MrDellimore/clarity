@@ -37,9 +37,10 @@ class EntityCompare {
         $hydrator->hydrate($dirt,$dirtyEntity);
 
         $dirtyEntity->setId($oldData['id']);
-
-        //loop though image gallery
-        //if image entity
+        //var_dump($oldData['zoom_focal_length']);
+        //var_dump($newData['color']);
+//        var_dump($dirt);
+//        die();
 
 
 
@@ -99,10 +100,9 @@ class EntityCompare {
 
         $newArray = $this->getNewArray($old,$newData);
 
-
-
         $newEntity = new Form();
         $hydrator->hydrate($newArray,$newEntity);
+
         $newEntity->setId($old['id']);
         return $newEntity;
 
@@ -128,14 +128,25 @@ class EntityCompare {
                             $newValue = $hydrator->extract($newValue);
                         }
 
-                        foreach($oldData[$key] as $oldValue){
+
+
+                        foreach($oldData[$key] as $keyold => $oldValue){
                             if(is_object($oldValue)){
                                 $oldValue = $hydrator->extract($oldValue);
                             }
 
-                            //var_dump($newValue['id']);
-                            if($newValue['id'] == $oldValue['id']){
-                                $newFlag = false;
+                            //find ids of objects.. If not there then set flag
+                            if(is_array($oldValue) && is_array($newValue)){
+                                //check for new objects
+                                if($newValue['id'] == $oldValue['id']){
+                                    $newFlag = false;
+                                }
+                            }
+
+                            if(array_key_exists('option',$value)){
+                                if($keyold == 'option' && ($value['option'] == $oldValue || $oldValue != "")){
+                                        $newFlag = false;
+                                }
                             }
                         }
                         if($newFlag){
@@ -143,18 +154,32 @@ class EntityCompare {
                         }
                     }
                 }
-                else
-                    $newArray[$key] = $value;
+                else{
+                    //subEntity/array doesnt exist in other array at all
+                    foreach($value as $nonExistValue){
+                        if(is_object($nonExistValue)){
+                            $nonExistValue = $hydrator->extract($nonExistValue);
+                        }
+                        $newArray[$key][] = $nonExistValue;
+                    }
+                }
             }
 
             //not an array or object
             else{
                 if(($value != null && $value != '' && !(is_array($oldData[$key])) && $oldData[$key] == null) || ( !(array_key_exists($key,$oldData)) ) ){
+
                     $newArray[$key] = $value;
                 }
             }
         }
+
+        //var_dump($newData['color']);
+       // var_dump($oldData);
+        //var_dump($newArray);
+       // die();
         return $newArray;
+
     }
 
     public function rinseCheck($oldData,$newData){

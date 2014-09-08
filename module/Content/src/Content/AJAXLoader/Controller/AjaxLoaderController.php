@@ -9,8 +9,7 @@
 namespace Content\AJAXLoader\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Content\ContentForm\Entity\Products as Form;
-use Zend\Session\Container;
+use Content\ContentForm\Entity\Products;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 
 class AjaxLoaderController extends AbstractActionController
@@ -26,7 +25,7 @@ class AjaxLoaderController extends AbstractActionController
             $queryData = $request->getPost();
             $draw = $queryData['draw'];
             $sku = $queryData['search']['value'];
-            $limit = $queryData['length'];
+            $limit = $queryData['myKey'];
 
             if($limit == '-1'){
                 $limit = 100;
@@ -57,6 +56,20 @@ class AjaxLoaderController extends AbstractActionController
     public function updatequicksearch(Array $r){
         foreach($r as $key => $value){
             $r[$key]['sku'] = '<a href = "/content/product/'.$value['sku'].'">'.$value['sku'].'</a>';
+
+            $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
+            $r[$key]['site'] = $r[$key]['site'] == 3 ? 'aSavings' : 'Focus';
+            switch ($r[$key]['visibility']){
+                case '1':
+                    $r[$key]['visibility'] ='Not Visible Indivdually';
+                case '2':
+                    $r[$key]['visibility'] ='Catalog';
+                case '3':
+                    $r[$key]['visibility'] ='Search';
+                case '4':
+                    $r[$key]['visibility'] ='Catalog, Search';
+            }
+
         }
         return $r;
     }
@@ -69,9 +82,37 @@ class AjaxLoaderController extends AbstractActionController
         return $this->searchTable;
     }
 
+    public function loadRelatedAction()
+    {
+        $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $loadAccessories = $request->getPost();
+            $draw = $loadAccessories['draw'];
+            $sku = $loadAccessories['search']['value'];
+            $limit = $loadAccessories['length'];
+            if($limit == '-1'){
+                $limit = 100;
+            }
+            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
+            $result = json_encode(
+                array(
+                    'draw'  =>  (int)$draw,
+                    'data'  =>  $loadedAccessories,
+                    'recordsTotal'  =>  1000,
+                    'recordsFiltered'   =>  $limit,
+                )
+            );
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
+    }
+
     public function loadAccessoriesAction()
     {
-        $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');//getFormTable();
+        $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
         $request = $this->getRequest();
         if($request->isPost()) {
             $loadAccessories = $request->getPost();
@@ -127,32 +168,47 @@ class AjaxLoaderController extends AbstractActionController
 
         $request = $this->getRequest();
         if($request->isPost()) {
-            $postData = new Form();
-            $container = new Container('intranet');
+            $postData = new Products();
+            $oldData = new Products();
+
             $formData = (array) $request->getPost();
+
+
             //fix dates on post...
 
+            //Hydrate into Old Data object
+            $hydrator = new cHydrator;
+            $hydrator->hydrate($formData['oldData'],$oldData);
+            unset($formData['oldData']);
 
-
-
-            //Hydrate into object
+            //Hydrate into Post Data object
             $hydrator = new cHydrator;
             $hydrator->hydrate($formData,$postData);
 
 
 
+
+
             //Find dirty and new entities
             $comp = $this->getServiceLocator()->get('Content\ContentForm\Model\EntityCompare');
-            $dirtyData = $comp->dirtCheck($container->data, $postData);
-            $newData = $comp->newCheck($container->data, $postData);
-            $rinseData = $comp->rinseCheck($container->data, $postData);
+            $dirtyData = $comp->dirtCheck($oldData, $postData);
+            $newData = $comp->newCheck($oldData, $postData);
+            $rinseData = $comp->rinseCheck($oldData, $postData);
 
 
-            // update/insert data
+
+
+
+
+            //update/insert data
             $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
-            $result = $form->dirtyHandle($dirtyData, $container->data);
-            $result .= $form->newHandle($newData);
+            $result = $form->dirtyHandle($dirtyData, $oldData);
+            $result .= $form->newHandle($newData, $oldData);
+            var_dump($newData);
+            die();
             $result .= $form->rinseHandle($rinseData);
+
+
 
             if($result == ''){
                 $result = 'No changes to sku made.';

@@ -55,7 +55,8 @@ trait Spex {
     {
         $select = $sql->select();
         $select->from('productattribute_lookup');
-        $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code']);
+//        $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code']);
+        $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code', 'frontend'=>'frontend_label', 'dateModified'=>'lastModifiedDate','user'=>'changedby']);
         if(count($where)){
             $select->where($where);
         }

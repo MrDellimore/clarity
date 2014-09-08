@@ -13,3 +13,4 @@ composer.lock
 .vagrant/*
 Vagrantfile
 config/autoload/local.php
+package.box

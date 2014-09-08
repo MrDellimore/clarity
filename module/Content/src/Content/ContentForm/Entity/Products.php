@@ -123,17 +123,19 @@ class Products {
 
     protected $size;
 
-    protected $cameraStyle;
+    protected $cameraStyle = array();
 
     protected $videoResolution;
 
     protected $zoomPrime;
 
-    protected $focalLength;
+    protected $primeFocalLength = array();
+
+    protected $zoomFocalLength = array();
 
     protected $cineLens;
 
-    protected $apertureLens;
+    protected $aperture = array();
 
     protected $legLockTypeTripod;
 
@@ -161,13 +163,13 @@ class Products {
 
     protected $thumbnail;
 
-    protected $categories = array();
-
     protected $thumbnail_label;
 
     protected $small_image;
 
     protected $small_image_label;
+
+    protected $categories = array();
 
     protected $image;
 
@@ -867,17 +869,17 @@ class Products {
     /**
      * @param mixed $apertureLens
      */
-    public function setApertureLens($apertureLens)
+    public function setAperture($aperture)
     {
-        $this->apertureLens = $apertureLens;
+        $this->aperture = $aperture;
     }
 
     /**
      * @return mixed
      */
-    public function getApertureLens()
+    public function getAperture()
     {
-        return $this->apertureLens;
+        return $this->aperture;
     }
 
     /**
@@ -963,17 +965,33 @@ class Products {
     /**
      * @param mixed $focalLength
      */
-    public function setFocalLength($focalLength)
+    public function setPrimeFocalLength($primeFocalLength)
     {
-        $this->focalLength = $focalLength;
+        $this->primeFocalLength = $primeFocalLength;
     }
 
     /**
      * @return mixed
      */
-    public function getFocalLength()
+    public function getPrimeFocalLength()
     {
-        return $this->focalLength;
+        return $this->primeFocalLength;
+    }
+
+    /**
+     * @param mixed $focalLength
+     */
+    public function setZoomFocalLength($zoomFocalLength)
+    {
+        $this->zoomFocalLength = $zoomFocalLength;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getZoomFocalLength()
+    {
+        return $this->zoomFocalLength;
     }
 
     /**

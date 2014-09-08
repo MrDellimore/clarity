@@ -22,10 +22,6 @@ class CategoryTable{
         $this->sql = new Sql($this->adapter);
     }
 
-    /*
-     * todo make select statement to check if category assignment is there
-     *
-     */
     public function checkCategory(Category $cat,$entityid){
         $select = $this->sql->select();
         $select->from('productcategory');
@@ -41,7 +37,9 @@ class CategoryTable{
             $resultSet->initialize($result);
         }
 
-        return $resultSet->valid();
+        $resultSet->count() == 0 ? $result=false : $result=true;
+
+        return $result;
     }
 
     public function addCategory(Category $cat,$entityid){
@@ -66,6 +64,7 @@ class CategoryTable{
             $statement = $this->sql->prepareStatementForSqlObject($insert);
 
             $statement->execute();
+
         }
 
 

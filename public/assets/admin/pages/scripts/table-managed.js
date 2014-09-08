@@ -12,9 +12,13 @@ var TableManaged = function () {
             "serverSide": true,
 
             "ajax": {
-                url: "/content/search/quicksearch",
-                type: 'POST'
-
+                "url": "/content/search/quicksearch",
+                "type": 'POST',
+                "data": function ( d ) {
+                    d.myKey = "10";
+                    // d.custom = $('#myInput').val();
+                    // etc
+                }
             },
 
             "columns": [
@@ -79,6 +83,190 @@ var TableManaged = function () {
         });
 
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    };
+
+    var attributesPopulate = function () {
+
+        var table = $('#attributeTable');
+
+        // begin first table
+        table.dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/content/attributemanagement/attributes/quicksearch",
+                type: 'POST'
+
+            },
+            "columns": [
+//                { "data": "id" },
+                {
+                    "class": "frontend",
+                    "data": "frontend"
+                },
+                {
+                    "class": "type",
+                    "data": "input"
+                },
+                { "data": "dateModified" },
+//                { "data": "user" }
+                { "data": "fullname" },
+                {
+                    "defaultContent": "<a class='btn green-haze attEdit' data-toggle='modal' href='#attributeModal'>Edit <i class='fa fa-plus'></i></a>"
+                },
+                {
+                    "class": "hidden attribute_id",
+                    "data": "attId"
+                }
+            ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "lengthMenu": "_MENU_ records",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }/*,
+            "columnDefs": [{  // set default column settings
+                'orderable': false,
+                'targets': [0]
+            }, {
+                "searchable": false,
+                "targets": [0]
+            }]
+            /*
+            "order": [
+                [1, "asc"]
+            ] */// set first column as a default sort by asc
+        });
+
+
+        $('#attributeTable tbody').on('click', 'a.attEdit',function (e) {
+            e.preventDefault();
+            var edit = $(this);
+            var type = edit.closest('td').siblings('td.type').text();
+            var frontend = edit.closest('td').siblings('td.frontend').text();
+            var attributeId = edit.closest('td').siblings('td.attribute_id').text();
+            var params = {
+                "attributeId": attributeId
+            };
+            $('#frontend_label').val(frontend);
+            console.log('haha');
+
+            if(type != 'select'){
+                $('.options').hide();
+            } else{
+                console.log('hoho');
+                $('input.attributeId').val(attributeId);
+                $('.options').show();
+                $.post('/content/attributemanagement/options/quicksearch', params, function(data){
+                    //                console.log('clicked');
+                    table.api().draw();
+                });
+            }
+            var Type = type.replace(/^(.)|\s(.)/g, function($1){ return $1.toUpperCase( ); });
+            $('select.type option').each(function(i,e){
+                var option = $(this);
+                if (Type == option.text() ){
+                    option.prop('selected',true);
+                }
+            });
+        });
+
+    };
+    var optionsPopulate = function () {
+        var table = $('#optionsTable');
+
+        // begin first table
+        table.dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/content/attributemanagement/options/quicksearch",
+                type: 'POST'
+
+            },
+            "columns": [
+//                { "data": "id" },
+                { "data": "options" },
+                { "data": "dateModified" },
+                { "data": "fullname" },
+                {
+                    "class": "hidden att_id",
+                    "data": "attId"
+                },
+                {
+                    "defaultContent": "<a class='btn green-haze options_delete' data-toggle='modal' href='#optionsModal'>Delete<i class='fa fa-plus'></i></a>"
+                }
+            ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "lengthMenu": "_MENU_ records",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }/*,
+            "columnDefs": [{  // set default column settings
+                'orderable': false,
+                'targets': [0]
+            }, {
+                "searchable": false,
+                "targets": [0]
+            }]
+            /*
+            "order": [
+                [1, "asc"]
+            ] */// set first column as a default sort by asc
+        });
+
+
+        $('input[aria-controls=optionsTable]').on('keyup', 'td:nth-child(1)', function(){
+            var opt = $(this);
+            console.log(opt);
+            var attributeId = opt.closest('td').siblings('td.att_id').text();
+            var params = {
+                "attributeId": attributeId
+            };
+            $.post('/content/attributemanagement/options/quicksearch', params, function(data){
+                table.api().draw();
+            });
+        });
+        $('a.options').on('click',function (e) {
+            console.log('works');
+            var params = {
+                "attributeId" :  $('input.attributeId').val()
+            };
+            console.log($('input.attributeId').val());
+//            $.post('/content/attributemanagement/options/quicksearch', params, function(data){
+//            $.post('/content/attributemanagement/options/quicksearch', params, function(data){
+//                //                console.log('clicked');
+//                table.api().draw();
+//            });
+        });
+
+        table.on('click', '.options_delete', function (e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            nRow.remove();
+        });
+
     };
 
 
@@ -193,6 +381,8 @@ var TableManaged = function () {
 
         var table = $('#acessoriesDisplay');
 
+
+
         table.dataTable({
 
             "processing": true,
@@ -208,17 +398,11 @@ var TableManaged = function () {
                 { "data": "title" },
                 { "data": "price" },
                 { "data": "quantity" },
-//                { "data": "category" }
                 {
-                    "orderable":    true,
-                    "data": null,
-                    "defaultContent":   "Category"
-                },
-                {
-                    "class":    "delete",
+                    "class":    "add",
                     "orderable":    false,
                     "data": null,
-                    "defaultContent":   "<td><a href='javascript:;'>Delete</a></td>"
+                    "defaultContent":   "<td><a href='javascript:;'>Add</a></td>"
                 }
             ],
             "lengthMenu": [
@@ -247,16 +431,13 @@ var TableManaged = function () {
             var nRow = $(this).parents('tr')[0];
             nRow.remove();
         });
-
-        //var tableWrapper = jQuery('#sample_1_wrapper');
-        //tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     };
 
     var initCrossSellDisplay = function () {
 
         var table = $('#crossSellDisplay');
 
-        var oTable = table.dataTable({
+         table.dataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
@@ -269,17 +450,11 @@ var TableManaged = function () {
                 { "data": "title" },
                 { "data": "price" },
                 { "data": "quantity" },
-//                { "data": "category" }
                 {
-                    "orderable":    true,
-                    "data": null,
-                    "defaultContent":   "Category"
-                },
-                {
-                    "class":    "delete",
+                    "class":    "add",
                     "orderable":    false,
                     "data": null,
-                    "defaultContent":   "<td><a href='javascript:;'>Delete</a></td>"
+                    "defaultContent":   "<td><a href='javascript:;'>Add</a></td>"
                 }
             ],
             "lengthMenu": [
@@ -375,6 +550,8 @@ var TableManaged = function () {
             initCrossSellDisplay();
             populateSkuHistory();
             webassignmentTable();
+            attributesPopulate();
+            optionsPopulate();
         }
 
     };

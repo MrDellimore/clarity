@@ -9,7 +9,7 @@ var UITree = function () {
                 //console.log(data);
 
                 $('#cattree').jstree({
-                    'plugins': ["wholerow", "checkbox", "types"],
+                    'plugins': ["checkbox", "types"],
                     'core': {
                         "themes" : {
                             "responsive": false
@@ -27,13 +27,14 @@ var UITree = function () {
             });
 
 //set diabled nodes based on website selected
+        /*
         var cats = $('.selectedcat');
 
         for(i=0; i<cats.length; i++){
             if ($(cats[i]).text().trim() == 'Focus' || $(cats[i]).text().trim() == 'aSavings')
             console.log($(cats[i]).text().trim());
         }
-
+        */
         //case1 focus not in array
             //disable focus
         //case2 asavings not in array
@@ -43,7 +44,7 @@ var UITree = function () {
 
 //set categories
         $('#cattree').on('ready.jstree', function () {
-            $("input[name$='id]']").each(function() {
+            $("#categoriesForm input[name$='id]']").each(function() {
                 if(!isNaN(this.value)) {
                     if(!($('#cattree').jstree('is_parent', this.value))){
                         $('#cattree').jstree('select_node', this.value);
@@ -60,8 +61,6 @@ var UITree = function () {
             wtf = wtf.split(",");
 
             for (i = 0; i < wtf.length; i++) {
-                getparent(wtf[i]);
-
                 function getparent (kid) {
                     if ($('#cattree').jstree('get_parent', kid) && $('#cattree').jstree('get_parent', kid) != "#" && family.indexOf($('#cattree').jstree('get_parent', kid)) == '-1') {
 
@@ -71,6 +70,8 @@ var UITree = function () {
                     else
                         return family;
                 }
+
+                getparent(wtf[i]);
             }
 //get entityid
           //  var entityid = $("input[name*='man']");

@@ -196,7 +196,6 @@ class ProductsTable{
         $newOption = $this->fetchOption(current($newAttibute),'1641','brand');
         $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
 
-
         //Fetch Images
         $images = $this->fetchImages($entityid);
         $result['imageGallery'] = $images;
@@ -204,6 +203,31 @@ class ProductsTable{
         //Fetch Category
         $categories = $this->fetchCategories($entityid);
         $result['categories'] = $categories;
+
+        //Fetch Prime Focal Length Option
+        $newAttibute = $this->fetchAttribute($entityid,'int','1713','primeFocalLength');
+        $newOption = $this->fetchOption(current($newAttibute),'1713','primeFocalLength');
+        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
+
+        //Fetch Zoom Focal Length Option
+        $newAttibute = $this->fetchAttribute($entityid,'int','1731','zoomFocalLength');
+        $newOption = $this->fetchOption(current($newAttibute),'1731','zoomFocalLength');
+        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
+
+        //Fetch Aperture Option
+        $newAttibute = $this->fetchAttribute($entityid,'int','1715','aperture');
+        $newOption = $this->fetchOption(current($newAttibute),'1715','aperture');
+        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
+
+        //Fetch Camera Style Option
+        $newAttibute = $this->fetchAttribute($entityid,'int','1717','cameraStyle');
+        $newOption = $this->fetchOption(current($newAttibute),'1717','cameraStyle');
+        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
+
+        //Fetch Color Option
+        $newAttibute = $this->fetchAttribute($entityid,'int','272','color');
+        $newOption = $this->fetchOption(current($newAttibute),'272','color');
+        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
 
 
         return $result;
@@ -229,6 +253,11 @@ class ProductsTable{
 
         //check if array passed or value given
         if(!(is_array($result)) || current($result)[$property] == ''){
+            //set default type for options
+            if($tableType =="int"){
+                $result = array($property => 0);
+            }
+            else
             $result = array($property => null);
         }
         else{
@@ -517,16 +546,21 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getDescription(), $oldData->getDescription(), /*$oldData->getManufacturer(),*/ $property);//'97','text');
             $updateditems .= 'Description<br>';
         }
-        //update inventory
-        //update url Key
-        //update status
+//update status
         if(!(is_null($form->getStatus()))) {
             $property = 'status';
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStatus(), $oldData->getStatus(), /*$oldData->getManufacturer(),*/ $property);//,'273','int');
             $updateditems .= 'Status<br>';
         }
-        //update manufacturer
+//update manufacturer
+        if(array_key_exists('option',$form->getManufacturer())) {
+            $property = 'Manufacturer';
+            $this->updateAttribute($form->getId(),$form->getManufacturer()['option'],'102','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getManufacturer()['option'], $oldData->getManufacturer()['option'], $property);
+            $updateditems .= 'Manufacturer<br>';
+        }
+
         //update visibility
         if(!(is_null($form->getVisibility()))) {
             $property = 'visibility';
@@ -534,8 +568,7 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getVisibility(), $oldData->getVisibility(),/*$oldData->getManufacturer(),*/ $property);//,'526','int');
             $updateditems .= 'Visibility<br>';
         }
-        //update condition
-        //update tax class
+
         //update stock status
         if(!(is_null($form->getStockStatus()))) {
             $property = 'stock status';
@@ -543,17 +576,7 @@ class ProductsTable{
             $this->insertLogging($form->getId(),$form->getStockStatus(), $oldData->getStockStatus(),$oldData->getManufacturer(), $property);//,'1661','int');
             $updateditems .= 'Stock Status<br>';
         }
-        //update price
-        //update cost
-        //update rebate price
-        //update rebatestartenddate
-        //update special price
-        //update special startenddate
-        //update main in rebate price
-        //update weight
-        //update shipping
-        //update text
-        //update In Box
+//update in box
         if(!(is_null($form->getInBox()))) {
             $property = 'inbox';
             $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
@@ -600,17 +623,45 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getShortDescription(), $oldData->getShortDescription(), /*$oldData->getManufacturer(),*/ $property);//,'506','text');
             $updateditems .= 'Visibility<br>';
         }
+//update Zoom Focal Length
+        if(array_key_exists('option', $form->getZoomFocalLength())) {
+            $property = 'Zoom Focal Length';
+            $this->updateAttribute($form->getId(),$form->getZoomFocalLength()['option'],'1731','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getZoomFocalLength()['option'], $oldData->getZoomFocalLength()['option'], $property);
+            $updateditems .= 'Zoom Focal Length<br>';
+        }
+//update Prime Focal Length
+        if(array_key_exists('option', $form->getPrimeFocalLength())) {
+            $property = 'Prime Focal Length';
+            $this->updateAttribute($form->getId(),$form->getPrimeFocalLength()['option'],'1713','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getPrimeFocalLength()['option'], $oldData->getPrimeFocalLength()['option'], $property);
+            $updateditems .= 'Prime Focal Length<br>';
+        }
+//update Aperture
+        if(array_key_exists('option', $form->getAperture())) {
+            $property = 'Aperture';
+            $this->updateAttribute($form->getId(),$form->getAperture()['option'],'1715','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getAperture()['option'], $oldData->getAperture()['option'], $property);
+            $updateditems .= 'Aperture<br>';
+        }
+//update Camera Style
+        if(array_key_exists('option', $form->getCameraStyle())) {
+            $property = 'Camera Style';
+            $this->updateAttribute($form->getId(),$form->getCameraStyle()['option'],'1717','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getCameraStyle()['option'], $oldData->getCameraStyle()['option'], $property);
+            $updateditems .= 'Camera Style<br>';
+        }
 
-        //update Images
+
+//update Images
         if(!(is_null($form->getImageGallery()))) {
             $imageHandler = new ImageTable($this->adapter);
-
-
             foreach($form->getImageGallery() as  $value){
                 $result=$imageHandler->updateImage($value);
                 $updateditems .= $result;
             }
         }
+
 
 
         if($updateditems != ''){
@@ -624,9 +675,39 @@ class ProductsTable{
     /**
      * Handle isNew Form entities
      */
-    public function newHandle(Form $form){
+    public function newHandle(Form $form,Form $oldData){
 
         $inserteditems='';
+
+//Zoom Focal Length
+        if(array_key_exists('option', $form->getZoomFocalLength())) {
+            $property = 'Zoom Focal Length';
+            $this->insertAttribute($oldData->getId(),$form->getZoomFocalLength()['option'],'1731','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getZoomFocalLength()['option'], "",$property);
+            $inserteditems .= 'Zoom Focal Length<br>';
+        }
+//Prime focal length
+        if(array_key_exists('option', $form->getPrimeFocalLength())) {
+            $property = 'Prime Focal Length';
+            $this->insertAttribute($oldData->getId(),$form->getPrimeFocalLength()['option'],'1713','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getPrimeFocalLength()['option'], "",$property);
+            $inserteditems .= 'Prime Focal Length<br>';
+        }
+//Camera Style
+        if(array_key_exists('option', $form->getCameraStyle())) {
+            $property = 'Camera Style';
+            $this->insertAttribute($oldData->getId(),$form->getCameraStyle()['option'],'1717','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getCameraStyle()['option'], "",$property);
+            $inserteditems .= 'Camera Style<br>';
+        }
+//Apeture
+        if(array_key_exists('option', $form->getAperture())) {
+            $property = 'Apeture';
+            $this->insertAttribute($oldData->getId(),$form->getAperture()['option'],'1715','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getAperture()['option'], "",$property);
+            $inserteditems .= 'Apeture<br>';
+        }
+
 
         //Create new Image
         if(!(is_null($form->getImageGallery()))) {
@@ -665,7 +746,23 @@ class ProductsTable{
 
     }
 
-    public function insertAttributes($entityid,$value,$attributeid,$tableType){
+    public function insertAttribute($entityid,$value,$attributeid,$tableType){
+        $loginSession= new Container('login');
+        $userData = $loginSession->sessionDataforUser;
+        $user = $userData['userid'];
+
+        $insert = $this->sql->insert('productattribute_'.$tableType);
+        $insert->columns(array('entity_id','category_id','dataState','changedby'));
+        $insert->values(array(
+            'entity_id' => $entityid,
+            'attribute_id' => $attributeid,
+            'value' => $value,
+            'dataState' => 2,
+            'changedby' => $user
+        ));
+
+        $statement = $this->sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
 
     }
 

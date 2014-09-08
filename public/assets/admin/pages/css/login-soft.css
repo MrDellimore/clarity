@@ -109,8 +109,6 @@ Login page
 .login .content .create-account a {
   display: inline-block;
   margin-top: 5px;
-  color: black;
-  font-size: 20px;
 }
 
 /* select2 dropdowns */

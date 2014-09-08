@@ -52,20 +52,8 @@ class MagentoTable {
         return $this->productAttribute($this->sql,array(),array('dataState'=>2),'images')->toArray();
     }
 
-    public function lookupClean()
+    public function fetchCleanCount()
     {
-//        I added this snippet of code so that we can find all product attributes that are clean, not just skus
-//        $columns = array(
-//            'attributeId'   =>  'attribute_id',
-//            'attributeCode' =>  'attribute_code',
-//            'backendType'   =>  'backend_type',
-//        );
-//        $lookupResult = $this->productAttribute($this->sql, $columns, array(), 'lookup' );
-//        foreach($lookupResult as $key => $fieldTypes){
-//            $attributeId = $lookupResult[$key]['attributeId'];
-//            $attributeCode = $lookupResult[$key]['attributeCode'];
-//            $backendType = $lookupResult[$key]['backendType'];
-//        }
         $select = $this->sql->select();
         $select->from('product');
         $select->columns(array('id' => 'entity_id', 'ldate'=>'lastModifiedDate', 'item' => 'productid'));
@@ -77,11 +65,10 @@ class MagentoTable {
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-//        $cleanCount = $resultSet->count();
         return $resultSet->count();
     }
 
-    public function lookupNew()
+    public function fetchNewCount()
     {
         $select = $this->sql->select();
         $select->from('product');
@@ -340,6 +327,89 @@ class MagentoTable {
         $this->attributeDirtyCount += $attributeDirtyCount;
     }
 
+    public function fetchLinkedProducts()
+    {
+        $select = $this->sql->select();
+        $filter = new Where();
+        $filter->in('productlink.dataState',array(2,3));
+        $select->from('productlink')
+            ->columns(array('entityId'=>'entity_id','linkedEntityId'=>'linked_entity_id', 'dataState'=>'dataState'))
+            ->join( array('t'=>'productlink_type'), 't.link_type_id=productlink.link_type_id',array('type'=>'code'))
+//               ->join( array('p'=>'product'), 'p.entity_id=productlink.entity_id',array('sku'=>'productid'))
+//               ->where(array('productcategory.dataState'=>2,'productcategory.dataState'=>3),PredicateSet::OP_OR);
+            ->where($filter);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        //TODO have to implement a count feature for this.
+//        $resultSet->count()
+        return $resultSet->toArray();
+    }
+
+    public function soapLinkedProducts($linkedProds)
+    {
+        $soapHandle = new Client(SOAP_URL);
+        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
+        $packet = array();
+        $results = Null;
+        foreach($linkedProds as $key => $fields){
+            $entityId = $linkedProds[$key]['entityId'];
+            $dataState = (int)$linkedProds[$key]['dataState'];
+            $linkedEntityId = $linkedProds[$key]['linkedEntityId'];
+            $type = $linkedProds[$key]['type'];
+            if( 3 === $dataState ){
+                $packet[$key]['dataState'] = (int)$dataState;
+                $packet[$key] = array('type'=>$type, 'product'=>$entityId, 'linkedProduct'=>$linkedEntityId );
+            }
+            if( 2 === $dataState ){
+                $packet[$key]['dataState'] = (int)$dataState;
+                $packet[$key] = array('type'=>$type, 'product'=>$entityId, 'linkedProduct'=>$linkedEntityId );
+            }
+        }
+
+        $a = 0;
+        $batch = [];
+        while( $a < count($packet) ){
+            $x = 0;
+            while($x < 10 && $a < count($packet)) {
+                if( $packet[$a]['dataState'] == 3 ) {
+                    $batch[$x] = array(PRODUCT_DELETE_RELATED, $packet[$a]);
+                } else {
+                    $batch[$x] = array(PRODUCT_ASSIGN_RELATED, $packet[$a]);
+                }
+                $x++;
+                $a++;
+            }
+            sleep(15);
+            $results[] = $soapHandle->call('multiCall',array($session, $batch));
+        }
+        return $results;
+    }
+
+    public function updateLinkedProductstoClean($linkedProducts)
+    {
+        $result ='';
+        foreach($linkedProducts as $key => $fields){
+            $dataState = (int)$linkedProducts[$key]['dataState'];
+            if( $dataState === 2){
+                $update = $this->sql->update('productlink');
+                $update->set(array('dataState'=>0))
+                    ->where(array('entity_id'=>$linkedProducts[$key]['entityId'], 'linked_entity_id'=>$linkedProducts[$key]['linkedEntityId']));
+                $statement = $this->sql->prepareStatementForSqlObject($update);
+                $result = $statement->execute();
+            } else {
+                $delete = $this->sql->delete('productlink');
+                $delete->where(array('entity_id'=>$linkedProducts[$key]['entityId'], 'linked_entity_id'=>$linkedProducts[$key]['linkedEntityId']));
+                $statement = $this->sql->prepareStatementForSqlObject($delete);
+                $result = $statement->execute();
+            }
+        }
+        return $result;
+    }
+
     public function fetchAttribute($tableType, $attributeid, $property)
     {
         $select = $this->sql->select();
@@ -485,7 +555,7 @@ class MagentoTable {
 
     public function soapCategoriesUpdate($categories)
     {
-        $results = false;
+        $result = false;
         $soapHandle = new Client(SOAP_URL);
         $packet = array();
         $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
@@ -495,19 +565,32 @@ class MagentoTable {
             $dataState = (int)$categories[$key]['dataState'];
             $categortyId = $categories[$key]['categortyId'];
             if( 3 === $dataState ){
-                $packet[$key] = array($session, PRODUCT_DELETE_CATEGORY, array('categoryId'=>$categortyId,'product'=>$entityId ));
+                $packet[$key]['dataState'] = (int)$dataState;
+                $packet[$key] = array('categoryId'=>$categortyId,'product'=>$entityId );
             }
             if( 2 === $dataState ){
-                $packet[$key] = array($session, PRODUCT_ASSIGN_CATEGORY, array('categoryId'=>$categortyId,'product'=>$entityId ));
+                $packet[$key]['dataState'] = (int)$dataState;
+                $packet[$key] = array('categoryId'=>$categortyId,'product'=>$entityId );
             }
         }
-        foreach($packet as $key => $batch){
-//         echo '<pre>';
-//            var_dump($batch);
-            $results = $soapHandle->call('call', $batch );
+
+        $a = 0;
+        $batch = [];
+        while( $a < count($packet) ){
+            $x = 0;
+            while($x < 10 && $a < count($packet)){
+                if( $packet[$a]['dataState'] == 3 ) {
+                    $batch[$x] = array(PRODUCT_DELETE_CATEGORY, $packet[$a]);
+                } else {
+                    $batch[$x] = array(PRODUCT_ASSIGN_CATEGORY, $packet[$a]);
+                }
+                $x++;
+                $a++;
+            }
+            sleep(15);
+            $result[] = $soapHandle->call('multiCall',array($session, $batch));
         }
-//        die();
-        return $results;
+        return $result;
     }
 
     public function soapUpdateProducts($data)
@@ -557,7 +640,7 @@ class MagentoTable {
         return $result;
     }
 
-    public function updateProductCategories($catsToUpdate)
+    public function updateProductCategoriesToClean($catsToUpdate)
     {
         $result ='';
         foreach($catsToUpdate as $key => $fields){
@@ -616,7 +699,7 @@ class MagentoTable {
 
     public function soapAddProducts($newProds)
     {
-        echo '<pre>';
+//        echo '<pre>';
         $results = false;
         $packet = [];
         $soapHandle = new Client(SOAP_URL);
@@ -673,7 +756,7 @@ class MagentoTable {
 //                die();
             }
 //
-            $results = $soapHandle->call('multiCall', $batch[$packetCount] );
+            $results[] = $soapHandle->call('multiCall', $batch[$packetCount] );
             sleep(2);
         }
 //        die();
@@ -760,7 +843,7 @@ class MagentoTable {
 
     }
 
-    public function updateNewItems($newProducts)
+    public function updateNewItemsToClean($newProducts)
     {
         foreach($newProducts as $index => $fields){
             $update = $this->sql->update('product');
