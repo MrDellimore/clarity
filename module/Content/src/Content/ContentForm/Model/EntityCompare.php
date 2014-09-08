@@ -48,7 +48,9 @@ class EntityCompare {
     }
 
 
-
+/*
+ * todo make dirtcomparison iterative
+ */
 
     public function getDirtArray($oldData,$newData){
         $dirt = Array();
@@ -144,7 +146,7 @@ class EntityCompare {
                             }
 
                             if(array_key_exists('option',$value)){
-                                if($keyold == 'option' && ($value['option'] == $oldValue || $oldValue != "")){
+                                if($keyold == 'option' && ($value['option'] == $oldValue || $oldValue != "" || $value['option'] == "0")){
                                         $newFlag = false;
                                 }
                             }
@@ -176,8 +178,8 @@ class EntityCompare {
 
         //var_dump($newData['color']);
        // var_dump($oldData);
-        //var_dump($newArray);
-       // die();
+//        var_dump($newArray);
+//        die();
         return $newArray;
 
     }

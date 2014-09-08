@@ -204,8 +204,6 @@ class AjaxLoaderController extends AbstractActionController
             $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
             $result = $form->dirtyHandle($dirtyData, $oldData);
             $result .= $form->newHandle($newData, $oldData);
-            var_dump($newData);
-            die();
             $result .= $form->rinseHandle($rinseData);
 
 

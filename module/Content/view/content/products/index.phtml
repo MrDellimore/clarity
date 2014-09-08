@@ -104,7 +104,7 @@
             }
         }
         else{
-            echo '<input type="hidden" name="oldData['.$key.']" value="'.str_replace('"','',$value).'">';
+            echo '<input type="hidden" name="oldData['.$key.']" value="'.str_replace('"','&quot;',$value).'">';
         }
     }
     ?>
