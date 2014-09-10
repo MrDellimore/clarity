@@ -360,77 +360,22 @@ class ProductsTable{
     }
 
 
-
-
-
-
-
-
-
-
-/*
- * todo Make this less granular. One method to validate sku
- */
-
-    public function executeQuery(){
-        $statement = $this->sql->prepareStatementForSqlObject($this->select);
-        $result = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
-        }
-//        This is my query.
-//        var_dump($resultSet);
-        return $resultSet;
-    }
-
-    public function isSkuValid(ResultSet $result){
-        if(!$result->valid()){
-            return False;
-        }
-        return true;
-    }
-
-    public function isSelect(){
-        if( is_null($this->select) ) {
-            $this->select = $this->sql->select();
-            $this->selectQuery();
-        }
-        return $this->select;
-
-    }
-
-    public function selectQuery(){
-        $this->select->from('product')
-            ->where(
-                array(
-                    'productid' => $this->sku
-                )
-            );
-    }
-
     /**
      * @param $sku
      * @throws \Exception
      * @return int
      */
+
     public function validateSku($sku){
-        $this->sku = $sku;
-        $this->isSelect();
-        $resultSet = $this->executeQuery();
-        if( !$this->isSkuValid($resultSet) ){
-            return false;
+        $select = $this->sql->select()->from('product')->where(['productid' => $sku]);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
         }
-        $skuList = array();
-        $skuList = $resultSet->current();
-        return $skuList['entity_id'];
+        return $resultSet->toArray()[0]['entity_id'];
     }
-
-
-
-
-
-
 
 
     /**
