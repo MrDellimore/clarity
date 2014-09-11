@@ -91,10 +91,13 @@ class AjaxLoaderController extends AbstractActionController
             $draw = $loadAccessories['draw'];
             $sku = $loadAccessories['search']['value'];
             $limit = $loadAccessories['length'];
+
+
             if($limit == '-1'){
                 $limit = 100;
             }
             $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
+            $loadedAccessories = $this->updateaccessories($loadedAccessories);
             $result = json_encode(
                 array(
                     'draw'  =>  (int)$draw,
@@ -119,10 +122,84 @@ class AjaxLoaderController extends AbstractActionController
             $draw = $loadAccessories['draw'];
             $sku = $loadAccessories['search']['value'];
             $limit = $loadAccessories['length'];
+
+            /*
+            $setAcessories = $loadAccessories['related'];
+
+            foreach($setAcessories as $value){
+                $setAccessories[] = $form->setAccessories($sku, (int)$limit);
+            }
+
+*/
+
+            /* setAccessories =
+             * array(8) {
+             *
+  [0]=>
+  array(2) {
+    ["name"]=>
+    string(17) "acessories[0][id]"
+    ["value"]=>
+    string(5) "27220"
+  }
+  [1]=>
+  array(2) {
+    ["name"]=>
+    string(23) "acessories[0][entityid]"
+    ["value"]=>
+    string(3) "182"
+  }
+  [2]=>
+  array(2) {
+    ["name"]=>
+    string(24) "acessories[0][linkedSku]"
+    ["value"]=>
+    string(5) "18737"
+  }
+  [3]=>
+  array(2) {
+    ["name"]=>
+    string(23) "acessories[0][position]"
+    ["value"]=>
+    string(1) "0"
+  }
+  [4]=>
+  array(2) {
+    ["name"]=>
+    string(17) "acessories[1][id]"
+    ["value"]=>
+    string(5) "27219"
+  }
+  [5]=>
+  array(2) {
+    ["name"]=>
+    string(23) "acessories[1][entityid]"
+    ["value"]=>
+    string(3) "182"
+  }
+  [6]=>
+  array(2) {
+    ["name"]=>
+    string(24) "acessories[1][linkedSku]"
+    ["value"]=>
+    string(5) "15320"
+  }
+  [7]=>
+  array(2) {
+    ["name"]=>
+    string(23) "acessories[1][position]"
+    ["value"]=>
+    string(1) "0"
+  }
+}
+             */
+
+
             if($limit == '-1'){
                 $limit = 100;
             }
             $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
+            $loadedAccessories = $this->updateaccessories($loadedAccessories);
             $result = json_encode(
                 array(
                     'draw'  =>  (int)$draw,
@@ -136,6 +213,13 @@ class AjaxLoaderController extends AbstractActionController
             $response->setContent($result);
             return $response;
         }
+    }
+
+    public function updateaccessories(Array $r){
+        foreach($r as $key => $value){
+            $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
+        }
+        return $r;
     }
 
     public function loadCategoriesAction()

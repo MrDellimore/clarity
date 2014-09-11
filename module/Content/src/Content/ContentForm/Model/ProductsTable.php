@@ -200,6 +200,14 @@ class ProductsTable{
         $categories = $this->fetchCategories($entityid);
         $result['categories'] = $categories;
 
+        //Fetch Acessories
+        $accessories = $this->fetchAccessories($entityid);
+        $result['acessories'] = $accessories;
+
+        //Fetch CrossSells
+        $crossSell = $this->fetchCrossSell($entityid);
+        $result['crossSells'] = $crossSell;
+
         //Fetch Prime Focal Length Option
         $newAttibute = $this->fetchAttribute($entityid,'int','1713','primeFocalLength');
         $newOption = $this->fetchOption(current($newAttibute),'1713','primeFocalLength');
@@ -340,6 +348,43 @@ class ProductsTable{
         return $result;
     }
 
+    public function fetchAccessories($entityid){
+        $select = $this->sql->select();
+        $select->from('productlink');
+        $select->columns(array('id'=>'link_id','entity_id'=>'entity_id','linkedSku'=>'linked_entity_id','position' => 'position'));
+        $select->where(array('entity_id' => $entityid, 'link_type_id' =>'1'));
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $result = $resultSet->toArray();
+
+        return $result;
+    }
+
+    public function fetchCrossSell($entityid){
+        $select = $this->sql->select();
+        $select->from('productlink');
+        $select->columns(array('id'=>'link_id','entity_id'=>'entity_id','linkedSku'=>'linked_entity_id','position' => 'position'));
+        $select->where(array('entity_id' => $entityid, 'link_type_id' =>'1'));
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $result = $resultSet->toArray();
+
+        return $result;
+    }
 
     public function fetchCategoriesStructure(){
         $select = $this->sql->select();
@@ -358,6 +403,7 @@ class ProductsTable{
 
         return $result;
     }
+
 
 
     /**
@@ -436,16 +482,20 @@ class ProductsTable{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from('product');
-        $select->columns(array('entityID'=>'entity_id','Sku' => 'productid'));
+        $select->columns(array('sort'=>'entity_id','Sku' => 'productid'));
         $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
         $priceJoin = new Expression('p.entity_id = product.entity_id and p.attribute_id = 99');
         $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
+        $statusJoin = new Expression('s.entity_id = product.entity_id and s.attribute_id = 273');
 
         $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'));
 
         $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'));
 
         $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'));
+
+        $select->join(array('s' => 'productattribute_int'), $statusJoin ,array('status' => 'value'));
+
         $where = new Where();
         $where->like('product.productid',$searchValue.'%');
         $select->where($where);

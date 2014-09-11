@@ -393,11 +393,19 @@ var TableManaged = function () {
                 type: 'POST'
             },
             "columns": [
-                { "data": "entityID" },
-                { "data": "Sku" },
-                { "data": "title" },
-                { "data": "price" },
-                { "data": "quantity" },
+                {
+                    "class":    "sort",
+                    "data": null,
+                    "defaultContent":   "",
+                    "visible": false
+                },
+
+                { "data": "sort" },
+                { "data": "Sku", "orderable": false },
+                { "data": "title", "orderable": false  },
+                { "data": "status", "orderable": false  },
+                { "data": "price", "orderable": false  },
+                { "data": "quantity", "orderable": false  },
                 {
                     "class":    "add",
                     "orderable":    false,
@@ -405,6 +413,11 @@ var TableManaged = function () {
                     "defaultContent":   "<td><a href='javascript:;'>Add</a></td>"
                 }
             ],
+
+            "order": [
+                [0, "asc"]
+            ],
+
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here
@@ -426,30 +439,53 @@ var TableManaged = function () {
                 }
             }});
 
-        table.on('click', '.delete', function (e) {
-            e.preventDefault();
-            var nRow = $(this).parents('tr')[0];
-            nRow.remove();
-        });
+//        table.on('click', '.delete', function (e) {
+//            e.preventDefault();
+//            var nRow = $(this).parents('tr')[0];
+//            nRow.remove();
+//        });
+
+//        table.row.add( [{
+//            "sorted":       "1",
+//            "sort":   "2",
+//            "sku":     "4",
+//            "Product Name": "5",
+//            "Status":     "6",
+//            "Price":       "7",
+//            "Quantity":       "7",
+//            "Remove":       "7"
+//        }] ).draw();
     };
 
     var initCrossSellDisplay = function () {
 
-        var table = $('#crossSellDisplay');
+        //var table = $('#crossSellDisplay');
 
-         table.dataTable({
+
+
+        var dtable = $('#crossSellDisplay').DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
                 url: "/content/product/accessories",
-                type: 'POST'
+                type: 'POST',
+                "data": function (d){
+                    d.related = $('#crossSellForm').serializeArray();
+                }
             },
             "columns": [
-                { "data": "entityID" },
-                { "data": "Sku" },
-                { "data": "title" },
-                { "data": "price" },
-                { "data": "quantity" },
+                {
+                    "class":    "sorted",
+                    "data": null,
+                    "defaultContent":   "",
+                    "visible": false
+                },
+                { "data": "sort", "orderable": false },
+                { "data": "Sku", "orderable": false },
+                { "data": "title", "orderable": false },
+                { "data": "status", "orderable": false  },
+                { "data": "price", "orderable": false },
+                { "data": "quantity", "orderable": false },
                 {
                     "class":    "add",
                     "orderable":    false,
@@ -457,6 +493,9 @@ var TableManaged = function () {
                     "defaultContent":   "<td><a href='javascript:;'>Add</a></td>"
                 }
             ],
+             "order": [
+                 [0, "asc"]
+             ],
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here
@@ -478,15 +517,41 @@ var TableManaged = function () {
                 }
             }});
 
-        table.on('click', '.delete', function (e) {
-            e.preventDefault();
-            var nRow = $(this).parents('tr')[0];
-//            oTable.fnDeleteRow(nRow);
-            nRow.remove();
-        });
+        dtable.on( 'draw', function () {
+            //dtable.row().add( [1,2,3,4,5,6,7,8] );
+        } );
 
-        //var tableWrapper = jQuery('#sample_1_wrapper');
-        //tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+        console.log($('#crossSellForm').serializeArray());
+
+
+
+
+        //console.log(dtable.data());
+
+//        table.on('click', '.delete', function (e) {
+//            e.preventDefault();
+//            var nRow = $(this).parents('tr')[0];
+////            oTable.fnDeleteRow(nRow);
+//            nRow.remove();
+//        });
+
+
+//            var json = table.ajax.json();
+//            console.log( json.data.length +' row(s) were loaded' );
+
+
+        //add([
+        //    "1","2","3","4","5","6","7","8"
+//            "sorted":       "1",
+//            "sort":   "2",
+//            "sku":     "4",
+//            "Product Name": "5",
+//            "Status":     "6",
+//            "Price":       "7",
+//            "Quantity":       "7",
+//            "Remove":       "7"
+        //]);
+
     };
 
 

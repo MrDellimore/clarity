@@ -8,6 +8,7 @@
 
 namespace Content\ContentForm\Entity;
 
+
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 
@@ -169,46 +170,53 @@ class Products {
 
     protected $small_image_label;
 
-    protected $categories = array();
-
     protected $image;
 
     protected $image_label;
 
+    protected $categories = array();
+
     protected $imageGallery = array();
 
+    protected $accessories = array();
+
+    protected $crossSells = array();
+
     /**
-     * @param mixed $headType
+     * @param array $acessories
      */
-    public function setHeadType($headType)
+    public function setAcessories($accessories)
     {
-        $this->headType = $headType;
+        $hydrator = new ClassMethods();
+        foreach ($accessories as  $value) {
+            $this->accessories[] = $hydrator->hydrate($value, new Accessories());
+        }
+
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getHeadType()
+    public function getAccessories()
     {
-        return $this->headType;
+        return $this->accessories;
     }
 
     /**
-     * @param mixed $supportWeightTripod
+     * @param array $aperture
      */
-    public function setSupportWeightTripod($supportWeightTripod)
+    public function setAperture($aperture)
     {
-        $this->supportWeightTripod = $supportWeightTripod;
+        $this->aperture = $aperture;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getSupportWeightTripod()
+    public function getAperture()
     {
-        return $this->supportWeightTripod;
+        return $this->aperture;
     }
-
 
     /**
      * @param mixed $asiaFirstClass
@@ -240,6 +248,38 @@ class Products {
     public function getAsiaPriority()
     {
         return $this->asiaPriority;
+    }
+
+    /**
+     * @param array $brand
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param array $cameraStyle
+     */
+    public function setCameraStyle($cameraStyle)
+    {
+        $this->cameraStyle = $cameraStyle;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCameraStyle()
+    {
+        return $this->cameraStyle;
     }
 
     /**
@@ -275,6 +315,74 @@ class Products {
     }
 
     /**
+     * @param mixed $capacity
+     */
+    public function setCapacity($capacity)
+    {
+        $this->capacity = $capacity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCapacity()
+    {
+        return $this->capacity;
+    }
+
+    /**
+     * @param array $categories
+     */
+    public function setCategories($categories)
+    {
+        $hydrator = new ClassMethods();
+        foreach ($categories as  $value) {
+            $this->categories[] = $hydrator->hydrate($value, new Category());
+        }
+
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param mixed $cineLens
+     */
+    public function setCineLens($cineLens)
+    {
+        $this->cineLens = $cineLens;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCineLens()
+    {
+        return $this->cineLens;
+    }
+
+    /**
+     * @param mixed $color
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
      * @param mixed $condition
      */
     public function setCondition($condition)
@@ -291,6 +399,22 @@ class Products {
     }
 
     /**
+     * @param mixed $contentReviewed
+     */
+    public function setContentReviewed($contentReviewed)
+    {
+        $this->contentReviewed = $contentReviewed;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContentReviewed()
+    {
+        return $this->contentReviewed;
+    }
+
+    /**
      * @param mixed $cost
      */
     public function setCost($cost)
@@ -304,6 +428,25 @@ class Products {
     public function getCost()
     {
         return $this->cost;
+    }
+
+    /**
+     * @param array $crossSells
+     */
+    public function setCrossSells($crossSells)
+    {
+        $hydrator = new ClassMethods();
+        foreach ($crossSells as  $value) {
+            $this->crossSells[] = $hydrator->hydrate($value, new CrossSell());
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getCrossSells()
+    {
+        return $this->crossSells;
     }
 
     /**
@@ -355,6 +498,54 @@ class Products {
     }
 
     /**
+     * @param mixed $flashType
+     */
+    public function setFlashType($flashType)
+    {
+        $this->flashType = $flashType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFlashType()
+    {
+        return $this->flashType;
+    }
+
+    /**
+     * @param mixed $foldedLengthTripod
+     */
+    public function setFoldedLengthTripod($foldedLengthTripod)
+    {
+        $this->foldedLengthTripod = $foldedLengthTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFoldedLengthTripod()
+    {
+        return $this->foldedLengthTripod;
+    }
+
+    /**
+     * @param mixed $headType
+     */
+    public function setHeadType($headType)
+    {
+        $this->headType = $headType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeadType()
+    {
+        return $this->headType;
+    }
+
+    /**
      * @param mixed $id
      */
     public function setId($id)
@@ -368,6 +559,58 @@ class Products {
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param array $imageGallery
+     */
+    public function setImageGallery($imageGallery)
+    {
+        $hydrator = new ClassMethods();
+        foreach ($imageGallery as  $value) {
+            $this->imageGallery[] = $hydrator->hydrate($value, new Images());
+        }
+
+    }
+
+    /**
+     * @return array
+     */
+    public function getImageGallery()
+    {
+        return $this->imageGallery;
+    }
+
+    /**
+     * @param mixed $image_label
+     */
+    public function setImageLabel($image_label)
+    {
+        $this->image_label = $image_label;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageLabel()
+    {
+        return $this->image_label;
     }
 
     /**
@@ -419,6 +662,22 @@ class Products {
     }
 
     /**
+     * @param mixed $legLockTypeTripod
+     */
+    public function setLegLockTypeTripod($legLockTypeTripod)
+    {
+        $this->legLockTypeTripod = $legLockTypeTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLegLockTypeTripod()
+    {
+        return $this->legLockTypeTripod;
+    }
+
+    /**
      * @param mixed $mailInRebate
      */
     public function setMailInRebate($mailInRebate)
@@ -451,7 +710,7 @@ class Products {
     }
 
     /**
-     * @param mixed $manufacturer
+     * @param array $manufacturer
      */
     public function setManufacturer($manufacturer)
     {
@@ -459,7 +718,7 @@ class Products {
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getManufacturer()
     {
@@ -480,6 +739,38 @@ class Products {
     public function getMapDisplay()
     {
         return $this->mapDisplay;
+    }
+
+    /**
+     * @param mixed $materialTripod
+     */
+    public function setMaterialTripod($materialTripod)
+    {
+        $this->materialTripod = $materialTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaterialTripod()
+    {
+        return $this->materialTripod;
+    }
+
+    /**
+     * @param mixed $maxHeightTripod
+     */
+    public function setMaxHeightTripod($maxHeightTripod)
+    {
+        $this->maxHeightTripod = $maxHeightTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaxHeightTripod()
+    {
+        return $this->maxHeightTripod;
     }
 
     /**
@@ -547,6 +838,70 @@ class Products {
     }
 
     /**
+     * @param mixed $network
+     */
+    public function setNetwork($network)
+    {
+        $this->network = $network;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNetwork()
+    {
+        return $this->network;
+    }
+
+    /**
+     * @param mixed $objectiveDiameter
+     */
+    public function setObjectiveDiameter($objectiveDiameter)
+    {
+        $this->objectiveDiameter = $objectiveDiameter;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getObjectiveDiameter()
+    {
+        return $this->objectiveDiameter;
+    }
+
+    /**
+     * @param mixed $opticalDesign
+     */
+    public function setOpticalDesign($opticalDesign)
+    {
+        $this->opticalDesign = $opticalDesign;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOpticalDesign()
+    {
+        return $this->opticalDesign;
+    }
+
+    /**
+     * @param mixed $originalContent
+     */
+    public function setOriginalContent($originalContent)
+    {
+        $this->originalContent = $originalContent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOriginalContent()
+    {
+        return $this->originalContent;
+    }
+
+    /**
      * @param mixed $outsideAsiaFirstClass
      */
     public function setOutsideAsiaFirstClass($outsideAsiaFirstClass)
@@ -579,6 +934,38 @@ class Products {
     }
 
     /**
+     * @param mixed $packs
+     */
+    public function setPacks($packs)
+    {
+        $this->packs = $packs;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPacks()
+    {
+        return $this->packs;
+    }
+
+    /**
+     * @param mixed $power
+     */
+    public function setPower($power)
+    {
+        $this->power = $power;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPower()
+    {
+        return $this->power;
+    }
+
+    /**
      * @param mixed $price
      */
     public function setPrice($price)
@@ -592,6 +979,38 @@ class Products {
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * @param array $primeFocalLength
+     */
+    public function setPrimeFocalLength($primeFocalLength)
+    {
+        $this->primeFocalLength = $primeFocalLength;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPrimeFocalLength()
+    {
+        return $this->primeFocalLength;
+    }
+
+    /**
+     * @param mixed $prismType
+     */
+    public function setPrismType($prismType)
+    {
+        $this->prismType = $prismType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrismType()
+    {
+        return $this->prismType;
     }
 
     /**
@@ -627,6 +1046,38 @@ class Products {
     }
 
     /**
+     * @param mixed $resolution
+     */
+    public function setResolution($resolution)
+    {
+        $this->resolution = $resolution;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResolution()
+    {
+        return $this->resolution;
+    }
+
+    /**
+     * @param mixed $sensorSize
+     */
+    public function setSensorSize($sensorSize)
+    {
+        $this->sensorSize = $sensorSize;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSensorSize()
+    {
+        return $this->sensorSize;
+    }
+
+    /**
      * @param mixed $shortDescription
      */
     public function setShortDescription($shortDescription)
@@ -643,6 +1094,54 @@ class Products {
     }
 
     /**
+     * @param mixed $size
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param mixed $sizeCloths
+     */
+    public function setSizeCloths($sizeCloths)
+    {
+        $this->sizeCloths = $sizeCloths;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSizeCloths()
+    {
+        return $this->sizeCloths;
+    }
+
+    /**
+     * @param mixed $sizeSunglasses
+     */
+    public function setSizeSunglasses($sizeSunglasses)
+    {
+        $this->sizeSunglasses = $sizeSunglasses;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSizeSunglasses()
+    {
+        return $this->sizeSunglasses;
+    }
+
+    /**
      * @param mixed $sku
      */
     public function setSku($sku)
@@ -656,6 +1155,38 @@ class Products {
     public function getSku()
     {
         return $this->sku;
+    }
+
+    /**
+     * @param mixed $small_image
+     */
+    public function setSmallImage($small_image)
+    {
+        $this->small_image = $small_image;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSmallImage()
+    {
+        return $this->small_image;
+    }
+
+    /**
+     * @param mixed $small_image_label
+     */
+    public function setSmallImageLabel($small_image_label)
+    {
+        $this->small_image_label = $small_image_label;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSmallImageLabel()
+    {
+        return $this->small_image_label;
     }
 
     /**
@@ -723,6 +1254,22 @@ class Products {
     }
 
     /**
+     * @param mixed $supportWeightTripod
+     */
+    public function setSupportWeightTripod($supportWeightTripod)
+    {
+        $this->supportWeightTripod = $supportWeightTripod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSupportWeightTripod()
+    {
+        return $this->supportWeightTripod;
+    }
+
+    /**
      * @param mixed $taxClass
      */
     public function setTaxClass($taxClass)
@@ -739,6 +1286,38 @@ class Products {
     }
 
     /**
+     * @param mixed $thumbnail
+     */
+    public function setThumbnail($thumbnail)
+    {
+        $this->thumbnail = $thumbnail;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getThumbnail()
+    {
+        return $this->thumbnail;
+    }
+
+    /**
+     * @param mixed $thumbnail_label
+     */
+    public function setThumbnailLabel($thumbnail_label)
+    {
+        $this->thumbnail_label = $thumbnail_label;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getThumbnailLabel()
+    {
+        return $this->thumbnail_label;
+    }
+
+    /**
      * @param mixed $title
      */
     public function setTitle($title)
@@ -752,6 +1331,22 @@ class Products {
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @param mixed $typeOfBag
+     */
+    public function setTypeOfBag($typeOfBag)
+    {
+        $this->typeOfBag = $typeOfBag;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTypeOfBag()
+    {
+        return $this->typeOfBag;
     }
 
     /**
@@ -835,422 +1430,6 @@ class Products {
     }
 
     /**
-     * @param mixed $visibility
-     */
-    public function setVisibility($visibility)
-    {
-        $this->visibility = $visibility;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getVisibility()
-    {
-        return $this->visibility;
-    }
-
-    /**
-     * @param mixed $weight
-     */
-    public function setWeight($weight)
-    {
-        $this->weight = $weight;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getWeight()
-    {
-        return $this->weight;
-    }
-
-    /**
-     * @param mixed $apertureLens
-     */
-    public function setAperture($aperture)
-    {
-        $this->aperture = $aperture;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAperture()
-    {
-        return $this->aperture;
-    }
-
-    /**
-     * @param mixed $cameraStyle
-     */
-    public function setCameraStyle($cameraStyle)
-    {
-        $this->cameraStyle = $cameraStyle;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCameraStyle()
-    {
-        return $this->cameraStyle;
-    }
-
-    /**
-     * @param mixed $capacity
-     */
-    public function setCapacity($capacity)
-    {
-        $this->capacity = $capacity;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCapacity()
-    {
-        return $this->capacity;
-    }
-
-    /**
-     * @param mixed $cineLens
-     */
-    public function setCineLens($cineLens)
-    {
-        $this->cineLens = $cineLens;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCineLens()
-    {
-        return $this->cineLens;
-    }
-
-    /**
-     * @param mixed $color
-     */
-    public function setColor($color)
-    {
-        $this->color = $color;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getColor()
-    {
-        return $this->color;
-    }
-
-    /**
-     * @param mixed $flashType
-     */
-    public function setFlashType($flashType)
-    {
-        $this->flashType = $flashType;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFlashType()
-    {
-        return $this->flashType;
-    }
-
-    /**
-     * @param mixed $focalLength
-     */
-    public function setPrimeFocalLength($primeFocalLength)
-    {
-        $this->primeFocalLength = $primeFocalLength;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPrimeFocalLength()
-    {
-        return $this->primeFocalLength;
-    }
-
-    /**
-     * @param mixed $focalLength
-     */
-    public function setZoomFocalLength($zoomFocalLength)
-    {
-        $this->zoomFocalLength = $zoomFocalLength;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getZoomFocalLength()
-    {
-        return $this->zoomFocalLength;
-    }
-
-    /**
-     * @param mixed $foldedLengthTripod
-     */
-    public function setFoldedLengthTripod($foldedLengthTripod)
-    {
-        $this->foldedLengthTripod = $foldedLengthTripod;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFoldedLengthTripod()
-    {
-        return $this->foldedLengthTripod;
-    }
-
-    /**
-     * @param mixed $legLockTypeTripod
-     */
-    public function setLegLockTypeTripod($legLockTypeTripod)
-    {
-        $this->legLockTypeTripod = $legLockTypeTripod;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLegLockTypeTripod()
-    {
-        return $this->legLockTypeTripod;
-    }
-
-    /**
-     * @param mixed $materialTripod
-     */
-    public function setMaterialTripod($materialTripod)
-    {
-        $this->materialTripod = $materialTripod;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMaterialTripod()
-    {
-        return $this->materialTripod;
-    }
-
-    /**
-     * @param mixed $maxHeightTripod
-     */
-    public function setMaxHeightTripod($maxHeightTripod)
-    {
-        $this->maxHeightTripod = $maxHeightTripod;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMaxHeightTripod()
-    {
-        return $this->maxHeightTripod;
-    }
-
-    /**
-     * @param mixed $network
-     */
-    public function setNetwork($network)
-    {
-        $this->network = $network;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNetwork()
-    {
-        return $this->network;
-    }
-
-    /**
-     * @param mixed $objectiveDiameter
-     */
-    public function setObjectiveDiameter($objectiveDiameter)
-    {
-        $this->objectiveDiameter = $objectiveDiameter;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getObjectiveDiameter()
-    {
-        return $this->objectiveDiameter;
-    }
-
-    /**
-     * @param mixed $opticalDesign
-     */
-    public function setOpticalDesign($opticalDesign)
-    {
-        $this->opticalDesign = $opticalDesign;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOpticalDesign()
-    {
-        return $this->opticalDesign;
-    }
-
-    /**
-     * @param mixed $packs
-     */
-    public function setPacks($packs)
-    {
-        $this->packs = $packs;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPacks()
-    {
-        return $this->packs;
-    }
-
-    /**
-     * @param mixed $power
-     */
-    public function setPower($power)
-    {
-        $this->power = $power;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPower()
-    {
-        return $this->power;
-    }
-
-    /**
-     * @param mixed $prismType
-     */
-    public function setPrismType($prismType)
-    {
-        $this->prismType = $prismType;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPrismType()
-    {
-        return $this->prismType;
-    }
-
-    /**
-     * @param mixed $resolution
-     */
-    public function setResolution($resolution)
-    {
-        $this->resolution = $resolution;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResolution()
-    {
-        return $this->resolution;
-    }
-
-    /**
-     * @param mixed $sensorSize
-     */
-    public function setSensorSize($sensorSize)
-    {
-        $this->sensorSize = $sensorSize;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSensorSize()
-    {
-        return $this->sensorSize;
-    }
-
-    /**
-     * @param mixed $size
-     */
-    public function setSize($size)
-    {
-        $this->size = $size;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSize()
-    {
-        return $this->size;
-    }
-
-    /**
-     * @param mixed $sizeCloths
-     */
-    public function setSizeCloths($sizeCloths)
-    {
-        $this->sizeCloths = $sizeCloths;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSizeCloths()
-    {
-        return $this->sizeCloths;
-    }
-
-    /**
-     * @param mixed $sizeSunglasses
-     */
-    public function setSizeSunglasses($sizeSunglasses)
-    {
-        $this->sizeSunglasses = $sizeSunglasses;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSizeSunglasses()
-    {
-        return $this->sizeSunglasses;
-    }
-
-    /**
-     * @param mixed $typeOfBag
-     */
-    public function setTypeOfBag($typeOfBag)
-    {
-        $this->typeOfBag = $typeOfBag;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTypeOfBag()
-    {
-        return $this->typeOfBag;
-    }
-
-    /**
      * @param mixed $useBinoculars
      */
     public function setUseBinoculars($useBinoculars)
@@ -1283,67 +1462,19 @@ class Products {
     }
 
     /**
-     * @param mixed $zoomPrime
+     * @param mixed $visibility
      */
-    public function setZoomPrime($zoomPrime)
+    public function setVisibility($visibility)
     {
-        $this->zoomPrime = $zoomPrime;
+        $this->visibility = $visibility;
     }
 
     /**
      * @return mixed
      */
-    public function getZoomPrime()
+    public function getVisibility()
     {
-        return $this->zoomPrime;
-    }
-
-    /**
-     * @param mixed $brand
-     */
-    public function setBrand($brand)
-    {
-        $this->brand = $brand;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBrand()
-    {
-        return $this->brand;
-    }
-
-    /**
-     * @param mixed $contentReviewed
-     */
-    public function setContentReviewed($contentReviewed)
-    {
-        $this->contentReviewed = $contentReviewed;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getContentReviewed()
-    {
-        return $this->contentReviewed;
-    }
-
-    /**
-     * @param mixed $originalContent
-     */
-    public function setOriginalContent($originalContent)
-    {
-        $this->originalContent = $originalContent;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOriginalContent()
-    {
-        return $this->originalContent;
+        return $this->visibility;
     }
 
     /**
@@ -1363,138 +1494,55 @@ class Products {
     }
 
     /**
-     * @param mixed $image
+     * @param mixed $weight
      */
-    public function setImage($image)
+    public function setWeight($weight)
     {
-        $this->image = $image;
+        $this->weight = $weight;
     }
 
     /**
      * @return mixed
      */
-    public function getImage()
+    public function getWeight()
     {
-        return $this->image;
+        return $this->weight;
     }
 
     /**
-     * @param array $imageGallery
+     * @param array $zoomFocalLength
      */
-    public function setImageGallery($imageGallery)
+    public function setZoomFocalLength($zoomFocalLength)
     {
-        $hydrator = new ClassMethods();
-        foreach ($imageGallery as  $value) {
-            $this->imageGallery[] = $hydrator->hydrate($value, new Images());
-        }
+        $this->zoomFocalLength = $zoomFocalLength;
     }
 
     /**
      * @return array
      */
-    public function getImageGallery()
+    public function getZoomFocalLength()
     {
-        return $this->imageGallery;
+        return $this->zoomFocalLength;
     }
 
     /**
-     * @param mixed $image_label
+     * @param mixed $zoomPrime
      */
-    public function setImageLabel($image_label)
+    public function setZoomPrime($zoomPrime)
     {
-        $this->image_label = $image_label;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getImageLabel()
-    {
-        return $this->image_label;
-    }
-
-    /**
-     * @param mixed $small_image
-     */
-    public function setSmallImage($small_image)
-    {
-        $this->small_image = $small_image;
+        $this->zoomPrime = $zoomPrime;
     }
 
     /**
      * @return mixed
      */
-    public function getSmallImage()
+    public function getZoomPrime()
     {
-        return $this->small_image;
+        return $this->zoomPrime;
     }
 
-    /**
-     * @param mixed $small_image_label
-     */
-    public function setSmallImageLabel($small_image_label)
-    {
-        $this->small_image_label = $small_image_label;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getSmallImageLabel()
-    {
-        return $this->small_image_label;
-    }
 
-    /**
-     * @param mixed $thumbnail
-     */
-    public function setThumbnail($thumbnail)
-    {
-        $this->thumbnail = $thumbnail;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getThumbnail()
-    {
-        return $this->thumbnail;
-    }
-
-    /**
-     * @param mixed $thumbnail_label
-     */
-    public function setThumbnailLabel($thumbnail_label)
-    {
-        $this->thumbnail_label = $thumbnail_label;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getThumbnailLabel()
-    {
-        return $this->thumbnail_label;
-    }
-
-    /**
-     * @param array $categories
-     */
-    public function setCategories($categories)
-    {
-        $hydrator = new ClassMethods();
-        foreach ($categories as  $value) {
-          $this->categories[] = $hydrator->hydrate($value, new Category());
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getCategories()
-    {
-        return $this->categories;
-    }
 
 
 } 
