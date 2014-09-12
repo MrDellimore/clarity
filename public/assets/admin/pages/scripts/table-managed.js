@@ -269,8 +269,6 @@ var TableManaged = function () {
 
     };
 
-
-
     var populateSkuHistory = function () {
 
         var table = $('#skuHistoryDisplay').dataTable({
@@ -374,6 +372,55 @@ var TableManaged = function () {
                 //nothing should happen except redraw the table.
                 table.api().draw();
             });
+        });
+    };
+
+    var populateMageHistory = function () {
+        var table = $('#mageHistoryDisplay');
+
+
+        var otable = table.dataTable({
+
+            "processing": true,
+            "serverSide": true,
+
+            ajax: {
+                "url": "/mage-push-history",
+                "type": 'POST'
+//                "data": function (d){
+//                    d.filterDateRange =  $('#filterDateRange').val()
+//                }
+            },
+
+            "columns": [//
+                {
+                    "data": "sku"
+                }, {
+                    "data": 'resource'
+                }, {
+                    "data": "speed"
+                }, {
+                    "data": "fullname"
+                }, {
+                    "data": "datepushed"
+                }
+            ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "lengthMenu": "_MENU_ records",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }
         });
     };
 
@@ -549,6 +596,7 @@ var TableManaged = function () {
             initAcessoryDisplay();
             initCrossSellDisplay();
             populateSkuHistory();
+            populateMageHistory();
             webassignmentTable();
             attributesPopulate();
             optionsPopulate();

@@ -105,7 +105,7 @@ class LoggingTable
      * @return $response array()
      */
 
-    public function lookupLoggingInfo($searchParams = array())
+    public function lookupLoggingInfo($searchParams = array(), $limit)
     {
         $select = $this->sql->select();
         $select->from('logger');
@@ -135,9 +135,10 @@ class LoggingTable
 
         $intTable = new Expression('i.entity_id = logger.entity_id and attribute_id = 102');
         $optionTable = new Expression('o.attribute_id = 102 and o.option_id = i.value');
-
+        $select->join(['u'=>'users'], 'logger.changedby=u.userid',['fname'=>'firstname','lname'=>'lastname']);
         $select->join(array('i' => 'productattribute_int'), $intTable ,array('attributeId' => 'attribute_id','optionID' => 'value'), Select::JOIN_LEFT);
         $select->join(array('o' => 'productattribute_option'), $optionTable ,array('manufacturer'=>'value'), Select::JOIN_LEFT);
+        $select->limit((int)$limit);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -150,23 +151,18 @@ class LoggingTable
 
         $response = array();
 
-        foreach($logs as $key => $value){
-            $user = $logs[$key]['user'];
-
-            $manufacturer = $logs[$key]['manufacturer'];
-
-
-
-            $response[$key]['id'] = $logs[$key]['id'];
-            $response[$key]['sku'] = $logs[$key]['sku'];
-            $response[$key]['entityID'] = $logs[$key]['entityID'];
-            $response[$key]['oldValue'] = $logs[$key]['oldValue'];
-            $response[$key]['newValue'] = $logs[$key]['newValue'];
-            $response[$key]['manufacturer'] = $manufacturer;
-
-
-            $response[$key]['dataChanged'] = $logs[$key]['dataChanged'];
-            $response[$key]['property'] = $logs[$key]['property'];
+        foreach( $logs as $key => $fields ) {
+//            $user = $logs[$key]['user'];
+//            $manufacturer = $response['manufacturer'];
+            $response[$key]['id'] = $fields['id'];
+            $response[$key]['entityID'] = $fields['entityID'];
+            $response[$key]['sku'] = $fields['sku'];
+            $response[$key]['oldValue'] = $fields['oldValue'];
+            $response[$key]['newValue'] = $fields['newValue'];
+            $response[$key]['manufacturer'] = $fields['manufacturer'];//$manufacturer;
+            $response[$key]['user'] = $fields['fname'] . ' ' . $fields['lname'];
+            $response[$key]['dataChanged'] = $fields['dataChanged'];
+            $response[$key]['property'] = $fields['property'];
 
             //Selects from options table;
 //            $selectMan= $this->sql->select();
@@ -189,25 +185,74 @@ class LoggingTable
 //            }
 
             //Selects from users table;
-            $userListings = $this->sql->select();
-            $userListings->from('users');
-            $userListings->columns(array(
-                'firstName' => 'firstname',
-                'lastName' =>   'lastname',
-            ));
-            $userListings->where(array('userid'=>$user));
-            $userStatement = $this->sql->prepareStatementForSqlObject($userListings);
-            $userResult = $userStatement->execute();
+//            $userListings = $this->sql->select();
+//            $userListings->from('users');
+//            $userListings->columns(array(
+//                'firstName' => 'firstname',
+//                'lastName' =>   'lastname',
+//            ));
+//            $userListings->where(array('userid'=>$user));
+//            $userStatement = $this->sql->prepareStatementForSqlObject($userListings);
+//            $userResult = $userStatement->execute();
+//
+//            $userResultSet = new ResultSet;
+//
+//            if ($userResult instanceof ResultInterface && $userResult->isQueryResult()) {
+//                $userResultSet->initialize($userResult);
+//            }
+//            $users = $userResultSet->toArray();
+//            foreach($users as $index => $person){
+//                $response[$key]['user'] = $users[$index]['firstName'] . ' ' . $users[$index]['lastName'];
+//            }
+        }
+        return $response;
+    }
 
-            $userResultSet = new ResultSet;
+    public function fetchMageLogs($search, $limit)
+    {
+        $select = $this->sql->select();
+        $select->from('mage_logs');
+        $select->columns(array(
+//            'id'  =>  'id',
+            'sku' => 'sku',
+            'resource'   =>  'resource',
+            'speed'  =>  'speed',
+            'pushedby'  =>  'pushedby',
+            'datepushed'   =>  'datepushed',
+        ));
+        if( isset($search['sku']) || isset($search['from']) || isset($search['to']) ) {
+            $filter = new Where();
+            if( isset($search['sku']) ) {
+                $filter->like('sku', $search['sku'] . '%');
+            }
+            if( isset($searchParams['from']) ) {
+                $filter->between('mage_logs.datachanged',$searchParams['from'], $searchParams['to']);
+            }
+            $select->where($filter);
+        }
+        $select->join(['u'=>'users'], 'mage_logs.pushedby=u.userid',['fname'=>'firstname','lname'=>'lastname']);
+        $select->limit((int)$limit);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
 
-            if ($userResult instanceof ResultInterface && $userResult->isQueryResult()) {
-                $userResultSet->initialize($userResult);
-            }
-            $users = $userResultSet->toArray();
-            foreach($users as $index => $person){
-                $response[$key]['user'] = $users[$index]['firstName'] . ' ' . $users[$index]['lastName'];
-            }
+        $resultSet = new ResultSet;
+
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $logs = $resultSet->toArray();
+
+        $response = array();
+
+        foreach($logs as $key => $fields) {
+//            $user = $logs[$key]['user'];
+//            $response[$key]['id'] = $fields['id'];
+            $response[$key]['sku'] = $fields['sku'];
+            $response[$key]['resource'] = $fields['resource'];
+            $response[$key]['speed'] = $fields['speed']. ' seconds';
+            $response[$key]['fullname'] = $fields['fname'] . ' ' . $fields['lname'];
+            $response[$key]['datepushed'] = date('m-j-Y',strtotime($fields['datepushed']));
+
         }
         return $response;
     }

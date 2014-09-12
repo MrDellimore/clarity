@@ -40,7 +40,7 @@ trait Spex {
         } else {
             $select->where($where);
         }
-        $select->quantifier(Select::QUANTIFIER_DISTINCT);
+//        $select->quantifier(Select::QUANTIFIER_DISTINCT);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;

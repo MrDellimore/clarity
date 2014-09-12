@@ -14,6 +14,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 //use Content\ContentForm\Controller\ProductsController;
 use Content\ContentForm\Tables\Spex;
+use Zend\View\Helper\FlashMessenger;
+
 
 class MagentoController  extends AbstractActionController
 {
@@ -27,10 +29,10 @@ class MagentoController  extends AbstractActionController
 
     public function magentoAction()
     {
-        $mtime = microtime();
-        $mtime = explode(" ",$mtime);
-        $mtime = $mtime[1] + $mtime[0];
-        $starttime = $mtime;
+//        $mtime = microtime() ;
+//        $mtime = explode(" ",$mtime);
+//        $mtime = $mtime[1] + $mtime[0];
+//        $starttime = $mtime * 1000;
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
@@ -48,11 +50,13 @@ class MagentoController  extends AbstractActionController
         $session = new Container('dirty_skus');
         $dirtySkus = array();
         $session->dirtyProduct = $this->skuData;
-//        $mtime = microtime();
+//        $mtime = microtime() ;
 //        $mtime = explode(" ",$mtime);
+//        var_dump($mtime);
 //        $mtime = $mtime[1] + $mtime[0];
-//        $finishtime = $mtime;
-//        $totalTime = round(($finishtime-$starttime),4);
+//        $finishtime = $mtime * 1000;
+//        $totalTime = round(($finishtime-$starttime),4). ' ms';
+//        $this->getMagentoTable()->setStopwatch($totalTime);
         return new ViewModel(
             array(
 //                'loadTime'  =>  $totalTime,
@@ -75,33 +79,34 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $session = new Container('dirty_skus');
-        $dirtyData = $session->dirtyProduct;
+        $changedProducts= $session->dirtyProduct;
 
+//        $this->getMagentoTable()->groupProducts($changedProducts);
         /*Fetch categories*/
-        $categories = $this->getMagentoTable()->fetchCategoriesSoap();
+//        $categories = $this->getMagentoTable()->fetchCategoriesSoap();
 
         /*Fetch Related Products*/
-        $linkedProds = $this->getMagentoTable()->fetchLinkedProducts();
+//        $linkedProds = $this->getMagentoTable()->fetchLinkedProducts();
 
         if(!empty($categories)){
-            /*Make api call to delete and update Sku with new category*/
-            $categorySoapResponse = $this->getMagentoTable()->soapCategoriesUpdate($categories);
+            /*Make api call to delete and update Sku with new categories*/
+            $categorySoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapCategoriesUpdate($categories);
         }
 
         if(!empty($linkedProds)){
-            /*Update Mage with up-to-date products*/
-            $linkedSoapResponse = $this->getMagentoTable()->soapLinkedProducts($linkedProds);
+            /*Update Mage with up-to-date linked products*/
+            $linkedSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapLinkedProducts($linkedProds);
         }
 
-        if(!empty($dirtyData)){
+        if(!empty($changedProducts)){
             /*Update Mage with up-to-date products*/
-            $itemSoapResponse = $this->getMagentoTable()->soapUpdateProducts($dirtyData);
+            $itemSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapUpdateProducts($changedProducts);
         }
         if( $categorySoapResponse || $itemSoapResponse || $linkedSoapResponse ){
-
+//echo 'ahah';die();
             foreach( $itemSoapResponse as $key => $soapResponse ) {
                 foreach( $soapResponse as $index => $soapRes ) {
-                    if( preg_match('/Product/', $soapRes)){
+                    if( preg_match('/Product/', $soapRes)) {
                         $resp = $soapResponse;
                     }
 //            SQLSTATE[40001]: Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction
@@ -120,9 +125,11 @@ class MagentoController  extends AbstractActionController
                 (!is_null($categorySoapResponse) &&  $categorySoapResponse === true) ||
                 (!is_null($linkedSoapResponse) &&  $linkedSoapResponse === true)
             ){
-                $updateCategories = $this->getMagentoTable()->updateProductCategoriesToClean($categories);
-                $linkedFields = $this->getMagentoTable()->updateLinkedProductstoClean($linkedProds);
-                $updateFields = $this->getMagentoTable()->updateToClean($dirtyData);
+//                echo 'haha';
+//                die();
+//                $updateCategories = $this->getMagentoTable()->updateProductCategoriesToClean($categories);
+//                $linkedFields = $this->getMagentoTable()->updateLinkedProductstoClean($linkedProds);
+                $updateFields = $this->getMagentoTable()->updateToClean($changedProducts);
                 if( $updateFields || $updateCategories || $linkedFields ){
                     return $this->redirect()->toRoute('apis');
                 }
@@ -143,27 +150,43 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $newProducts = $this->getMagentoTable()->fetchNewItems();
-        if( $newProductResponse = $this->getMagentoTable()->soapAddProducts($newProducts) ){
-            switch((int)$newProductResponse){
-                case 100:
-                    throw new \UnexpectedValueException('Requested Store View not Found');
-                    break;
-                case 102:
-                    throw new \UnexpectedValueException('Invalid data given');
-                    break;
-                case 104:
-                    throw new \UnexpectedValueException('Product Type is not in allowed types');
-                    break;
-                case 105:
-                    throw new \UnexpectedValueException('Product attribute set is not existed');
-                    break;
-                case 106:
-                    throw new \UnexpectedValueException('Product attribute set is not belong catalog product entity type');
-                    break;
-                default:
-                    $this->getMagentoTable()->updateNewItemsToClean($newProducts);
-                    return $this->redirect()->toRoute('apis', array('action'=>'magento'));
-                    break;
+        if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ){
+//            var_dump($newProductResponse);
+//            die();
+            foreach ( $newProductResponse as $key => $response ) {
+                foreach ( $response as $index => $resp ) {
+                    if( !isset($resp['faultCode']) ) {
+                        $this->getMagentoTable()->updateNewItemsToClean($newProducts, $newProductResponse);
+                        return $this->redirect()->toRoute('apis', array('action'=>'magento'));
+                    }
+                    if (isset($resp['faultCode'] ) ) {
+                        switch ( (int)$resp['faultCode'] ) {
+                            case 1:
+                                error_log( $resp['faultMessage'] . ': Sku already exists in Mage Database.' );
+                                break;
+                            case 3:
+                                error_log( $resp['faultMessage'] );
+                                break;
+                            case 100:
+                                error_log( $resp['faultMessage'] );
+                                break;
+                            case 102:
+                                error_log( $resp['faultMessage'] );
+                                break;
+                            case 104:
+                                error_log( $resp['faultMessage'] );
+                                break;
+                            case 105:
+                                error_log( $resp['faultMessage'] );
+                                break;
+                            case 106:
+                                error_log( $resp['faultMessage'] );
+                                break;
+                        }
+                        $this->flashMessenger()->addMessage("An error has occurred please contact IT.");
+                        return $this->redirect()->toRoute('apis', array('action'=>'magento'));
+                    }
+                }
             }
         }
     }
@@ -176,11 +199,11 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $images = $this->getMagentoTable()->fetchImages();
-        if($image = $this->getMagentoTable()->soapMedia($images)) {
+        if($image = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapMedia($images)) {
             foreach($image as $key => $img){
                 foreach($img as $ind => $imgName){
                     if(preg_match('/jpg/',$imgName)){
-                        if($updateRes = $this->getMagentoTable()->updateImagesToClean()){
+                        if($updateRes = $this->getMagentoTable()->updateImagesToClean($images)){
                             return $this->redirect()->toRoute('apis',['action'=>'magento']);
                         }
                     }

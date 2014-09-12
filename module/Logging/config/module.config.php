@@ -14,7 +14,17 @@ return array(
                     'route' =>  '/sku-history',
                     'defaults'  =>  array(
                         'controller'    =>  'Logging\Controller\Logging',
-                        'action'    =>  'index',
+                        'action'    =>  'skuLog',
+                    )
+                )
+            ),
+            'mage-soap-logging'   =>  array(
+                'type'  =>  'literal',
+                'options'   =>  array(
+                    'route' =>  '/mage-push-history',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Logging\Controller\Logging',
+                        'action'    =>  'mageSoapLog',
                     )
                 )
             ),

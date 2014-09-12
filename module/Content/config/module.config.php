@@ -223,6 +223,15 @@ return array(
                 'property'  =>  'property',
             ),
         ),
+        'mage_logs'  =>  array(
+            'extra'    =>  array(
+                'sku' => 'sku',
+                'resource'   =>  'resource',
+                'speed'  =>  'speed',
+                'pushedby'  =>  'pushedby',
+                'datepushed'   =>  'datepushed',
+            ),
+        ),
     ),
 
     'view_manager' => array(

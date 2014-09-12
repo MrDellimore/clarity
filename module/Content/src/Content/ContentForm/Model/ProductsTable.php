@@ -818,6 +818,6 @@ class ProductsTable{
         );
 
         $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,
-        $this->getEventManager()->trigger('constructLog', null, array('makeFields'=>$eventWritables));
+        $this->getEventManager()->trigger('construct_sku_log', null, array('makeFields'=>$eventWritables));
     }
 }

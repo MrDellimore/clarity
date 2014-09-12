@@ -31,21 +31,24 @@ class Module
 
     public function onBootstrap(MvcEvent $event)
     {
-
         $eventManager       = $event->getApplication()->getEventManager();
         $sharedEventManager = $eventManager->getSharedManager();
-        $sharedEventManager->attach('*', 'log', function($e){
-            $fields = $this->getConfig()['event_listener_construct']['logger'];
+        $sharedEventManager->attach('*', 'sku_log', function($e) use ($event){
+//            $fields = $this->getConfig()['event_listener_construct']['logger'];
+            $fields = $event->getApplication()->getServiceManager()->get('Config')['event_listener_construct']['logger'];
             $writer = new Db($e->getParam('dbAdapter'), 'logger', $fields);//$e->getParam('fields')
             $logger = new Logger();
             $logger->addWriter($writer);
             $logger->info(null,$e->getParam('extra'));
         },100);
-        $sharedEventManager->attach('*', 'constructLog', function($e){
-            $fields = $this->getConfig()['event_listener_construct']['logger'];
-//            $makeFields = $e->getParam('makeFields');
-            $eventWritables = array('dbAdapter'=>$e->getParam('makeFields')['dbAdapter'], 'fields'=>$fields, 'extra'=>$e->getParam('makeFields')['extra'] );
-            $this->getEventManager()->trigger('log', null, $eventWritables);
+        $sharedEventManager->attach('*', 'construct_sku_log', function($e) use ($event){
+            $fields = $event->getApplication()->getServiceManager()->get('Config')['event_listener_construct']['logger'];
+//            $fields = $this->getConfig()['event_listener_construct']['logger'];
+//                $makeFields = $e->getParam('makeFields');
+                $eventWritables = array('dbAdapter'=>$e->getParam('makeFields')['dbAdapter'], 'fields'=>$fields, 'extra'=>$e->getParam('makeFields')['extra'] );
+                $this->getEventManager()->trigger('sku_log', null, $eventWritables);
+//            }
+
         },100);
     }
 
