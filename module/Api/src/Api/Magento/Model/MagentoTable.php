@@ -101,6 +101,56 @@ class MagentoTable {
         return $resultSet->count();
     }
 
+    public function fetchDirtyProducts()
+    {
+        $select = $this->sql->select();
+        $select->from('product');
+        $select->columns(['id' => 'entity_id', 'sku' => 'productid', 'website' => 'website']);
+//        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+        $select->where(array( 'dataState' => '1'));
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $product = $resultSet->toArray();
+        $soapUpdate = [];
+        $startCount = 0;
+        foreach( $product as $index => $prd){
+            $lookup = $this->productAttributeLookup($this->sql);
+            foreach($lookup as $key => $attributes){
+                $dataType = (string)$attributes['dataType'];
+                $attributeId = (int)$attributes['attId'];
+                $attributeCode = (string)$attributes['attCode'];
+                $productAttributeSelect = $this->sql->select()->from('productattribute_'.$dataType)
+                                                              ->columns([$attributeCode=>'value'])
+                                                              ->where(['attribute_id'=>$attributeId, 'entity_id'=>$prd['id'], 'dataState'=>1]);
+                $prdStatement = $this->sql->prepareStatementForSqlObject($productAttributeSelect);
+                $prdResult = $prdStatement->execute();
+
+                $attSet = new ResultSet;
+                if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                    $attSet->initialize($prdResult);
+                }
+                $productAttributeResults = $attSet->toArray();
+                foreach( $productAttributeResults as $ind => $value ){
+//                var_dump($productAttributeResults);
+                    $soapUpdate[$startCount]['website'] = [$prd['website']];
+                    $soapUpdate[$startCount]['id'] = $prd['id'];
+                    $soapUpdate[$startCount]['sku'] = $prd['sku'];
+
+                    $soapUpdate[$startCount][$attributeCode] =$value[$attributeCode];
+    //                $soapUpdate[$startCount][$attributeCode] = isset($productAttributeResults[$key][$attributeCode]) ? $productAttributeResults[$key][$attributeCode] : '';
+                }
+            }
+            $startCount++;
+        }
+        return $soapUpdate;
+    }
+
     public function fetchChangedProducts()
     {
         $select = $this->sql->select();
@@ -338,12 +388,16 @@ class MagentoTable {
         //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
         $soapBundle = $optionValues = [];
         $select = $this->sql->select()->from('product')->columns([
-            'entityId'  =>  'entity_id',
-            'sku'   =>  'productid',
-            'productType'  =>  'product_type',
-            'website'   =>  'website',
+            'entityId'      =>  'entity_id',
+            'sku'           =>  'productid',
+            'productType'   =>  'product_type',
+            'website'       =>  'website',
             'dateCreated'   =>  'creationdate',
-        ])->where(array('product.dataState'=>2))->quantifier(Select::QUANTIFIER_DISTINCT);
+        ])->where(array('product.dataState'=>0))->quantifier(Select::QUANTIFIER_DISTINCT);
+//        $filter = new Where;
+//        $filter->in('product.dataState',array(0,2));
+//        $select->where($filter);
+
         $statusIntJoin = new Expression('i.entity_id = product.entity_id and i.attribute_id = 273');
         $select->join(['i'=>'productattribute_int'],$statusIntJoin ,['status'=>'value'] ,Select::JOIN_LEFT);
 //        $statusOptionJoin = new Expression('o.attribute_id = i.attribute_id and o.value = i.option');
@@ -355,20 +409,31 @@ class MagentoTable {
             $resultSet->initialize($result);
         }
         $products = $resultSet->toArray();
-
+//        $productSku = [
+//            'ATIINSTANTLABK1','ATIP2786IMPOSSIBLEK1','ATIP2785IMPOSSIBLEK2','ATIINSTANTLABK2','ATIP2786IMPOSSIBLEK2','ATIP3107IMPOSSIBLEK1','ATIP2785IMPOSSIBLEK3','ATIINSTANTLABK3','51-0816',
+//            'COMP-6SAFTX4','HS-B250XT','URC-LOG880','3041-EFESTX2','1086-EFESTX2','3245-EFESTX2','3042-EFEST','4066-EFESTX2','3164-EFESTX2','4084-EFESTX2','AEFEIMR18350P10K2','3164-EFEST','3245-EFEST',
+//            '1086-EFEST','3041-EFEST','4066-EFEST','4084-EFEST','3891-EFEST','AEFEIMR18350P10K1','WP812B','KODAAENERG12','TV434','ALEXLSD16GCTBK1','1163-MACK','COMP-4SAFTX2','COMP-4SAFTX4','COMP-4SAFT',
+//            'COMP-4SAFTX5','COMP-4SAFTX10','COMP-4SAFTX25','ASLICBHK1','FILS49','SUR6277','09064','TH800667','AVORD5012K1','AVORVNQ1026K1','AWES2331K1','1365-659','SH0BZ'
+//        ];
+        $productSku = ['COMBOSET-1','COMBOSET-2','AHMVCOMBOSET2K1','AHMVCOMBOSET1K1'];
 //        statically add products skus here if more are requested.
-//        $skuCount = count($productSku);
+        $skuCount = count($productSku);
         $startCount = 0;
-//        for( $i = 0; $i < $skuCount; $i++){
+        for( $i = 0; $i < $skuCount; $i++){
             foreach($products as $index => $value) {
-//                if($productSku[$i] == $value['sku']) {
+                if($productSku[$i] == $value['sku']) {
                     $entityId = $products[$index]['entityId'];
                     $attributes = $this->productAttributeLookup($this->sql);
                     foreach( $attributes as $key => $attribute ) {
                         $tableType = (string)$attribute['dataType'];
                         $attributeId = (int)$attribute['attId'];
                         $attributeCode = $attribute['attCode'];
-                        $selectAtts = $this->sql->select()->from('productattribute_'. $tableType)->columns([$attributeCode=>'value', 'attId'=>'attribute_id'])->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2]);
+                        $selectAtts = $this->sql->select()->from('productattribute_'. $tableType)
+                                                          ->columns([$attributeCode=>'value', 'attId'=>'attribute_id'])
+                                                          ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId , 'dataState'=>0]);
+//                        $filter = new Where;
+//                        $filter->in('productattribute_'.$tableType,array(0.2));
+//                        $select->where($filter);
                         $attStatement = $this->sql->prepareStatementForSqlObject($selectAtts);
                         $attResult = $attStatement->execute();
                         $attSet = new ResultSet;
@@ -388,7 +453,8 @@ class MagentoTable {
                         }
                     }
                     $startCount++;
-//                    starCount was here
+                }
+            }
         }
 //        echo '<pre>';
 //        var_dump($soapBundle);

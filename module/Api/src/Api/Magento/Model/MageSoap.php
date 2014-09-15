@@ -48,7 +48,8 @@ class MageSoap extends AbstractSoap{
     {
         $this->adapter = $adapter;
         $this->sql = new Sql($this->adapter);
-        parent::__construct(SOAP_URL);
+//        parent::__construct(SOAP_URL);
+        parent::__construct(SOAP_URL_STAGE2);
 //        parent::__construct(SOAP_URL_STAGE);
     }
 

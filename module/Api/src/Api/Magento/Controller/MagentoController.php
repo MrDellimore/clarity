@@ -66,8 +66,13 @@ class MagentoController  extends AbstractActionController
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-        $session = new Container('dirty_skus');
-        $changedProducts= $session->dirtyProduct;
+        echo '<pre>';
+        $changedProducts = $this->getMagentoTable()->fetchDirtyProducts();
+        var_dump($changedProducts);
+        die();
+//        $session = new Container('dirty_skus');
+//        $changedProducts= $session->dirtyProduct;
+
 
 //        $this->getMagentoTable()->groupProducts($changedProducts);
         /*Fetch categories*/
@@ -133,6 +138,8 @@ class MagentoController  extends AbstractActionController
     public function soapNewItemsAction()
     {
         $url = $this->url()->fromRoute('api-magento-new-items');
+//        echo '<pre>';
+//        var_dump($url);
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
@@ -152,12 +159,10 @@ class MagentoController  extends AbstractActionController
             if( $response ) {
                 $url .= '?status=true';
                 return $this->redirect()->toRoute('apis');
-//                return $this->redirect()->toRoute('apis',['action'=>'magento','status'=>'success']);
             }
         }
         $url .= '?status=false';
         return $this->redirect()->toRoute('apis');
-//        return $this->redirect()->toRoute('apis',['action'=>'magento','status'=>'success']);
     }
 
     public function soapImagesAction()
