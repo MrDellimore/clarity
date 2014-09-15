@@ -883,6 +883,7 @@ class MagentoTable {
 //                }
 //            }
         }
+//        echo '<pre>';
 //        var_dump($soapBundle);
 //        die();
         return $soapBundle;

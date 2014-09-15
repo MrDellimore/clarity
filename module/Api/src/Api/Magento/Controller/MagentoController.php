@@ -137,12 +137,13 @@ class MagentoController  extends AbstractActionController
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
+        $response = Null;
         $newProducts = $this->getMagentoTable()->fetchNewItems();
         if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
             $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
             foreach( $newProductResponse[0] as $key => $newEntityId ) {
                 if( $newEntityId ) {
-                    $response = $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+//                    $response = $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
                 }
             }
             if( $response ) {
