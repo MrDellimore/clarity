@@ -10,7 +10,8 @@ namespace Api\Magento\Model;
 
 use Zend\Soap\Client;
 
-class AbstractSoap {
+abstract class AbstractSoap
+{
 
     protected $_soapHandle;
 
@@ -34,7 +35,7 @@ class AbstractSoap {
     {
 //        echo '<pre>';
         $a = 0;
-        $batch = $results = $status = [];
+        $batch = $results = $result = $status = [];
         while( $a < count($packet) ){
             $x = 0;
             while($x < 10 && $a < count($packet)) {
@@ -51,21 +52,31 @@ class AbstractSoap {
             }
             sleep(15);
 //            var_dump($batch);
-            $results[] = $this->_soapHandle->call('multiCall',array($this->_session, $batch));
-        }
-//        die();
-//        foreach ( $results as $key => $res ) {
-//            foreach ( $res as $index => $r ) {
-//                if( !isset($r['faultCode']) ) {
-//                    $status[] = $results;
-//                } else {
-//                    $status[] = $r['faultMessage'];
-//                }
+//            try {
+                $results[] = $this->_soapHandle->call('multiCall',array($this->_session, $batch));
+//                echo 'success';
+//            } catch ( SoapFault $e ) {
+//                echo 'failure' . $e->getMessage() . '<br />';
 //            }
-//        }
-//        var_dump($batch);
+        }
+//        var_dump($results);
         $totalTime = $this->stopStopwatch();
-//        $this->insertIntoMageLog($skuCollection ,$resource, $totalTime);
-        return $results;
+        foreach ( $results as $key => $res ) {
+            foreach ( $res as $index => $r ) {
+                if( isset($r['faultCode']) && (int)$r['faultCode'] == 1 ) {
+                    $result[$key][$index] = False;
+                    $this->insertIntoMageLog($skuCollection[$index] ,'Sku already exists', $totalTime, 'Fail');
+                } else if( isset($r['faultCode']) ) {
+                    $result[$key][$index] = False;
+                    $this->insertIntoMageLog($skuCollection[$index] ,$r['faultMessage'], $totalTime, 'Fail');
+                } else {
+                    $result[$key][$index] = $results[$key][$index];
+                    $this->insertIntoMageLog($skuCollection[$index] ,$resource, $totalTime, 'Success');
+                }
+            }
+        }
+//        var_dump($status);
+//        die();
+        return $result;
     }
 } 

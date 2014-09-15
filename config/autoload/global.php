@@ -79,6 +79,7 @@ return array(
                 'speed'  =>  'speed',
                 'pushedby'  =>  'pushedby',
                 'datepushed'   =>  'datepushed',
+                'status'        =>  'status',
             ),
         ),
     ),
@@ -102,6 +103,4 @@ return array(
                 }
         ),
     )
-     
- 
 );

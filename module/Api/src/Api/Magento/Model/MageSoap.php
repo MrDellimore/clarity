@@ -67,8 +67,8 @@ class MageSoap extends AbstractSoap{
 //        var_dump($mtime);
         $mtime = $mtime[1] + $mtime[0];
         $this->_stopTime = $mtime;
-        $this->_totalTime = round(($this->_stopTime-$this->_startTime),4);
-        return date("H:i:s",$this->_totalTime);
+        $this->_totalTime = $this->_stopTime-$this->_startTime;
+        return date("H:i:s", $this->_totalTime);
     }
 
     public function soapUpdateProducts($data)
@@ -281,8 +281,6 @@ class MageSoap extends AbstractSoap{
     public function soapAddProducts($newProds)
     {
         $packet = [];
-//        $soapHandle = new Client(SOAP_URL);
-//        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
         $attributeSet = $this->_getAttributeSet();
 //        $fetchAttributeList = [$session, 'product_attribute_set.list'];
 //        $attributeSets = $soapHandle->call('call', $fetchAttributeList);
@@ -306,51 +304,39 @@ class MageSoap extends AbstractSoap{
 ////        $count = 0;
         $skuCollection = [];
         $attributes = [];
+//        var_dump($newProds);
         foreach($newProds as $index => $fields) {
             $keys = array_keys($newProds[$index]);
             $skuCollection[] = $sku = $newProds[$index]['sku'];
             array_shift($keys);
             array_shift($newProds[$index]);
-            $packetCount = 0;
-            foreach($keys as $ind => $attFields){
-                $attributes[$attFields] = $attFields == 'website' ? [$newProds[$index][$attFields]] : $newProds[$index][$attFields];
+            foreach( $keys as $ind => $attFields ) {
+                $attributes[$attFields] = ($attFields == 'website') ? [$newProds[$index][$attFields]] : $newProds[$index][$attFields];
             }
             $packet[$index] = array('simple', $attributeSet['set_id'], $sku, $attributes );
+            $attributes = [];
         }
+//        echo '<pre>';
 //    var_dump($packet);
-//        die();
          return $this->_soapCall($packet, 'catalog_product.create', $skuCollection);
-//        die();
-//        $a = 0;
-//        $batch = [];
-//        while( $a < count($packet) ){
-//            $x = 0;
-//            while($x < 10 && $a < count($packet)){
-//                $batch[$x] = array('catalog_product.create',$packet[$a]);
-//                $x++;
-//                $a++;
-//            }
-//            sleep(15);
-//                $results[] = $soapHandle->call('multiCall',array($session,$batch));
-//        }
-//        return $results;
     }
 
-    public function insertIntoMageLog($Skus, $resource, $speed)
+    public function insertIntoMageLog($Sku, $resource, $speed, $status)
     {
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-        foreach( $Skus as $sku ){
+//        foreach( $Skus as $sku ){
             $fieldValueMap = array(
-                'sku'   =>  $sku,
+                'sku'   =>  $Sku,
                 'resource'  =>  $resource,
                  'speed'  =>  $speed,
                 'pushedby'   =>   $user,
+                'status'    =>  $status,
             );
             $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,
             $this->getEventManager()->trigger('construct_mage_log', null, array('makeFields'=>$eventWritables));
-        }
+//        }
     }
 
 } 

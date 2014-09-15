@@ -41,7 +41,7 @@ var ManageContent = function () {
                     //console.log(formData[i]);
                     goodData.push(formData[i]);
                 }
-            };
+            }
 
 
             var url = '/content/product/submit';

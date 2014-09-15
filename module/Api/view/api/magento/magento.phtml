@@ -106,9 +106,22 @@
                 </div>
             </div>
         </div>
-
+        <?php
+//            $flash = $this->flashMessenger();
+//            $flash->setMessageOpenFormat('<div%s>
+//                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+//                        &times;
+//                    </button>
+//                    <ul><li class="error_message">')
+//                ->setMessageSeparatorString('')
+//                ->setMessageCloseString('</li></ul></div>');
+//            echo $flash->render('error',   array('alert', 'alert-dismissable', 'alert-danger'));
+//            echo $flash->render('info',    array('alert', 'alert-dismissable', 'alert-info'));
+//            echo $flash->render('default', array('alert', 'alert-dismissable', 'alert-warning', 'alert-warn-message'));
+//            echo $flash->render('success', array('alert', 'alert-dismissable', 'alert-success'));
+        ?>
                 <div class="row magento-updates">
-                    <div class="col-md-4">
+                    <div class="col-md-4 ">
                         <a href="/api-feeds/magento/items" class="btn blue btn-block btn-lg m-icon-big">
                             Push All Items <i class="m-icon-big-swapright m-icon-white"></i>
                         </a>
@@ -118,7 +131,7 @@
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4">
-                        <a href="/api-feeds/magento/images" class="btn blue btn-block btn-lg m-icon-big">
+                        <a href="/api-feeds/magento/images" class="btn green btn-block btn-lg m-icon-big">
                             Push All Images <i class="m-icon-big-swapright m-icon-white"></i>
                         </a>
                     </div>
@@ -128,8 +141,8 @@
                     </div>
                     <div class="col-md-4">
                     </div>
-                    <div class="col-md-4">
-                        <a href="/api-feeds/magento/new-items" class="btn blue btn-block btn-lg m-icon-big">
+                    <div class="col-md-4 ">
+                        <a href="/api-feeds/magento/new-items" class="btn red btn-block btn-lg m-icon-big">
                             Push New Items <i class="m-icon-big-swapright m-icon-white"></i>
                         </a>
                     </div>

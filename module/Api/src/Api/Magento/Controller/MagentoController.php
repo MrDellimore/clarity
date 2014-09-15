@@ -29,20 +29,15 @@ class MagentoController  extends AbstractActionController
 
     public function magentoAction()
     {
-//        $mtime = microtime() ;
-//        $mtime = explode(" ",$mtime);
-//        $mtime = $mtime[1] + $mtime[0];
-//        $starttime = $mtime * 1000;
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $this->skuData = array();
+//        $sku = $this->params()->fromRoute('status');
+//        $this->getRequest('status');
         $this->skuData = $this->getMagentoTable()->fetchChangedProducts();
-//        echo '<pre>';
-//        var_dump($this->skuData);
-//        die();
         $cleanCount = $this->getMagentoTable()->fetchCleanCount();
         $newCount = $this->getMagentoTable()->fetchNewCount();
         $images = $this->getMagentoTable()->fetchImageCount();
@@ -50,13 +45,6 @@ class MagentoController  extends AbstractActionController
         $session = new Container('dirty_skus');
         $dirtySkus = array();
         $session->dirtyProduct = $this->skuData;
-//        $mtime = microtime() ;
-//        $mtime = explode(" ",$mtime);
-//        var_dump($mtime);
-//        $mtime = $mtime[1] + $mtime[0];
-//        $finishtime = $mtime * 1000;
-//        $totalTime = round(($finishtime-$starttime),4). ' ms';
-//        $this->getMagentoTable()->setStopwatch($totalTime);
         return new ViewModel(
             array(
 //                'loadTime'  =>  $totalTime,
@@ -150,49 +138,24 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $newProducts = $this->getMagentoTable()->fetchNewItems();
-        if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ){
-//            var_dump($newProductResponse);
-//            die();
-            foreach ( $newProductResponse as $key => $response ) {
-                foreach ( $response as $index => $resp ) {
-                    if( !isset($resp['faultCode']) ) {
-                        $this->getMagentoTable()->updateNewItemsToClean($newProducts, $newProductResponse);
-                        return $this->redirect()->toRoute('apis', array('action'=>'magento'));
-                    }
-                    if (isset($resp['faultCode'] ) ) {
-                        switch ( (int)$resp['faultCode'] ) {
-                            case 1:
-                                error_log( $resp['faultMessage'] . ': Sku already exists in Mage Database.' );
-                                break;
-                            case 3:
-                                error_log( $resp['faultMessage'] );
-                                break;
-                            case 100:
-                                error_log( $resp['faultMessage'] );
-                                break;
-                            case 102:
-                                error_log( $resp['faultMessage'] );
-                                break;
-                            case 104:
-                                error_log( $resp['faultMessage'] );
-                                break;
-                            case 105:
-                                error_log( $resp['faultMessage'] );
-                                break;
-                            case 106:
-                                error_log( $resp['faultMessage'] );
-                                break;
-                        }
-                        $this->flashMessenger()->addMessage("An error has occurred please contact IT.");
-                        return $this->redirect()->toRoute('apis', array('action'=>'magento'));
-                    }
+        if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
+            $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
+            foreach( $newProductResponse[0] as $key => $newEntityId ) {
+                if( $newEntityId ) {
+                    $response = $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
                 }
             }
+            if( $response ) {
+                return $this->redirect()->toRoute('apis');
+//                return $this->redirect()->toRoute('apis',['action'=>'magento','status'=>'success']);
+            }
         }
+        return $this->redirect()->toRoute('apis');
+//        return $this->redirect()->toRoute('apis',['action'=>'magento','status'=>'success']);
     }
 
     public function soapImagesAction()
-    {
+    {//echo '<pre>';
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){

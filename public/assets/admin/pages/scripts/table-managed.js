@@ -403,6 +403,8 @@ var TableManaged = function () {
                     "data": "fullname"
                 }, {
                     "data": "datepushed"
+                }, {
+                    "data": "status"
                 }
             ],
             "lengthMenu": [

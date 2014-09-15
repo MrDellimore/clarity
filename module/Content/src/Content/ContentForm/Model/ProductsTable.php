@@ -80,10 +80,6 @@ class ProductsTable{
         $newAttibute = $this->fetchAttribute($entityid,'int','273','Status');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
-        //Fetch Visibility
-        $newAttibute = $this->fetchAttribute($entityid,'int','526','Visibility');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
-
         //Fetch Condition
         $newAttibute = $this->fetchAttribute($entityid,'int','1655','Condition');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
@@ -229,6 +225,11 @@ class ProductsTable{
         $newOption = $this->fetchOption(current($newAttibute),'272','color');
         $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
 
+        //Fetch Visibility Option
+        $newAttibute = $this->fetchAttribute($entityid,'int','526','Visibility');
+        $newOption = $this->fetchOption(current($newAttibute),'526','Visibility');
+        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
+
 
         return $result;
     }
@@ -253,11 +254,6 @@ class ProductsTable{
 
         //check if array passed or value given
         if(!(is_array($result)) || current($result)[$property] == ''){
-            //set default type for options
-            if($tableType =="int"){
-                $result = array($property => 0);
-            }
-            else
             $result = array($property => null);
         }
         else{
@@ -562,12 +558,15 @@ class ProductsTable{
         }
 
         //update visibility
-        if(!(is_null($form->getVisibility()))) {
-            $property = 'visibility';
-            $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getVisibility(), $oldData->getVisibility(),/*$oldData->getManufacturer(),*/ $property);//,'526','int');
-            $updateditems .= 'Visibility<br>';
-        }
+        /*
+         * todo needs to be handled like an option.
+         */
+//        if(!(is_null($form->getVisibility()))) {
+//            $property = 'visibility';
+//            $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
+//            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getVisibility(), $oldData->getVisibility(),/*$oldData->getManufacturer(),*/ $property);//,'526','int');
+//            $updateditems .= 'Visibility<br>';
+//        }
 
         //update stock status
         if(!(is_null($form->getStockStatus()))) {
@@ -616,12 +615,12 @@ class ProductsTable{
             $updateditems .= 'Content Reviewed<br>';
         }
 
-        //update Short Description
+//update Short Description
         if(!(is_null($form->getShortDescription()))) {
             $property = 'short description';
             $this->updateAttribute($form->getId(),$form->getShortDescription(),'506','text');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getShortDescription(), $oldData->getShortDescription(), /*$oldData->getManufacturer(),*/ $property);//,'506','text');
-            $updateditems .= 'Visibility<br>';
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getShortDescription(), $oldData->getShortDescription(), $property);
+            $updateditems .= 'Short Description<br>';
         }
 //update Zoom Focal Length
         if(array_key_exists('option', $form->getZoomFocalLength())) {
@@ -677,7 +676,8 @@ class ProductsTable{
      */
     public function newHandle(Form $form,Form $oldData){
 
-        $inserteditems='';
+        $inserteditems= '';
+        $startMessage = 'The following fields have been inserted :<br>';
 
 //Zoom Focal Length
         if(array_key_exists('option', $form->getZoomFocalLength())) {
@@ -727,6 +727,10 @@ class ProductsTable{
                 $result=$categoryHandler->addCategory($value,$form->getId());
                 $inserteditems .= $result;
             }
+        }
+
+        if($inserteditems != ''){
+            $inserteditems = $startMessage.$inserteditems;
         }
 
 

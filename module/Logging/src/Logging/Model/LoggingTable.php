@@ -219,6 +219,7 @@ class LoggingTable
             'speed'  =>  'speed',
             'pushedby'  =>  'pushedby',
             'datepushed'   =>  'datepushed',
+            'status'    =>  'status',
         ));
         if( isset($search['sku']) || isset($search['from']) || isset($search['to']) ) {
             $filter = new Where();
@@ -249,9 +250,10 @@ class LoggingTable
 //            $response[$key]['id'] = $fields['id'];
             $response[$key]['sku'] = $fields['sku'];
             $response[$key]['resource'] = $fields['resource'];
-            $response[$key]['speed'] = $fields['speed']. ' seconds';
+            $response[$key]['speed'] = $fields['speed']. ' secs';
             $response[$key]['fullname'] = $fields['fname'] . ' ' . $fields['lname'];
             $response[$key]['datepushed'] = date('m-j-Y',strtotime($fields['datepushed']));
+            $response[$key]['status'] = $fields['status'];
 
         }
         return $response;
