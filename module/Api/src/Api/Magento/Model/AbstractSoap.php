@@ -33,7 +33,6 @@ abstract class AbstractSoap
 
     protected function _soapCall($packet, $resource, $skuCollection)
     {
-//        echo '<pre>';
         $a = 0;
         $batch = $results = $result = $status = [];
         while( $a < count($packet) ){
@@ -51,15 +50,8 @@ abstract class AbstractSoap
                 $a++;
             }
             sleep(15);
-//            var_dump($batch);
-//            try {
                 $results[] = $this->_soapHandle->call('multiCall',array($this->_session, $batch));
-//                echo 'success';
-//            } catch ( SoapFault $e ) {
-//                echo 'failure' . $e->getMessage() . '<br />';
-//            }
         }
-//        var_dump($results);
         $totalTime = $this->stopStopwatch();
         foreach ( $results as $key => $res ) {
             foreach ( $res as $index => $r ) {

@@ -132,31 +132,36 @@ class MagentoController  extends AbstractActionController
 
     public function soapNewItemsAction()
     {
+        $url = $this->url()->fromRoute('api-magento-new-items');
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $response = Null;
+//        echo '<pre>';
         $newProducts = $this->getMagentoTable()->fetchNewItems();
         if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
             $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
             foreach( $newProductResponse[0] as $key => $newEntityId ) {
                 if( $newEntityId ) {
-//                    $response = $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                    $response = $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
                 }
             }
+//            die();
             if( $response ) {
+                $url .= '?status=true';
                 return $this->redirect()->toRoute('apis');
 //                return $this->redirect()->toRoute('apis',['action'=>'magento','status'=>'success']);
             }
         }
+        $url .= '?status=false';
         return $this->redirect()->toRoute('apis');
 //        return $this->redirect()->toRoute('apis',['action'=>'magento','status'=>'success']);
     }
 
     public function soapImagesAction()
-    {//echo '<pre>';
+    {
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){

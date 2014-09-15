@@ -67,18 +67,14 @@ class MageSoap extends AbstractSoap{
 //        var_dump($mtime);
         $mtime = $mtime[1] + $mtime[0];
         $this->_stopTime = $mtime;
-        $this->_totalTime = $this->_stopTime-$this->_startTime;
+        $this->_totalTime = (int)$this->_stopTime-(int)$this->_startTime;
         return date("H:i:s", $this->_totalTime);
     }
 
     public function soapUpdateProducts($data)
     {
-//        $soapHandle = new Client(SOAP_URL);
-//        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
-//        $i = 0;
         $this->startStopwatch();
         $packet = [];
-//        $results = [];
         $skuCollection = [];
         foreach($data as $key => $value){
             if( isset($value['id']) ) {
@@ -91,38 +87,17 @@ class MageSoap extends AbstractSoap{
                     $resultSet->initialize($result);
                 }
                 //TODO have to implement a count feature for this.
-//        $resultSet->count()
                 $skuCollection[$key] = $resultSet->toArray()[0]['sku'];
                 array_shift($value);
                 $updatedValue = current($value);
-//                    $this->productAttribute();
-//                    $attributeCode = lcfirst(current(array_keys($value)));
                 $attributeCode =  current(array_keys($value));
                 $attributeCode = $attributeCode == 'title' ? 'name' : $attributeCode;
                 $attributeCode = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeCode  ));
-                //$updatedKey = $this->lookupAttribute(lcfirst(current(array_keys($value))));
-//                    echo $updatedKey . ' ' ;
                 $packet[$key] = array('entity_id' => $entityID, array($attributeCode => $updatedValue));
-//                $i++;
             }
         }
 
-//        $this->insertIntoMageLog($skuCollection ,'catalog_product.update');
         return $this->soapCall($packet, 'catalog_product.update', $skuCollection);
-//        $a = 0;
-//        $batch = [];
-//        while( $a < count($packet) ){
-//            $x = 0;
-//            while($x < 10 && $a < count($packet)){
-//                $batch[$x] = array('catalog_product.update', $packet[$a]);
-//                $x++;
-//                $a++;
-//            }
-//            sleep(15);
-//            $results[] = $soapHandle->call('multiCall',array($session, $batch));
-//            $this->insertIntoMageLog($skuCollection ,'catalog_product.update');
-//        }
-//        return $results;
     }
 
     public function soapLinkedProducts($linkedProds)
