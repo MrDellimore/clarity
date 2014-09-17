@@ -183,9 +183,9 @@ class Products {
     protected $crossSells = array();
 
     /**
-     * @param array $acessories
+     * @param array $accessories
      */
-    public function setAcessories($accessories)
+    public function setAccessories($accessories)
     {
         $hydrator = new ClassMethods();
         foreach ($accessories as  $value) {

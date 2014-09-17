@@ -378,46 +378,31 @@ var TableManaged = function () {
     };
 
     var initAcessoryDisplay = function () {
-
-        var table = $('#acessoriesDisplay');
-
-
-
-        table.dataTable({
-
+        var dtable = $('#accessoriesDisplay').DataTable({
             "processing": true,
             "serverSide": true,
-
             "ajax": {
                 url: "/content/product/accessories",
-                type: 'POST'
+                type: 'POST',
+                "data": function (d){
+                    d.related = $("#accessoriesForm input[name*='linkedSku]']").serializeArray();
+                    d.position = $("#accessoriesForm input[name*='position]']").serializeArray();
+                }
             },
             "columns": [
-                {
-                    "class":    "sort",
-                    "data": null,
-                    "defaultContent":   "",
-                    "visible": false
-                },
-
-                { "data": "sort" },
+                { "data": "sort", "orderable": false },
                 { "data": "Sku", "orderable": false },
-                { "data": "title", "orderable": false  },
+                { "data": "title", "orderable": false },
                 { "data": "status", "orderable": false  },
-                { "data": "price", "orderable": false  },
-                { "data": "quantity", "orderable": false  },
-                {
-                    "class":    "add",
-                    "orderable":    false,
-                    "data": null,
-                    "defaultContent":   "<td><a href='javascript:;'>Add</a></td>"
-                }
-            ],
+                { "data": "price", "orderable": false },
+                { "data": "quantity", "orderable": false },
+                { "data": "edit", "orderable": false }
 
+
+            ],
             "order": [
                 [0, "asc"]
             ],
-
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here
@@ -426,9 +411,9 @@ var TableManaged = function () {
             "pageLength": 10,
             "pagingType": "bootstrap_full_number",
             "language": {
-                "lengthMenu": "_MENU_ records",
                 "emptyTable":     "No data available in table",
                 "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "lengthMenu": "_MENU_ records",
                 "zeroRecords":    "No matching records found",
                 "processing":     "Processing...",
                 "paginate": {
@@ -439,22 +424,97 @@ var TableManaged = function () {
                 }
             }});
 
-//        table.on('click', '.delete', function (e) {
-//            e.preventDefault();
-//            var nRow = $(this).parents('tr')[0];
-//            nRow.remove();
-//        });
+        //add acessories
+        $('#accessoriesDisplay tbody').on('click', '#addCross', function(){
+            var entityid = $("#generalForm input[name*='oldData[id]']").val();
+            var linkedsku = $(this).closest('tr').find('td').eq(1).find('h6').text();
+            var id = Math.floor((Math.random() * 1000000000) + 1000000);
+            var formsize = $("#accessoriesForm input[name*='linkedSku]']").serializeArray().length;
+            //grab length of form
 
-//        table.row.add( [{
-//            "sorted":       "1",
-//            "sort":   "2",
-//            "sku":     "4",
-//            "Product Name": "5",
-//            "Status":     "6",
-//            "Price":       "7",
-//            "Quantity":       "7",
-//            "Remove":       "7"
-//        }] ).draw();
+            var newAccessory = '<input type="hidden" name="accessories['+formsize+'][id]" value = "'+id+'">';
+            newAccessory += '<input type="hidden" name="accessories['+formsize+'][entityid]" value = "'+entityid+'">';
+            newAccessory += '<input type="hidden" name="accessories['+formsize+'][linkedSku]" value = "'+linkedsku+'">';
+            newAccessory += '<input type="hidden" name="accessories['+formsize+'][position]" value = "0">';
+
+            $('#accessoriesForm').append(newAccessory);
+            dtable.draw();
+        });
+
+        //remove acessories
+        $('#accessoriesDisplay tbody').on('click', '#removeCross', function(){
+            var linkedForm = $("#accessoriesForm input[name*='[linkedSku]']").serializeArray();
+            var linkedId = $(this).closest('tr').find('td').eq(1).find('h6').text();
+            var form = $("#accessoriesForm").serializeArray();
+
+            //find position to delete
+            var i;
+            for(i=0;i<linkedForm.length;i++){
+                if(linkedForm[i]['value'] == linkedId){
+                    var positionToDelete = "["+i+"]";
+                }
+            }
+
+            //loop though form and remove position
+            var newForm='';
+            for(i=0;i<form.length;i++){
+                //Position to ignore in new form
+                if(form[i]['name'].indexOf(positionToDelete) != '-1'){
+
+                    //deduct from future itirations
+                    //set flag to begin deductions
+                }
+                //else add to form
+                else{
+                    newForm += '<input type="hidden" name="'+form[i]['name']+'" value="'+form[i]['value']+'">'
+                }
+            }
+
+            //replace form
+            $('#accessoriesForm').empty().append(newForm);
+
+            //update form order
+            var x=0;
+            i=0;
+            $('#accessoriesForm *').filter(':input').each(function(){
+                if(x<4){
+                    x++;
+                }
+                else{
+                    x=0;
+                    i++;
+                }
+
+                var tempname = $(this).attr('name');
+                tempname.replace(new RegExp(/[0-9]*/),i);
+                $(this).attr(tempname);
+            });
+
+            dtable.draw();
+
+        });
+
+
+
+
+//Position Changes
+        $('#accessoriesDisplay tbody').on('keyup', '.pos', function(){
+            var linkedSku = $(this).closest('tr').find('td').eq(1).find('h6').text();
+            var formSkus = $("#accessoriesForm input[name*='linkedSku]']").serializeArray();
+            var position = '';
+
+            var i;
+            for(i=0; i<formSkus.length; i++){
+                if(formSkus[i]['value'] == linkedSku){
+                    position = "accessories["+i+"][position]";
+                    $("#accessoriesForm input[name*='"+position+"']").val($(this).val());
+                }
+            }
+            dtable.draw();
+        });
+
+
+
     };
 
     var initCrossSellDisplay = function () {
@@ -470,28 +530,20 @@ var TableManaged = function () {
                 url: "/content/product/accessories",
                 type: 'POST',
                 "data": function (d){
-                    d.related = $('#crossSellForm').serializeArray();
+                    d.related = $("#crossSellForm input[name*='linkedSku]']").serializeArray();
+                    d.position = $("#crossSellForm input[name*='position]']").serializeArray();
                 }
             },
             "columns": [
-                {
-                    "class":    "sorted",
-                    "data": null,
-                    "defaultContent":   "",
-                    "visible": false
-                },
                 { "data": "sort", "orderable": false },
                 { "data": "Sku", "orderable": false },
                 { "data": "title", "orderable": false },
                 { "data": "status", "orderable": false  },
                 { "data": "price", "orderable": false },
                 { "data": "quantity", "orderable": false },
-                {
-                    "class":    "add",
-                    "orderable":    false,
-                    "data": null,
-                    "defaultContent":   "<td><a href='javascript:;'>Add</a></td>"
-                }
+                { "data": "edit", "orderable": false }
+
+
             ],
              "order": [
                  [0, "asc"]
@@ -517,40 +569,106 @@ var TableManaged = function () {
                 }
             }});
 
-        dtable.on( 'draw', function () {
-            //dtable.row().add( [1,2,3,4,5,6,7,8] );
-        } );
+        //add acessories
+        $('#crossSellDisplay tbody').on('click', '#addCross', function(){
+            var entityid = $("#generalForm input[name*='oldData[id]']").val();
+            var linkedsku = $(this).closest('tr').find('td').eq(1).find('h6').text();
+            var id = Math.floor((Math.random() * 1000000000) + 1000000);
+            var formsize = $("#crossSellForm input[name*='linkedSku]']").serializeArray().length;
+            //grab length of form
 
-        console.log($('#crossSellForm').serializeArray());
+            var newAccessory = '<input type="hidden" name="accessories['+formsize+'][id]" value = "'+id+'">';
+            newAccessory += '<input type="hidden" name="accessories['+formsize+'][entityid]" value = "'+entityid+'">';
+            newAccessory += '<input type="hidden" name="accessories['+formsize+'][linkedSku]" value = "'+linkedsku+'">';
+            newAccessory += '<input type="hidden" name="accessories['+formsize+'][position]" value = "0">';
+
+            $('#crossSellForm').append(newAccessory);
+            dtable.draw();
+        });
+
+        //remove acessories
+        $('#crossSellDisplay tbody').on('click', '#removeCross', function(){
+            var linkedForm = $("#crossSellForm input[name*='[linkedSku]']").serializeArray();
+            var linkedId = $(this).closest('tr').find('td').eq(1).find('h6').text();
+            var form = $("#crossSellForm").serializeArray();
+
+//find position to delete
+            var i;
+            for(i=0;i<linkedForm.length;i++){
+                if(linkedForm[i]['value'] == linkedId){
+                    var positionToDelete = "["+i+"]";
+                }
+            }
+
+//loop though form and remove position
+            var newForm='';
+            for(i=0;i<form.length;i++){
+                //Position to ignore in new form
+                if(form[i]['name'].indexOf(positionToDelete) != '-1'){
+
+                    //deduct from future itirations
+                    //set flag to begin deductions
+                }
+                //else add to form
+                else{
+                    newForm += '<input type="hidden" name="'+form[i]['name']+'" value="'+form[i]['value']+'">'
+                }
+            }
+
+//replace form
+            $('#crossSellForm').empty().append(newForm);
+
+//update form order
+            var x=0;
+            i=0;
+            $('#crossSellForm *').filter(':input').each(function(){
+                if(x<4){
+                    x++;
+                }
+                else{
+                    x=0;
+                    i++;
+                }
+
+                var tempname = $(this).attr('name');
+                tempname.replace(new RegExp(/[0-9]*/),i);
+                $(this).attr(tempname);
+
+                console.log(tempname);
+            });
+
+            dtable.draw();
+
+        });
 
 
 
 
-        //console.log(dtable.data());
+        //Position Changes
+        $('#crossSellDisplay tbody').on('keyup', '.pos', function(){
+            var linkedSku = $(this).closest('tr').find('td').eq(1).find('h6').text();
+            var formSkus = $("#crossSellForm input[name*='linkedSku]']").serializeArray();
+            var position;
+            var i;
 
-//        table.on('click', '.delete', function (e) {
-//            e.preventDefault();
-//            var nRow = $(this).parents('tr')[0];
-////            oTable.fnDeleteRow(nRow);
-//            nRow.remove();
-//        });
+            for(i=0; i<formSkus.length; i++){
+                if(formSkus[i]['value'] == linkedSku){
+                    position = "accessories["+i+"][position]";
+                    $("#crossSellForm input[name*='"+position+"']").val($(this).val());
+                }
+            }
+            dtable.draw();
 
 
-//            var json = table.ajax.json();
-//            console.log( json.data.length +' row(s) were loaded' );
 
 
-        //add([
-        //    "1","2","3","4","5","6","7","8"
-//            "sorted":       "1",
-//            "sort":   "2",
-//            "sku":     "4",
-//            "Product Name": "5",
-//            "Status":     "6",
-//            "Price":       "7",
-//            "Quantity":       "7",
-//            "Remove":       "7"
-        //]);
+                //redraw table to sort based on first column
+                    //or
+                //call ajax again and sort by position values in PHP
+
+        });
+
+
 
     };
 

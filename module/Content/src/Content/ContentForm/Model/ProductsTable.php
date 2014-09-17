@@ -200,9 +200,9 @@ class ProductsTable{
         $categories = $this->fetchCategories($entityid);
         $result['categories'] = $categories;
 
-        //Fetch Acessories
+        //Fetch Accessories
         $accessories = $this->fetchAccessories($entityid);
-        $result['acessories'] = $accessories;
+        $result['accessories'] = $accessories;
 
         //Fetch CrossSells
         $crossSell = $this->fetchCrossSell($entityid);
@@ -477,12 +477,11 @@ class ProductsTable{
         return $resultSet->toArray();
     }
 
-    public function lookupAccessories($searchValue, $limit)
-    {
+    public function lookupAccessories($searchValue, $limit,$searchTerm,$setSkus){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from('product');
-        $select->columns(array('sort'=>'entity_id','Sku' => 'productid'));
+        $select->columns(array('entityid'=>'entity_id','Sku' => 'productid'));
         $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
         $priceJoin = new Expression('p.entity_id = product.entity_id and p.attribute_id = 99');
         $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
@@ -497,7 +496,14 @@ class ProductsTable{
         $select->join(array('s' => 'productattribute_int'), $statusJoin ,array('status' => 'value'));
 
         $where = new Where();
-        $where->like('product.productid',$searchValue.'%');
+        if($searchTerm == 'id'){
+            $searchTerm = 'product.entity_id';
+        }
+        else
+            $searchTerm = 'product.productid';
+
+        $where->like($searchTerm,$searchValue.'%');
+        $where->in('product.productid', $setSkus);
         $select->where($where);
         $select->limit($limit);
 

@@ -122,84 +122,48 @@ class AjaxLoaderController extends AbstractActionController
             $draw = $loadAccessories['draw'];
             $sku = $loadAccessories['search']['value'];
             $limit = $loadAccessories['length'];
+            $setAccessories = $loadAccessories['related'];
+            $positions = $loadAccessories['position'];
+            $firstElements = array();
 
-            /*
-            $setAcessories = $loadAccessories['related'];
-
-            foreach($setAcessories as $value){
-                $setAccessories[] = $form->setAccessories($sku, (int)$limit);
-            }
-
-*/
-
-            /* setAccessories =
-             * array(8) {
-             *
-  [0]=>
-  array(2) {
-    ["name"]=>
-    string(17) "acessories[0][id]"
-    ["value"]=>
-    string(5) "27220"
-  }
-  [1]=>
-  array(2) {
-    ["name"]=>
-    string(23) "acessories[0][entityid]"
-    ["value"]=>
-    string(3) "182"
-  }
-  [2]=>
-  array(2) {
-    ["name"]=>
-    string(24) "acessories[0][linkedSku]"
-    ["value"]=>
-    string(5) "18737"
-  }
-  [3]=>
-  array(2) {
-    ["name"]=>
-    string(23) "acessories[0][position]"
-    ["value"]=>
-    string(1) "0"
-  }
-  [4]=>
-  array(2) {
-    ["name"]=>
-    string(17) "acessories[1][id]"
-    ["value"]=>
-    string(5) "27219"
-  }
-  [5]=>
-  array(2) {
-    ["name"]=>
-    string(23) "acessories[1][entityid]"
-    ["value"]=>
-    string(3) "182"
-  }
-  [6]=>
-  array(2) {
-    ["name"]=>
-    string(24) "acessories[1][linkedSku]"
-    ["value"]=>
-    string(5) "15320"
-  }
-  [7]=>
-  array(2) {
-    ["name"]=>
-    string(23) "acessories[1][position]"
-    ["value"]=>
-    string(1) "0"
-  }
-}
-             */
-
-
+//Search Results
             if($limit == '-1'){
                 $limit = 100;
             }
-            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
+            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit,'sku');
+            //todo add to query where sku not in (array of linked skus)
             $loadedAccessories = $this->updateaccessories($loadedAccessories);
+
+            if(isset($setAccessories)){
+            //Items set already
+                foreach($setAccessories as $key => $value){
+                    $element = $form->lookupAccessories($value['value'],1,'id');
+                    $element[0]['sort'] = $positions[$key]['value'];
+                    array_push($firstElements,$element);
+                }
+                //sort firstelements
+                $sort=array();
+                foreach($firstElements as $value){
+                    $sort[$value[0]['entityid']] = $value[0]['sort'];
+                }
+                arsort($sort);
+                $sorted=array();
+                foreach($sort as $key=>$value){
+                    foreach($firstElements as $value2){
+                        if($key == $value2[0]['entityid']){
+                            array_push($sorted,current($value2));
+                        }
+                    }
+                }
+                $sorted = $this->updateSetaccessories($sorted);
+
+
+                //prepend Array
+                foreach($sorted as $value){
+                    array_unshift($loadedAccessories,$value);
+                }
+            }
+
             $result = json_encode(
                 array(
                     'draw'  =>  (int)$draw,
@@ -217,7 +181,20 @@ class AjaxLoaderController extends AbstractActionController
 
     public function updateaccessories(Array $r){
         foreach($r as $key => $value){
+            $r[$key]['Sku'] = $r[$key]['Sku']."<br /><h6>".$r[$key]['entityid']."</h6>";
             $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
+            $r[$key]['sort'] = '<input type="text" name="sort" size="1" disabled>';
+            $r[$key]['edit'] = "<a href='javascript:;' id=\"addCross\">Add</a>";
+        }
+        return $r;
+    }
+
+    public function updateSetaccessories(Array $r){
+        foreach($r as $key => $value){
+            $r[$key]['Sku'] = $r[$key]['Sku']."<br /><h6>".$r[$key]['entityid']."</h6>";
+            $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
+            $r[$key]['sort'] = '<input class="pos" type="text" size="1" value="'.$r[$key]['sort'].'">';
+            $r[$key]['edit'] = "<a href='javascript:;'  id=\"removeCross\">Delete</a>";
         }
         return $r;
     }

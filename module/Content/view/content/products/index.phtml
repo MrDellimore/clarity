@@ -630,32 +630,34 @@
                             <div class="table-toolbar">
                                 <div class="btn-group">
                                     <a class="btn green" data-toggle="modal" href="#acessoryModal">
-                                        Add Acessory <i class="fa fa-plus"></i></a>
+                                        Add Accessory <i class="fa fa-plus"></i></a>
                                 </div>
                              </div>
-                            <form id="acessoriesForm">
+                            <form id="accessoriesForm">
                                 <?php
                                 $i=0;
                                 foreach($this->data->getAccessories() as $value){
-                                    echo '<input type="hidden" name="acessories['.$i.'][id]" value = "'.$value->getId().'">';
-                                    echo '<input type="hidden" name="acessories['.$i.'][entityid]" value = "'.$value->getEntityid().'">';
-                                    echo '<input type="hidden" name="acessories['.$i.'][linkedSku]" value = "'.$value->getLinkedSku().'">';
-                                    echo '<input type="hidden" name="acessories['.$i.'][position]" value = "'.$value->getPosition().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][id]" value = "'.$value->getId().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][entityid]" value = "'.$value->getEntityid().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][linkedSku]" value = "'.$value->getLinkedSku().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][position]" value = "'.$value->getPosition().'">';
                                     $i++;
                                 }
                                 ?>
 
                             </form>
-                            <table class="table table-striped table-bordered table-hover" id="acessoriesDisplay">
+                            <table class="table table-striped table-bordered table-hover" id="accessoriesDisplay">
                                 <thead>
-                                <tr><th style="display: none;">sortHidden</th>
+                                <tr>
                                     <th>Sort</th>
                                     <th>Sku</th>
                                     <th>Product Name</th>
                                     <th>Status</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
-                                    <th>Remove</th>
+                                    <th style="display: none;">linkedentityid</th> <!-- to pass to JS for click handles -->
+                                    <th>Edit</th>
+                                </tr>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -720,10 +722,10 @@
                                 <?php
                                 $i=0;
                                 foreach($this->data->getCrossSells() as $value){
-                                    echo '<input type="hidden" name="acessories['.$i.'][id]" value = "'.$value->getId().'">';
-                                    echo '<input type="hidden" name="acessories['.$i.'][entityid]" value = "'.$value->getEntityid().'">';
-                                    echo '<input type="hidden" name="acessories['.$i.'][linkedSku]" value = "'.$value->getLinkedSku().'">';
-                                    echo '<input type="hidden" name="acessories['.$i.'][position]" value = "'.$value->getPosition().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][id]" value = "'.$value->getId().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][entityid]" value = "'.$value->getEntityid().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][linkedSku]" value = "'.$value->getLinkedSku().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][position]" value = "'.$value->getPosition().'">';
                                     $i++;
                                 }
                                 ?>
@@ -732,14 +734,14 @@
                             <table class="table table-striped table-bordered table-hover" id="crossSellDisplay">
                                 <thead>
                                 <tr>
-                                    <th style="display: none;">sortHidden</th>
                                     <th>Sort</th>
                                     <th>Sku</th>
                                     <th>Product Name</th>
                                     <th>Status</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
-                                    <th>Remove</th>
+                                    <th style="display: none;">linkedentityid</th> <!-- to pass to JS for click handles -->
+                                    <th>Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
