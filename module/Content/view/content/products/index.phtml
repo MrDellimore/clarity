@@ -52,7 +52,7 @@
     </li>
     <li>
         <a href="#tab_acessories" data-toggle="tab">
-            Acessories </a>
+            Accessories </a>
     </li>
     <li>
         <a href="#tab_images" data-toggle="tab">
@@ -61,7 +61,7 @@
     </li>
     <li class="active">
         <a href="#tab_categories" data-toggle="tab">
-            Catagories
+            Categories
         </a>
     </li>
 </ul>
@@ -630,28 +630,38 @@
                             <div class="table-toolbar">
                                 <div class="btn-group">
                                     <a class="btn green" data-toggle="modal" href="#acessoryModal">
-                                        Add Acessory <i class="fa fa-plus"></i></a>
+                                        Add Accessory <i class="fa fa-plus"></i></a>
                                 </div>
                              </div>
-                            <table class="table table-striped table-bordered table-hover" id="acessoriesDisplay">
+                            <form id="accessoriesForm">
+                                <?php
+                                $i=0;
+                                foreach($this->data->getAccessories() as $value){
+                                    echo '<input type="hidden" name="accessories['.$i.'][id]" value = "'.$value->getId().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][entityid]" value = "'.$value->getEntityid().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][linkedSku]" value = "'.$value->getLinkedSku().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][position]" value = "'.$value->getPosition().'">';
+                                    $i++;
+                                }
+                                ?>
+
+                            </form>
+                            <table class="table table-striped table-bordered table-hover" id="accessoriesDisplay">
                                 <thead>
-                                <tr><th>id</th>
+                                <tr>
+                                    <th>Sort</th>
                                     <th>Sku</th>
                                     <th>Product Name</th>
+                                    <th>Status</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
-                                    <th>Remove</th>
+                                    <th style="display: none;">linkedentityid</th> <!-- to pass to JS for click handles -->
+                                    <th>Edit</th>
+                                </tr>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr class="accessory-data">
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td><a class="delete" href="javascript:;">Delete</a></td>-->
                                 </tr>
                                 </tbody>
                             </table>
@@ -708,25 +718,35 @@
                                         Add Cross Sell <i class="fa fa-plus"></i></a>
                                 </div>
                             </div>
+                            <form id="crossSellForm">
+                                <?php
+                                $i=0;
+                                foreach($this->data->getCrossSells() as $value){
+                                    echo '<input type="hidden" name="accessories['.$i.'][id]" value = "'.$value->getId().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][entityid]" value = "'.$value->getEntityid().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][linkedSku]" value = "'.$value->getLinkedSku().'">';
+                                    echo '<input type="hidden" name="accessories['.$i.'][position]" value = "'.$value->getPosition().'">';
+                                    $i++;
+                                }
+                                ?>
+
+                            </form>
                             <table class="table table-striped table-bordered table-hover" id="crossSellDisplay">
                                 <thead>
-                                <tr><th>id</th>
+                                <tr>
+                                    <th>Sort</th>
                                     <th>Sku</th>
                                     <th>Product Name</th>
+                                    <th>Status</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
-                                    <th>Remove</th>
+                                    <th style="display: none;">linkedentityid</th> <!-- to pass to JS for click handles -->
+                                    <th>Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td></td>-->
-<!--                                    <td><a class="delete" href="javascript:;">Delete</a></td>-->
+
                                 </tr>
                                 </tbody>
                             </table>
@@ -918,22 +938,6 @@ $i=0;
 
             <div class="portlet-body">
                 <div class="portlet-tabs">
-                    <!--
-                    <ul class="nav nav-tabs">
-                        <li>
-                            <a href="#">New aSavings</a>
-                        </li>
-                        <li>
-                            <a href="#">New Focus</a>
-                        </li>
-                        <li class="active selectedcat">
-                            <a href="#">aSavings</a>
-                        </li>
-                        <li  class="active selectedcat">
-                            <a href="#">Focus</a>
-                        </li>
-                    </ul>
-                    -->
                     <div class="row">
                         <div class="tab-content">
 
@@ -999,6 +1003,23 @@ $i=0;
                         <option value="4985" <?= $this->data->getZoomFocalLength()['option'] == 4985 ? 'selected' : ''?> >18-135mm</option>
                         <option value="4986" <?= $this->data->getZoomFocalLength()['option'] == 4986 ? 'selected' : ''?> >75-300mm</option>
                         <option value="4987" <?= $this->data->getZoomFocalLength()['option'] == 4987 ? 'selected' : ''?> >80-250mm</option>
+                        <option value="7161" <?= $this->data->getZoomFocalLength()['option'] == 7161 ? 'selected' : ''?> >14-25mm</option>
+                        <option value="7162" <?= $this->data->getZoomFocalLength()['option'] == 7162 ? 'selected' : ''?> >16-50mm</option>
+                        <option value="7163" <?= $this->data->getZoomFocalLength()['option'] == 7163 ? 'selected' : ''?> >16-85mm</option>
+                        <option value="7164" <?= $this->data->getZoomFocalLength()['option'] == 7164 ? 'selected' : ''?> >17-55mm</option>
+                        <option value="7165" <?= $this->data->getZoomFocalLength()['option'] == 7165 ? 'selected' : ''?> >18-300mm</option>
+                        <option value="7166" <?= $this->data->getZoomFocalLength()['option'] == 7166 ? 'selected' : ''?> >24-77mm</option>
+                        <option value="7167" <?= $this->data->getZoomFocalLength()['option'] == 7167 ? 'selected' : ''?> >24-105mm</option>
+                        <option value="7168" <?= $this->data->getZoomFocalLength()['option'] == 7168 ? 'selected' : ''?> >24-120mm</option>
+                        <option value="7169" <?= $this->data->getZoomFocalLength()['option'] == 7169 ? 'selected' : ''?> >24-135mm</option>
+                        <option value="7170" <?= $this->data->getZoomFocalLength()['option'] == 7170 ? 'selected' : ''?> >24-300mm</option>
+                        <option value="7171" <?= $this->data->getZoomFocalLength()['option'] == 7171 ? 'selected' : ''?> >55-200mm</option>
+                        <option value="7172" <?= $this->data->getZoomFocalLength()['option'] == 7172 ? 'selected' : ''?> >55-250mm</option>
+                        <option value="7173" <?= $this->data->getZoomFocalLength()['option'] == 7173 ? 'selected' : ''?> >55-300mm</option>
+                        <option value="7174" <?= $this->data->getZoomFocalLength()['option'] == 7174 ? 'selected' : ''?> >70-300mm</option>
+                        <option value="7175" <?= $this->data->getZoomFocalLength()['option'] == 7175 ? 'selected' : ''?> >8-22mm</option>
+
+
                     </select>
                     <input type="hidden" name="zoomFocalLength[value]" value="">
                 </div>

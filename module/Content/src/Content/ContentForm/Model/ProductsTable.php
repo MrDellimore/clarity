@@ -200,6 +200,14 @@ class ProductsTable{
         $categories = $this->fetchCategories($entityid);
         $result['categories'] = $categories;
 
+        //Fetch Accessories
+        $accessories = $this->fetchAccessories($entityid);
+        $result['accessories'] = $accessories;
+
+        //Fetch CrossSells
+        $crossSell = $this->fetchCrossSell($entityid);
+        $result['crossSells'] = $crossSell;
+
         //Fetch Prime Focal Length Option
         $newAttibute = $this->fetchAttribute($entityid,'int','1713','primeFocalLength');
         $newOption = $this->fetchOption(current($newAttibute),'1713','primeFocalLength');
@@ -340,6 +348,43 @@ class ProductsTable{
         return $result;
     }
 
+    public function fetchAccessories($entityid){
+        $select = $this->sql->select();
+        $select->from('productlink');
+        $select->columns(array('id'=>'link_id','entity_id'=>'entity_id','linkedSku'=>'linked_entity_id','position' => 'position'));
+        $select->where(array('entity_id' => $entityid, 'link_type_id' =>'1'));
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $result = $resultSet->toArray();
+
+        return $result;
+    }
+
+    public function fetchCrossSell($entityid){
+        $select = $this->sql->select();
+        $select->from('productlink');
+        $select->columns(array('id'=>'link_id','entity_id'=>'entity_id','linkedSku'=>'linked_entity_id','position' => 'position'));
+        $select->where(array('entity_id' => $entityid, 'link_type_id' =>'1'));
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+
+        if($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $result = $resultSet->toArray();
+
+        return $result;
+    }
 
     public function fetchCategoriesStructure(){
         $select = $this->sql->select();
@@ -361,76 +406,22 @@ class ProductsTable{
 
 
 
-
-
-
-
-
-
-
-/*
- * todo Make this less granular. One method to validate sku
- */
-
-    public function executeQuery(){
-        $statement = $this->sql->prepareStatementForSqlObject($this->select);
-        $result = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
-        }
-//        This is my query.
-//        var_dump($resultSet);
-        return $resultSet;
-    }
-
-    public function isSkuValid(ResultSet $result){
-        if(!$result->valid()){
-            return False;
-        }
-        return true;
-    }
-
-    public function isSelect(){
-        if( is_null($this->select) ) {
-            $this->select = $this->sql->select();
-            $this->selectQuery();
-        }
-        return $this->select;
-
-    }
-
-    public function selectQuery(){
-        $this->select->from('product')
-            ->where(
-                array(
-                    'productid' => $this->sku
-                )
-            );
-    }
-
     /**
      * @param $sku
      * @throws \Exception
      * @return int
      */
+
     public function validateSku($sku){
-        $this->sku = $sku;
-        $this->isSelect();
-        $resultSet = $this->executeQuery();
-        if( !$this->isSkuValid($resultSet) ){
-            return false;
+        $select = $this->sql->select()->from('product')->where(['productid' => $sku]);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
         }
-        $skuList = array();
-        $skuList = $resultSet->current();
-        return $skuList['entity_id'];
+        return $resultSet->toArray()[0]['entity_id'];
     }
-
-
-
-
-
-
 
 
     /**
@@ -486,23 +477,33 @@ class ProductsTable{
         return $resultSet->toArray();
     }
 
-    public function lookupAccessories($searchValue, $limit)
-    {
+    public function lookupAccessories($searchValue, $limit,$searchTerm,$setSkus){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from('product');
-        $select->columns(array('entityID'=>'entity_id','Sku' => 'productid'));
+        $select->columns(array('entityid'=>'entity_id','Sku' => 'productid'));
         $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
         $priceJoin = new Expression('p.entity_id = product.entity_id and p.attribute_id = 99');
         $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
+        $statusJoin = new Expression('s.entity_id = product.entity_id and s.attribute_id = 273');
 
         $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'));
 
         $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'));
 
         $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'));
+
+        $select->join(array('s' => 'productattribute_int'), $statusJoin ,array('status' => 'value'));
+
         $where = new Where();
-        $where->like('product.productid',$searchValue.'%');
+        if($searchTerm == 'id'){
+            $searchTerm = 'product.entity_id';
+        }
+        else
+            $searchTerm = 'product.productid';
+
+        $where->like($searchTerm,$searchValue.'%');
+        $where->in('product.productid', $setSkus);
         $select->where($where);
         $select->limit($limit);
 

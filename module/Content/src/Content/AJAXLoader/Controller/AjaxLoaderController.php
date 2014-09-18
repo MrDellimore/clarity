@@ -91,10 +91,13 @@ class AjaxLoaderController extends AbstractActionController
             $draw = $loadAccessories['draw'];
             $sku = $loadAccessories['search']['value'];
             $limit = $loadAccessories['length'];
+
+
             if($limit == '-1'){
                 $limit = 100;
             }
             $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
+            $loadedAccessories = $this->updateaccessories($loadedAccessories);
             $result = json_encode(
                 array(
                     'draw'  =>  (int)$draw,
@@ -119,10 +122,48 @@ class AjaxLoaderController extends AbstractActionController
             $draw = $loadAccessories['draw'];
             $sku = $loadAccessories['search']['value'];
             $limit = $loadAccessories['length'];
+            $setAccessories = $loadAccessories['related'];
+            $positions = $loadAccessories['position'];
+            $firstElements = array();
+
+//Search Results
             if($limit == '-1'){
                 $limit = 100;
             }
-            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit);
+            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit,'sku');
+            //todo add to query where sku not in (array of linked skus)
+            $loadedAccessories = $this->updateaccessories($loadedAccessories);
+
+            if(isset($setAccessories)){
+            //Items set already
+                foreach($setAccessories as $key => $value){
+                    $element = $form->lookupAccessories($value['value'],1,'id');
+                    $element[0]['sort'] = $positions[$key]['value'];
+                    array_push($firstElements,$element);
+                }
+                //sort firstelements
+                $sort=array();
+                foreach($firstElements as $value){
+                    $sort[$value[0]['entityid']] = $value[0]['sort'];
+                }
+                arsort($sort);
+                $sorted=array();
+                foreach($sort as $key=>$value){
+                    foreach($firstElements as $value2){
+                        if($key == $value2[0]['entityid']){
+                            array_push($sorted,current($value2));
+                        }
+                    }
+                }
+                $sorted = $this->updateSetaccessories($sorted);
+
+
+                //prepend Array
+                foreach($sorted as $value){
+                    array_unshift($loadedAccessories,$value);
+                }
+            }
+
             $result = json_encode(
                 array(
                     'draw'  =>  (int)$draw,
@@ -136,6 +177,26 @@ class AjaxLoaderController extends AbstractActionController
             $response->setContent($result);
             return $response;
         }
+    }
+
+    public function updateaccessories(Array $r){
+        foreach($r as $key => $value){
+            $r[$key]['Sku'] = $r[$key]['Sku']."<br /><h6>".$r[$key]['entityid']."</h6>";
+            $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
+            $r[$key]['sort'] = '<input type="text" name="sort" size="1" disabled>';
+            $r[$key]['edit'] = "<a href='javascript:;' id=\"addCross\">Add</a>";
+        }
+        return $r;
+    }
+
+    public function updateSetaccessories(Array $r){
+        foreach($r as $key => $value){
+            $r[$key]['Sku'] = $r[$key]['Sku']."<br /><h6>".$r[$key]['entityid']."</h6>";
+            $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
+            $r[$key]['sort'] = '<input class="pos" type="text" size="1" value="'.$r[$key]['sort'].'">';
+            $r[$key]['edit'] = "<a href='javascript:;'  id=\"removeCross\">Delete</a>";
+        }
+        return $r;
     }
 
     public function loadCategoriesAction()

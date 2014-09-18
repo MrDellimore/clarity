@@ -6,6 +6,7 @@ namespace Content\ContentForm\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Expression;
@@ -35,15 +36,15 @@ class SearchTable{
         $visibilityJoin = new Expression('v.entity_id = product.entity_id and v.attribute_id = 526');
 
 
-        $select->join(array('t' => 'productattribute_varchar'), $titleJoin,array('title' => 'value'));
+        $select->join(array('t' => 'productattribute_varchar'), $titleJoin,array('title' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('p' => 'productattribute_decimal'), $priceJoin,array('price' => 'value'));
+        $select->join(array('p' => 'productattribute_decimal'), $priceJoin,array('price' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('q' => 'productattribute_int'), $quantityJoin,array('quantity' => 'value'));
+        $select->join(array('q' => 'productattribute_int'), $quantityJoin,array('quantity' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('s' => 'productattribute_int'), $statusJoin,array('status' => 'value'));
+        $select->join(array('s' => 'productattribute_int'), $statusJoin,array('status' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('v' => 'productattribute_int'), $visibilityJoin,array('visibility' => 'value'));
+        $select->join(array('v' => 'productattribute_int'), $visibilityJoin,array('visibility' => 'value'), Select::JOIN_LEFT);
 
 
         $filter = new Where();

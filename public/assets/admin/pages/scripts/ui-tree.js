@@ -73,17 +73,12 @@ var UITree = function () {
 
                 getparent(wtf[i]);
             }
-//get entityid
-          //  var entityid = $("input[name*='man']");
-           // console.log(entityid);
+
 //set input boxes
             family = family.split(",");
             var inputString ='';
 
-            for(i=0; i<family.length; i++){
-                inputString += '<input type="hidden" name = "categories['+i+'][id]" value ="'+ family[i] +'">';
-                inputString += '<input type="hidden" name = "categories['+i+'][entityid]" value ="">';
-            }
+
 
             input = jQuery(inputString);
             $('#categoriesForm').empty().append(input);
