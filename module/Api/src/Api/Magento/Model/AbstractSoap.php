@@ -31,17 +31,24 @@ abstract class AbstractSoap
         return $attributeSet;
     }
 
-    protected function _soapCall($packet, $resource, $skuCollection)
+    protected function _soapCall($packet, $resource = Null, $skuCollection)
     {
         $a = 0;
+        echo '<pre>';
+
         $batch = $results = $result = $status = [];
         while( $a < count($packet) ){
             $x = 0;
             while($x < 10 && $a < count($packet)) {
                 if( isset($packet[$a]['dataState']) && $packet[$a]['dataState'] == 3 ) {
+                    $resource = $packet[$a]['resource'];
+//                    unset($packet[$a]['resource']);
+//                    unset($packet[$a]['dataState']);
                     $batch[$x] = array($resource, $packet[$a]);
-                }
-                else if( isset($packet[$a]['dataState']) && $packet[$a]['dataState'] == 2 ) {
+                } else if( isset($packet[$a]['dataState']) && $packet[$a]['dataState'] == 2 ) {
+                    $resource = $packet[$a]['resource'];
+//                    unset($packet[$a]['resource']);
+//                    unset($packet[$a]['dataState']);
                     $batch[$x] = array($resource, $packet[$a]);
                 } else {
                     $batch[$x] = array($resource, $packet[$a]);
@@ -50,24 +57,34 @@ abstract class AbstractSoap
                 $a++;
             }
             sleep(15);
-                $results[] = $this->_soapHandle->call('multiCall',array($this->_session, $batch));
+//            var_dump($batch);
+            $results[] = $this->_soapHandle->call('multiCall',array($this->_session, $batch));
         }
         $totalTime = $this->stopStopwatch();
+
+
         foreach ( $results as $key => $res ) {
             foreach ( $res as $index => $r ) {
                 if( isset($r['faultCode']) && (int)$r['faultCode'] == 1 ) {
                     $result[$key][$index] = False;
                     $this->insertIntoMageLog($skuCollection[$index] ,'Sku already exists', $totalTime, 'Fail');
-                } else if( isset($r['faultCode']) ) {
+                } else if( isset($r['isFault']) ) {
                     $result[$key][$index] = False;
                     $this->insertIntoMageLog($skuCollection[$index] ,$r['faultMessage'], $totalTime, 'Fail');
                 } else {
+                    if(  isset($packet[$index]['dataState']) &&  (int)$packet[$index]['dataState'] === 3 ) {
+                        $resource = $packet[$index]['resource'];
+                    }
+                    if(  isset($packet[$index]['dataState']) &&  (int)$packet[$index]['dataState'] === 2 ) {
+                        $resource = $packet[$index]['resource'];
+                    }
                     $result[$key][$index] = $results[$key][$index];
+                    echo $resource;
                     $this->insertIntoMageLog($skuCollection[$index] ,$resource, $totalTime, 'Success');
                 }
             }
         }
-//        var_dump($status);
+        var_dump($results);
 //        die();
         return $result;
     }

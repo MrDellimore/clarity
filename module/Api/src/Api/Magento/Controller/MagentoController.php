@@ -67,72 +67,55 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         echo '<pre>';
-        $changedProducts = $this->getMagentoTable()->fetchDirtyProducts();
-        var_dump($changedProducts);
-        die();
-//        $session = new Container('dirty_skus');
-//        $changedProducts= $session->dirtyProduct;
 
-
-//        $this->getMagentoTable()->groupProducts($changedProducts);
         /*Fetch categories*/
-//        $categories = $this->getMagentoTable()->fetchCategoriesSoap();
+        $categories = $this->getMagentoTable()->fetchChangedCategories();
 
-        /*Fetch Related Products*/
-//        $linkedProds = $this->getMagentoTable()->fetchLinkedProducts();
+        /*Fetch products that have changed due to content team.*/
+        $changedProducts = $this->getMagentoTable()->fetchDirtyProducts();
 
-        if(!empty($categories)){
+        /*Fetch Related Products
+        TODO have to figure out why some entity ids like 676 are not removed.
+        */
+        $linkedProds = $this->getMagentoTable()->fetchLinkedProducts();
+
+//        var_dump($categories, $changedProducts, $linkedProds);
+//        die();
+
+        if( !empty($categories) ) {
             /*Make api call to delete and update Sku with new categories*/
             $categorySoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapCategoriesUpdate($categories);
         }
+//        $session = new Container('dirty_skus');
+//        $changedProducts= $session->dirtyProduct;
 
-        if(!empty($linkedProds)){
+        if( !empty($changedProducts) ) {
+            /*Update Mage with up-to-date products*/
+            $itemSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapUpdateProducts($changedProducts);
+        }
+        if( !empty($linkedProds) ) {
             /*Update Mage with up-to-date linked products*/
             $linkedSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapLinkedProducts($linkedProds);
         }
 
-        if(!empty($changedProducts)){
-            /*Update Mage with up-to-date products*/
-            $itemSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapUpdateProducts($changedProducts);
-        }
-        if( $categorySoapResponse || $itemSoapResponse || $linkedSoapResponse ){
-//echo 'ahah';die();
-            foreach( $itemSoapResponse as $key => $soapResponse ) {
-                foreach( $soapResponse as $index => $soapRes ) {
-                    if( preg_match('/Product/', $soapRes)) {
-                        $resp = $soapResponse;
-                    }
-//            SQLSTATE[40001]: Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction
-//            I suppose this happens when there is too much traffic. I think once content team moves over to zend it will not deadlock anymore.
-                    if( preg_match('/Serialization failure/',$soapRes )){
-                        $resp = $soapResponse ;
-                    }
-                    if(true === $soapRes){
-                        $resp = $soapRes;
-                    }
-                }
+        foreach ( $categorySoapResponse as $index => $catResponse ) {
+            foreach ( $catResponse as $key => $soapResponse ) {
+                $updateCategories = $this->getMagentoTable()->updateProductCategoriesToClean($categories[$key]);
             }
         }
-
-            if ( $resp === true ||
-                (!is_null($categorySoapResponse) &&  $categorySoapResponse === true) ||
-                (!is_null($linkedSoapResponse) &&  $linkedSoapResponse === true)
-            ){
-//                echo 'haha';
-//                die();
-//                $updateCategories = $this->getMagentoTable()->updateProductCategoriesToClean($categories);
-//                $linkedFields = $this->getMagentoTable()->updateLinkedProductstoClean($linkedProds);
-                $updateFields = $this->getMagentoTable()->updateToClean($changedProducts);
-                if( $updateFields || $updateCategories || $linkedFields ){
-                    return $this->redirect()->toRoute('apis');
-                }
+        foreach ( $itemSoapResponse as $index => $itemResponse ) {
+            foreach ( $itemResponse as $key => $soapResponse ) {
+                $updateFields = $this->getMagentoTable()->updateToClean($changedProducts[$key]);
             }
-            if( preg_match('/Category not exist/',$categorySoapResponse) ){
-//            'Category not exist' for $categorySoapResponse
-                trigger_error('Category does not exist for Magento Admin');
-                throw new \UnexpectedValueException('Category does not exist in Magento Admin');
+        }
+        foreach ( $linkedSoapResponse as $index => $linkedResponse ) {
+            foreach ( $linkedResponse as $key => $soapResponse ) {
+                $linkedFields = $this->getMagentoTable()->updateLinkedProductstoClean($linkedProds[$key]);
             }
-//        }
+        }
+        if ( $updateCategories || $updateFields || $linkedFields ) {
+            return $this->redirect()->toRoute('apis');
+        }
     }
 
     public function soapNewItemsAction()
@@ -150,9 +133,11 @@ class MagentoController  extends AbstractActionController
         $newProducts = $this->getMagentoTable()->fetchNewItems();
         if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
             $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
-            foreach( $newProductResponse[0] as $key => $newEntityId ) {
-                if( $newEntityId ) {
-                    $response = $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+            foreach( $newProductResponse as $index => $newResponse ) {
+                foreach( $newResponse as $key => $newEntityId ) {
+                    if( $newEntityId ) {
+                        $response = $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                    }
                 }
             }
 //            die();

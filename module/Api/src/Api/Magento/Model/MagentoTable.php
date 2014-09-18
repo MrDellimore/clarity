@@ -125,6 +125,7 @@ class MagentoTable {
                 $dataType = (string)$attributes['dataType'];
                 $attributeId = (int)$attributes['attId'];
                 $attributeCode = (string)$attributes['attCode'];
+//TODO have to add for changing product sku when the soap call goes through in case admin wants to change the sku in mage.
                 $productAttributeSelect = $this->sql->select()->from('productattribute_'.$dataType)
                                                               ->columns([$attributeCode=>'value'])
                                                               ->where(['attribute_id'=>$attributeId, 'entity_id'=>$prd['id'], 'dataState'=>1]);
@@ -137,17 +138,16 @@ class MagentoTable {
                 }
                 $productAttributeResults = $attSet->toArray();
                 foreach( $productAttributeResults as $ind => $value ){
-//                var_dump($productAttributeResults);
-                    $soapUpdate[$startCount]['website'] = [$prd['website']];
                     $soapUpdate[$startCount]['id'] = $prd['id'];
                     $soapUpdate[$startCount]['sku'] = $prd['sku'];
-
+//                    $soapUpdate[$startCount]['website'] = [$prd['website']];
                     $soapUpdate[$startCount][$attributeCode] =$value[$attributeCode];
-    //                $soapUpdate[$startCount][$attributeCode] = isset($productAttributeResults[$key][$attributeCode]) ? $productAttributeResults[$key][$attributeCode] : '';
                 }
             }
             $startCount++;
         }
+//        var_dump($soapUpdate);
+//        die();
         return $soapUpdate;
     }
 
@@ -218,7 +218,7 @@ class MagentoTable {
         $select->from('productlink')
             ->columns(array('entityId'=>'entity_id','linkedEntityId'=>'linked_entity_id', 'dataState'=>'dataState'))
             ->join( array('t'=>'productlink_type'), 't.link_type_id=productlink.link_type_id',array('type'=>'code'))
-//               ->join( array('p'=>'product'), 'p.entity_id=productlink.entity_id',array('sku'=>'productid'))
+            ->join( array('p'=>'product'), 'p.entity_id=productlink.entity_id',array('sku'=>'productid'), Select::JOIN_LEFT)
 //               ->where(array('productcategory.dataState'=>2,'productcategory.dataState'=>3),PredicateSet::OP_OR);
             ->where($filter);
         $statement = $this->sql->prepareStatementForSqlObject($select);
@@ -229,26 +229,43 @@ class MagentoTable {
         }
         //TODO have to implement a count feature for this.
 //        $resultSet->count()
-        return $resultSet->toArray();
+        $linkedProducts = $resultSet->toArray();
+//        var_dump($linkedProducts);
+//        die();
+        return $linkedProducts;
     }
 
     public function updateLinkedProductstoClean($linkedProducts)
     {
-        $result ='';
-        foreach($linkedProducts as $key => $fields){
-            $dataState = (int)$linkedProducts[$key]['dataState'];
-            if( $dataState === 2){
-                $update = $this->sql->update('productlink');
-                $update->set(array('dataState'=>0))
-                    ->where(array('entity_id'=>$linkedProducts[$key]['entityId'], 'linked_entity_id'=>$linkedProducts[$key]['linkedEntityId']));
-                $statement = $this->sql->prepareStatementForSqlObject($update);
-                $result = $statement->execute();
-            } else {
-                $delete = $this->sql->delete('productlink');
-                $delete->where(array('entity_id'=>$linkedProducts[$key]['entityId'], 'linked_entity_id'=>$linkedProducts[$key]['linkedEntityId']));
-                $statement = $this->sql->prepareStatementForSqlObject($delete);
-                $result = $statement->execute();
-            }
+//        var_dump($linkedProducts);
+        $dataState = (int)$linkedProducts['dataState'];
+        if ( $dataState === 3 ) {
+            $delete = $this->sql->delete('productlink');
+            $delete->where(array('entity_id'=>$linkedProducts['entityId'], 'linked_entity_id'=>$linkedProducts['linkedEntityId']));
+            $statement = $this->sql->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+        } else {
+            $update = $this->sql->update('productlink');
+            $update->set(array('dataState'=>0))
+                ->where(array('entity_id'=>$linkedProducts['entityId'], 'linked_entity_id'=>$linkedProducts['linkedEntityId']));
+            $statement = $this->sql->prepareStatementForSqlObject($update);
+            $result = $statement->execute();
+        }
+        return $result;
+    }
+
+    public function updateProductCategoriesToClean($cats)
+    {
+        $dataState = (int)$cats['dataState'];
+        if( $dataState === 2){
+            $update = $this->sql->update('productcategory')->set(['dataState'=>0])->where(['entity_id'=>$cats['entityId'], 'category_id'=>$cats['categortyId']]);
+            $statement = $this->sql->prepareStatementForSqlObject($update);
+            $result = $statement->execute();
+        } else {
+            $delete = $this->sql->delete('productcategory');
+            $delete->where(['entity_id'=>$cats['entityId'], 'category_id'=>$cats['categortyId']]);
+            $statement = $this->sql->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
         }
         return $result;
     }
@@ -296,7 +313,7 @@ class MagentoTable {
     }
 
 
-    public function fetchCategoriesSoap()
+    public function fetchChangedCategories()
     {
         $select = $this->sql->select();
         $filter = new Where();
@@ -312,8 +329,10 @@ class MagentoTable {
             $resultSet->initialize($result);
         }
         //TODO have to implement a count feature for this.
-//        $resultSet->count()
-        return $resultSet->toArray();
+        $categories = $resultSet->toArray();
+//        var_dump($categories);
+//        die();
+        return $categories;
     }
 
     public function updateImagesToClean($images)
@@ -327,57 +346,25 @@ class MagentoTable {
         return $result;
     }
 
-    public function updateProductCategoriesToClean($catsToUpdate)
+    public function updateToClean($changedProducts)
     {
-        $result ='';
-        foreach($catsToUpdate as $key => $fields){
-            $dataState = (int)$catsToUpdate[$key]['dataState'];
-            if( $dataState === 2){
-                $update = $this->sql->update('productcategory');
-                $update->set(array('dataState'=>0))
-                       ->where(array('entity_id'=>$catsToUpdate[$key]['entityId'], 'category_id'=>$catsToUpdate[$key]['categortyId']));
-                $statement = $this->sql->prepareStatementForSqlObject($update);
-                $result = $statement->execute();
-            } else {
-                $delete = $this->sql->delete('productcategory');
-                $delete->where(array('entity_id'=>$catsToUpdate[$key]['entityId'], 'category_id'=>$catsToUpdate[$key]['categortyId']));
-                $statement = $this->sql->prepareStatementForSqlObject($delete);
-                $result = $statement->execute();
-            }
-        }
-        return $result;
-    }
-
-    public function updateToClean($data)
-    {
-        $result = '';
-        foreach($data as $key => $value){
-            //this sku part might have to be refactored
-                if(array_key_exists('sku', $data[$key])){
-                    $update = $this->sql->update();
-                    $update->table('product');
-                    $update->set(array('dataState'=>'0'));
-                    $update->where(array('productid'=>$data[$key]['sku']));
-                    $statement = $this->sql->prepareStatementForSqlObject($update);
-                    $result = $statement->execute();
-                    $resultSet = new ResultSet;
-                    if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                        $resultSet->initialize($result);
-                    }
-                } else {
-                    $entityId = $data[$key]['id'];
-                    array_shift($data[$key]);
-                    $attributeField = current(array_keys($data[$key]));
-                    $attributeField = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeField  ));
-
-                    $where = array('attribute_code' => ($attributeField == 'title') ? 'name' : $attributeField);
-                    $results = $this->productAttributeLookup($this->sql, $where);
-                    $attributeId = $results[0]['attId'];
-                    $tableType = $results[0]['dataType'];
-                    $set = array('dataState'=>'0');
-                    $where = array('entity_id'=>$entityId, 'attribute_id'=>$attributeId);
-                    $result = $this->productUpdateaAttributes($this->sql, $tableType, $set, $where);
-                }
+        $attributes = array_keys($changedProducts);
+        $entityId = $changedProducts['id'];
+        $sku = $changedProducts['sku'];
+        $updateProduct = $this->sql->update('product')->set(['dataState'=>0])->where(['productid'=>$sku]);
+        $statement = $this->sql->prepareStatementForSqlObject($updateProduct);
+        $statement->execute();
+        array_shift($attributes);
+        array_shift($attributes);
+        array_shift($changedProducts);
+        array_shift($changedProducts);
+        foreach( $attributes as $att ) {
+            $lookup = $this->productAttributeLookup($this->sql, ['attribute_code'=>$att]);
+            $attributeId = $lookup[0]['attId'];
+            $dataType = $lookup[0]['dataType'];
+            $updateProductAttribute = $this->sql->update('productattribute_'.$dataType)->set(['dataState'=>0])->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);
+            $prdAttStatement = $this->sql->prepareStatementForSqlObject($updateProductAttribute);
+            $result = $prdAttStatement->execute();
         }
         return $result;
     }
@@ -393,10 +380,11 @@ class MagentoTable {
             'productType'   =>  'product_type',
             'website'       =>  'website',
             'dateCreated'   =>  'creationdate',
-        ])->where(array('product.dataState'=>0))->quantifier(Select::QUANTIFIER_DISTINCT);
-//        $filter = new Where;
-//        $filter->in('product.dataState',array(0,2));
-//        $select->where($filter);
+        ]);
+        //->where(array('product.dataState'=>0))->quantifier(Select::QUANTIFIER_DISTINCT);
+        $filter = new Where;
+        $filter->in('product.dataState',array(2));
+        $select->where($filter);
 
         $statusIntJoin = new Expression('i.entity_id = product.entity_id and i.attribute_id = 273');
         $select->join(['i'=>'productattribute_int'],$statusIntJoin ,['status'=>'value'] ,Select::JOIN_LEFT);
@@ -409,17 +397,15 @@ class MagentoTable {
             $resultSet->initialize($result);
         }
         $products = $resultSet->toArray();
-//        $productSku = [
-//            'ATIINSTANTLABK1','ATIP2786IMPOSSIBLEK1','ATIP2785IMPOSSIBLEK2','ATIINSTANTLABK2','ATIP2786IMPOSSIBLEK2','ATIP3107IMPOSSIBLEK1','ATIP2785IMPOSSIBLEK3','ATIINSTANTLABK3','51-0816',
-//            'COMP-6SAFTX4','HS-B250XT','URC-LOG880','3041-EFESTX2','1086-EFESTX2','3245-EFESTX2','3042-EFEST','4066-EFESTX2','3164-EFESTX2','4084-EFESTX2','AEFEIMR18350P10K2','3164-EFEST','3245-EFEST',
-//            '1086-EFEST','3041-EFEST','4066-EFEST','4084-EFEST','3891-EFEST','AEFEIMR18350P10K1','WP812B','KODAAENERG12','TV434','ALEXLSD16GCTBK1','1163-MACK','COMP-4SAFTX2','COMP-4SAFTX4','COMP-4SAFT',
-//            'COMP-4SAFTX5','COMP-4SAFTX10','COMP-4SAFTX25','ASLICBHK1','FILS49','SUR6277','09064','TH800667','AVORD5012K1','AVORVNQ1026K1','AWES2331K1','1365-659','SH0BZ'
-//        ];
-        $productSku = ['COMBOSET-1','COMBOSET-2','AHMVCOMBOSET2K1','AHMVCOMBOSET1K1'];
+          $productSku = [
+              'PDPPBRBR','PLPPBRBR','PLPPGYBK','PMPPBRBR','PMPPGYBK','SEPPBRGD','SEPPGYGM','SEPPGYMSV','SSPPGNGD','SSPPGYMSV'
+          ];
+//        $productSku = ['AV22303B06'];
 //        statically add products skus here if more are requested.
         $skuCount = count($productSku);
+//        echo $skuCount . '<br />';
         $startCount = 0;
-        for( $i = 0; $i < $skuCount; $i++){
+        for( $i = 0; $i < $skuCount; $i++ ) {
             foreach($products as $index => $value) {
                 if($productSku[$i] == $value['sku']) {
                     $entityId = $products[$index]['entityId'];
@@ -429,11 +415,15 @@ class MagentoTable {
                         $attributeId = (int)$attribute['attId'];
                         $attributeCode = $attribute['attCode'];
                         $selectAtts = $this->sql->select()->from('productattribute_'. $tableType)
-                                                          ->columns([$attributeCode=>'value', 'attId'=>'attribute_id'])
-                                                          ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId , 'dataState'=>0]);
-//                        $filter = new Where;
-//                        $filter->in('productattribute_'.$tableType,array(0.2));
-//                        $select->where($filter);
+                                                          ->columns([$attributeCode=>'value', 'attId'=>'attribute_id']);
+//                                                          ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);
+                        $filterAttributes = new Where;
+//                        $filterAttributes->equalTo('productattribute_'.$tableType.'.dataState',0);
+//                        $filterAttributes->equalTo('productattribute_'.$tableType.'.dataState',2);
+                        $filterAttributes->equalTo('productattribute_'.$tableType.'.entity_id',$entityId);
+                        $filterAttributes->equalTo('productattribute_'.$tableType.'.attribute_id',$attributeId);
+                        $filterAttributes->in('productattribute_'.$tableType.'.dataState',array(2));
+                        $selectAtts->where($filterAttributes);
                         $attStatement = $this->sql->prepareStatementForSqlObject($selectAtts);
                         $attResult = $attStatement->execute();
                         $attSet = new ResultSet;
@@ -442,13 +432,18 @@ class MagentoTable {
                         }
                         $attributeValues = $attSet->toArray();
                         foreach($attributeValues as $keyValue => $valueOption) {
+//                            if ( $products[$index]['sku'] == 'BOSE359037-1300' ) {
+//                                echo $products[$index]['sku'] . ' ' . $attributeCode . '<br />';
+//                            }
                             $soapBundle[$startCount]['sku'] = $products[$index]['sku'];
                             $soapBundle[$startCount]['website'] = $products[$index]['website'];
                             $soapBundle[$startCount]['status'] = (is_null($products[$index]['status'])) ? 2 : $products[$index]['status'];
                             if ( array_key_exists($attributeCode,$this->stockData) ) {
                                 $soapBundle[$startCount]['stock_data'][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
                             } else {
-                                $soapBundle[$startCount][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+                                if( isset($attributeValues[$keyValue][$attributeCode]) ){
+                                    $soapBundle[$startCount][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+                                }
                             }
                         }
                     }
@@ -486,7 +481,7 @@ class MagentoTable {
             if( !empty($lookupVals[0]) ) {
                 $attributeId = $lookupVals[0]['attId'];
                 $dataType = $lookupVals[0]['dataType'];
-                echo $dataType . ' ' . $attributeCode . ' ' . $newEntity . ' ' . $attributeId . ' ' . $oeid . '<br />';
+//                echo $dataType . ' ' . $attributeCode . ' ' . $newEntity . ' ' . $attributeId . ' ' . $oeid . '<br />';
                 $update = $this->sql->update('productattribute_'.$dataType)->set(['entity_id'=>$newEntity, 'dataState'=>0])->where(['attribute_id'=>$attributeId, 'entity_id'=>$oeid]);
                 $stmt = $this->sql->prepareStatementForSqlObject($update);
                 $attributeResp = $stmt->execute();

@@ -48,8 +48,8 @@ class MageSoap extends AbstractSoap{
     {
         $this->adapter = $adapter;
         $this->sql = new Sql($this->adapter);
-//        parent::__construct(SOAP_URL);
-        parent::__construct(SOAP_URL_STAGE2);
+        parent::__construct(SOAP_URL);
+//        parent::__construct(SOAP_URL_STAGE2);
 //        parent::__construct(SOAP_URL_STAGE);
     }
 
@@ -72,55 +72,92 @@ class MageSoap extends AbstractSoap{
         return date("H:i:s", $this->_totalTime);
     }
 
-    public function soapUpdateProducts($data)
+    public function soapUpdateProducts($changedProducts)
     {
         $this->startStopwatch();
-        $packet = [];
-        $skuCollection = [];
-        foreach($data as $key => $value){
-            if( isset($value['id']) ) {
-                $entityID = $value['id'];
-                $select = $this->sql->select()->from('product')->columns(['sku'=>'productid'])->where(['entity_id'=>$entityID]);
-                $statement = $this->sql->prepareStatementForSqlObject($select);
-                $result = $statement->execute();
-                $resultSet = new ResultSet;
-                if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                    $resultSet->initialize($result);
-                }
-                //TODO have to implement a count feature for this.
-                $skuCollection[$key] = $resultSet->toArray()[0]['sku'];
-                array_shift($value);
-                $updatedValue = current($value);
-                $attributeCode =  current(array_keys($value));
-                $attributeCode = $attributeCode == 'title' ? 'name' : $attributeCode;
-                $attributeCode = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeCode  ));
-                $packet[$key] = array('entity_id' => $entityID, array($attributeCode => $updatedValue));
+        $packet = $skuCollection = $attribute = [];
+        foreach( $changedProducts as $key => $attributes ) {
+            $keys = array_keys($attributes);
+            $entityID = $attributes['id'];
+            $skuCollection[] = $attributes['sku'];
+//            var_dump($skuCollection);
+            array_shift($keys);
+            array_shift($keys);
+            array_shift($attributes);
+            array_shift($attributes);
+//            var_dump($keys);
+//            var_dump($attributes);
+            foreach( $keys as $ind => $attributeFields ) {
+                $attribute[$attributeFields] = $changedProducts[$key][$attributeFields];
             }
-        }
+//            if( isset($value['id']) ) {
+//                $entityID = $value['id'];
+//                $select = $this->sql->select()->from('product')->columns(['sku'=>'productid'])->where(['entity_id'=>$entityID]);
+//                $statement = $this->sql->prepareStatementForSqlObject($select);
+//                $result = $statement->execute();
+//                $resultSet = new ResultSet;
+//                if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//                    $resultSet->initialize($result);
+//                }
+                //TODO have to implement a count feature for this.
+//                $skuCollection[$key] = $resultSet->toArray()[0]['sku'];
+//                array_shift($value);
+//                $updatedValue = current($value);
+//                $attributeCode =  current(array_keys($value));
+//                $attributeCode = $attributeCode == 'title' ? 'name' : $attributeCode;
+//                $attributeCode = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeCode  ));
 
-        return $this->soapCall($packet, 'catalog_product.update', $skuCollection);
+                $packet[$key] = array('entity_id' => $entityID, $attribute);
+//            }
+        }
+//var_dump($packet);
+//die();
+        return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
     }
 
     public function soapLinkedProducts($linkedProds)
     {
-        $soapHandle = new Client(SOAP_URL);
-        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
-        $packet = array();
+//        $soapHandle = new Client(SOAP_URL);
+//        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
+        $packet = $skuCollection = array();
         $results = Null;
         foreach($linkedProds as $key => $fields){
             $entityId = $linkedProds[$key]['entityId'];
             $dataState = (int)$linkedProds[$key]['dataState'];
             $linkedEntityId = $linkedProds[$key]['linkedEntityId'];
+            $skuCollection[] = $fields['sku'];
             $type = $linkedProds[$key]['type'];
-            if( 3 === $dataState ){
-                $packet[$key]['dataState'] = (int)$dataState;
-                $packet[$key] = array('type'=>$type, 'product'=>$entityId, 'linkedProduct'=>$linkedEntityId );
+            if( 3 === $dataState ) {
+                $packet[$key] = [
+                    'type'          =>  $type,
+                    'product'       =>  $entityId,
+                    'linkedProduct' =>  $linkedEntityId,
+                    'resource'      =>  'catalog_product_link.remove',
+                    'dataState'     =>  (int)$dataState,
+                ];
             }
-            if( 2 === $dataState ){
-                $packet[$key]['dataState'] = (int)$dataState;
-                $packet[$key] = array('type'=>$type, 'product'=>$entityId, 'linkedProduct'=>$linkedEntityId );
+            if( 2 === $dataState ) {
+                $packet[$key] = [
+                    'type'          =>  $type,
+                    'product'       =>  $entityId,
+                    'linkedProduct' =>  $linkedEntityId,
+                    'resource'      =>  'catalog_product_link.assign',
+                    'dataState'     =>  (int)$dataState,
+                ];
             }
         }
+        var_dump($packet);
+//        die();
+//        foreach($packet as $key => $batch){
+//            $results = $soapHandle->call('call', $batch );
+//        }
+//        var_dump($results);
+//        die();
+//        return $results;
+//        echo $packet[1]['resource'];
+//        var_dump($packet);
+//        die();
+        return $this->_soapCall($packet, null, $skuCollection);
 
         $a = 0;
         $batch = [];
@@ -136,9 +173,12 @@ class MageSoap extends AbstractSoap{
                 $a++;
             }
             sleep(15);
+            var_dump($batch);
             $results[] = $soapHandle->call('multiCall',array($session, $batch));
 
         }
+        var_dump($results);
+        die();
         return $results;
     }
 
@@ -191,7 +231,7 @@ class MageSoap extends AbstractSoap{
                 ]
             ];
         }
-        return $this->soapCall($packet, 'catalog_product_attribute_media.create', $skuCollection);
+        return $this->_soapCall($packet, 'catalog_product_attribute_media.create', $skuCollection);
 
 //        $results = [];
 //        $a = 0;
@@ -222,16 +262,26 @@ class MageSoap extends AbstractSoap{
             $skuCollection[] = $sku = $categories[$key]['sku'];
             $dataState = (int)$categories[$key]['dataState'];
             $categortyId = $categories[$key]['categortyId'];
-            if( 3 === $dataState ){
-                $packet[$key]['dataState'] = (int)$dataState;
-                $packet[$key] = array('categoryId'=>$categortyId,'product'=>$entityId );
+            if( 3 === $dataState ) {
+                $packet[$key] = [
+                    'categoryId'    =>      $categortyId,
+                    'product'       =>      $entityId,
+                    'dataState'     =>      (int)$dataState,
+                    'resource'      =>      'catalog_category.removeProduct',
+                ];
             }
-            if( 2 === $dataState ){
-                $packet[$key]['dataState'] = (int)$dataState;
-                $packet[$key] = array('categoryId'=>$categortyId,'product'=>$entityId );
+            if( 2 === $dataState ) {
+                $packet[$key] = [
+                    'categoryId'    =>  $categortyId,
+                    'product'       =>  $entityId,
+                    'dataState'     =>  (int)$dataState,
+                    'resource'      =>  'catalog_category.assignProduct',
+                ];
             }
         }
-        return $this->_soapCall($packet, 'catalog_category.removeProduct', $skuCollection);
+//        var_dump($packet);
+//        die();
+        return $this->_soapCall($packet, Null, $skuCollection);
 
         $a = 0;
         $batch = [];
