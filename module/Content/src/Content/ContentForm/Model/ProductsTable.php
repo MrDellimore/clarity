@@ -413,14 +413,18 @@ class ProductsTable{
      */
 
     public function validateSku($sku){
-        $select = $this->sql->select()->from('product')->where(['productid' => $sku]);
+        $select = $this->sql->select()->from('product')->columns(array('entity_id'));
+        $select->where(['productid' => $sku]);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
         if($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-        return $resultSet->toArray()[0]['entity_id'];
+        $entityid = $resultSet->toArray();
+        $entityid= current($entityid);
+
+        return $entityid;
     }
 
 

@@ -46,12 +46,19 @@ class SearchTable{
 
         $select->join(array('v' => 'productattribute_int'), $visibilityJoin,array('visibility' => 'value'), Select::JOIN_LEFT);
 
-
+        $producttable = new ProductsTable($this->adapter);
         $filter = new Where();
 
-        $filter->like('product.productid', $sku.'%');
-        $filter->orPredicate(new Predicate\Like('t.value','%'.$sku.'%'));
-        $select->where($filter);
+        if(!($producttable->validateSku($sku))){
+            $filter->like('product.productid', $sku.'%');
+            $filter->orPredicate(new Predicate\Like('t.value','%'.$sku.'%'));
+            $select->where($filter);
+        }
+        else{
+            $select->where(['product.productid' => $sku]);
+        }
+
+
 
         $l = (int) $l;
         $select->limit($l);
