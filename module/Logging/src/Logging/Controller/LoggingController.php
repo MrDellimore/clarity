@@ -31,7 +31,6 @@ class LoggingController extends AbstractActionController
             $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
             $limit = $logsInfo['length'];
 
-
 //            $filterDateRange = (!is_null($logsInfo['filterDateRange'])) ? $logsInfo['filterDateRange'] : null;
 //            $dateRange = explode('to',$filterDateRange);
 //            $fromDate = trim((string)$dateRange[0]);
@@ -116,8 +115,10 @@ class LoggingController extends AbstractActionController
     {
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
         $userID = $userLogin['userid'];
-//        var_dump($userLogin);
         $revert = $this->getLoggingTable();
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -134,6 +135,7 @@ class LoggingController extends AbstractActionController
             $revert->undo($searchParams);
             $this->redirect()->toRoute('logging');
         }
+        $this->redirect()->toRoute('logging');
     }
 
     public function listUsersAction()

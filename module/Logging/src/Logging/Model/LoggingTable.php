@@ -40,15 +40,7 @@ class LoggingTable
      */
     public function undo($params = array())
     {
-        $columns = array(
-            'attId' =>  'attribute_id',
-            'dataType'  =>  'backend_type',
-        );
-        $where = array(
-             'attribute_code'=> $params['property'] == 'title' ? 'name' : $params['property']
-        );
-        $selectResult = $this->productAttribute($this->sql,$columns, $where, 'lookup')->toArray();
-
+        $selectResult = $this->productAttributeLookup($this->sql,['attribute_code'=> $params['property'] == 'title' ? 'name' : $params['property']]);
         $attributeId = $selectResult[0]['attId'];
         $tableType  = $selectResult[0]['dataType'];
         $columnMap = array(
@@ -62,7 +54,7 @@ class LoggingTable
         );
 
         $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $columnMap);//'fields' => $mapping,
-        $this->getEventManager()->trigger('constructLog', null, array('makeFields'=>$eventWritables));
+        $this->getEventManager()->trigger('construct_sku_log', null, array('makeFields'=>$eventWritables));
          $set = array(
                 'dataState'=>1,
                 'lastModifiedDate'=>date('Y-m-d h:i:s'),
@@ -70,7 +62,10 @@ class LoggingTable
                 'value'=>$params['old'],
             );
         $where = array('attribute_id'=>$attributeId, 'entity_id'=>$params['eid']);
-        $this->productUpdateaAttributes($this->sql, $tableType, $set, $where);
+        $update = $this->sql->update('productattribute_' . $tableType)->set($set)->where($where);
+        $statement = $this->sql->prepareStatementForSqlObject($update);
+        $result = $statement->execute();
+        return $result;
     }
 
     /**

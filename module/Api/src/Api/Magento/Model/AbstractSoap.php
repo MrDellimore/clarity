@@ -34,7 +34,7 @@ abstract class AbstractSoap
     protected function _soapCall($packet, $resource = Null, $skuCollection)
     {
         $a = 0;
-        echo '<pre>';
+//        echo '<pre>';
 
         $batch = $results = $result = $status = [];
         while( $a < count($packet) ){

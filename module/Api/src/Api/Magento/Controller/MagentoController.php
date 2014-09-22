@@ -67,7 +67,7 @@ class MagentoController  extends AbstractActionController
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-//        echo '<pre>';
+        echo '<pre>';
 
         /*Fetch categories*/
         $categories = $this->getMagentoTable()->fetchChangedCategories();

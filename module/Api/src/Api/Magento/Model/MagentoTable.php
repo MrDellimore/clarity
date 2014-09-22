@@ -398,17 +398,17 @@ class MagentoTable {
             $resultSet->initialize($result);
         }
         $products = $resultSet->toArray();
-          $productSku = [
-              'PDPPBRBR','PLPPBRBR','PLPPGYBK','PMPPBRBR','PMPPGYBK','SEPPBRGD','SEPPGYGM','SEPPGYMSV','SSPPGNGD','SSPPGYMSV'
-          ];
+//          $productSku = [
+//              'PDPPBRBR','PLPPBRBR','PLPPGYBK','PMPPBRBR','PMPPGYBK','SEPPBRGD','SEPPGYGM','SEPPGYMSV','SSPPGNGD','SSPPGYMSV'
+//          ];
 //        $productSku = ['AV22303B06'];
 //        statically add products skus here if more are requested.
-        $skuCount = count($productSku);
+//        $skuCount = count($productSku);
 //        echo $skuCount . '<br />';
         $startCount = 0;
-        for( $i = 0; $i < $skuCount; $i++ ) {
+//        for( $i = 0; $i < $skuCount; $i++ ) {
             foreach($products as $index => $value) {
-                if($productSku[$i] == $value['sku']) {
+//                if($productSku[$i] == $value['sku']) {
                     $entityId = $products[$index]['entityId'];
                     $attributes = $this->productAttributeLookup($this->sql);
                     foreach( $attributes as $key => $attribute ) {
@@ -449,9 +449,9 @@ class MagentoTable {
                         }
                     }
                     $startCount++;
-                }
+//                }
             }
-        }
+//        }
 //        echo '<pre>';
 //        var_dump($soapBundle);
 //        die();
