@@ -39,8 +39,14 @@ return array(
                 ),
             ),
             array(
-                'label' => 'API Calls',
-                'route' => 'apis',
+                'label' => 'API',
+                'route' => 'home',
+                'pages' =>  array(
+                    array(
+                        'label' =>  'Magento',
+                        'route' =>  'apis',
+                    ),
+                ),
             ),
             array(
                 'label' => 'History',

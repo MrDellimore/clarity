@@ -61,12 +61,13 @@ class MagentoController  extends AbstractActionController
     protected function soapItemAction()
     {
         $categorySoapResponse = $itemSoapResponse = $resp = $linkedSoapResponse = Null;
+        $updateCategories = $updateFields = $linkedFields = Null;
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-        echo '<pre>';
+//        echo '<pre>';
 
         /*Fetch categories*/
         $categories = $this->getMagentoTable()->fetchChangedCategories();
@@ -85,6 +86,13 @@ class MagentoController  extends AbstractActionController
         if( !empty($categories) ) {
             /*Make api call to delete and update Sku with new categories*/
             $categorySoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapCategoriesUpdate($categories);
+            foreach ( $categorySoapResponse as $index => $catResponse ) {
+                foreach ( $catResponse as $key => $soapResponse ) {
+                    if( $soapResponse ) {
+                        $updateCategories = $this->getMagentoTable()->updateProductCategoriesToClean($categories[$key]);
+                    }
+                }
+            }
         }
 //        $session = new Container('dirty_skus');
 //        $changedProducts= $session->dirtyProduct;
@@ -92,30 +100,30 @@ class MagentoController  extends AbstractActionController
         if( !empty($changedProducts) ) {
             /*Update Mage with up-to-date products*/
             $itemSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapUpdateProducts($changedProducts);
+            foreach ( $itemSoapResponse as $index => $itemResponse ) {
+                foreach ( $itemResponse as $key => $soapResponse ) {
+                    if( $soapResponse ){
+                        $updateFields = $this->getMagentoTable()->updateToClean($changedProducts[$key]);
+                    }
+                }
+            }
         }
         if( !empty($linkedProds) ) {
             /*Update Mage with up-to-date linked products*/
             $linkedSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapLinkedProducts($linkedProds);
+            foreach ( $linkedSoapResponse as $index => $linkedResponse ) {
+                foreach ( $linkedResponse as $key => $soapResponse ) {
+                    if( $soapResponse ) {
+                        $linkedFields = $this->getMagentoTable()->updateLinkedProductstoClean($linkedProds[$key]);
+                    }
+                }
+            }
         }
 
-        foreach ( $categorySoapResponse as $index => $catResponse ) {
-            foreach ( $catResponse as $key => $soapResponse ) {
-                $updateCategories = $this->getMagentoTable()->updateProductCategoriesToClean($categories[$key]);
-            }
-        }
-        foreach ( $itemSoapResponse as $index => $itemResponse ) {
-            foreach ( $itemResponse as $key => $soapResponse ) {
-                $updateFields = $this->getMagentoTable()->updateToClean($changedProducts[$key]);
-            }
-        }
-        foreach ( $linkedSoapResponse as $index => $linkedResponse ) {
-            foreach ( $linkedResponse as $key => $soapResponse ) {
-                $linkedFields = $this->getMagentoTable()->updateLinkedProductstoClean($linkedProds[$key]);
-            }
-        }
         if ( $updateCategories || $updateFields || $linkedFields ) {
             return $this->redirect()->toRoute('apis');
         }
+        return $this->redirect()->toRoute('apis');
     }
 
     public function soapNewItemsAction()

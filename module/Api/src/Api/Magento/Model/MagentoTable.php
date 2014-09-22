@@ -257,11 +257,12 @@ class MagentoTable {
     public function updateProductCategoriesToClean($cats)
     {
         $dataState = (int)$cats['dataState'];
-        if( $dataState === 2){
+        if( $dataState === 2 ){
             $update = $this->sql->update('productcategory')->set(['dataState'=>0])->where(['entity_id'=>$cats['entityId'], 'category_id'=>$cats['categortyId']]);
             $statement = $this->sql->prepareStatementForSqlObject($update);
             $result = $statement->execute();
-        } else {
+        }
+        if( $dataState === 3 ){
             $delete = $this->sql->delete('productcategory');
             $delete->where(['entity_id'=>$cats['entityId'], 'category_id'=>$cats['categortyId']]);
             $statement = $this->sql->prepareStatementForSqlObject($delete);

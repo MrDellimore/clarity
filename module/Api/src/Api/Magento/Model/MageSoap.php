@@ -146,50 +146,14 @@ class MageSoap extends AbstractSoap{
                 ];
             }
         }
-        var_dump($packet);
-//        die();
-//        foreach($packet as $key => $batch){
-//            $results = $soapHandle->call('call', $batch );
-//        }
-//        var_dump($results);
-//        die();
-//        return $results;
-//        echo $packet[1]['resource'];
 //        var_dump($packet);
 //        die();
         return $this->_soapCall($packet, null, $skuCollection);
-
-        $a = 0;
-        $batch = [];
-        while( $a < count($packet) ){
-            $x = 0;
-            while($x < 10 && $a < count($packet)) {
-                if( $packet[$a]['dataState'] == 3 ) {
-                    $batch[$x] = array('catalog_product_link.remove', $packet[$a]);
-                } else {
-                    $batch[$x] = array('catalog_product_link.assign', $packet[$a]);
-                }
-                $x++;
-                $a++;
-            }
-            sleep(15);
-            var_dump($batch);
-            $results[] = $soapHandle->call('multiCall',array($session, $batch));
-
-        }
-        var_dump($results);
-        die();
-        return $results;
     }
 
     public function soapMedia($media = array())
     {
         $packet = $skuCollection = [];
-//        if(!is_array($media)) {
-//            throw new \InvalidArgumentException(
-//                sprintf("Bad argument in class %s for function %s in line %s.",__CLASS__, __FUNCTION__, __LINE__)
-//            );
-//        }
         $this->startStopwatch();
 //        $soapHandle = new Client(SOAP_URL);
 //        $session = $soapHandle->call('login',[SOAP_USER, SOAP_USER_PASS]);
@@ -232,23 +196,6 @@ class MageSoap extends AbstractSoap{
             ];
         }
         return $this->_soapCall($packet, 'catalog_product_attribute_media.create', $skuCollection);
-
-//        $results = [];
-//        $a = 0;
-//        $batch = [];
-//        while( $a < count($packet) ){
-//            $x = 0;
-//            while($x < 10 && $a < count($packet)){
-//                $batch[$x] = array('catalog_product_attribute_media.create', $packet[$a]);
-//                $x++;
-//                $a++;
-//            }
-//            sleep(15);
-//            $results[] = $soapHandle->call('multiCall',array($session, $batch));
-//        }
-//        $totalTime = $this->stopStopwatch();
-//        $this->insertIntoMageLog($skuCollection ,'catalog_product_attribute_media.create', $totalTime);
-//        return $results;
     }
 
     public function soapCategoriesUpdate($categories)

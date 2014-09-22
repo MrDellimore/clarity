@@ -62,6 +62,7 @@ abstract class AbstractSoap
         }
         $totalTime = $this->stopStopwatch();
 
+//        die();
 
         foreach ( $results as $key => $res ) {
             foreach ( $res as $index => $r ) {
@@ -84,8 +85,8 @@ abstract class AbstractSoap
                 }
             }
         }
-        var_dump($results);
-//        die();
+//        var_dump($result);
+//die();
         return $result;
     }
 } 
