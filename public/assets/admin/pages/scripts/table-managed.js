@@ -711,27 +711,47 @@ var TableManaged = function () {
         });
     };
 
-    var initCrossSellDisplay = function () {
-        //var table = $('#crossSellDisplay');
-        var dtable = $('#crossSellDisplay').DataTable({
+    var updateMageItems = function () {
+        var dTable = $('#kpiUpdates');
+        var dtable = dTable.DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: "/content/product/accessories",
-                type: 'POST',
-                "data": function (d){
-                    d.related = $("#crossSellForm input[name*='linkedSku]']").serializeArray();
-                    d.position = $("#crossSellForm input[name*='position]']").serializeArray();
-                }
+                url: "/api-feeds",
+                type: 'POST'
+//                "data": function (d){
+//                    d.related = $("#crossSellForm input[name*='linkedSku]']").serializeArray();
+//                    d.position = $("#crossSellForm input[name*='position]']").serializeArray();
+//                }
             },
             "columns": [
-                { "data": "sort", "orderable": false },
-                { "data": "Sku", "orderable": false },
-                { "data": "title", "orderable": false },
-                { "data": "status", "orderable": false  },
-                { "data": "price", "orderable": false },
-                { "data": "quantity", "orderable": false },
-                { "data": "edit", "orderable": false }
+
+                {
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td id='sku_item'>"+
+                                            "<label for='skuItem'></label>"+
+                                                "<input type='checkbox' id='skuItem' name='skuItem[]' value=''/></td>"
+                },
+                {
+                    "class": "hidden count",
+                    "data": "count"
+                },
+                {
+                    "class": "eid",
+                    "data": "id"
+                },
+                { "data": "item"},
+                {
+                    "class": "hidden prty",
+                    "data": "oproperty"
+                },
+                {
+                    "data": "property"
+                },
+                { "data": "newValue"},
+                { "data": "ldate"},
+                { "data": "fullName"}
 
 
             ],
@@ -758,9 +778,83 @@ var TableManaged = function () {
                     "first": "First"
                 }
             }});
+//        var entityId = $('#kpiUpdates td.eid');
+//        console.log(entityId);
+//        console.log(dTable);
+//        console.log(dtable);
 
-        //add acessories
+//        if( dTable.hasClass('eid') ) {
+////            console.log('yes');
+//        } else {
+////            console.log('no');
+//        }
 
+        $('#kpiUpdates tbody').on('change', '#skuItem',function (e) {
+            e.preventDefault();
+            var idChange = $(this);
+            var entityId = idChange.closest('td').siblings('td.eid').text();
+//            var position = idChange.closest('td').length;
+//            var position = idChange.closest('td').siblings('.eid').index('td');
+            var position = idChange.closest('td').siblings('td.count').text();
+            var property = idChange.closest('td').siblings('td.prty').text();
+            $(this).val(entityId).attr('name','skuItem['+position+']');
+            var hiddenId = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuItem['+position+'][id]',//$(this).attr('name'),
+                value: entityId
+            });
+            var hiddenProperty = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuItem['+position+'][property]',//$(this).attr('name'),
+                value: property
+            });
+            if( $(this).prop('checked') ) {
+                hiddenId.appendTo('form#mageForm');
+                hiddenProperty.appendTo('form#mageForm');
+            }
+            if( !$(this).is(':checked') ) {
+                $("form#mageForm input[name='skuItem["+ position +"][id]']").remove();
+                $("form#mageForm input[name='skuItem["+ position +"][property]']").remove();
+            }
+        });
+        var groupSku = $('#skuItems');
+
+        groupSku.on('change',function(){
+            var item = $('td input#skuItem');
+//            console.log(item.length);
+            if( $(this).prop("checked") ) {
+                item.each(function(i){
+                    var inputId = $('<input>').attr({
+                        type: 'hidden',
+                        name: 'skuItem['+i+'][id]',
+                        value: $("input[name='skuItem["+i+"][id]'").val()
+                    });
+                    var inputProperty = $('<input>').attr({
+                        type: 'hidden',
+                        name:'skuItem['+i+'][property]',
+                        value: $("input[name='skuItem["+i+"][property]'").val()
+                    });
+                    $(this).prop('checked','checked');
+                    inputId.appendTo('form#mageForm');
+                    inputProperty.appendTo('form#mageForm');
+                });
+            } else {
+                item.each(function(i){
+//                    var inputId = $('<input>').attr({
+//                        type: 'hidden',
+//                        name:'skuItem['+i+'][id]',
+//                        value: $("input[name='skuItem["+i+"][id]'").val()
+//                    });
+//                    var inputProperty = $('<input>').attr({
+//                        type: 'hidden',
+//                        name:'skuItem['+i+'][property]',
+//                        value: $("input[name='skuItem["+i+"][property]'").val()
+//                    });
+                    $(this).prop('checked', '');
+                    $('form#mageForm input').remove();
+                });
+            }
+        });
     };
 
     var webassignmentTable = function () {

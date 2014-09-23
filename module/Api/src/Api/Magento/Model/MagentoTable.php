@@ -157,14 +157,21 @@ class MagentoTable {
         return $soapUpdate;
     }
 
-    public function fetchChangedProducts()
+    public function fetchChangedProducts($sku, $limit)
     {
+        $soapBundle = [];
         $select = $this->sql->select();
         $select->from('product');
-        $select->columns(array('id' => 'entity_id', 'sku' => 'productid', 'ldate'=>'lastModifiedDate', 'item' => 'productid'));
+        $select->columns(array('id' => 'entity_id', 'ldate'=>'lastModifiedDate', 'item' => 'productid'));
         $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+        $filter = new Where;
+        if( !empty($sku) ){
+            $filter->like('product.productid',$sku.'%');
+        }
+        $filter->equalTo('product.dataState',1);
 
-        $select->where(array( 'dataState' => '1'));
+        $select->where($filter);
+        $select->limit((int)$limit);
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -175,23 +182,50 @@ class MagentoTable {
         }
         $dirtyCount = $resultSet->count();
         $this->setDirtyCount($dirtyCount);
-        $result = $resultSet->toArray();
-
+        $products = $resultSet->toArray();
+//        echo '<pre>';
+//        var_dump($products);
         $results = $this->productAttributeLookup($this->sql);
-        foreach($results as $key => $attributes){
-            $dataType = $attributes['dataType'];
-            $attributeId = $attributes['attId'];
-            $attributeCode = $attributes['attCode'] === 'name' ? 'title' : $attributes['attCode'];
-            $newAttribute = $this->fetchAttribute( $dataType,$attributeId,$attributeCode);
-            if(is_array($newAttribute)){
-                foreach($newAttribute as $newAtt){
-                    $result[] = $newAtt;
+        $soapCount = 0;
+        foreach( $products as $index => $product ) {
+            foreach($results as $key => $attributes){
+                $dataType = $attributes['dataType'];
+                $attributeId = $attributes['attId'];
+                $attributeCode = $attributes['attCode'];// === 'name' ? 'title' : $attributes['attCode'];
+                $productAttributes = $this->productAttribute($this->sql,[$attributeCode=>'value', 'ldate'=>'lastModifiedDate'],['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1], $dataType)->toArray();
+                if(!empty($productAttributes )) {
+                    $soapBundle[$soapCount]['count'] = $soapCount;
+                    $soapBundle[$soapCount]['id'] = $product['id'];
+                    $soapBundle[$soapCount]['item'] = $product['item'];
+                    $soapBundle[$soapCount]['oproperty'] = $attributeCode;
+                    $property = preg_match('(_)',$attributeCode) ? str_replace('_',' ',$attributeCode) : $attributeCode;
+//                    if( is_array($property) ) {
+//                        foreach( $property as $pty ) {
+//                            $soapBundle[$soapCount]['property'] .= ucfirst($pty);
+//                        }
+//                    } else {
+                    $soapBundle[$soapCount]['property'] = ucfirst($property);
+                    $soapBundle[$soapCount]['newValue'] = $productAttributes[0][$attributeCode];
+                    $soapBundle[$soapCount]['ldate'] = $productAttributes[0]['ldate'];
+                    $soapBundle[$soapCount]['fullName'] = $productAttributes[0]['fName']. ' ' . $productAttributes[0]['lName'];
+                    $soapCount++;
+
+//                    }
+
                 }
+//                $newAttribute = $this->fetchAttribute( $dataType,$attributeId,$attributeCode);
+//                if(is_array($newAttribute)){
+//                    foreach($newAttribute as $newAtt){
+//                        $product[] = $newAtt;
+//                    }
+//                }
             }
         }
+//        var_dump($soapBundle);
+//        die();
 
         $this->setDirtyItems($this->getDirtyCount(), $this->getAggregateAttributeDirtyCount());
-        return $result;
+        return $soapBundle;
     }
 
 //    TODO have to change this to fetchChangedProductsCount instead.

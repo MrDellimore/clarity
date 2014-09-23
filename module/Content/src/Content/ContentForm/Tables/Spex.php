@@ -40,6 +40,8 @@ trait Spex {
         } else {
             $select->where($where);
         }
+        $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+
 //        $select->quantifier(Select::QUANTIFIER_DISTINCT);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

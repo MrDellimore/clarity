@@ -29,33 +29,38 @@ class MagentoController  extends AbstractActionController
 
     public function magentoAction()
     {
+        $result = '';
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-        $this->skuData = array();
-//        $sku = $this->params()->fromRoute('status');
-//        $this->getRequest('status');
-        $this->skuData = $this->getMagentoTable()->fetchChangedProducts();
-        $cleanCount = $this->getMagentoTable()->fetchCleanCount();
-        $newCount = $this->getMagentoTable()->fetchNewCount();
-        $images = $this->getMagentoTable()->fetchImageCount();
-        $tableHeaders = array('ID','SKU','Attribute Field','New Attribute Value','Last Modified Date','Changed By');
-        $session = new Container('dirty_skus');
-        $dirtySkus = array();
-        $session->dirtyProduct = $this->skuData;
-        return new ViewModel(
-            array(
-//                'loadTime'  =>  $totalTime,
-                'updateHeaders' => $tableHeaders,
-                'sku'   =>  $this->skuData,
-//                'cleanCount'    => $cleanCount,
-                'newCount'    => $newCount,
-                'newImages'    => $images,
-                'dirtyCount' => $this->getMagentoTable()->getDirtyItems()
-            )
-        );
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $apiData = $request->getPost();
+            $draw = $apiData['draw'];
+            $sku = $apiData['search']['value'];
+            $limit = $apiData['length'];
+
+            if($limit == '-1'){
+                $limit = 100;
+            }
+            $skuData = $this->getMagentoTable()->fetchChangedProducts($sku,$limit );
+//            echo '<pre>';
+//            var_dump($skuData);
+            $result = json_encode(
+                array(
+                    'draw' => $draw,
+                    'recordsTotal' => 1000,
+                    'recordsFiltered' => $limit,
+                    //results
+                    'data' => $skuData)
+            );
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
     }
 
     protected function soapItemAction()

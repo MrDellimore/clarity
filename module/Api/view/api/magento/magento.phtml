@@ -159,7 +159,9 @@
                             <tr>
                                 <th><input type="checkbox" id="skuItems" name="skuItem[]" value=""/></th>
                                 <th>ID</th>
+                                <th>ID</th>
                                 <th>Sku</th>
+                                <th>Attribute Field</th>
                                 <th>Attribute Field</th>
                                 <th>New Attribute Value</th>
                                 <th>Last Modified Date</th>
@@ -167,25 +169,36 @@
                             </tr>
                             </thead>
                             <tbody>
-                                    <?php
-                                        foreach($this->sku as $index => $value) :
-                                           if(isset($value['id'])):?>
-                                                <tr>
-                                                    <td id="sku_item">
-                                                        <label for="skuItem"></label>
-                                                            <input type="checkbox" id="skuItem" name="skuItem[<?=$index?>]" value="<?=$value['id']?>"/>
-                                                    </td>
-                                                    <td><?=$value['id']?></td>
-                                                    <td><?=$value['item']?></td>
-                                                   <?php array_shift($value);?>
-                                                    <td><?=ucfirst(str_replace('_',' ',current(array_keys($value))))?></td>
-                                                    <td><?=current($value)?></td>
-                                                    <td><?=$value['ldate']?></td>
-                                                    <td><?=$value['fName'] . ' ' . $value['lName'] ?></td>
-                                                </tr>
-                                            <?php endif;?>
-                                        <?php endforeach?>
-                                </form>
+                                <tr>
+<!--                                    <td id="sku_item"></td>-->
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+<!--                                    --><?php
+//                                        foreach($this->sku as $index => $value) :
+//                                           if(isset($value['id'])):?>
+<!--                                                <tr>-->
+<!--                                                    <td id="sku_item">-->
+<!--                                                        <label for="skuItem"></label>-->
+<!--                                                            <input type="checkbox" id="skuItem" name="skuItem[--><?//=$index?><!--]" value="--><?//=$value['id']?><!--"/>-->
+<!--                                                    </td>-->
+<!--                                                    <td>--><?php //$value['id']?><!--</td>-->
+<!--                                                    <td>--><?php //$value['item']?><!--</td>-->
+<!--                                                   --><?php //array_shift($value);?>
+<!--                                                    <td>--><?php //ucfirst(str_replace('_',' ',current(array_keys($value))))?><!--</td>-->
+<!--                                                    <td>--><?php //current($value)?><!--</td>-->
+<!--                                                    <td>--><?php //$value['ldate']?><!--</td>-->
+<!--                                                    <td>--><?php //$value['fName'] . ' ' . $value['lName'] ?><!--</td>-->
+<!--                                                </tr>-->
+<!--                                            --><?php //endif;?>
+<!--                                        --><?php //endforeach?>
+<!--                                </form>-->
                             </tbody>
                         </table>
 <!--                        --><?php //=$loadTime = isset($this->loadTime) ? $this->loadTime: ''?>
