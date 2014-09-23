@@ -161,21 +161,29 @@
                             </tr>
                             </thead>
                             <tbody>
-
-                            <?php
-                                foreach($this->sku as $index => $value) :
-                                   if(isset($value['id'])):?>
-                                    <tr>
-                                        <td><?=$value['id']?></td>
-                                        <td><?=$value['item']?></td>
-                                       <?php array_shift($value);?>
-                                        <td><?=ucfirst(str_replace('_',' ',current(array_keys($value))))?></td>
-                                        <td><?=current($value)?></td>
-                                        <td><?=$value['ldate']?></td>
-                                        <td><?=$value['fName'] . ' ' . $value['lName'] ?></td>
-                                    </tr>
-                                    <?php endif;?>
-                                <?php endforeach?>
+                            <form id="mageForm">
+                            </form>
+                                    <?php
+                                        foreach($this->sku as $index => $value) :
+                                           if(isset($value['id'])):?>
+                                                <tr>
+                                                    <td id="sku_item">
+                                                        <label for="skuItem"></label>
+<!--                                                        <form id="mageForm" >-->
+                                                            <input type="checkbox" id="skuItem" name="skuItem[<?=$index?>]" value="<?=$value['id']?>"/>
+<!--                                                        </form>-->
+                                                    </td>
+                                                    <td><?=$value['id']?></td>
+                                                    <td><?=$value['item']?></td>
+                                                   <?php array_shift($value);?>
+                                                    <td><?=ucfirst(str_replace('_',' ',current(array_keys($value))))?></td>
+                                                    <td><?=current($value)?></td>
+                                                    <td><?=$value['ldate']?></td>
+                                                    <td><?=$value['fName'] . ' ' . $value['lName'] ?></td>
+                                                </tr>
+                                            <?php endif;?>
+                                        <?php endforeach?>
+                                </form>
                             </tbody>
                         </table>
 <!--                        --><?php //=$loadTime = isset($this->loadTime) ? $this->loadTime: ''?>
