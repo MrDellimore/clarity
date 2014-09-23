@@ -122,9 +122,13 @@
         ?>
                 <div class="row magento-updates">
                     <div class="col-md-4 ">
-                        <a href="/api-feeds/magento/items" class="btn blue btn-block btn-lg m-icon-big">
-                            Push All Items <i class="m-icon-big-swapright m-icon-white"></i>
-                        </a>
+                        <form id="mageForm" action="/api-feeds/magento/items" method="post">
+                            <button class="btn blue btn-block btn-lg m-icon-big">
+                                <!--                                href="/api-feeds/magento/items"-->
+                                Push All Items <i class="m-icon-big-swapright m-icon-white"></i>
+                            </button>
+                        </form>
+
                     </div>
                 </div>
                 <div class="row magento-images">
@@ -163,17 +167,13 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <form id="mageForm">
-                            </form>
                                     <?php
                                         foreach($this->sku as $index => $value) :
                                            if(isset($value['id'])):?>
                                                 <tr>
                                                     <td id="sku_item">
                                                         <label for="skuItem"></label>
-<!--                                                        <form id="mageForm" >-->
                                                             <input type="checkbox" id="skuItem" name="skuItem[<?=$index?>]" value="<?=$value['id']?>"/>
-<!--                                                        </form>-->
                                                     </td>
                                                     <td><?=$value['id']?></td>
                                                     <td><?=$value['item']?></td>

@@ -80,7 +80,7 @@ abstract class AbstractSoap
                         $resource = $packet[$index]['resource'];
                     }
                     $result[$key][$index] = $results[$key][$index];
-                    echo $resource;
+//                    echo $resource;
                     $this->insertIntoMageLog($skuCollection[$index] ,$resource, $totalTime, 'Success');
                 }
             }

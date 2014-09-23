@@ -51,7 +51,7 @@ var ManageContent = function () {
                     //$('#contentdiv').empty().append(data);
 
 //                   toastr.success(data);
-
+//
                    console.log(data);
                 });
         });
@@ -133,46 +133,47 @@ var ManageContent = function () {
     };
 
     var mageSkuHandle = function () {
-        $( "#mageForm" ).submit(function( event ) {
-//            console.log('hoho');
-            event.preventDefault();
-            $('tr #sku_item').each(function(){
-                if ( $(this, '#skuItem').prop() ) {
+//        $('#all_items').on('click',function(){
+//            e.preventDefault();
+            $( "#mageForm" ).submit(function( event ) {
+                //            console.log('hoho');
+                event.preventDefault();
+                //            $('tr #sku_item').each(function(){
+                //                if ( $(this, '#skuItem').prop() ) {
+                //
+                //                }
+                //            });
 
-                }
+                //console.log($('#mageForm').serializeArray());
+                var form = $('#mageForm').serializeArray();
+                //            console.log(form);
+                //            var form = 'haha';
+                var url = '/api-feeds/magento/items';
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: form})
+                    .done(function( data ) {
+                        toastr.success(data);
+//                                           console.log(data);
+                    });
+
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-full-width",
+                    "showDuration": "2000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+                //             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
             });
-
-//console.log($('#mageForm').serializeArray());
-//            var form = $('#mageForm').serializeArray();
-//            console.log(form);
-//            var form = 'haha';
-            var url = '/api-feeds/magento/items';
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: form})
-                .done(function( data ) {
-                    toastr.success(data);
-
-//                   console.log(data);
-                });
-
-             toastr.options = {
-             "closeButton": true,
-             "debug": false,
-             "positionClass": "toast-top-full-width",
-             "showDuration": "2000",
-             "hideDuration": "1000",
-             "timeOut": "5000",
-             "extendedTimeOut": "1000",
-             "showEasing": "swing",
-             "hideEasing": "linear",
-             "showMethod": "fadeIn",
-             "hideMethod": "fadeOut"
-             };
-//             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
-        });
-
+//        });
     };
 
 

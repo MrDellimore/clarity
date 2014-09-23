@@ -567,11 +567,7 @@ var TableManaged = function () {
     };
 
     var initCrossSellDisplay = function () {
-
         //var table = $('#crossSellDisplay');
-
-
-
         var dtable = $('#crossSellDisplay').DataTable({
             "processing": true,
             "serverSide": true,
@@ -708,19 +704,64 @@ var TableManaged = function () {
             }
             dtable.draw();
 
-
-
-
                 //redraw table to sort based on first column
                     //or
                 //call ajax again and sort by position values in PHP
 
         });
-
-
-
     };
 
+    var initCrossSellDisplay = function () {
+        //var table = $('#crossSellDisplay');
+        var dtable = $('#crossSellDisplay').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/content/product/accessories",
+                type: 'POST',
+                "data": function (d){
+                    d.related = $("#crossSellForm input[name*='linkedSku]']").serializeArray();
+                    d.position = $("#crossSellForm input[name*='position]']").serializeArray();
+                }
+            },
+            "columns": [
+                { "data": "sort", "orderable": false },
+                { "data": "Sku", "orderable": false },
+                { "data": "title", "orderable": false },
+                { "data": "status", "orderable": false  },
+                { "data": "price", "orderable": false },
+                { "data": "quantity", "orderable": false },
+                { "data": "edit", "orderable": false }
+
+
+            ],
+             "order": [
+                 [0, "asc"]
+             ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "lengthMenu": "_MENU_ records",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }});
+
+        //add acessories
+
+    };
 
     var webassignmentTable = function () {
 
@@ -785,6 +826,7 @@ var TableManaged = function () {
             webassignmentTable();
             attributesPopulate();
             optionsPopulate();
+            updateMageItems();
         }
 
     };

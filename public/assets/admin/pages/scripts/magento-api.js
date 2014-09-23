@@ -13,44 +13,44 @@ var skuItem = $('#sku_item');
 var groupSku = $('#skuItems');
 
 groupSku.on('change',function(){
+    var item = $('tr #sku_item #skuItem');
+
     if( $(this).prop("checked") ) {
-        $('tr #sku_item #skuItem').each(function(){
-            $(this).prop('checked','checked');
-            $('<input>').attr({
+        item.each(function(){
+            var input = $('<input>').attr({
                 type: 'hidden',
                 name: $(this).attr('name'),
                 value: $(this).val()
-            }).appendTo('form#mageForm');
+            });
+            $(this).prop('checked','checked');
+            input.appendTo('form#mageForm');
         });
     } else {
-        $('tr #sku_item #skuItem').each(function(){
+        item.each(function(){
+            var input = $('<input>').attr({
+                type: 'hidden',
+                name: item.attr('name'),
+                value: item.val()
+            });
             $(this).prop('checked', '');
-            $('form#mageForm').empty();
+            $('form#mageForm input').remove();
         });
     }
 });
 $('tr #sku_item').on('change', '#skuItem' ,function(){
+    var hidden = $('<input>').attr({
+        type: 'hidden',
+        name: $(this).attr('name'),
+        value: $(this).val()
+    });
     if( $(this).prop('checked') ) {
-        $('<input>').attr({
-            type: 'hidden',
-            name: $(this).attr('name'),
-            value: $(this).val()
-        }).appendTo('form#mageForm');
-    } else {
-//        $(this)
-        $('<input>').attr({type:'',name:'',value:''}).appendTo('form#mageForm');
+        hidden.appendTo('form#mageForm');
+    }
+    if( !$(this).is(':checked') ) {
+        $('form#mageForm input[value='+ $(this).val() +']').remove();
     }
 });
-//$('tr #sku_item').each(function(){
-//    if ( $(this, '#skuItem').prop() ) {
-//        console.log('haha');
-//    }
-//});
 
-//skuItem.css('cursor','pointer');
-//skuItem.on('change',function(){
-//skuItem.attr("checked", !skuItem.attr("checked"));
-//});
         $('.show-updates').on('click',function(e){
             e.preventDefault();
             magentoItems.show();

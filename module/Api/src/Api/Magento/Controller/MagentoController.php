@@ -68,18 +68,15 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
 //        echo '<pre>';
-
         /*Fetch categories*/
         $request = $this->getRequest();
+
         if ( $request->isPost() ) {
             $checkboxSku = $request->getPost();
-            var_dump($checkboxSku);
+            /*Fetch products that have changed due to content team.*/
+            $changedProducts = $this->getMagentoTable()->fetchDirtyProducts($checkboxSku['skuItem']);
         }
-            die();
         $categories = $this->getMagentoTable()->fetchChangedCategories();
-
-        /*Fetch products that have changed due to content team.*/
-        $changedProducts = $this->getMagentoTable()->fetchDirtyProducts();
 
         /*Fetch Related Products
         TODO have to figure out why some entity ids like 676 are not removed.
@@ -109,7 +106,7 @@ class MagentoController  extends AbstractActionController
             foreach ( $itemSoapResponse as $index => $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ){
-                        $updateFields = $this->getMagentoTable()->updateToClean($changedProducts[$key]);
+                        $updateFields .= $this->getMagentoTable()->updateToClean($changedProducts[$key]);
                     }
                 }
             }
@@ -125,11 +122,21 @@ class MagentoController  extends AbstractActionController
                 }
             }
         }
+        $result = '';
 
         if ( $updateCategories || $updateFields || $linkedFields ) {
-            return $this->redirect()->toRoute('apis');
+            $result = $updateCategories .'<br />'.$updateFields.'<br />'.$linkedFields;
+//            return $this->redirect()->toRoute('apis');
         }
-        return $this->redirect()->toRoute('apis');
+        if( empty($result) ) {
+            $result = 'Nothing has been uploaded.';
+        }
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+
+        return $response;
+//        return $this->redirect()->toRoute('apis');
     }
 
     public function soapNewItemsAction()

@@ -101,13 +101,17 @@ class MagentoTable {
         return $resultSet->count();
     }
 
-    public function fetchDirtyProducts()
+    public function fetchDirtyProducts($changedProducts = Null)
     {
         $select = $this->sql->select();
         $select->from('product');
         $select->columns(['id' => 'entity_id', 'sku' => 'productid', 'website' => 'website']);
 //        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
-        $select->where(array( 'dataState' => '1'));
+        $filter = new Where;
+        $filter->in('product.entity_id',$changedProducts);
+        $filter->equalTo('product.dataState',1);
+//        $select->where(array( 'dataState' => '1'));
+        $select->where($filter);
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -119,33 +123,35 @@ class MagentoTable {
         $product = $resultSet->toArray();
         $soapUpdate = [];
         $startCount = 0;
-        foreach( $product as $index => $prd){
-            $lookup = $this->productAttributeLookup($this->sql);
-            foreach($lookup as $key => $attributes){
-                $dataType = (string)$attributes['dataType'];
-                $attributeId = (int)$attributes['attId'];
-                $attributeCode = (string)$attributes['attCode'];
-//TODO have to add for changing product sku when the soap call goes through in case admin wants to change the sku in mage.
-                $productAttributeSelect = $this->sql->select()->from('productattribute_'.$dataType)
-                                                              ->columns([$attributeCode=>'value'])
-                                                              ->where(['attribute_id'=>$attributeId, 'entity_id'=>$prd['id'], 'dataState'=>1]);
-                $prdStatement = $this->sql->prepareStatementForSqlObject($productAttributeSelect);
-                $prdResult = $prdStatement->execute();
+//        foreach( $changedProducts as $key => $checkedProducts )
+//        var_dump($product);
+            foreach( $product as $index => $prd){
+                    $lookup = $this->productAttributeLookup($this->sql);
+                    foreach($lookup as $key => $attributes){
+                        $dataType = (string)$attributes['dataType'];
+                        $attributeId = (int)$attributes['attId'];
+                        $attributeCode = (string)$attributes['attCode'];
+        //TODO have to add for changing product sku when the soap call goes through in case admin wants to change the sku in mage.
+                        $productAttributeSelect = $this->sql->select()->from('productattribute_'.$dataType)
+                                                                      ->columns([$attributeCode=>'value'])
+                                                                      ->where(['attribute_id'=>$attributeId, 'entity_id'=>$prd['id'], 'dataState'=>1]);
+                        $prdStatement = $this->sql->prepareStatementForSqlObject($productAttributeSelect);
+                        $prdResult = $prdStatement->execute();
 
-                $attSet = new ResultSet;
-                if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                    $attSet->initialize($prdResult);
-                }
-                $productAttributeResults = $attSet->toArray();
-                foreach( $productAttributeResults as $ind => $value ){
-                    $soapUpdate[$startCount]['id'] = $prd['id'];
-                    $soapUpdate[$startCount]['sku'] = $prd['sku'];
-//                    $soapUpdate[$startCount]['website'] = [$prd['website']];
-                    $soapUpdate[$startCount][$attributeCode] =$value[$attributeCode];
-                }
+                        $attSet = new ResultSet;
+                        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                            $attSet->initialize($prdResult);
+                        }
+                        $productAttributeResults = $attSet->toArray();
+                        foreach( $productAttributeResults as $ind => $value ){
+                            $soapUpdate[$startCount]['id'] = $prd['id'];
+                            $soapUpdate[$startCount]['sku'] = $prd['sku'];
+        //                    $soapUpdate[$startCount]['website'] = [$prd['website']];
+                            $soapUpdate[$startCount][$attributeCode] =$value[$attributeCode];
+                        }
+                    }
+                    $startCount++;
             }
-            $startCount++;
-        }
 //        var_dump($soapUpdate);
 //        die();
         return $soapUpdate;
@@ -349,6 +355,7 @@ class MagentoTable {
 
     public function updateToClean($changedProducts)
     {
+        $results = '';
         $attributes = array_keys($changedProducts);
         $entityId = $changedProducts['id'];
         $sku = $changedProducts['sku'];
@@ -365,9 +372,10 @@ class MagentoTable {
             $dataType = $lookup[0]['dataType'];
             $updateProductAttribute = $this->sql->update('productattribute_'.$dataType)->set(['dataState'=>0])->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);
             $prdAttStatement = $this->sql->prepareStatementForSqlObject($updateProductAttribute);
-            $result = $prdAttStatement->execute();
+            $prdAttStatement->execute();
         }
-        return $result;
+        $results .= $sku . " has been updated in Magento Admin";
+        return $results;
     }
 
 
