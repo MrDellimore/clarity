@@ -36,6 +36,7 @@ class MagentoController  extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $request = $this->getRequest();
+
         if($request->isPost()){
             $apiData = $request->getPost();
             $draw = $apiData['draw'];
@@ -72,15 +73,17 @@ class MagentoController  extends AbstractActionController
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-//        echo '<pre>';
+        echo '<pre>';
         /*Fetch categories*/
         $request = $this->getRequest();
 
         if ( $request->isPost() ) {
             $checkboxSku = $request->getPost();
             /*Fetch products that have changed due to content team.*/
-            $changedProducts = $this->getMagentoTable()->fetchDirtyProducts($checkboxSku['skuItem']);
+//            var_dump($checkboxSku);
+            $changedProducts = $this->getMagentoTable()->fetchDirtyProducts($checkboxSku);
         }
+        die();
         $categories = $this->getMagentoTable()->fetchChangedCategories();
 
         /*Fetch Related Products

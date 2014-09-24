@@ -103,12 +103,29 @@ class MagentoTable {
 
     public function fetchDirtyProducts($changedProducts = Null)
     {
-        $select = $this->sql->select();
-        $select->from('product');
-        $select->columns(['id' => 'entity_id', 'sku' => 'productid', 'website' => 'website']);
+        $count = 0;
+        $checkedProdIds = [];
+        $checkedProdProperties = [];
+        foreach ( $changedProducts['skuItem'] as $property ) {
+            $checkedProdIds[$count] = $property['id'];
+            $checkedProdProperties[$count] = $property['property'];
+            $count++;
+        }
+//        var_dump($checkedProdIds);
+//        var_dump($checkedProdProperties);
+        foreach ( $checkedProdIds as $key => $id ) {
+            $select = $this->sql->select();
+            $select->from('product')->columns(['id' => 'entity_id', 'sku' => 'productid', 'website' => 'website'])->where(['entity_id'=>$id, 'dataStat'=>1]);
+
+
+        }
+//        $select = $this->sql->select();
+//        $select->from('product');
+//        $select->columns(['id' => 'entity_id', 'sku' => 'productid', 'website' => 'website']);
 //        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
         $filter = new Where;
-        $filter->in('product.entity_id',$changedProducts);
+//        $filter->in('product.entity_id',$changedProducts);
+        $filter->in('product.entity_id',$checkedProdIds);
         $filter->equalTo('product.dataState',1);
 //        $select->where(array( 'dataState' => '1'));
         $select->where($filter);
@@ -121,12 +138,30 @@ class MagentoTable {
             $resultSet->initialize($result);
         }
         $product = $resultSet->toArray();
+//        var_dump($product);
+//        die();
         $soapUpdate = [];
         $startCount = 0;
 //        foreach( $changedProducts as $key => $checkedProducts )
-//        var_dump($product);
+        var_dump($product);
             foreach( $product as $index => $prd){
-                    $lookup = $this->productAttributeLookup($this->sql);
+
+                $lookupAttribute = $this->sql->select()->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code'])->from('productattribute_lookup');
+                $filter = new Where;
+                $filter->in('productattribute_lookup.attribute_code',$checkedProdProperties);
+                $lookupAttribute->where($filter);
+
+                $attrStmt = $this->sql->prepareStatementForSqlObject($lookupAttribute);
+                $attResult = $attrStmt->execute();
+
+                $attSet = new ResultSet;
+                if ($attResult instanceof ResultInterface && $attResult->isQueryResult()) {
+                    $attSet->initialize($attResult);
+                }
+                $lookup = $attSet->toArray();
+//                var_dump($lookup);
+
+//                    $lookup = $this->productAttributeLookup($this->sql);
                     foreach($lookup as $key => $attributes){
                         $dataType = (string)$attributes['dataType'];
                         $attributeId = (int)$attributes['attId'];
@@ -153,7 +188,7 @@ class MagentoTable {
                     $startCount++;
             }
 //        var_dump($soapUpdate);
-//        die();
+        die();
         return $soapUpdate;
     }
 
