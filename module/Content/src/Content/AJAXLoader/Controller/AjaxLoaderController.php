@@ -11,10 +11,48 @@ namespace Content\AJAXLoader\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Content\ContentForm\Entity\Products;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
+use Zend\Session\Container;
+
 
 class AjaxLoaderController extends AbstractActionController
 {
     protected $searchTable;
+
+//    public function magentoAction()
+//    {
+//        $loginSession= new Container('login');
+//        $userLogin = $loginSession->sessionDataforUser;
+//        if(empty($userLogin)){
+//            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+//        }
+//        $request = $this->getRequest();
+//
+//        if($request->isPost()){
+//            $apiData = $request->getPost();
+//            $draw = $apiData['draw'];
+//            $sku = $apiData['search']['value'];
+//            $limit = $apiData['length'];
+//
+//            if($limit == '-1'){
+//                $limit = 100;
+//            }
+//            $mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
+//            $skuData = $mage->fetchChangedProducts($sku,$limit );
+//            $result = json_encode(
+//                array(
+//                    'draw' => $draw,
+//                    'recordsTotal' => 1000,
+//                    'recordsFiltered' => $limit,
+//                    //results
+//                    'data' => $skuData)
+//            );
+//            $event    = $this->getEvent();
+//            $response = $event->getResponse();
+//            $response->setContent($result);
+//            return $response;
+//        }
+//    }
+
 
     public function quicksearchAction()
     {

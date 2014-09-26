@@ -101,56 +101,57 @@ class MagentoTable {
         return $resultSet->count();
     }
 
-    public function fetchDirtyProducts($changedProducts = Null)
+    public function groupSku($checkboxSku)
     {
         $count = 0;
-        $checkedProdIds = [];
-        $checkedProdProperties = [];
-        foreach ( $changedProducts['skuItem'] as $property ) {
-            $checkedProdIds[$count] = $property['id'];
-            $checkedProdProperties[$count] = $property['property'];
+        $checkedIds = $checkedProperties = $grouped = [];
+        foreach ( $checkboxSku['skuItem'] as $key => $checkbox ) {
+            $checkedIds[$count] = $checkbox['id'];
+            $checkedProperties[$count] = $checkbox['property'];
             $count++;
         }
-//        var_dump($checkedProdIds);
-//        var_dump($checkedProdProperties);
-        foreach ( $checkedProdIds as $key => $id ) {
-            $select = $this->sql->select();
-            $select->from('product')->columns(['id' => 'entity_id', 'sku' => 'productid', 'website' => 'website'])->where(['entity_id'=>$id, 'dataStat'=>1]);
-
-
+        $uniqueIds = array_values(array_unique($checkedIds));
+        foreach ($uniqueIds as $key => $uids) {
+            $count = 0;
+            $grouped[$key]['id'] = $uids;
+            foreach ( $checkedIds as $index => $ids ) {
+                if ( $uids == $ids ) {
+                    $grouped[$key][$count]['property'] = $checkedProperties[$index];
+                    $count++;
+                }
+            }
         }
-//        $select = $this->sql->select();
-//        $select->from('product');
-//        $select->columns(['id' => 'entity_id', 'sku' => 'productid', 'website' => 'website']);
-//        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
-        $filter = new Where;
-//        $filter->in('product.entity_id',$changedProducts);
-        $filter->in('product.entity_id',$checkedProdIds);
-        $filter->equalTo('product.dataState',1);
-//        $select->where(array( 'dataState' => '1'));
-        $select->where($filter);
+        return $grouped;
+    }
 
-        $statement = $this->sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
-        }
-        $product = $resultSet->toArray();
-//        var_dump($product);
-//        die();
-        $soapUpdate = [];
+    public function fetchDirtyProducts($changedProducts = Null)
+    {
         $startCount = 0;
-//        foreach( $changedProducts as $key => $checkedProducts )
-        var_dump($product);
-            foreach( $product as $index => $prd){
-
-                $lookupAttribute = $this->sql->select()->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code'])->from('productattribute_lookup');
-                $filter = new Where;
-                $filter->in('productattribute_lookup.attribute_code',$checkedProdProperties);
-                $lookupAttribute->where($filter);
-
+        $soapUpdate = [];
+        foreach ( $changedProducts as $key => $products ) {
+            $entityID = $products['id'];
+            $select = $this->sql->select()->from('product')
+                ->columns([
+                    'id'        => 'entity_id',
+                    'sku'       => 'productid',
+                    'website'   => 'website'
+                ])->where([
+                    'entity_id'     =>  $products['id'],
+                    'dataState'     =>  1
+                ]);
+            $statement = $this->sql->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+            $resultSet = new ResultSet;
+            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                $resultSet->initialize($result);
+            }
+            $product = $resultSet->toArray();
+            array_shift($products);
+            foreach( $products as $ind => $property ) {
+                $lookupAttribute = $this->sql->select()
+                                             ->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code'])
+                                             ->from('productattribute_lookup')
+                                             ->where(['attribute_code'=>$products[$ind]['property']]);
                 $attrStmt = $this->sql->prepareStatementForSqlObject($lookupAttribute);
                 $attResult = $attrStmt->execute();
 
@@ -159,41 +160,51 @@ class MagentoTable {
                     $attSet->initialize($attResult);
                 }
                 $lookup = $attSet->toArray();
-//                var_dump($lookup);
+                $soapUpdate[$startCount]['id'] = $entityID;
 
-//                    $lookup = $this->productAttributeLookup($this->sql);
-                    foreach($lookup as $key => $attributes){
-                        $dataType = (string)$attributes['dataType'];
-                        $attributeId = (int)$attributes['attId'];
-                        $attributeCode = (string)$attributes['attCode'];
-        //TODO have to add for changing product sku when the soap call goes through in case admin wants to change the sku in mage.
-                        $productAttributeSelect = $this->sql->select()->from('productattribute_'.$dataType)
-                                                                      ->columns([$attributeCode=>'value'])
-                                                                      ->where(['attribute_id'=>$attributeId, 'entity_id'=>$prd['id'], 'dataState'=>1]);
-                        $prdStatement = $this->sql->prepareStatementForSqlObject($productAttributeSelect);
-                        $prdResult = $prdStatement->execute();
-
-                        $attSet = new ResultSet;
-                        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                            $attSet->initialize($prdResult);
-                        }
-                        $productAttributeResults = $attSet->toArray();
-                        foreach( $productAttributeResults as $ind => $value ){
-                            $soapUpdate[$startCount]['id'] = $prd['id'];
-                            $soapUpdate[$startCount]['sku'] = $prd['sku'];
-        //                    $soapUpdate[$startCount]['website'] = [$prd['website']];
-                            $soapUpdate[$startCount][$attributeCode] =$value[$attributeCode];
-                        }
+                foreach( $lookup as $attributes ) {
+                    $dataType = (string)$attributes['dataType'];
+                    $attributeId = (int)$attributes['attId'];
+                    $attributeCode = (string)$attributes['attCode'];
+                    //TODO have to add for changing product sku when the soap call goes through in case admin wants to change the sku in mage.
+                    $productAttributeSelect = $this->sql->select()->from('productattribute_'.$dataType)
+                                                                  ->columns([
+                                                                                $attributeCode  =>  'value'
+                                                                            ])
+                                                                  ->where([
+                                                                                'attribute_id'  =>  $attributeId,
+                                                                                'entity_id'     =>  $entityID,
+                                                                                'dataState'     =>  1
+                                                                        ]);
+                    $prdStatement = $this->sql->prepareStatementForSqlObject($productAttributeSelect);
+                    $prdResult = $prdStatement->execute();
+                    $attributeSet = new ResultSet;
+                    if ($prdResult instanceof ResultInterface && $prdResult->isQueryResult()) {
+                        $attributeSet->initialize($prdResult);
                     }
-                    $startCount++;
+                    $attributeResults = $attributeSet->toArray();
+                    foreach( $attributeResults as $value ) {
+    //                            $soapUpdate[$startCount]['id'] = /*$ids;*/$prd['id'];
+                        $soapUpdate[$startCount]['sku'] = $product[0]['sku'];
+                        //                    $soapUpdate[$startCount]['website'] = [$prd['website']];
+                        $soapUpdate[$startCount][$attributeCode] =$value[$attributeCode];
+                        //                        var_dump($soapUpdate);
+                        //                        $startCount++;
+
+                    }
+                }
             }
+            $startCount++;
+
+        }
 //        var_dump($soapUpdate);
-        die();
+//        die();
         return $soapUpdate;
     }
 
     public function fetchChangedProducts($sku, $limit)
     {
+//        $updateCount = $kpi->updateCount();
         $soapBundle = [];
         $select = $this->sql->select();
         $select->from('product');
@@ -422,28 +433,83 @@ class MagentoTable {
         return $result;
     }
 
+    public function checkUpdates($updates)
+    {
+        $updatedId = $sku = [];
+        foreach ($updates as $key => $update ) {
+            $entityId = $update['id'];
+            $updatedId[$key]['id'] = $entityId;
+            $updated = 0;
+            array_shift($update);
+            foreach ( $update as $ind => $product ) {
+                $updatedId[$key][$ind]['property'] = $product['property'];
+                $lookup = $this->productAttributeLookup($this->sql, ['attribute_code'=>$product['property']]);
+    //            var_dump($lookup);
+    //            $attId = $lookup[0]['attId'];
+                $dataType = $lookup[0]['dataType'];
+                $select = $this->sql->select()->from('productattribute_'.$dataType)->where(['entity_id'=>$entityId, 'dataState'=>1]);
+                $statement = $this->sql->prepareStatementForSqlObject($select);
+                $result = $statement->execute();
+                $resultSet = new ResultSet;
+                if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                    $resultSet->initialize($result);
+                }
+                //TODO have to implement a count feature for this.
+                $updated += $resultSet->count();
+            }
+            $updatedId[$key]['updated'] = $updated;
+
+        }
+        foreach ($updatedId as $key => $product ) {
+            if ( !$product['updated'] ) {
+                $entityId = $product['id'];
+                $updateProduct = $this->sql->update('product')->set(['dataState'=>0])->where(['entity_id'=>$entityId]);
+                $statement = $this->sql->prepareStatementForSqlObject($updateProduct);
+                $statement->execute();
+            }
+        }
+//        var_dump($updatedId);
+//        die();
+        return $updatedId;
+
+    }
+
     public function updateToClean($changedProducts)
     {
         $results = '';
-        $attributes = array_keys($changedProducts);
+//        var_dump($changedProducts);
         $entityId = $changedProducts['id'];
-        $sku = $changedProducts['sku'];
-        $updateProduct = $this->sql->update('product')->set(['dataState'=>0])->where(['productid'=>$sku]);
-        $statement = $this->sql->prepareStatementForSqlObject($updateProduct);
-        $statement->execute();
-        array_shift($attributes);
-        array_shift($attributes);
+        $updated = $changedProducts['updated'];
         array_shift($changedProducts);
-        array_shift($changedProducts);
-        foreach( $attributes as $att ) {
-            $lookup = $this->productAttributeLookup($this->sql, ['attribute_code'=>$att]);
-            $attributeId = $lookup[0]['attId'];
-            $dataType = $lookup[0]['dataType'];
-            $updateProductAttribute = $this->sql->update('productattribute_'.$dataType)->set(['dataState'=>0])->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);
-            $prdAttStatement = $this->sql->prepareStatementForSqlObject($updateProductAttribute);
-            $prdAttStatement->execute();
+        array_pop($changedProducts);
+//        var_dump($changedProducts);
+        $select = $this->sql->select()->from('product')->columns(['sku'=>'productid'])->where(['entity_id'=>$entityId,'dataState'=>1]);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
         }
-        $results .= $sku . " has been updated in Magento Admin";
+        $sku = $resultSet->toArray();
+        foreach( $changedProducts as $key => $product ) {
+            if( $updated ) {
+                foreach( $product as $att ) {
+//                    echo $att . ' ' ;
+                    $lookup = $this->productAttributeLookup($this->sql, ['attribute_code'=>$att]);
+                    $attributeId = $lookup[0]['attId'];
+                    $dataType = $lookup[0]['dataType'];
+                    $updateProductAttribute = $this->sql->update('productattribute_'.$dataType)->set(['dataState'=>0])->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);
+                    $prdAttStatement = $this->sql->prepareStatementForSqlObject($updateProductAttribute);
+                    $prdAttStatement->execute();
+                }
+            }
+//            else {
+//                $updateProduct = $this->sql->update('product')->set(['dataState'=>0])->where(['entity_id'=>$entityId]);
+//                $statement = $this->sql->prepareStatementForSqlObject($updateProduct);
+//                $statement->execute();
+//            }
+        }
+        $results .= $sku[0]['sku'] . " has been updated in Magento Admin";
         return $results;
     }
 

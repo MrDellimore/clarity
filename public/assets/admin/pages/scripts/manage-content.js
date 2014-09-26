@@ -154,8 +154,15 @@ var ManageContent = function () {
                     type: "POST",
                     data: form})
                     .done(function( data ) {
-                        toastr.success(data);
-//                                           console.log(data);
+                        var table = $('#kpiUpdates').dataTable();
+//                        table.api().draw();
+//                        $.post('/api-feeds/mage-update-count', function(data){
+//                            var count = jQuery.parseJSON(data);
+//                            $('div#mage-update').append(count.updateCount);
+//                        });
+
+//                        toastr.success(data);
+                       console.log(data);
                     });
 
                 toastr.options = {

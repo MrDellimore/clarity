@@ -18,6 +18,16 @@ return array(
                     ),
                 ),
             ),
+            'api-count'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/mage-update-count',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'kpiCount',
+                    ),
+                ),
+            ),
             'api-magento-items'   =>  array(
                 'type'  =>  'Zend\Mvc\Router\Http\Literal',
                 'options'   =>  array(

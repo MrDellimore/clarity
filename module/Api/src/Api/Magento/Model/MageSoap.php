@@ -75,40 +75,18 @@ class MageSoap extends AbstractSoap{
     public function soapUpdateProducts($changedProducts)
     {
         $this->startStopwatch();
-        $packet = $skuCollection = $attribute = [];
+        $packet = $skuCollection = $atts = [];
         foreach( $changedProducts as $key => $attributes ) {
-            $keys = array_keys($attributes);
             $entityID = $attributes['id'];
             $skuCollection[] = $attributes['sku'];
-//            var_dump($skuCollection);
-            array_shift($keys);
-            array_shift($keys);
-            array_shift($attributes);
-            array_shift($attributes);
-//            var_dump($keys);
 //            var_dump($attributes);
-            foreach( $keys as $ind => $attributeFields ) {
-                $attribute[$attributeFields] = $changedProducts[$key][$attributeFields];
+            array_shift($attributes);
+            array_shift($attributes);
+            foreach( $attributes as $ind => $attribute ) {
+                $atts[$ind] = $attribute;
             }
-//            if( isset($value['id']) ) {
-//                $entityID = $value['id'];
-//                $select = $this->sql->select()->from('product')->columns(['sku'=>'productid'])->where(['entity_id'=>$entityID]);
-//                $statement = $this->sql->prepareStatementForSqlObject($select);
-//                $result = $statement->execute();
-//                $resultSet = new ResultSet;
-//                if ($result instanceof ResultInterface && $result->isQueryResult()) {
-//                    $resultSet->initialize($result);
-//                }
-                //TODO have to implement a count feature for this.
-//                $skuCollection[$key] = $resultSet->toArray()[0]['sku'];
-//                array_shift($value);
-//                $updatedValue = current($value);
-//                $attributeCode =  current(array_keys($value));
-//                $attributeCode = $attributeCode == 'title' ? 'name' : $attributeCode;
-//                $attributeCode = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2',$attributeCode  ));
-
-                $packet[$key] = array('entity_id' => $entityID, $attribute);
-//            }
+            $packet[$key] = array('entity_id' => $entityID, $atts);
+            $atts = [];
         }
 //var_dump($packet);
 //die();

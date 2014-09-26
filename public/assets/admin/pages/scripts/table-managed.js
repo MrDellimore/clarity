@@ -778,16 +778,7 @@ var TableManaged = function () {
                     "first": "First"
                 }
             }});
-//        var entityId = $('#kpiUpdates td.eid');
-//        console.log(entityId);
-//        console.log(dTable);
-//        console.log(dtable);
 
-//        if( dTable.hasClass('eid') ) {
-////            console.log('yes');
-//        } else {
-////            console.log('no');
-//        }
         var groupSku = $('#skuItems');
 
         $('#kpiUpdates tbody').on('change', '#skuItem',function (e) {

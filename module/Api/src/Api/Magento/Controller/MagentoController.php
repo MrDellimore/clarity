@@ -27,9 +27,27 @@ class MagentoController  extends AbstractActionController
 
     protected $dirtyAttributeSkus = array();
 
+    public function kpiCountAction()
+    {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
+        $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
+        $updateCount = $kpi->updateCount();
+        $result = json_encode(
+            array(
+                'updateCount' => $updateCount)
+        );
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+        return $response;
+    }
+
     public function magentoAction()
     {
-        $result = '';
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
@@ -46,9 +64,9 @@ class MagentoController  extends AbstractActionController
             if($limit == '-1'){
                 $limit = 100;
             }
-            $skuData = $this->getMagentoTable()->fetchChangedProducts($sku,$limit );
-//            echo '<pre>';
-//            var_dump($skuData);
+            $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
+            $skuData = $this->getMagentoTable()->fetchChangedProducts($sku,$limit);
+//            $updateCount = $kpi->updateCount();
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -68,22 +86,27 @@ class MagentoController  extends AbstractActionController
     {
         $categorySoapResponse = $itemSoapResponse = $resp = $linkedSoapResponse = Null;
         $updateCategories = $updateFields = $linkedFields = Null;
+        $normalizedProd = [];
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-        echo '<pre>';
+//        echo '<pre>';
         /*Fetch categories*/
         $request = $this->getRequest();
 
         if ( $request->isPost() ) {
             $checkboxSku = $request->getPost();
+            if( !count( $checkboxSku ) ) {
+                return $this->redirect()->toRoute('apis');
+            }
+            $normalizedProd = $this->getMagentoTable()->groupSku($checkboxSku);
             /*Fetch products that have changed due to content team.*/
-//            var_dump($checkboxSku);
-            $changedProducts = $this->getMagentoTable()->fetchDirtyProducts($checkboxSku);
+//            var_dump($normalizedProd);
+            $changedProducts = $this->getMagentoTable()->fetchDirtyProducts($normalizedProd);
         }
-        die();
+//        die();
         $categories = $this->getMagentoTable()->fetchChangedCategories();
 
         /*Fetch Related Products
@@ -110,15 +133,20 @@ class MagentoController  extends AbstractActionController
 
         if( !empty($changedProducts) ) {
             /*Update Mage with up-to-date products*/
-            $itemSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapUpdateProducts($changedProducts);
+            $mage = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
+            $updateProducts = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
+            $itemSoapResponse = $mage->soapUpdateProducts($changedProducts);
+            $updatedIds = $updateProducts->checkUpdates($normalizedProd);
             foreach ( $itemSoapResponse as $index => $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ){
-                        $updateFields .= $this->getMagentoTable()->updateToClean($changedProducts[$key]);
+//                        $updateFields .= $this->getMagentoTable()->updateToClean($changedProducts[$key]);
+                        $updateFields .= $this->getMagentoTable()->updateToClean($updatedIds[$key]);
                     }
                 }
             }
         }
+//        die();
         if( !empty($linkedProds) ) {
             /*Update Mage with up-to-date linked products*/
             $linkedSoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapLinkedProducts($linkedProds);

@@ -12,6 +12,11 @@ kpiUpdates.hide();
 var skuItem = $('#sku_item');
 var groupSku = $('#skuItems');
 
+$.post('/api-feeds/mage-update-count', function(data){
+    var count = jQuery.parseJSON(data);
+    $('div#mage-update').append(count.updateCount);
+});
+
 groupSku.on('change',function(){
     var item = $('tr #sku_item #skuItem');
 
