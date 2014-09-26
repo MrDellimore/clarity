@@ -413,14 +413,18 @@ class ProductsTable{
      */
 
     public function validateSku($sku){
-        $select = $this->sql->select()->from('product')->where(['productid' => $sku]);
+        $select = $this->sql->select()->from('product')->columns(array('entity_id'));
+        $select->where(['productid' => $sku]);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
         if($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-        return $resultSet->toArray()[0]['entity_id'];
+        $entityid = $resultSet->toArray();
+        $entityid= current($entityid);
+
+        return $entityid;
     }
 
 
@@ -477,7 +481,7 @@ class ProductsTable{
         return $resultSet->toArray();
     }
 
-    public function lookupAccessories($searchValue, $limit,$searchTerm,$setSkus){
+    public function lookupAccessories($searchValue, $limit,$searchTerm,$setSkus = Null){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from('product');
@@ -499,11 +503,11 @@ class ProductsTable{
         if($searchTerm == 'id'){
             $searchTerm = 'product.entity_id';
         }
-        else
+        else {
             $searchTerm = 'product.productid';
-
+        }
         $where->like($searchTerm,$searchValue.'%');
-        $where->in('product.productid', $setSkus);
+//        $where->in('product.productid', $setSkus);
         $select->where($where);
         $select->limit($limit);
 

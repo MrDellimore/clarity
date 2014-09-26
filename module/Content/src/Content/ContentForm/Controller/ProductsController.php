@@ -44,13 +44,13 @@ class ProductsController extends AbstractActionController {
             $entityID = $form->validateSku($sku);
 
             /*If sku does not exist, redirect user back to search page.*/
-            if( empty($entityID) ){
+            if(!$entityID){
                 return $this->redirect()->toRoute('search');
             }
             //insert error handle for invalid sku here
 
             //lookupdata
-            $skuData = $form->lookupForm($entityID);
+            $skuData = $form->lookupForm($entityID['entity_id']);
 
             //hydrate data to form entity
             $hydrator = new cHydrator;
