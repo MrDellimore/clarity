@@ -39,7 +39,7 @@
                     </div>
                     <div class="details">
                         <div class="number" id="mage-update">
-                            <?=$this->dirtyCount;?>
+<!--                            --><?php //$this->dirtyCount;?>
                         </div>
                         <div class="desc">
                             Items Requiring Update
@@ -157,7 +157,7 @@
                         <table class="table table-striped table-bordered table-hover" id="kpiUpdates">
                             <thead>
                             <tr>
-                                <th><input type="checkbox" id="skuItems" name="skuItem[]" value=""/></th>
+                                <th><input type="checkbox" id="skuItems" name="skuItem[]" value="" /></th>
                                 <th>ID</th>
                                 <th>ID</th>
                                 <th>Sku</th>
@@ -170,7 +170,6 @@
                             </thead>
                             <tbody>
                                 <tr>
-<!--                                    <td id="sku_item"></td>-->
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -180,28 +179,8 @@
                                     <td></td>
                                     <td></td>
                                 </tr>
-<!--                                    --><?php
-//                                        foreach($this->sku as $index => $value) :
-//                                           if(isset($value['id'])):?>
-<!--                                                <tr>-->
-<!--                                                    <td id="sku_item">-->
-<!--                                                        <label for="skuItem"></label>-->
-<!--                                                            <input type="checkbox" id="skuItem" name="skuItem[--><?//=$index?><!--]" value="--><?//=$value['id']?><!--"/>-->
-<!--                                                    </td>-->
-<!--                                                    <td>--><?php //$value['id']?><!--</td>-->
-<!--                                                    <td>--><?php //$value['item']?><!--</td>-->
-<!--                                                   --><?php //array_shift($value);?>
-<!--                                                    <td>--><?php //ucfirst(str_replace('_',' ',current(array_keys($value))))?><!--</td>-->
-<!--                                                    <td>--><?php //current($value)?><!--</td>-->
-<!--                                                    <td>--><?php //$value['ldate']?><!--</td>-->
-<!--                                                    <td>--><?php //$value['fName'] . ' ' . $value['lName'] ?><!--</td>-->
-<!--                                                </tr>-->
-<!--                                            --><?php //endif;?>
-<!--                                        --><?php //endforeach?>
-<!--                                </form>-->
                             </tbody>
                         </table>
-<!--                        --><?php //=$loadTime = isset($this->loadTime) ? $this->loadTime: ''?>
                     </div>
                 </div>
     </div>

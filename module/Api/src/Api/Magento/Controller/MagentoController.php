@@ -136,12 +136,12 @@ class MagentoController  extends AbstractActionController
             $mage = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
             $updateProducts = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
             $itemSoapResponse = $mage->soapUpdateProducts($changedProducts);
-            $updatedIds = $updateProducts->checkUpdates($normalizedProd);
+//            $updatedIds = $updateProducts->checkUpdates($normalizedProd);
             foreach ( $itemSoapResponse as $index => $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ){
-//                        $updateFields .= $this->getMagentoTable()->updateToClean($changedProducts[$key]);
-                        $updateFields .= $this->getMagentoTable()->updateToClean($updatedIds[$key]);
+                        $updateFields .= $this->getMagentoTable()->updateToClean($changedProducts[$key]);
+//                        $updateFields .= $this->getMagentoTable()->updateToClean($updatedIds[$key]);
                     }
                 }
             }

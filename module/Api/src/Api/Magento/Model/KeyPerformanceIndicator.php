@@ -72,24 +72,16 @@ class KeyPerformanceIndicator {
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-        $productUpdates = $resultSet->toArray();
-//        var_dump($productUpdates);
+//        $productUpdates = $resultSet->toArray();
         $prodUpdateCount = $resultSet->count();
-//        echo $prodUpdateCount . ' ' ;
         $this->setProductCount($prodUpdateCount);
         $lookup = $this->productAttributeLookup( $this->sql );
         $attributeCount = 0;
-        foreach( $productUpdates as $key => $prodUpdates ) {
-//            var_dump($lookup);
-            $entityId = $prodUpdates['entityId'];
-            foreach( $lookup as $index => $attributes ) {
-//                var_dump($attributes);
-                $attributeId = $attributes['attId'];
-                $dataType = $attributes['dataType'];
-                $attributeCount += $this->productAttribute($this->sql, [], ['entity_id'=>$entityId, 'attribute_id'=>$attributeId, 'dataState'=>1], $dataType)->count();
-            }
+        foreach( $lookup as $index => $attributes ) {
+            $attributeId = $attributes['attId'];
+            $dataType = $attributes['dataType'];
+            $attributeCount += $this->productAttribute($this->sql, [], ['attribute_id'=>$attributeId, 'dataState'=>1], $dataType)->count();
         }
-//        echo $attributeCount;
         $this->setProductAttributeCount($attributeCount);
         return $this->getProductCount() + $this->getProductAttributeCount();
     }

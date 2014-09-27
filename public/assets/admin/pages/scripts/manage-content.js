@@ -136,6 +136,16 @@ var ManageContent = function () {
 //        $('#all_items').on('click',function(){
 //            e.preventDefault();
             $( "#mageForm" ).submit(function( event ) {
+//                var spinner = new Spinner({
+//                    lines: 12, // The number of lines to draw
+//                    length: 7, // The length of each line
+//                    width: 5, // The line thickness
+//                    radius: 10, // The radius of the inner circle
+//                    color: '#000', // #rbg or #rrggbb
+//                    speed: 1, // Rounds per second
+//                    trail: 100, // Afterglow percentage
+//                    shadow: true // Whether to render a shadow
+//                }).spin($('.page-content-wrapper')); // Place in DOM node called "ajaxContentHolder"
                 //            console.log('hoho');
                 event.preventDefault();
                 //            $('tr #sku_item').each(function(){
@@ -154,15 +164,14 @@ var ManageContent = function () {
                     type: "POST",
                     data: form})
                     .done(function( data ) {
+                        toastr.success(data);
+//                       console.log(data);
                         var table = $('#kpiUpdates').dataTable();
-//                        table.api().draw();
-//                        $.post('/api-feeds/mage-update-count', function(data){
-//                            var count = jQuery.parseJSON(data);
-//                            $('div#mage-update').append(count.updateCount);
-//                        });
-
-//                        toastr.success(data);
-                       console.log(data);
+                        table.api().draw();
+                        $.post('/api-feeds/mage-update-count', function(data){
+                            var count = jQuery.parseJSON(data);
+                            $('div#mage-update').empty().append(count.updateCount);
+                        });
                     });
 
                 toastr.options = {
