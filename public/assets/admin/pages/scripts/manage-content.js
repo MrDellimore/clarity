@@ -168,11 +168,13 @@ var ManageContent = function () {
 //                       console.log(data);
                         var update = $('#kpiUpdates').dataTable();
                         var cat = $('#kpiCategories').dataTable();
+                        var link = $('#kpiRelatedProducts').dataTable();
                         update.api().draw();
                         cat.api().draw();
+                        link.api().draw();
                         $.post('/api-feeds/mage-update-count', function(data){
                             var count = jQuery.parseJSON(data);
-                            $('div#mage-update').empty().append(count.updateCount + count.categoryCount);
+                            $('div#mage-update').empty().append(count.updateCount + count.categoryCount + count.linkedCount);
 //                            $('div#mage-update').empty().append(count.updateCount);
                         });
                     });

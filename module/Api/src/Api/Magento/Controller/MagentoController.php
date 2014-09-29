@@ -31,6 +31,11 @@ class MagentoController  extends AbstractActionController
 
     public function magentoAction()
     {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
         return new ViewModel([]);
     }
 
@@ -44,11 +49,32 @@ class MagentoController  extends AbstractActionController
         $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
         $updateCount = $kpi->updateCount();
         $categoryCount = $kpi->fetchCategoryCount();
+        $linkedCount = $kpi->fetchLinkedCount();
 
         $result = json_encode([
                 'updateCount'       =>      $updateCount,
                 'categoryCount'     =>      $categoryCount,
+                'linkedCount'     =>      $linkedCount,
                 ]
+        );
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+        return $response;
+    }
+
+    public function kpiNewProductCountAction()
+    {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
+        $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
+        $newProdCount = $kpi->fetchNewCount();
+        $result = json_encode(
+            array(
+                'newProdCount' => $newProdCount)
         );
         $event    = $this->getEvent();
         $response = $event->getResponse();
@@ -76,6 +102,42 @@ class MagentoController  extends AbstractActionController
     }
 
     public function newImagesAction()
+    {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
+        $request = $this->getRequest();
+
+        if($request->isPost()){
+            $imageData = $request->getPost();
+            $draw = $imageData['draw'];
+            $sku = $imageData['search']['value'];
+            $limit = (int)$imageData['length'];
+
+            if($limit == '-1'){
+                $limit = 100;
+            }
+            $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
+            $images = $this->getMagentoTable()->fetchNewImages($sku,$limit);//fetchImages
+//            $updateCount = $kpi->updateCount();
+            $result = json_encode(
+                array(
+                    'draw' => $draw,
+                    'recordsTotal' => 1000,
+                    'recordsFiltered' => $limit,
+                    //results
+                    'data' => $images)
+            );
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
+    }
+
+    public function newProductsAction()
     {
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
@@ -222,14 +284,12 @@ class MagentoController  extends AbstractActionController
     {
         $categorySoapResponse = $itemSoapResponse = $resp = $linkedSoapResponse = Null;
         $updateCategories = $updateFields = $linkedFields = '';
-        $groupedProd = $categorizedProd = $changedProducts = [];
+        $groupedProd = $categorizedProd = $changedProducts = $linkedProducts = [];
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-//        echo '<pre>';
-        /*Fetch categories*/
         $request = $this->getRequest();
 
         if ( $request->isPost() ) {
@@ -244,28 +304,19 @@ class MagentoController  extends AbstractActionController
             if( !empty($checkboxSku['skuCategory']) ) {
                 $categorizedProd = $this->getMagentoTable()->groupCategories($checkboxSku['skuCategory']);
             }
-            /*Fetch products that have changed due to content team.*/
-//            var_dump($normalizedProd);
-        }
-//        echo get_class($this->getMagentoSoap());
-//        die();
-//        $categories = $this->getMagentoTable()->fetchChangedCategories();
-//        $mage = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
-//        $mage = $this->getMagentoSoap();
 
-        /*Fetch Related Products
+            if( !empty($checkboxSku['skuLink']) ) {
+                $linkedProducts = $this->getMagentoTable()->groupRelated($checkboxSku['skuLink']);
+            }
+        }
+
+        /*
         TODO have to figure out why some entity ids like 676 are not removed.
         */
-        $linkedProds = $this->getMagentoTable()->fetchLinkedProducts();
-
-//        var_dump($categories, $changedProducts, $linkedProds);
-//        die();
-
+        /*Make api call to delete and update Sku with new categories*/
         if( !empty($categorizedProd) ) {
-            /*Make api call to delete and update Sku with new categories*/
-//            $categorySoapResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapCategoriesUpdate($categories);
             $categorySoapResponse = $this->getMagentoSoap()->soapCategoriesUpdate($categorizedProd);
-            foreach ( $categorySoapResponse as $index => $catResponse ) {
+            foreach ( $categorySoapResponse as $catResponse ) {
                 foreach ( $catResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
                         $updateCategories .= $this->getMagentoTable()->updateProductCategoriesToClean($categorizedProd[$key]);
@@ -273,16 +324,11 @@ class MagentoController  extends AbstractActionController
                 }
             }
         }
-//        $session = new Container('dirty_skus');
-//        $changedProducts= $session->dirtyProduct;
-
+        /*Update Mage with up-to-date products*/
         if( !empty($changedProducts) ) {
-            /*Update Mage with up-to-date products*/
-//            $mage = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
-//            $updateProducts = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
             $itemSoapResponse = $this->getMagentoSoap()->soapUpdateProducts($changedProducts);
 //            $updatedIds = $updateProducts->checkUpdates($normalizedProd);
-            foreach ( $itemSoapResponse as $index => $itemResponse ) {
+            foreach ( $itemSoapResponse as $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ){
                         $updateFields .= $this->getMagentoTable()->updateToClean($changedProducts[$key]);
@@ -291,14 +337,13 @@ class MagentoController  extends AbstractActionController
                 }
             }
         }
-//        die();
-        if( !empty($linkedProds) ) {
+        if( !empty($linkedProducts) ) {
             /*Update Mage with up-to-date linked products*/
-            $linkedSoapResponse = $this->getMagentoSoap()->soapLinkedProducts($linkedProds);
-            foreach ( $linkedSoapResponse as $index => $linkedResponse ) {
+            $linkedSoapResponse = $this->getMagentoSoap()->soapLinkedProducts($linkedProducts);
+            foreach ( $linkedSoapResponse as $linkedResponse ) {
                 foreach ( $linkedResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $linkedFields = $this->getMagentoTable()->updateLinkedProductstoClean($linkedProds[$key]);
+                        $linkedFields .= $this->getMagentoTable()->updateLinkedProductstoClean($linkedProducts[$key]);
                     }
                 }
             }
@@ -307,7 +352,6 @@ class MagentoController  extends AbstractActionController
 
         if ( $updateCategories || $updateFields || $linkedFields ) {
             $result = $updateCategories .'<br />'.$updateFields.'<br />'.$linkedFields;
-//            return $this->redirect()->toRoute('apis');
         }
         if( empty($result) ) {
             $result = 'Nothing has been uploaded.';

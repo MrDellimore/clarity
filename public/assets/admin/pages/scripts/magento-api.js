@@ -7,26 +7,31 @@ var magentoNewItems = $('.magento-new-items');
 var soapUpdates = $('#soapUpdates');
 var kpiUpdates = $('#kpiUpdates');
 var soapImages = $('#soapImages');
+var soapNewProducts = $('#soapNewProducts');
 var kpiImages = $('#kpiImages');
 magentoItems.hide();
 magentoImages.hide();
 magentoNewItems.hide();
-//kpiUpdates.hide();
+soapNewProducts.hide();
 soapUpdates.hide();
-//kpiImages.hide();
 soapImages.hide();
 var skuItem = $('#sku_item');
 var groupSku = $('#skuItems');
 
 $.post('/api-feeds/mage-update-count', function(data){
     var count = jQuery.parseJSON(data);
-    $('div#mage-update').append(count.updateCount + count.categoryCount);
+    $('div#mage-update').append(count.updateCount + count.categoryCount + count.linkedCount);
 });
 
 
 $.post('/api-feeds/mage-new-image-count', function(data){
     var count = jQuery.parseJSON(data);
     $('div#mage-image').append(count.imageCount);
+});
+
+$.post('/api-feeds/mage-new-product-count', function(data){
+    var count = jQuery.parseJSON(data);
+    $('div#mage-new-products').append(count.newProdCount);
 });
 
 groupSku.on('change',function(){
@@ -74,6 +79,7 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
 //            kpiUpdates.show();
 //            kpiImages.hide();
             soapImages.hide();
+            soapNewProducts.hide();
             soapUpdates.show();
             magentoImages.hide();
             magentoNewItems.hide();
@@ -85,6 +91,7 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
 //            kpiImages.show();
             soapImages.show();
             soapUpdates.hide();
+            soapNewProducts.hide();
             magentoImages.show();
             magentoNewItems.hide();
         });
@@ -95,4 +102,7 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
             kpiImages.hide();
             magentoImages.hide();
             magentoNewItems.show();
+            soapImages.hide();
+            soapUpdates.hide();
+            soapNewProducts.show();
         });

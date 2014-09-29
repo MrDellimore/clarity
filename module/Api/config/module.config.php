@@ -59,6 +59,16 @@ return array(
                     ),
                 ),
             ),
+            'api-new-products'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/new-products',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'newProducts',
+                    ),
+                ),
+            ),
             'update-count'   =>  array(
                 'type'  =>  'Zend\Mvc\Router\Http\Literal',
                 'options'   =>  array(
@@ -76,6 +86,16 @@ return array(
                     'defaults'  =>  array(
                         'controller'    =>  'Api\Magento\Controller\Magento',
                         'action'        =>  'kpiImageCount',
+                    ),
+                ),
+            ),
+            'new-product-count'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/mage-new-product-count',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'kpiNewProductCount',
                     ),
                 ),
             ),

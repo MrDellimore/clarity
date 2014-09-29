@@ -99,15 +99,15 @@ class MageSoap extends AbstractSoap{
 //        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
         $packet = $skuCollection = array();
         $results = Null;
-        foreach($linkedProds as $key => $fields){
-            $entityId = $linkedProds[$key]['entityId'];
-            $dataState = (int)$linkedProds[$key]['dataState'];
-            $linkedEntityId = $linkedProds[$key]['linkedEntityId'];
-            $skuCollection[] = $fields['sku'];
-            $type = $linkedProds[$key]['type'];
+        foreach($linkedProds as $key => $linked){
+            $entityId = $linked['id'];
+            $dataState = (int)$linked['dataState'];
+            $linkedEntityId = $linked['linkedId'];
+            $skuCollection[] = $linked['sku'];
+            $type = $linked['type'];
             if( 3 === $dataState ) {
                 $packet[$key] = [
-                    'type'          =>  $type,
+                    'type'          =>  lcfirst(str_replace(' ','_',$type)),
                     'product'       =>  $entityId,
                     'linkedProduct' =>  $linkedEntityId,
                     'resource'      =>  'catalog_product_link.remove',
@@ -116,7 +116,7 @@ class MageSoap extends AbstractSoap{
             }
             if( 2 === $dataState ) {
                 $packet[$key] = [
-                    'type'          =>  $type,
+                    'type'          =>  lcfirst(str_replace(' ','_',$type)),
                     'product'       =>  $entityId,
                     'linkedProduct' =>  $linkedEntityId,
                     'resource'      =>  'catalog_product_link.assign',
@@ -124,6 +124,7 @@ class MageSoap extends AbstractSoap{
                 ];
             }
         }
+//        echo '<pre>';
 //        var_dump($packet);
 //        die();
         return $this->_soapCall($packet, null, $skuCollection);

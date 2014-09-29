@@ -58,6 +58,25 @@ class KeyPerformanceIndicator {
     /**
      * @return int
      */
+    public function fetchNewCount()
+    {
+        $select = $this->sql->select();
+        $select->from('product');
+        $select->where(array( 'dataState' => '2'));
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        return $resultSet->count();
+    }
+
+    /**
+     * @return int
+     */
     public function fetchImageCount()
     {
         $select = $this->sql->select()->from('productattribute_images')->where(['dataState'=>2]);
@@ -88,38 +107,56 @@ class KeyPerformanceIndicator {
     }
 
     /**
-     * @visibility public
      * @return int
      */
-    public function updateCount()
+    public function fetchLinkedCount()
     {
-//        echo '<pre>';
-        $select = $this->sql->select()
-                  ->from('product')
-                  ->columns([
-                        'entityId'  =>  'entity_id'
-                        ])
-                  ->where([
-                        'dataState' =>  1
-                        ]);
+        $filter = new Where;
+        $filter->in('productlink.dataState',[2,3]);
+        $select = $this->sql->select()->from('productlink')->where($filter);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
-//        $productUpdates = $resultSet->toArray();
-        $prodUpdateCount = $resultSet->count();
-        $this->setProductCount($prodUpdateCount);
+        return $resultSet->count();
+    }
+
+    /**
+     * @visibility public
+     * @return int
+     */
+    public function updateCount()
+    {
+//        echo '<pre>';
+//        $select = $this->sql->select()
+//                  ->from('product')
+//                  ->columns([
+//                        'entityId'  =>  'entity_id'
+//                        ])
+//                  ->where([
+//                        'dataState' =>  1
+//                        ]);
+//        $statement = $this->sql->prepareStatementForSqlObject($select);
+//        $result = $statement->execute();
+//        $resultSet = new ResultSet;
+//        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//            $resultSet->initialize($result);
+//        }
+////        $productUpdates = $resultSet->toArray();
+//        $prodUpdateCount = $resultSet->count();
+//        $this->setProductCount($prodUpdateCount);
         $lookup = $this->productAttributeLookup( $this->sql );
         $attributeCount = 0;
-        foreach( $lookup as $index => $attributes ) {
+        foreach( $lookup as $attributes ) {
             $attributeId = $attributes['attId'];
             $dataType = $attributes['dataType'];
             $attributeCount += $this->productAttribute($this->sql, [], ['attribute_id'=>$attributeId, 'dataState'=>1], $dataType)->count();
         }
         $this->setProductAttributeCount($attributeCount);
-        return $this->getProductCount() + $this->getProductAttributeCount();
+//        return $this->getProductCount() + $this->getProductAttributeCount();
+        return $this->getProductAttributeCount();
     }
 
     public function setProductCount($prodCount)

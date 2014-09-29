@@ -185,6 +185,23 @@ class MagentoTable {
         return $groupedCategories;
     }
 
+    public function groupRelated($checkboxCategory)
+    {
+        $count = 0;
+        $groupedLinks = [];
+        foreach ($checkboxCategory as $categories) {
+            $groupedLinks[$count]['id'] = $categories['id'];
+            $groupedLinks[$count]['dataState'] = $categories['dataState'];
+            $groupedLinks[$count]['linkedId'] = $categories['linkedId'];
+            $groupedLinks[$count]['type'] = $categories['type'];
+            $groupedLinks[$count]['sku'] = $categories['sku'];
+            $count++;
+        }
+//        var_dump($groupedCategories);
+//        die();
+        return $groupedLinks;
+    }
+
     public function fetchDirtyProducts($changedProducts = Null)
     {
         $startCount = 0;
@@ -376,7 +393,7 @@ class MagentoTable {
 //        $this->attributeDirtyCount += $attributeDirtyCount;
 //    }
 
-    public function fetchLinkedProducts($sku, $limit)
+    public function fetchLinkedProducts($sku = null, $limit = null)
     {
 //        $select = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id', 'sku'=>'productid']);
 //        $dataState = new Expression("c.entity_id=product.entity_id and c.dataState in(2,3)");
@@ -448,19 +465,22 @@ class MagentoTable {
 
     public function updateLinkedProductstoClean($linkedProducts)
     {
-//        var_dump($linkedProducts);
+        $result = '';
         $dataState = (int)$linkedProducts['dataState'];
         if ( $dataState === 3 ) {
             $delete = $this->sql->delete('productlink');
-            $delete->where(array('entity_id'=>$linkedProducts['entityId'], 'linked_entity_id'=>$linkedProducts['linkedEntityId']));
+            $delete->where(array('entity_id'=>$linkedProducts['id'], 'linked_entity_id'=>$linkedProducts['linkedId']));
             $statement = $this->sql->prepareStatementForSqlObject($delete);
-            $result = $statement->execute();
+            $statement->execute();
+            $result .= $linkedProducts['id'] . ' is not longer linked to ' . $linkedProducts['linkedId'].'<br />';
         } else {
             $update = $this->sql->update('productlink');
             $update->set(array('dataState'=>0))
-                ->where(array('entity_id'=>$linkedProducts['entityId'], 'linked_entity_id'=>$linkedProducts['linkedEntityId']));
+                ->where(array('entity_id'=>$linkedProducts['id'], 'linked_entity_id'=>$linkedProducts['linkedId']));
             $statement = $this->sql->prepareStatementForSqlObject($update);
-            $result = $statement->execute();
+            $statement->execute();
+            $result .= $linkedProducts['id'] . ' is linked to ' . $linkedProducts['linkedId'].'<br />';
+
         }
         return $result;
     }
@@ -694,11 +714,11 @@ class MagentoTable {
         //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
         $soapBundle = $optionValues = [];
         $select = $this->sql->select()->from('product')->columns([
-            'entityId'      =>  'entity_id',
+            'id'            =>  'entity_id',
             'sku'           =>  'productid',
             'productType'   =>  'product_type',
             'website'       =>  'website',
-            'dateCreated'   =>  'creationdate',
+            'creation'      =>  'creationdate',
         ]);
         //->where(array('product.dataState'=>0))->quantifier(Select::QUANTIFIER_DISTINCT);
         $filter = new Where;
@@ -716,6 +736,8 @@ class MagentoTable {
             $resultSet->initialize($result);
         }
         $products = $resultSet->toArray();
+        echo '<pre>';
+//        var_dump($products);
 //          $productSku = [
 //              'PDPPBRBR','PLPPBRBR','PLPPGYBK','PMPPBRBR','PMPPGYBK','SEPPBRGD','SEPPGYGM','SEPPGYMSV','SSPPGNGD','SSPPGYMSV'
 //          ];
@@ -725,11 +747,11 @@ class MagentoTable {
 //        echo $skuCount . '<br />';
         $startCount = 0;
 //        for( $i = 0; $i < $skuCount; $i++ ) {
-            foreach($products as $index => $value) {
+            foreach($products as $product) {
 //                if($productSku[$i] == $value['sku']) {
-                    $entityId = $products[$index]['entityId'];
+                    $entityId = $product['id'];
                     $attributes = $this->productAttributeLookup($this->sql);
-                    foreach( $attributes as $key => $attribute ) {
+                    foreach( $attributes as $attribute ) {
                         $tableType = (string)$attribute['dataType'];
                         $attributeId = (int)$attribute['attId'];
                         $attributeCode = $attribute['attCode'];
@@ -754,9 +776,9 @@ class MagentoTable {
 //                            if ( $products[$index]['sku'] == 'BOSE359037-1300' ) {
 //                                echo $products[$index]['sku'] . ' ' . $attributeCode . '<br />';
 //                            }
-                            $soapBundle[$startCount]['sku'] = $products[$index]['sku'];
-                            $soapBundle[$startCount]['website'] = $products[$index]['website'];
-                            $soapBundle[$startCount]['status'] = (is_null($products[$index]['status'])) ? 2 : $products[$index]['status'];
+                            $soapBundle[$startCount]['sku'] = $product['sku'];
+                            $soapBundle[$startCount]['website'] = $product['website'];
+                            $soapBundle[$startCount]['status'] = (is_null($product['status'])) ? 2 : $product['status'];
                             if ( array_key_exists($attributeCode,$this->stockData) ) {
                                 $soapBundle[$startCount]['stock_data'][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
                             } else {
@@ -770,9 +792,9 @@ class MagentoTable {
 //                }
             }
 //        }
-//        echo '<pre>';
-//        var_dump($soapBundle);
-//        die();
+        echo '<pre>';
+        var_dump($soapBundle);
+        die();
         return $soapBundle;
     }
 
