@@ -155,16 +155,14 @@ class MagentoController  extends AbstractActionController
             if($limit == '-1'){
                 $limit = 100;
             }
-            $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
-            $images = $this->getMagentoTable()->fetchNewImages($sku,$limit);//fetchImages
-//            $updateCount = $kpi->updateCount();
+            $newProducts = $this->getMagentoTable()->fetchNewItems($sku,$limit);
             $result = json_encode(
                 array(
                     'draw' => $draw,
                     'recordsTotal' => 1000,
                     'recordsFiltered' => $limit,
                     //results
-                    'data' => $images)
+                    'data' => $newProducts)
             );
             $event    = $this->getEvent();
             $response = $event->getResponse();

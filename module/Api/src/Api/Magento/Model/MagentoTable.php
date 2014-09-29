@@ -709,7 +709,7 @@ class MagentoTable {
     }
 
 
-    public function fetchNewItems()
+    public function fetchNewItems($sku,$limit)
     {
         //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
         $soapBundle = $optionValues = [];
@@ -719,14 +719,22 @@ class MagentoTable {
             'productType'   =>  'product_type',
             'website'       =>  'website',
             'creation'      =>  'creationdate',
+            'creator'      =>  'changedby',
         ]);
         //->where(array('product.dataState'=>0))->quantifier(Select::QUANTIFIER_DISTINCT);
         $filter = new Where;
         $filter->in('product.dataState',array(2));
-        $select->where($filter);
 
-        $statusIntJoin = new Expression('i.entity_id = product.entity_id and i.attribute_id = 273');
-        $select->join(['i'=>'productattribute_int'],$statusIntJoin ,['status'=>'value'] ,Select::JOIN_LEFT);
+        $select->join(['u'=>'users'],'u.userid=product.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
+        if( $sku ) {
+            $filter->like('product.productid',$sku.'%');
+        }
+        $select->where($filter);
+        $select->limit((int)$limit);
+
+//        $statusIntJoin = new Expression('i.entity_id = product.entity_id and i.attribute_id = 273');
+//        $select->join(['i'=>'productattribute_int'],$statusIntJoin ,['status'=>'value'] ,Select::JOIN_LEFT);
+
 //        $statusOptionJoin = new Expression('o.attribute_id = i.attribute_id and o.value = i.option');
 //        $select->join(['o'=>'productattribute_option'],$statusOptionJoin ,['Status'=>'value'] ,Select::JOIN_LEFT);
         $statement = $this->sql->prepareStatementForSqlObject($select);
@@ -736,7 +744,7 @@ class MagentoTable {
             $resultSet->initialize($result);
         }
         $products = $resultSet->toArray();
-        echo '<pre>';
+//        echo '<pre>';
 //        var_dump($products);
 //          $productSku = [
 //              'PDPPBRBR','PLPPBRBR','PLPPGYBK','PMPPBRBR','PMPPGYBK','SEPPBRGD','SEPPGYGM','SEPPGYMSV','SSPPGNGD','SSPPGYMSV'
@@ -748,10 +756,14 @@ class MagentoTable {
         $startCount = 0;
 //        for( $i = 0; $i < $skuCount; $i++ ) {
             foreach($products as $product) {
+//                $soapBundle['sku'] = $product['sku'];
+//                $soapBundle['website'] = $product['website'];
+//                $startCount = 0;
 //                if($productSku[$i] == $value['sku']) {
                     $entityId = $product['id'];
                     $attributes = $this->productAttributeLookup($this->sql);
                     foreach( $attributes as $attribute ) {
+//                        $startCount = 0;
                         $tableType = (string)$attribute['dataType'];
                         $attributeId = (int)$attribute['attId'];
                         $attributeCode = $attribute['attCode'];
@@ -772,29 +784,55 @@ class MagentoTable {
                             $attSet->initialize($attResult);
                         }
                         $attributeValues = $attSet->toArray();
+
                         foreach($attributeValues as $keyValue => $valueOption) {
 //                            if ( $products[$index]['sku'] == 'BOSE359037-1300' ) {
 //                                echo $products[$index]['sku'] . ' ' . $attributeCode . '<br />';
 //                            }
-                            $soapBundle[$startCount]['sku'] = $product['sku'];
+//                            $soapBundle[$startCount]['productType'] = $product['productType'];
+                            $soapBundle[$startCount]['id'] = (int)$entityId;
                             $soapBundle[$startCount]['website'] = $product['website'];
-                            $soapBundle[$startCount]['status'] = (is_null($product['status'])) ? 2 : $product['status'];
+                            $soapBundle[$startCount]['sku'] = $product['sku'];
+
+//                            $soapBundle[$startCount]['status'] = (is_null($product['status'])) ? 2 : $product['status'];
                             if ( array_key_exists($attributeCode,$this->stockData) ) {
-                                $soapBundle[$startCount]['stock_data'][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+                                $soapBundle[$startCount]['property'] = ['stock_data'=>ucfirst(str_replace('_', ' ' ,$attributeCode))] ;
+                                $soapBundle[$startCount]['value'] = $valueOption[$attributeCode];
                             } else {
-                                if( isset($attributeValues[$keyValue][$attributeCode]) ){
-                                    $soapBundle[$startCount][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+                                if( isset($valueOption[$attributeCode]) ){
+                                    $soapBundle[$startCount]['property'] = ucfirst(str_replace('_', ' ' ,$attributeCode));
+                                    $soapBundle[$startCount]['value'] = $valueOption[$attributeCode];
+
+                                    if( $attributeCode == 'status' && $valueOption[$attributeCode] == 2 ) {
+                                        $soapBundle[$startCount]['value'] = 'Disabled';
+                                    }
+                                    if( $attributeCode == 'status' && $valueOption[$attributeCode] == 1 ) {
+                                        $soapBundle[$startCount]['value'] = 'Enabled';
+                                    }
+
+
+//                                    $soapBundle[$startCount][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+                                }
+                                if( is_null($valueOption[$attributeCode]) && $attributeCode == 'status') {
+                                    $soapBundle[$startCount]['property'] = ucfirst(str_replace('_', ' ' ,$attributeCode));;
+                                    $soapBundle[$startCount]['value'] = '2';
+//                                    $soapBundle[$startCount][$attributeCode] =  '2';
                                 }
                             }
+                            $soapBundle[$startCount]['creation'] = $product['creation'];
+                            $soapBundle[$startCount]['fullname'] = $product['fname'] . ' ' . $product['lname'];
+                            $startCount++;
                         }
+//                        $startCount++;
+
                     }
-                    $startCount++;
+//                    $startCount++;
 //                }
             }
 //        }
-        echo '<pre>';
-        var_dump($soapBundle);
-        die();
+//        echo '<pre>';
+//        var_dump($soapBundle);
+//        die();
         return $soapBundle;
     }
 

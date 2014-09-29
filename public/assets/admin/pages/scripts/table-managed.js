@@ -1711,7 +1711,7 @@ var TableManaged = function () {
 
     var newProducts = function () {
         var dTable = $('#kpiNewProducts');
-        var dtable = dTable.DataTable({
+        var dtable = dTable.dataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
@@ -1728,16 +1728,12 @@ var TableManaged = function () {
                                         "</td>"
                 },
                 {
-                    "class": "hidden website",
-                    "data": "website"
-                },
-                {
-                    "class": "hidden productType",
-                    "data": "productType"
-                },
-                {
                     "class": "eid",
                     "data": "id"
+                },
+                {
+                    "class": "hidden website",
+                    "data": "website"
                 },
 
                 {
@@ -1746,7 +1742,15 @@ var TableManaged = function () {
                 },
                 {
                     "class": "property",
-                    "data": "property"
+                    "data": function(data){
+                        if (typeof data == 'object') {
+                            if( typeof data.property == 'object' ) {
+                                return data.property.stock_data;
+                            } else {
+                                return data.property;
+                            }
+                        }
+                    }
                 },
                 {
                     "class": "value",
@@ -1766,6 +1770,7 @@ var TableManaged = function () {
             ],
             // set the initial value
             "pageLength": 10,
+            "paging": true,
             "pagingType": "bootstrap_full_number",
             "language": {
                 "emptyTable":     "No data available in table",
@@ -1780,213 +1785,213 @@ var TableManaged = function () {
                     "first": "First"
                 }
             }});
-        var groupImage = $('#skuImages');
-
-        $('#kpiImages tbody').on('change', '#skuImage',function (e) {
-//            $('form#mageImages button').append('<div class="skuimg"></div>');
-
-            e.preventDefault();
-            var newImage = $(this);
-            var imageId = newImage.closest('td').siblings('td.imageid').text();
-            var entityId = newImage.closest('td').siblings('td.eid').text();
-            var label = newImage.closest('td').siblings('td.lbl').text();
-            var sku = newImage.closest('td').siblings('td.sku').text();
-            var imgPos = newImage.closest('td').siblings('td.position').text();
-            var filename = newImage.closest('td').siblings('td.filename').children('img').attr('src');
-            var position = newImage.closest('tr').index();
-//            var position = idChange.closest('td').siblings('td.count').text();
-            var uncheckedLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
-            var checkedLength = $('tbody input.skuImage:checkbox(":checked")').length;
-            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 0 && !groupImage.prop('checked'));
-
-//            if ( uncheckedLength == 0 && !groupImage.prop('checked') ) {
-//                console.log('haha');
-//                $("form#mageImages input.SkuImg").remove();
+//        var groupImage = $('#skuImages');
+//
+//        $('#kpiImages tbody').on('change', '#skuImage',function (e) {
+////            $('form#mageImages button').append('<div class="skuimg"></div>');
+//
+//            e.preventDefault();
+//            var newImage = $(this);
+//            var imageId = newImage.closest('td').siblings('td.imageid').text();
+//            var entityId = newImage.closest('td').siblings('td.eid').text();
+//            var label = newImage.closest('td').siblings('td.lbl').text();
+//            var sku = newImage.closest('td').siblings('td.sku').text();
+//            var imgPos = newImage.closest('td').siblings('td.position').text();
+//            var filename = newImage.closest('td').siblings('td.filename').children('img').attr('src');
+//            var position = newImage.closest('tr').index();
+////            var position = idChange.closest('td').siblings('td.count').text();
+//            var uncheckedLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
+//            var checkedLength = $('tbody input.skuImage:checkbox(":checked")').length;
+//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 0 && !groupImage.prop('checked'));
+//
+////            if ( uncheckedLength == 0 && !groupImage.prop('checked') ) {
+////                console.log('haha');
+////                $("form#mageImages input.SkuImg").remove();
+////            }
+//
+//            if ( $(this).prop('checked') ) {
+////                $(this).val(entityId).attr({
+////                    name:'skuItem['+position+'][id]'
+////                });
+////                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][filename]' value='"+filename+"'/>");
+////                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][sku]' value='"+sku+"'/>");
+////                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][imageid]' value='"+imageId+"'/>");
+//                if( uncheckedLength == 0) {
+//                    groupImage.prop('checked','checked');
+////                    if ( groupImage.prop('checked') ) {
+////                        console.log('will');
+////                        $("form#mageImages input.SkuImg").remove();
+////                    }
+//                }
+//            } else {
+////                $(this).val('').attr('name','');
+////                $('.new_image').remove();
+//                if( uncheckedLength < checkedLength ) {
+//                    groupImage.prop('checked',false);
+//                }
 //            }
-
-            if ( $(this).prop('checked') ) {
-//                $(this).val(entityId).attr({
-//                    name:'skuItem['+position+'][id]'
-//                });
-//                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][filename]' value='"+filename+"'/>");
-//                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][sku]' value='"+sku+"'/>");
-//                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][imageid]' value='"+imageId+"'/>");
-                if( uncheckedLength == 0) {
-                    groupImage.prop('checked','checked');
-//                    if ( groupImage.prop('checked') ) {
-//                        console.log('will');
-//                        $("form#mageImages input.SkuImg").remove();
-//                    }
-                }
-            } else {
-//                $(this).val('').attr('name','');
-//                $('.new_image').remove();
-                if( uncheckedLength < checkedLength ) {
-                    groupImage.prop('checked',false);
-                }
-            }
-            var hiddenId = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuImage['+position+'][imageid]',
-                class: 'SkuImage',
-                value: imageId
-            });
-            var hiddenEntityId = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuImage['+position+'][id]',
-                class: 'SkuImage',
-                value: entityId
-            });
-            var hiddenLabel = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuImage['+position+'][label]',
-                class: 'SkuImage',
-                value: label
-            });
-
-            var hiddenFilename = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuImage['+position+'][filename]',
-                class: 'SkuImage',
-                value: filename
-            });
-            var hiddenSku = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuImage['+position+'][sku]',
-                class: 'SkuImage',
-                value: sku
-            });
-            var hiddenPosition = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuImage['+position+'][position]',
-                class: 'SkuImage',
-                value: imgPos
-            });
-//            console.log(groupSku.prop('checked'));
-
-            if( $(this).prop('checked') ) {
-//                $('form#mageImages button').append('<div class="skuimg"></div>');
-                hiddenId.appendTo('form#mageImages');
-                hiddenEntityId.appendTo('form#mageImages');
-                hiddenFilename.appendTo('form#mageImages');
-                hiddenSku.appendTo('form#mageImages');
-                hiddenPosition.appendTo('form#mageImages');
-                hiddenLabel.appendTo('form#mageImages');
-            }
-
-            if( !$(this).is(':checked') ) {
-                $("form#mageImages input[name='skuImage["+ position +"][imageid]']").remove();
-                $("form#mageImages input[name='skuImage["+ position +"][id]']").remove();
-                $("form#mageImages input[name='skuImage["+ position +"][filename]']").remove();
-                $("form#mageImages input[name='skuImage["+ position +"][sku]']").remove();
-                $("form#mageImages input[name='skuImage["+ position +"][position]']").remove();
-                $("form#mageImages input[name='skuImage["+ position +"][label]']").remove();
-            }
-        });
-        groupImage.prop('checked',false);
-        groupImage.on('change',function(){
-            $('form#mageImages button').append('<div class="skuimg"></div>');
-            if( $(this).prop("checked") ) {
-                $('.skuImage').prop('checked',true);
-            } else {
-                $('form#mageImages input.SkuImage').remove();
-                $('.skuImage').prop('checked',false);
-            }
-            var uncheckedLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
-            var checkedLength = $('tbody input.skuImage:checkbox(":checked")').length;
-            if ( uncheckedLength < checkedLength  ) {
-                groupImage.prop('checked',false);
-            }
-            if( groupImage.prop('checked') ) {
-                if( uncheckedLength < checkedLength ) {
-                    $('form#mageImages input.SkuImage').remove();
-                }
-            }
-
-//            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
+//            var hiddenId = $('<input>').attr({
+//                type: 'hidden',
+//                name: 'skuImage['+position+'][imageid]',
+//                class: 'SkuImage',
+//                value: imageId
+//            });
+//            var hiddenEntityId = $('<input>').attr({
+//                type: 'hidden',
+//                name: 'skuImage['+position+'][id]',
+//                class: 'SkuImage',
+//                value: entityId
+//            });
+//            var hiddenLabel = $('<input>').attr({
+//                type: 'hidden',
+//                name: 'skuImage['+position+'][label]',
+//                class: 'SkuImage',
+//                value: label
+//            });
+//
+//            var hiddenFilename = $('<input>').attr({
+//                type: 'hidden',
+//                name: 'skuImage['+position+'][filename]',
+//                class: 'SkuImage',
+//                value: filename
+//            });
+//            var hiddenSku = $('<input>').attr({
+//                type: 'hidden',
+//                name: 'skuImage['+position+'][sku]',
+//                class: 'SkuImage',
+//                value: sku
+//            });
+//            var hiddenPosition = $('<input>').attr({
+//                type: 'hidden',
+//                name: 'skuImage['+position+'][position]',
+//                class: 'SkuImage',
+//                value: imgPos
+//            });
+////            console.log(groupSku.prop('checked'));
+//
+//            if( $(this).prop('checked') ) {
+////                $('form#mageImages button').append('<div class="skuimg"></div>');
+//                hiddenId.appendTo('form#mageImages');
+//                hiddenEntityId.appendTo('form#mageImages');
+//                hiddenFilename.appendTo('form#mageImages');
+//                hiddenSku.appendTo('form#mageImages');
+//                hiddenPosition.appendTo('form#mageImages');
+//                hiddenLabel.appendTo('form#mageImages');
+//            }
+//
+//            if( !$(this).is(':checked') ) {
+//                $("form#mageImages input[name='skuImage["+ position +"][imageid]']").remove();
+//                $("form#mageImages input[name='skuImage["+ position +"][id]']").remove();
+//                $("form#mageImages input[name='skuImage["+ position +"][filename]']").remove();
+//                $("form#mageImages input[name='skuImage["+ position +"][sku]']").remove();
+//                $("form#mageImages input[name='skuImage["+ position +"][position]']").remove();
+//                $("form#mageImages input[name='skuImage["+ position +"][label]']").remove();
+//            }
+//        });
+//        groupImage.prop('checked',false);
+//        groupImage.on('change',function(){
+//            $('form#mageImages button').append('<div class="skuimg"></div>');
+//            if( $(this).prop("checked") ) {
+//                $('.skuImage').prop('checked',true);
+//            } else {
+//                $('form#mageImages input.SkuImage').remove();
+//                $('.skuImage').prop('checked',false);
+//            }
+//            var uncheckedLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
+//            var checkedLength = $('tbody input.skuImage:checkbox(":checked")').length;
+//            if ( uncheckedLength < checkedLength  ) {
+//                groupImage.prop('checked',false);
+//            }
+//            if( groupImage.prop('checked') ) {
+//                if( uncheckedLength < checkedLength ) {
+//                    $('form#mageImages input.SkuImage').remove();
+//                }
+//            }
+//
+////            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
+////                $("form#mageImages div.skuimg").remove();
+////            }
+//
+//            if( uncheckedLength == 0) {
+//                groupImage.prop('checked',true);
+//            }
+//            var image = $('#kpiImages tbody #skuImage');
+//
+////            $("form#mageImages input[name='skuImage["+ x +"][imageid]']").remove();
+////            $("form#mageImages input[name='skuImage["+ x +"][id]']").remove();
+////            $("form#mageImages input[name='skuImage["+ x +"][filename]']").remove();
+////            $("form#mageImages input[name='skuImage["+ x +"][sku]']").remove();
+//
+//            if( !$(this).prop('checked') ) {
 //                $("form#mageImages div.skuimg").remove();
 //            }
-
-            if( uncheckedLength == 0) {
-                groupImage.prop('checked',true);
-            }
-            var image = $('#kpiImages tbody #skuImage');
-
-//            $("form#mageImages input[name='skuImage["+ x +"][imageid]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][id]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][filename]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][sku]']").remove();
-
-            if( !$(this).prop('checked') ) {
-                $("form#mageImages div.skuimg").remove();
-            }
-//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 4 && !groupImage.prop('checked'));
+////            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 4 && !groupImage.prop('checked'));
+////
+////            if ( uncheckedLength == 4 && !groupImage.prop('checked') ) {
+////                $("form#mageImages").empty();
+////            }
 //
-//            if ( uncheckedLength == 4 && !groupImage.prop('checked') ) {
-//                $("form#mageImages").empty();
+//            if ( uncheckedLength < checkedLength  ) {
+//                if ( $(this).prop('checked') ) {
+//                    $("form#mageImages div.skuimg").remove();
+//                    $('form#mageImages button').append('<div class="skuimg"></div>');
+//                }
 //            }
-
-            if ( uncheckedLength < checkedLength  ) {
-                if ( $(this).prop('checked') ) {
-                    $("form#mageImages div.skuimg").remove();
-                    $('form#mageImages button').append('<div class="skuimg"></div>');
-                }
-            }
-
-            image.each(function(i) {
-                var imageId = image.closest('td').siblings('td.imageid').eq(i).text();
-                var entityId = image.closest('td').siblings('td.eid').eq(i).text();
-                var sku = image.closest('td').siblings('td.sku').eq(i).text();
-                var label = image.closest('td').siblings('td.lbl').eq(i).text();
-                var imgPos = image.closest('td').siblings('td.position').eq(i).text();
-                var filename = image.closest('td').siblings('td.filename').eq(i).children('img').attr('src');
-
-                var hiddenId = $('<input>').attr({
-                    type: 'hidden',
-                    class:  'SkuImage',
-                    name: 'skuImage['+i+'][imageid]',
-                    value: imageId
-                });
-                var hiddenEntityId = $('<input>').attr({
-                    type: 'hidden',
-                    class:  'SkuImage',
-                    name: 'skuImage['+i+'][id]',
-                    value: entityId
-                });
-
-                var hiddenFilename = $('<input>').attr({
-                    type: 'hidden',
-                    name: 'skuImage['+i+'][filename]',
-                    class:  'SkuImage',
-                    value: filename
-                });
-                var hiddenLabel = $('<input>').attr({
-                    type: 'hidden',
-                    name: 'skuImage['+i+'][label]',
-                    class: 'SkuImg',
-                    value: label
-                });
-                var hiddenSku = $('<input>').attr({
-                    type: 'hidden',
-                    name: 'skuImage['+i+'][sku]',
-                    class:  'SkuImage',
-                    value: sku
-                });
-
-                var hiddenPosition = $('<input>').attr({
-                    type: 'hidden',
-                    name: 'skuImage['+i+'][position]',
-                    class:  'SkuImage',
-                    value: imgPos
-                });
-                hiddenId.appendTo('form#mageImages div.skuimg');
-                hiddenEntityId.appendTo('form#mageImages div.skuimg');
-                hiddenFilename.appendTo('form#mageImages div.skuimg');
-                hiddenSku.appendTo('form#mageImages div.skuimg');
-                hiddenPosition.appendTo('form#mageImages div.skuimg');
-                hiddenLabel.appendTo('form#mageImages div.skuimg');
-            });
-        });
+//
+//            image.each(function(i) {
+//                var imageId = image.closest('td').siblings('td.imageid').eq(i).text();
+//                var entityId = image.closest('td').siblings('td.eid').eq(i).text();
+//                var sku = image.closest('td').siblings('td.sku').eq(i).text();
+//                var label = image.closest('td').siblings('td.lbl').eq(i).text();
+//                var imgPos = image.closest('td').siblings('td.position').eq(i).text();
+//                var filename = image.closest('td').siblings('td.filename').eq(i).children('img').attr('src');
+//
+//                var hiddenId = $('<input>').attr({
+//                    type: 'hidden',
+//                    class:  'SkuImage',
+//                    name: 'skuImage['+i+'][imageid]',
+//                    value: imageId
+//                });
+//                var hiddenEntityId = $('<input>').attr({
+//                    type: 'hidden',
+//                    class:  'SkuImage',
+//                    name: 'skuImage['+i+'][id]',
+//                    value: entityId
+//                });
+//
+//                var hiddenFilename = $('<input>').attr({
+//                    type: 'hidden',
+//                    name: 'skuImage['+i+'][filename]',
+//                    class:  'SkuImage',
+//                    value: filename
+//                });
+//                var hiddenLabel = $('<input>').attr({
+//                    type: 'hidden',
+//                    name: 'skuImage['+i+'][label]',
+//                    class: 'SkuImg',
+//                    value: label
+//                });
+//                var hiddenSku = $('<input>').attr({
+//                    type: 'hidden',
+//                    name: 'skuImage['+i+'][sku]',
+//                    class:  'SkuImage',
+//                    value: sku
+//                });
+//
+//                var hiddenPosition = $('<input>').attr({
+//                    type: 'hidden',
+//                    name: 'skuImage['+i+'][position]',
+//                    class:  'SkuImage',
+//                    value: imgPos
+//                });
+//                hiddenId.appendTo('form#mageImages div.skuimg');
+//                hiddenEntityId.appendTo('form#mageImages div.skuimg');
+//                hiddenFilename.appendTo('form#mageImages div.skuimg');
+//                hiddenSku.appendTo('form#mageImages div.skuimg');
+//                hiddenPosition.appendTo('form#mageImages div.skuimg');
+//                hiddenLabel.appendTo('form#mageImages div.skuimg');
+//            });
+//        });
     };
 
     var webassignmentTable = function () {
