@@ -398,10 +398,10 @@ class MagentoTable {
         $select = $this->sql->select()->columns(['entityId'=>'entity_id','sku'=>'productid'])->from('product');
         $dataState = new Expression("l.entity_id=product.entity_id and l.dataState in(2,3)");
         $select->join(['l'=>'productlink'], $dataState,['entityId'=>'entity_id', 'linkedEntityId'=>'linked_entity_id', 'dataState'=>'dataState']);
-        $select->join( ['t'=>'productlink_type'], 'productlink_type.link_type_id = productlink.link_type_id',['type'=>'code']);
-        $select->join( array('pid'=>'product'), 'pid.entity_id=productlink.entity_id',array('sku'=>'productid'), Select::JOIN_LEFT);
-        $select->join( array('plid'=>'product'), 'plid.entity_id=productlink.linked_entity_id',array('linkedSku'=>'productid'), Select::JOIN_LEFT);
-        $select->join( array('u'=>'users'), 'u.userid = productlink.changedby',array('fname'=>'firstname', 'lname'=>'lastname'));
+        $select->join( ['t'=>'productlink_type'], 'l.link_type_id = t.link_type_id',['type'=>'code']);
+        $select->join( array('pid'=>'product'), 'pid.entity_id=l.entity_id',array('sku'=>'productid'), Select::JOIN_LEFT);
+        $select->join( array('plid'=>'product'), 'plid.entity_id=l.linked_entity_id',array('linkedSku'=>'productid'), Select::JOIN_LEFT);
+        $select->join( array('u'=>'users'), 'u.userid = l.changedby',array('fname'=>'firstname', 'lname'=>'lastname'));
 
 
         $filter = new Where();
