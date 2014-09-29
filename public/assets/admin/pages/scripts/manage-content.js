@@ -166,11 +166,74 @@ var ManageContent = function () {
                     .done(function( data ) {
                         toastr.success(data);
 //                       console.log(data);
-                        var table = $('#kpiUpdates').dataTable();
-                        table.api().draw();
+                        var update = $('#kpiUpdates').dataTable();
+                        var cat = $('#kpiCategories').dataTable();
+                        update.api().draw();
+                        cat.api().draw();
                         $.post('/api-feeds/mage-update-count', function(data){
                             var count = jQuery.parseJSON(data);
-                            $('div#mage-update').empty().append(count.updateCount);
+                            $('div#mage-update').empty().append(count.updateCount + count.categoryCount);
+//                            $('div#mage-update').empty().append(count.updateCount);
+                        });
+                    });
+
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-full-width",
+                    "showDuration": "2000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+                //             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
+            });
+//        });
+    };
+
+    var mageImageHandle = function () {
+//        $('#all_items').on('click',function(){
+//            e.preventDefault();
+            $( "#mageImages" ).submit(function( event ) {
+//                var spinner = new Spinner({
+//                    lines: 12, // The number of lines to draw
+//                    length: 7, // The length of each line
+//                    width: 5, // The line thickness
+//                    radius: 10, // The radius of the inner circle
+//                    color: '#000', // #rbg or #rrggbb
+//                    speed: 1, // Rounds per second
+//                    trail: 100, // Afterglow percentage
+//                    shadow: true // Whether to render a shadow
+//                }).spin($('.page-content-wrapper')); // Place in DOM node called "ajaxContentHolder"
+                //            console.log('hoho');
+                event.preventDefault();
+                //            $('tr #sku_item').each(function(){
+                //                if ( $(this, '#skuItem').prop() ) {
+                //
+                //                }
+                //            });
+
+                //console.log($('#mageForm').serializeArray());
+                var form = $('#mageImages').serializeArray();
+                //            console.log(form);
+                //            var form = 'haha';
+                var url = '/api-feeds/magento/new-images';
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: form})
+                    .done(function( data ) {
+                        toastr.success(data);
+                        var table = $('#kpiImages').dataTable();
+                        table.api().draw();
+                        /*keeps count of new images*/
+                        $.post('/api-feeds/mage-new-image-count', function(data){
+                            var count = jQuery.parseJSON(data);
+                            $('div#mage-image').empty().append(count.imageCount);
                         });
                     });
 
@@ -211,6 +274,7 @@ var ManageContent = function () {
             websiteAssignmentHandle();
             attributeManagementHandle();
             mageSkuHandle();
+            mageImageHandle();
         }
     };
 

@@ -18,16 +18,77 @@ return array(
                     ),
                 ),
             ),
-            'api-count'   =>  array(
+            'apis-update-items'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/update-items',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'updateItems',
+                    ),
+                ),
+            ),
+            'api-magento-categories'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/update-categories',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'updateCategories',
+                    ),
+                ),
+            ),
+
+            'api-magento-related'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/update-related',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'updateRelated',
+                    ),
+                ),
+            ),
+            'api-images'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/new-images',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'newImages',
+                    ),
+                ),
+            ),
+            'update-count'   =>  array(
                 'type'  =>  'Zend\Mvc\Router\Http\Literal',
                 'options'   =>  array(
                     'route' =>  '/api-feeds/mage-update-count',
                     'defaults'  =>  array(
                         'controller'    =>  'Api\Magento\Controller\Magento',
-                        'action'        =>  'kpiCount',
+                        'action'        =>  'kpiUpdateCount',
                     ),
                 ),
             ),
+            'image-count'   =>  array(
+                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+                'options'   =>  array(
+                    'route' =>  '/api-feeds/mage-new-image-count',
+                    'defaults'  =>  array(
+                        'controller'    =>  'Api\Magento\Controller\Magento',
+                        'action'        =>  'kpiImageCount',
+                    ),
+                ),
+            ),
+//            'category-count'   =>  array(
+//                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+//                'options'   =>  array(
+//                    'route' =>  '/api-feeds/mage-category-count',
+//                    'defaults'  =>  array(
+//                        'controller'    =>  'Api\Magento\Controller\Magento',
+//                        'action'        =>  'kpiCategoryCount',
+//                    ),
+//                ),
+//            ),
             'api-magento-items'   =>  array(
                 'type'  =>  'Zend\Mvc\Router\Http\Literal',
                 'options'   =>  array(
@@ -41,7 +102,7 @@ return array(
             'api-magento-images'   =>  array(
                 'type'  =>  'Zend\Mvc\Router\Http\Literal',
                 'options'   =>  array(
-                    'route' =>  '/api-feeds/magento/images',
+                    'route' =>  '/api-feeds/magento/new-images',
                     'defaults'  =>  array(
                         'controller'    =>  'Api\Magento\Controller\Magento',
                         'action'        =>  'soapImages',

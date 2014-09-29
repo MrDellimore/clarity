@@ -47,7 +47,7 @@ class MageSoap extends AbstractSoap{
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
-        $this->sql = new Sql($this->adapter);
+//        $this->sql = new Sql($this->adapter);
         parent::__construct(SOAP_URL);
 //        parent::__construct(SOAP_URL_STAGE2);
 //        parent::__construct(SOAP_URL_STAGE);
@@ -131,6 +131,14 @@ class MageSoap extends AbstractSoap{
 
     public function soapMedia($media = array())
     {
+//        ["imageid"]=>
+//    string(6) "322288"
+//    ["id"]=>
+//    string(3) "169"
+//    ["filename"]=>
+//    string(53) "/images/10e4957d6fa56ce12a8fa333ef8bfd6ba74881f4.jpeg"
+//    ["sku"]=>
+//    string(8) "2292B001"
         $packet = $skuCollection = [];
         $this->startStopwatch();
 //        $soapHandle = new Client(SOAP_URL);
@@ -138,8 +146,8 @@ class MageSoap extends AbstractSoap{
         foreach($media as $key => $imgFile) {
 //                $imgDomain = $media[$key]['domain'];//this will change to whatever cdn we will have.
             $imgName = $imgFile['filename'];
-            $this->imgPk[] = $imgFile['value_id'];
-            $entityId = $imgFile['entity_id'];
+            $this->imgPk[] = $imgFile['imageid'];
+            $entityId = $imgFile['id'];
             $imgPath = file_get_contents("public".$imgName);
 //                $imgPath = 'http://www.focuscamera.com/media/catalog/product'.$imgName;
 
@@ -150,16 +158,16 @@ class MageSoap extends AbstractSoap{
                 'content'   =>  $fileContentsEncoded,
                 'mime'  =>  'image/jpeg',
             );
-            $select = $this->sql->select();
-            $select->from('product')->columns(array('sku'=>'productid'))->where(array('entity_id'=>$entityId));
-            $statement = $this->sql->prepareStatementForSqlObject($select);
-            $result = $statement->execute();
-            $resultSet = new ResultSet;
-            if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                $resultSet->initialize($result);
-            }
-            $products = $resultSet->toArray();
-            $skuCollection[] = $sku = $products[0]['sku'];
+//            $select = $this->sql->select();
+//            $select->from('product')->columns(array('sku'=>'productid'))->where(array('entity_id'=>$entityId));
+//            $statement = $this->sql->prepareStatementForSqlObject($select);
+//            $result = $statement->execute();
+//            $resultSet = new ResultSet;
+//            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//                $resultSet->initialize($result);
+//            }
+//            $products = $resultSet->toArray();
+            $skuCollection[] = $sku = $imgFile['sku'];
             $packet[$key] = [
                 $sku,
                 [
@@ -173,6 +181,8 @@ class MageSoap extends AbstractSoap{
                 ]
             ];
         }
+//        var_dump($packet);
+//        die();
         return $this->_soapCall($packet, 'catalog_product_attribute_media.create', $skuCollection);
     }
 
@@ -182,11 +192,11 @@ class MageSoap extends AbstractSoap{
 //        $soapHandle = new Client(SOAP_URL);
         $packet = $skuCollection = array();
 //        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
-        foreach($categories as $key => $fields){
-            $entityId = $categories[$key]['entityId'];
-            $skuCollection[] = $sku = $categories[$key]['sku'];
-            $dataState = (int)$categories[$key]['dataState'];
-            $categortyId = $categories[$key]['categortyId'];
+        foreach($categories as $key => $category){
+            $entityId = $category['id'];
+            $skuCollection[] = $sku = $category['sku'];
+            $dataState = (int)$category['dataState'];
+            $categortyId = $category['categoryId'];
             if( 3 === $dataState ) {
                 $packet[$key] = [
                     'categoryId'    =>      $categortyId,

@@ -55,6 +55,42 @@ class KeyPerformanceIndicator {
         $this->sql = new Sql($this->adapter);
     }
 
+    /**
+     * @return int
+     */
+    public function fetchImageCount()
+    {
+        $select = $this->sql->select()->from('productattribute_images')->where(['dataState'=>2]);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        return $resultSet->count();
+    }
+
+    /**
+     * @return int
+     */
+    public function fetchCategoryCount()
+    {
+        $filter = new Where;
+        $filter->in('productcategory.dataState',[2,3]);
+        $select = $this->sql->select()->from('productcategory')->where($filter);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        return $resultSet->count();
+    }
+
+    /**
+     * @visibility public
+     * @return int
+     */
     public function updateCount()
     {
 //        echo '<pre>';

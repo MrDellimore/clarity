@@ -717,12 +717,8 @@ var TableManaged = function () {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: "/api-feeds",
+                url: "/api-feeds/update-items",
                 type: 'POST'
-//                "data": function (d){
-//                    d.related = $("#crossSellForm input[name*='linkedSku]']").serializeArray();
-//                    d.position = $("#crossSellForm input[name*='position]']").serializeArray();
-//                }
             },
             "columns": [
 
@@ -731,7 +727,7 @@ var TableManaged = function () {
                     "data": null,
                     "defaultContent":   "<td id='sku_item'>"+
                         "<label for='skuItem'></label>"+
-                        "<input type='checkbox' id='skuItem' name='skuItem[][id]' value=''/></td>"
+                        "<input type='checkbox' class='skuItem' id='skuItem' name='skuItem[][id]' value=''/></td>"
                 },
                 {
                     "class": "hidden count",
@@ -788,20 +784,36 @@ var TableManaged = function () {
             var property = idChange.closest('td').siblings('td.prty').text();
             var position = idChange.closest('tr').index();
 //            var position = idChange.closest('td').siblings('td.count').text();
-            var checkboxLength = $('tbody input:checkbox:not(":checked")').length;
+            var uncheckedLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
+            var checkboxLength = $('tbody input.skuItem:checkbox(":checked")').length;
+
+            console.log(uncheckedLength, checkboxLength);
+
+
+//            if( uncheckedLength == 0) {
+//                console.log('unchecked');
+//                if( groupSku.prop('checked') ) {
+//                    console.log('group sku is unchecked');
+//                    $('form#mageForm .SkuItem').remove();
+//                }
+//            }
+
             if ( $(this).prop('checked') ) {
-                $(this).val(entityId).attr({
-                    name:'skuItem['+position+'][id]'
-//                    id: 'id'+position
-                });
-                $(this).after("<input type='hidden' id='property' name='skuItem["+position+"][property]' value='"+property+"'/>");
-                if( checkboxLength == 0) {
+//                $(this).val(entityId).attr({
+//                    name:'skuItem['+position+'][id]'
+////                    id: 'id'+position
+//                });
+//                $(this).after("<input type='hidden' id='property' name='skuItem["+position+"][property]' value='"+property+"'/>");
+                if( uncheckedLength == 0) {
                     groupSku.prop('checked','checked');
                 }
 //                $(this).val(property).attr('hidden','skuItem['+position+'][property]');
             } else {
-                $(this).val('').attr('name','');
-                $('#property').remove();
+//                $(this).val('').attr('name','');
+//                $('#property').remove();
+//                console.log('unchecked');
+//                $('form#mageForm input.SkuItem').remove();
+
                 if( checkboxLength < 3 ) {
                     groupSku.prop('checked',false);
                 }
@@ -810,11 +822,13 @@ var TableManaged = function () {
             var hiddenId = $('<input>').attr({
                 type: 'hidden',
                 name: 'skuItem['+position+'][id]',//$(this).attr('name'),
+                class: 'SkuItem',
                 value: entityId
             });
             var hiddenProperty = $('<input>').attr({
                 type: 'hidden',
                 name: 'skuItem['+position+'][property]',//$(this).attr('name'),
+                class: 'SkuItem',
                 value: property
             });
 //            console.log(groupSku.prop('checked'));
@@ -826,8 +840,6 @@ var TableManaged = function () {
                 $("form#mageForm input[name='skuItem["+ position +"][id]']").remove();
                 $("form#mageForm input[name='skuItem["+ position +"][property]']").remove();
             }
-
-
         });
 
 //        $('.show-updates').on('click', function (){
@@ -836,47 +848,846 @@ var TableManaged = function () {
 
 //        });
 
-
         groupSku.on('change',function(){
-
-            var item = $('#kpiUpdates tbody #skuItem');
-
-//            var item = $('tr #skuItem');
-
-//            var item = $('td input#skuItem');
-
-            var prty = item.closest('td').siblings('td.prty').text();
-//            var prty = item.closest('td').sibling;
-//            idChange.closest('td').siblings('td.prty').text();
-//            console.log(prty + 'haha' );
-            var uncheckedLength = $('tbody input:checkbox:not(":checked")').length;
-            var checkedLength = $('tbody input:checkbox(":checked")').length;
+            $('form#mageForm button').append('<div class="skuitem"></div>');
             if( $(this).prop("checked") ) {
-                for ( var i = 0; i < uncheckedLength; i++) {
-                    item.prop('checked','checked');
-                    var entityId = item.closest('td').siblings('td.eid').eq(i).text();
-                    var property = item.closest('td').siblings('td.prty').eq(i).text();
-                    console.log(entityId, property);
-                    var hiddenId = $('<input>').attr({
-                        type: 'hidden',
-                        name: 'skuItem['+i+'][id]',//$(this).attr('name'),
-                        value: entityId
-                    });
-                    var hiddenProperty = $('<input>').attr({
-                        type: 'hidden',
-                        name: 'skuItem['+i+'][property]',//$(this).attr('name'),
-                        value: property
-                    });
-                    hiddenId.appendTo('form#mageForm');
-                    hiddenProperty.appendTo('form#mageForm');
-                }
+                $('.skuItem').prop('checked',true);
             } else {
-                for ( var x = 0; x < checkedLength; x++) {
-                    item.prop('checked','');
-                    $("form#mageForm input[name='skuItem["+ x +"][id]']").remove();
-                    $("form#mageForm input[name='skuItem["+ x +"][property]']").remove();
+                $('form#mageForm input.SkuItem').remove();
+                $('.skuItem').prop('checked',false);
+            }
+            var item = $('#kpiUpdates tbody #skuItem');
+            var uncheckedLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.skuItem:checkbox(":checked")').length;
+            if ( uncheckedLength < checkedLength  ) {
+                groupSku.prop('checked',false);
+            }
+
+            if( !groupSku.prop('checked') ) {
+                if( uncheckedLength < checkedLength ) {
+                    $('form#mageForm input.SkuItem').remove();
                 }
             }
+
+//            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
+//                $("form#mageImages div.skuimg").remove();
+//            }
+
+            if( uncheckedLength == 0) {
+                groupSku.prop('checked',true);
+            }
+
+
+//            $("form#mageImages input[name='skuImage["+ x +"][imageid]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][id]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][filename]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][sku]']").remove();
+
+            if( !$(this).prop('checked') ) {
+                $("form#mageForm div.skuitem").remove();
+            }
+//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 4 && !groupImage.prop('checked'));
+//
+//            if ( uncheckedLength == 4 && !groupImage.prop('checked') ) {
+//                $("form#mageImages").empty();
+//            }
+
+            if ( uncheckedLength < checkedLength  ) {
+                if ( $(this).prop('checked') ) {
+                    $("form#mageForm div.skuitem").remove();
+                    $('form#mageForm button').append('<div class="skuitem"></div>');
+                }
+            }
+
+
+            item.each(function(i) {
+                var entityId = item.closest('td').siblings('td.eid').eq(i).text();
+                var property = item.closest('td').siblings('td.prty').eq(i).text();
+                var position = item.closest('tr').index();
+
+                var hiddenId = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuItem['+i+'][id]',
+                    class: 'SkuItem',
+                    value: entityId
+                });
+                var hiddenProperty = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuItem['+i+'][property]',
+                    class: 'SkuItem',
+                    value: property
+                });
+                hiddenId.appendTo('form#mageForm div.skuitem');
+                hiddenProperty.appendTo('form#mageForm div.skuitem');
+            });
+        });
+    };
+
+    var updateMageCategories = function () {
+        var dTable = $('#kpiCategories');
+        var dtable = dTable.DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/api-feeds/update-categories",
+                type: 'POST'
+            },
+            "columns": [
+
+                {
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td id='sku_category'>"+
+                        "<label for='skuCategory'></label>"+
+                        "<input type='checkbox' class='skuCategory' id='skuCategory' name='skuCategory[][id]' value=''/></td>"
+                },
+                {
+                    "class": "sku",
+                    "data": "sku"
+                },
+                {
+                    "class": "eid",
+                    "data": "id"
+                },
+                {
+                    "class": "hidden catid",
+                    "data": "categortyId"
+                },
+                {
+                    "data": "category"
+                },
+                {
+                    "class": "hidden dataState",
+                    "data": "dataState"
+                },
+                {
+                    "data": "state"
+                },
+                { "data": "fullname"}
+
+
+            ],
+            "order": [
+                [0, "asc"]
+            ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "lengthMenu": "_MENU_ records",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }});
+
+        var groupCategory = $('#skuCategories');
+
+        $('#kpiCategories tbody').on('change', '#skuCategory',function (e) {
+            e.preventDefault();
+            var categories = $(this);
+            var entityId = categories.closest('td').siblings('td.eid').text();
+            var categoryId = categories.closest('td').siblings('td.catid').text();
+            var sku = categories.closest('td').siblings('td.sku').text();
+            var dataState = categories.closest('td').siblings('td.dataState').text();
+            var position = categories.closest('tr').index();
+//            var position = idChange.closest('td').siblings('td.count').text();
+            var checkboxLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+            if ( $(this).prop('checked') ) {
+//                $(this).val(entityId).attr({
+//                    name:'skuCategory['+position+'][id]'
+////                    id: 'id'+position
+//                });
+//                $(this).after("<input type='hidden' id='property' name='skuItem["+position+"][property]' value='"+property+"'/>");
+                if( checkboxLength == 0) {
+                    groupCategory.prop('checked','checked');
+                }
+//                $(this).val(property).attr('hidden','skuItem['+position+'][property]');
+            } else {
+//                $(this).val('').attr('name','');
+//                $('#property').remove();
+                if( checkboxLength < 3 ) {
+                    groupCategory.prop('checked',false);
+                }
+//                $(this).after("<input type='hidden' name='' value=''/>");
+            }
+            var hiddenId = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuCategory['+position+'][id]',//$(this).attr('name'),
+                class: 'SkuCategory',
+                value: entityId
+            });
+            var hiddenSku = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuCategory['+position+'][sku]',//$(this).attr('name'),
+                class: 'SkuCategory',
+                value: sku
+            });
+            var hiddenCategoryId = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuCategory['+position+'][categoryId]',//$(this).attr('name'),
+                class: 'SkuCategory',
+                value: categoryId
+            });
+
+            var hiddenDataState = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuCategory['+position+'][dataState]',//$(this).attr('name'),
+                class: 'SkuCategory',
+                value: dataState
+            });
+//            console.log(groupSku.prop('checked'));
+            if( $(this).prop('checked') ) {
+                hiddenId.appendTo('form#mageForm');
+                hiddenCategoryId.appendTo('form#mageForm');
+                hiddenDataState.appendTo('form#mageForm');
+                hiddenSku.appendTo('form#mageForm');
+            }
+            if( !$(this).is(':checked') ) {
+                $("form#mageForm input[name='skuCategory["+ position +"][id]']").remove();
+                $("form#mageForm input[name='skuCategory["+ position +"][categoryId]']").remove();
+                $("form#mageForm input[name='skuCategory["+ position +"][dataState]']").remove();
+                $("form#mageForm input[name='skuCategory["+ position +"][sku]']").remove();
+            }
+        });
+
+//        $('.show-updates').on('click', function (){
+//            var checkboxLength = $('tbody input:checkbox:not(":checked")').length;
+//            console.log(checkboxLength);
+
+//        });
+
+        groupCategory.prop('checkd',false);
+        groupCategory.on('change',function(){
+            $('form#mageForm button').append('<div class="skucategory"></div>');
+            if( $(this).prop("checked") ) {
+                $('.skuCategory').prop('checked',true);
+            } else {
+                $('form#mageForm input.SkuCategory').remove();
+                $('.skuCategory').prop('checked',false);
+            }
+            var category = $('#kpiCategories tbody #skuCategory');
+            var uncheckedLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.skuCategory:checkbox(":checked")').length;
+
+            if( groupCategory.prop('checked') ) {
+                if( uncheckedLength < checkedLength ) {
+                    $('form#mageForm input.SkuCategory').remove();
+                }
+            }
+
+            if ( uncheckedLength < checkedLength  ) {
+                groupCategory.prop('checked',false);
+            }
+
+//            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
+//                $("form#mageImages div.skuimg").remove();
+//            }
+
+            if( uncheckedLength == 0) {
+                groupCategory.prop('checked',true);
+            }
+
+
+//            $("form#mageImages input[name='skuImage["+ x +"][imageid]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][id]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][filename]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][sku]']").remove();
+
+            if( !$(this).prop('checked') ) {
+                $("form#mageForm div.skucategory").remove();
+            }
+//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 4 && !groupImage.prop('checked'));
+//
+//            if ( uncheckedLength == 4 && !groupImage.prop('checked') ) {
+//                $("form#mageImages").empty();
+//            }
+
+            if ( uncheckedLength < checkedLength  ) {
+                if ( $(this).prop('checked') ) {
+                    $("form#mageForm div.skucategory").remove();
+                    $('form#mageForm button').append('<div class="skucategory"></div>');
+                }
+            }
+
+            category.each(function(i) {
+//                var entityId = category.closest('td').siblings('td.eid').eq(i).text();
+//                var property = category.closest('td').siblings('td.prty').eq(i).text();
+                var entityId = category.closest('td').siblings('td.eid').eq(i).text();
+                var categoryId = category.closest('td').siblings('td.catid').eq(i).text();
+                var dataState = category.closest('td').siblings('td.dataState').eq(i).text();
+                var sku = category.closest('td').siblings('td.sku').eq(i).text();
+                var position = category.closest('tr').index();
+
+                var hiddenId = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuCategory['+i+'][id]',//$(this).attr('name'),
+                    class: 'SkuCategory',
+                    value: entityId
+                });
+                var hiddenCategoryId = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuCategory['+i+'][categoryId]',//$(this).attr('name'),
+                    class: 'SkuCategory',
+                    value: categoryId
+                });
+
+                var hiddenDataState = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuCategory['+i+'][dataState]',//$(this).attr('name'),
+                    class: 'SkuCategory',
+                    value: dataState
+                });
+
+                var hiddenSku = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuCategory['+i+'][sku]',//$(this).attr('name'),
+                    class: 'SkuCategory',
+                    value: sku
+                });
+
+                hiddenId.appendTo('form#mageForm div.skucategory');
+                hiddenCategoryId.appendTo('form#mageForm div.skucategory');
+                hiddenDataState.appendTo('form#mageForm div.skucategory');
+                hiddenSku.appendTo('form#mageForm div.skucategory');
+            });
+        });
+    };
+
+    var updateMageRelatedProducts = function () {
+        var dTable = $('#kpiRelatedProducts');
+        var dtable = dTable.DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/api-feeds/update-related",
+                type: 'POST'
+            },
+            "columns": [
+
+                {
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td id='sku_related'>"+
+                        "<label for='skuRelated'></label>"+
+                        "<input type='checkbox' class='skuRelated' id='skuRelated' name='skuRelated[][id]' value=''/></td>"
+                },
+                {
+                    "class": "eid",
+                    "data": "id"
+                },
+                {
+                    "class": "sku",
+                    "data": "sku"
+                },
+
+                {
+                    "class": "linkedId",
+                    "data": "linkedId"
+                },
+                {
+                    "class": "linkedSku",
+                    "data": "linkedSku"
+                },
+                {
+                    "class": "hidden dataState",
+                    "data": "dataState"
+                },
+                {
+                    "data": "state"
+                },
+                {
+                    "class": "type",
+                    "data": "type"
+                },
+                { "data": "fullname"}
+
+
+            ],
+            "order": [
+                [0, "asc"]
+            ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "lengthMenu": "_MENU_ records",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }});
+
+        var groupCategory = $('#skuCategories');
+
+        $('#kpiCategories tbody').on('change', '#skuCategory',function (e) {
+            e.preventDefault();
+            var categories = $(this);
+            var entityId = categories.closest('td').siblings('td.eid').text();
+            var categoryId = categories.closest('td').siblings('td.catid').text();
+            var sku = categories.closest('td').siblings('td.sku').text();
+            var dataState = categories.closest('td').siblings('td.dataState').text();
+            var position = categories.closest('tr').index();
+//            var position = idChange.closest('td').siblings('td.count').text();
+            var checkboxLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+            if ( $(this).prop('checked') ) {
+//                $(this).val(entityId).attr({
+//                    name:'skuCategory['+position+'][id]'
+////                    id: 'id'+position
+//                });
+//                $(this).after("<input type='hidden' id='property' name='skuItem["+position+"][property]' value='"+property+"'/>");
+                if( checkboxLength == 0) {
+                    groupCategory.prop('checked','checked');
+                }
+//                $(this).val(property).attr('hidden','skuItem['+position+'][property]');
+            } else {
+//                $(this).val('').attr('name','');
+//                $('#property').remove();
+                if( checkboxLength < 3 ) {
+                    groupCategory.prop('checked',false);
+                }
+//                $(this).after("<input type='hidden' name='' value=''/>");
+            }
+            var hiddenId = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuCategory['+position+'][id]',//$(this).attr('name'),
+                class: 'SkuCategory',
+                value: entityId
+            });
+            var hiddenSku = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuCategory['+position+'][sku]',//$(this).attr('name'),
+                class: 'SkuCategory',
+                value: sku
+            });
+            var hiddenCategoryId = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuCategory['+position+'][categoryId]',//$(this).attr('name'),
+                class: 'SkuCategory',
+                value: categoryId
+            });
+
+            var hiddenDataState = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuCategory['+position+'][dataState]',//$(this).attr('name'),
+                class: 'SkuCategory',
+                value: dataState
+            });
+//            console.log(groupSku.prop('checked'));
+            if( $(this).prop('checked') ) {
+                hiddenId.appendTo('form#mageForm');
+                hiddenCategoryId.appendTo('form#mageForm');
+                hiddenDataState.appendTo('form#mageForm');
+                hiddenSku.appendTo('form#mageForm');
+            }
+            if( !$(this).is(':checked') ) {
+                $("form#mageForm input[name='skuCategory["+ position +"][id]']").remove();
+                $("form#mageForm input[name='skuCategory["+ position +"][categoryId]']").remove();
+                $("form#mageForm input[name='skuCategory["+ position +"][dataState]']").remove();
+                $("form#mageForm input[name='skuCategory["+ position +"][sku]']").remove();
+            }
+        });
+
+//        $('.show-updates').on('click', function (){
+//            var checkboxLength = $('tbody input:checkbox:not(":checked")').length;
+//            console.log(checkboxLength);
+
+//        });
+
+        groupCategory.prop('checkd',false);
+        groupCategory.on('change',function(){
+            $('form#mageForm button').append('<div class="skucategory"></div>');
+            if( $(this).prop("checked") ) {
+                $('.skuCategory').prop('checked',true);
+            } else {
+                $('form#mageForm input.SkuCategory').remove();
+                $('.skuCategory').prop('checked',false);
+            }
+            var category = $('#kpiCategories tbody #skuCategory');
+            var uncheckedLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.skuCategory:checkbox(":checked")').length;
+
+            if( groupCategory.prop('checked') ) {
+                if( uncheckedLength < checkedLength ) {
+                    $('form#mageForm input.SkuCategory').remove();
+                }
+            }
+
+            if ( uncheckedLength < checkedLength  ) {
+                groupCategory.prop('checked',false);
+            }
+
+//            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
+//                $("form#mageImages div.skuimg").remove();
+//            }
+
+            if( uncheckedLength == 0) {
+                groupCategory.prop('checked',true);
+            }
+
+
+//            $("form#mageImages input[name='skuImage["+ x +"][imageid]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][id]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][filename]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][sku]']").remove();
+
+            if( !$(this).prop('checked') ) {
+                $("form#mageForm div.skucategory").remove();
+            }
+//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 4 && !groupImage.prop('checked'));
+//
+//            if ( uncheckedLength == 4 && !groupImage.prop('checked') ) {
+//                $("form#mageImages").empty();
+//            }
+
+            if ( uncheckedLength < checkedLength  ) {
+                if ( $(this).prop('checked') ) {
+                    $("form#mageForm div.skucategory").remove();
+                    $('form#mageForm button').append('<div class="skucategory"></div>');
+                }
+            }
+
+            category.each(function(i) {
+//                var entityId = category.closest('td').siblings('td.eid').eq(i).text();
+//                var property = category.closest('td').siblings('td.prty').eq(i).text();
+                var entityId = category.closest('td').siblings('td.eid').eq(i).text();
+                var categoryId = category.closest('td').siblings('td.catid').eq(i).text();
+                var dataState = category.closest('td').siblings('td.dataState').eq(i).text();
+                var sku = category.closest('td').siblings('td.sku').eq(i).text();
+                var position = category.closest('tr').index();
+
+                var hiddenId = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuCategory['+i+'][id]',//$(this).attr('name'),
+                    class: 'SkuCategory',
+                    value: entityId
+                });
+                var hiddenCategoryId = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuCategory['+i+'][categoryId]',//$(this).attr('name'),
+                    class: 'SkuCategory',
+                    value: categoryId
+                });
+
+                var hiddenDataState = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuCategory['+i+'][dataState]',//$(this).attr('name'),
+                    class: 'SkuCategory',
+                    value: dataState
+                });
+
+                var hiddenSku = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuCategory['+i+'][sku]',//$(this).attr('name'),
+                    class: 'SkuCategory',
+                    value: sku
+                });
+
+                hiddenId.appendTo('form#mageForm div.skucategory');
+                hiddenCategoryId.appendTo('form#mageForm div.skucategory');
+                hiddenDataState.appendTo('form#mageForm div.skucategory');
+                hiddenSku.appendTo('form#mageForm div.skucategory');
+            });
+        });
+    };
+
+    var newSkuImages = function () {
+        var dTable = $('#kpiImages');
+        var dtable = dTable.DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/api-feeds/new-images",
+                type: 'POST'
+            },
+            "columns": [
+                {
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td id='sku_image'>"+
+                                            "<label for='skuImage'></label>"+
+                                            "<input type='checkbox' class='skuImage' id='skuImage' name='skuImage[][id]' value=''/>" +
+                                        "</td>"
+                },
+                {
+                    "class": "hidden imageid",
+                    "data": "valueid"
+                },
+                {
+                    "class": "hidden position",
+                    "data": "position"
+                },
+                {
+                    "class": "eid",
+                    "data": "entityId"
+                },
+
+                {
+                    "class": "sku",
+                    "data": "sku"
+                },
+                {
+                    "class": "lbl",
+                    "data": "label"
+                },
+                {
+                    "class": "filename",
+                    "data": "filename"
+                },
+                { "data": "creation"},
+                { "data": "fullname"}
+
+
+            ],
+            "order": [
+                [0, "asc"]
+            ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "lengthMenu": "_MENU_ records",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }});
+        var groupImage = $('#skuImages');
+
+        $('#kpiImages tbody').on('change', '#skuImage',function (e) {
+//            $('form#mageImages button').append('<div class="skuimg"></div>');
+
+            e.preventDefault();
+            var newImage = $(this);
+            var imageId = newImage.closest('td').siblings('td.imageid').text();
+            var entityId = newImage.closest('td').siblings('td.eid').text();
+            var label = newImage.closest('td').siblings('td.lbl').text();
+            var sku = newImage.closest('td').siblings('td.sku').text();
+            var imgPos = newImage.closest('td').siblings('td.position').text();
+            var filename = newImage.closest('td').siblings('td.filename').children('img').attr('src');
+            var position = newImage.closest('tr').index();
+//            var position = idChange.closest('td').siblings('td.count').text();
+            var uncheckedLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.skuImage:checkbox(":checked")').length;
+            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 0 && !groupImage.prop('checked'));
+
+//            if ( uncheckedLength == 0 && !groupImage.prop('checked') ) {
+//                console.log('haha');
+//                $("form#mageImages input.SkuImg").remove();
+//            }
+
+            if ( $(this).prop('checked') ) {
+//                $(this).val(entityId).attr({
+//                    name:'skuItem['+position+'][id]'
+//                });
+//                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][filename]' value='"+filename+"'/>");
+//                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][sku]' value='"+sku+"'/>");
+//                $(this).after("<input type='hidden' class='new_image' name='skuImage["+position+"][imageid]' value='"+imageId+"'/>");
+                if( uncheckedLength == 0) {
+                    groupImage.prop('checked','checked');
+//                    if ( groupImage.prop('checked') ) {
+//                        console.log('will');
+//                        $("form#mageImages input.SkuImg").remove();
+//                    }
+                }
+            } else {
+//                $(this).val('').attr('name','');
+//                $('.new_image').remove();
+                if( uncheckedLength < checkedLength ) {
+                    groupImage.prop('checked',false);
+                }
+            }
+            var hiddenId = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuImage['+position+'][imageid]',
+                class: 'SkuImage',
+                value: imageId
+            });
+            var hiddenEntityId = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuImage['+position+'][id]',
+                class: 'SkuImage',
+                value: entityId
+            });
+            var hiddenLabel = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuImage['+position+'][label]',
+                class: 'SkuImage',
+                value: label
+            });
+
+            var hiddenFilename = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuImage['+position+'][filename]',
+                class: 'SkuImage',
+                value: filename
+            });
+            var hiddenSku = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuImage['+position+'][sku]',
+                class: 'SkuImage',
+                value: sku
+            });
+            var hiddenPosition = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuImage['+position+'][position]',
+                class: 'SkuImage',
+                value: imgPos
+            });
+//            console.log(groupSku.prop('checked'));
+
+            if( $(this).prop('checked') ) {
+//                $('form#mageImages button').append('<div class="skuimg"></div>');
+                hiddenId.appendTo('form#mageImages');
+                hiddenEntityId.appendTo('form#mageImages');
+                hiddenFilename.appendTo('form#mageImages');
+                hiddenSku.appendTo('form#mageImages');
+                hiddenPosition.appendTo('form#mageImages');
+                hiddenLabel.appendTo('form#mageImages');
+            }
+
+            if( !$(this).is(':checked') ) {
+                $("form#mageImages input[name='skuImage["+ position +"][imageid]']").remove();
+                $("form#mageImages input[name='skuImage["+ position +"][id]']").remove();
+                $("form#mageImages input[name='skuImage["+ position +"][filename]']").remove();
+                $("form#mageImages input[name='skuImage["+ position +"][sku]']").remove();
+                $("form#mageImages input[name='skuImage["+ position +"][position]']").remove();
+                $("form#mageImages input[name='skuImage["+ position +"][label]']").remove();
+            }
+        });
+        groupImage.prop('checked',false);
+        groupImage.on('change',function(){
+            $('form#mageImages button').append('<div class="skuimg"></div>');
+            if( $(this).prop("checked") ) {
+                $('.skuImage').prop('checked',true);
+            } else {
+                $('form#mageImages input.SkuImage').remove();
+                $('.skuImage').prop('checked',false);
+            }
+            var uncheckedLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.skuImage:checkbox(":checked")').length;
+            if ( uncheckedLength < checkedLength  ) {
+                groupImage.prop('checked',false);
+            }
+            if( groupImage.prop('checked') ) {
+                if( uncheckedLength < checkedLength ) {
+                    $('form#mageImages input.SkuImage').remove();
+                }
+            }
+
+//            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
+//                $("form#mageImages div.skuimg").remove();
+//            }
+
+            if( uncheckedLength == 0) {
+                groupImage.prop('checked',true);
+            }
+            var image = $('#kpiImages tbody #skuImage');
+
+//            $("form#mageImages input[name='skuImage["+ x +"][imageid]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][id]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][filename]']").remove();
+//            $("form#mageImages input[name='skuImage["+ x +"][sku]']").remove();
+
+            if( !$(this).prop('checked') ) {
+                $("form#mageImages div.skuimg").remove();
+            }
+//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 4 && !groupImage.prop('checked'));
+//
+//            if ( uncheckedLength == 4 && !groupImage.prop('checked') ) {
+//                $("form#mageImages").empty();
+//            }
+
+            if ( uncheckedLength < checkedLength  ) {
+                if ( $(this).prop('checked') ) {
+                    $("form#mageImages div.skuimg").remove();
+                    $('form#mageImages button').append('<div class="skuimg"></div>');
+                }
+            }
+
+            image.each(function(i) {
+                var imageId = image.closest('td').siblings('td.imageid').eq(i).text();
+                var entityId = image.closest('td').siblings('td.eid').eq(i).text();
+                var sku = image.closest('td').siblings('td.sku').eq(i).text();
+                var label = image.closest('td').siblings('td.lbl').eq(i).text();
+                var imgPos = image.closest('td').siblings('td.position').eq(i).text();
+                var filename = image.closest('td').siblings('td.filename').eq(i).children('img').attr('src');
+
+                var hiddenId = $('<input>').attr({
+                    type: 'hidden',
+                    class:  'SkuImage',
+                    name: 'skuImage['+i+'][imageid]',
+                    value: imageId
+                });
+                var hiddenEntityId = $('<input>').attr({
+                    type: 'hidden',
+                    class:  'SkuImage',
+                    name: 'skuImage['+i+'][id]',
+                    value: entityId
+                });
+
+                var hiddenFilename = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuImage['+i+'][filename]',
+                    class:  'SkuImage',
+                    value: filename
+                });
+                var hiddenLabel = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuImage['+i+'][label]',
+                    class: 'SkuImg',
+                    value: label
+                });
+                var hiddenSku = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuImage['+i+'][sku]',
+                    class:  'SkuImage',
+                    value: sku
+                });
+
+                var hiddenPosition = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuImage['+i+'][position]',
+                    class:  'SkuImage',
+                    value: imgPos
+                });
+                hiddenId.appendTo('form#mageImages div.skuimg');
+                hiddenEntityId.appendTo('form#mageImages div.skuimg');
+                hiddenFilename.appendTo('form#mageImages div.skuimg');
+                hiddenSku.appendTo('form#mageImages div.skuimg');
+                hiddenPosition.appendTo('form#mageImages div.skuimg');
+                hiddenLabel.appendTo('form#mageImages div.skuimg');
+            });
         });
     };
 
@@ -944,6 +1755,9 @@ var TableManaged = function () {
             attributesPopulate();
             optionsPopulate();
             updateMageItems();
+            updateMageCategories();
+            updateMageRelatedProducts();
+            newSkuImages();
         }
 
     };

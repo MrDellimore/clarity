@@ -68,7 +68,7 @@ class ImageTable{
         $user = $userData['userid'];
 
         $insert = $this->sql->insert('productattribute_images');
-        $insert->columns(array('entity_id','label','position','disabled','domain','filename','default','datastate','changedby'));
+        $insert->columns(array('entity_id','label','position','disabled','domain','filename','default','datastate','changedby','date_created'));
         $insert->values(array(
             'entity_id' => $entityid,
             'label' => $image->getLabel(),
@@ -78,7 +78,8 @@ class ImageTable{
             'filename' => $image->getFilename(),
             'default' => is_null($image->getDefault())?0:1,
             'datastate' => 2,
-            'changedby' => $user
+            'changedby' => $user,
+            'date_created'  =>  date('Y-m-d h:i:s'),
         ));
 
         $statement = $this->sql->prepareStatementForSqlObject($insert);

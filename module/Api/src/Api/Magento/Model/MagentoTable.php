@@ -51,10 +51,50 @@ class MagentoTable {
         $this->sql = new Sql($this->adapter);
     }
 
-    public function fetchImages()
+    public function fetchNewImages($sku,$limit)
     {
+        $select = $this->sql->select()
+                  ->from('productattribute_images')
+                  ->columns([
+                            'valueid'       =>  'value_id',
+                            'entityId'      =>  'entity_id',
+                            'label'         =>  'label',
+                            'filename'      =>  'filename',
+                            'changedby'     =>  'changedby',
+                            'position'      =>  'position',
+                            'creation'      =>  'date_created',
+                            ]);
+        $select->join(['u'=>'users'], 'u.userid = productattribute_images.changedby',['fname'=>'firstname','lname'=>'lastname']);
+        $select->join(['p'=>'product'], 'p.entity_id = productattribute_images.entity_id',['sku'=>'productid']);
+        $filter = new Where;
+        if ( $sku ){
+            $filter->like('product.sku',$sku.'%');
+        }
+        $filter->equalTo('productattribute_images.dataState',2);
+        $select->limit($limit);
+        $select->where($filter);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $images = $resultSet->toArray();
+        $soapCount = 0;
+        $newImages = [];
+        foreach( $images as $image ) {
+            $newImages[$soapCount]['valueid'] = $image['valueid'];
+            $newImages[$soapCount]['entityId'] = $image['entityId'];
+            $newImages[$soapCount]['position'] = $image['position'];
+            $newImages[$soapCount]['sku'] = $image['sku'];
+            $newImages[$soapCount]['label'] = $image['label'];
+            $newImages[$soapCount]['filename'] = "<img width='50' height='50' src='".$image['filename']."' />";
+            $newImages[$soapCount]['creation'] = $image['creation'];
+            $newImages[$soapCount]['fullname'] = $image['fname'] . ' ' . $image['lname'] ;
+            $soapCount++;
+        }
 
-        return $this->productAttribute($this->sql,array(),array('dataState'=>2),'images')->toArray();
+        return $newImages;
     }
 
     public function fetchCleanCount()
@@ -89,23 +129,27 @@ class MagentoTable {
         return $resultSet->count();
     }
 
-    public function fetchImageCount()
+    public function orderImages($images)
     {
-        $select = $this->sql->select()->from('productattribute_images')->where(['dataState'=>2]);
-        $statement = $this->sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
+        $imgCount = 0;
+        $soapImages = [];
+        foreach ( $images as $key => $content ) {
+            $soapImages[$imgCount]['imageid'] = $content['imageid'];
+            $soapImages[$imgCount]['id'] = $content['id'];
+            $soapImages[$imgCount]['filename'] = $content['filename'];
+            $soapImages[$imgCount]['sku'] = $content['sku'];
+            $soapImages[$imgCount]['label'] = $content['label'];
+            $soapImages[$imgCount]['position'] = $content['position'];
+            $imgCount++;
         }
-        return $resultSet->count();
+        return $soapImages;
     }
 
     public function groupSku($checkboxSku)
     {
         $count = 0;
         $checkedIds = $checkedProperties = $grouped = [];
-        foreach ( $checkboxSku['skuItem'] as $key => $checkbox ) {
+        foreach ( $checkboxSku as $key => $checkbox ) {
             $checkedIds[$count] = $checkbox['id'];
             $checkedProperties[$count] = $checkbox['property'];
             $count++;
@@ -122,6 +166,23 @@ class MagentoTable {
             }
         }
         return $grouped;
+    }
+
+
+    public function groupCategories($checkboxCategory)
+    {
+        $count = 0;
+        $groupedCategories = [];
+        foreach ($checkboxCategory as $key => $categories) {
+            $groupedCategories[$count]['id'] = $categories['id'];
+            $groupedCategories[$count]['categoryId'] = $categories['categoryId'];
+            $groupedCategories[$count]['dataState'] = $categories['dataState'];
+            $groupedCategories[$count]['sku'] = $categories['sku'];
+            $count++;
+        }
+//        var_dump($groupedCategories);
+//        die();
+        return $groupedCategories;
     }
 
     public function fetchDirtyProducts($changedProducts = Null)
@@ -315,17 +376,49 @@ class MagentoTable {
 //        $this->attributeDirtyCount += $attributeDirtyCount;
 //    }
 
-    public function fetchLinkedProducts()
+    public function fetchLinkedProducts($sku, $limit)
     {
-        $select = $this->sql->select();
+//        $select = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id', 'sku'=>'productid']);
+//        $dataState = new Expression("c.entity_id=product.entity_id and c.dataState in(2,3)");
+//
+//        $select->join(['c'=>'productcategory'], $dataState,['categortyId'=>'category_id', 'dataState'=>'dataState']);
+//
+//        $select->join(['u'=>'users'], 'u.userid = c.changedby',['fname'=>'firstname','lname'=>'lastname']);
+//
+//        $select->join(['cat'=>'newcategory'] , 'cat.category_id = c.category_id', ['category'=>'title']);
+//        $filter = new Where();
+//        if( $sku ) {
+//            $filter->like('product.productid',$sku.'%');
+//        }
+//        $select->where($filter);
+//        $select->limit((int)$limit);
+
+
+
+        $select = $this->sql->select()->columns(['entityId'=>'entity_id','sku'=>'productid'])->from('product');
+        $dataState = new Expression("l.entity_id=product.entity_id and l.dataState in(2,3)");
+        $select->join(['l'=>'productlink'], $dataState,['entityId'=>'entity_id', 'linkedEntityId'=>'linked_entity_id', 'dataState'=>'dataState']);
+        $select->join( ['t'=>'productlink_type'], 'productlink_type.link_type_id = productlink.link_type_id',['type'=>'code']);
+        $select->join( array('pid'=>'product'), 'pid.entity_id=productlink.entity_id',array('sku'=>'productid'), Select::JOIN_LEFT);
+        $select->join( array('plid'=>'product'), 'plid.entity_id=productlink.linked_entity_id',array('linkedSku'=>'productid'), Select::JOIN_LEFT);
+        $select->join( array('u'=>'users'), 'u.userid = productlink.changedby',array('fname'=>'firstname', 'lname'=>'lastname'));
+
+
         $filter = new Where();
-        $filter->in('productlink.dataState',array(2,3));
-        $select->from('productlink')
-            ->columns(array('entityId'=>'entity_id','linkedEntityId'=>'linked_entity_id', 'dataState'=>'dataState'))
-            ->join( array('t'=>'productlink_type'), 't.link_type_id=productlink.link_type_id',array('type'=>'code'))
-            ->join( array('p'=>'product'), 'p.entity_id=productlink.entity_id',array('sku'=>'productid'), Select::JOIN_LEFT)
-//               ->where(array('productcategory.dataState'=>2,'productcategory.dataState'=>3),PredicateSet::OP_OR);
-            ->where($filter);
+        if( $sku ) {
+            $filter->like('product.productid',$sku.'%');
+        }
+        $select->where($filter);
+        $select->limit((int)$limit);
+//        $filter->in('productlink.dataState',array(2,3));
+////        $select->from('productlink')
+//            ->columns(array('entityId'=>'entity_id','linkedEntityId'=>'linked_entity_id', 'dataState'=>'dataState'))
+//            ->join( array('t'=>'productlink_type'), 't.link_type_id=productlink.link_type_id',array('type'=>'code'))
+//            ->join( array('pid'=>'product'), 'pid.entity_id=productlink.entity_id',array('sku'=>'productid'), Select::JOIN_LEFT)
+//            ->join( array('plid'=>'product'), 'plid.entity_id=productlink.linked_entity_id',array('linkedSku'=>'productid'), Select::JOIN_LEFT)
+//            ->join( array('u'=>'users'), 'u.userid = productlink.changedby',array('fname'=>'firstname', 'lname'=>'lastname'))
+////               ->where(array('productcategory.dataState'=>2,'productcategory.dataState'=>3),PredicateSet::OP_OR);
+//            ->where($filter);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -333,11 +426,24 @@ class MagentoTable {
             $resultSet->initialize($result);
         }
         //TODO have to implement a count feature for this.
-//        $resultSet->count()
         $linkedProducts = $resultSet->toArray();
+        $linker = [];
+        $linkCount = 0;
+        foreach ( $linkedProducts as $linked ) {
+            $linker[$linkCount]['id']           = $linked['entityId'];
+            $linker[$linkCount]['sku']          = $linked['sku'];
+            $linker[$linkCount]['linkedId']     = $linked['linkedEntityId'];
+            $linker[$linkCount]['linkedSku']     = $linked['linkedSku'];
+            $linker[$linkCount]['dataState']    = $linked['dataState'];
+            $linker[$linkCount]['state']        = ((int)$linked['dataState'] == 2) ? 'New' : 'Delete';
+            $linker[$linkCount]['type']         = ucfirst(str_replace('_',' ',$linked['type']));
+            $linker[$linkCount]['fullname']     = $linked['fname'] . ' ' . $linked['lname'];
+            $linkCount++;
+        }
 //        var_dump($linkedProducts);
 //        die();
-        return $linkedProducts;
+//        return $linkedProducts;
+        return $linker;
     }
 
     public function updateLinkedProductstoClean($linkedProducts)
@@ -361,17 +467,20 @@ class MagentoTable {
 
     public function updateProductCategoriesToClean($cats)
     {
+        $result = '';
         $dataState = (int)$cats['dataState'];
         if( $dataState === 2 ){
-            $update = $this->sql->update('productcategory')->set(['dataState'=>0])->where(['entity_id'=>$cats['entityId'], 'category_id'=>$cats['categortyId']]);
+            $update = $this->sql->update('productcategory')->set(['dataState'=>0])->where(['entity_id'=>$cats['id'], 'category_id'=>$cats['categoryId']]);
             $statement = $this->sql->prepareStatementForSqlObject($update);
-            $result = $statement->execute();
+            $statement->execute();
+            $result .= $cats['sku'] . " has been added to categories in Magento Admin<br />";
         }
         if( $dataState === 3 ){
             $delete = $this->sql->delete('productcategory');
-            $delete->where(['entity_id'=>$cats['entityId'], 'category_id'=>$cats['categortyId']]);
+            $delete->where(['entity_id'=>$cats['id'], 'category_id'=>$cats['categoryId']]);
             $statement = $this->sql->prepareStatementForSqlObject($delete);
-            $result = $statement->execute();
+            $statement->execute();
+            $result .= $cats['sku'] . " has been deleted from categories in Magento Admin<br />";
         }
         return $result;
     }
@@ -419,15 +528,45 @@ class MagentoTable {
 //    }
 
 
-    public function fetchChangedCategories()
+    public function fetchChangedCategories($sku, $limit)
     {
-        $select = $this->sql->select();
+        $soapCategories = [];
+        $categoryCount = 0;
+        $select = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id', 'sku'=>'productid']);
+        $dataState = new Expression("c.entity_id=product.entity_id and c.dataState in(2,3)");
+
+        $select->join(['c'=>'productcategory'], $dataState,['categortyId'=>'category_id', 'dataState'=>'dataState']);
+
+        $select->join(['u'=>'users'], 'u.userid = c.changedby',['fname'=>'firstname','lname'=>'lastname']);
+
+        $select->join(['cat'=>'newcategory'] , 'cat.category_id = c.category_id', ['category'=>'title']);
         $filter = new Where();
-        $filter->in('productcategory.dataState',array(2,3));
-        $select->from('productcategory')
-               ->columns(array('entityId'=>'entity_id','categortyId'=>'category_id', 'dataState'=>'dataState'))
-               ->join( array('p'=>'product'), 'p.entity_id=productcategory.entity_id',array('sku'=>'productid'))
-               ->where($filter);
+        if( $sku ) {
+            $filter->like('product.productid',$sku.'%');
+        }
+        $select->where($filter);
+        $select->limit((int)$limit);
+
+//        $select->join(['imageid'=>'productcategory'], $dataState,['imageid'=>'value_id']);
+//        $select = $this->sql->select();
+//        $filter = new Where();
+//        $filter->in('productcategory.dataState',array(2,3));
+//        if ( $sku ) {
+////            $filter->like('product.productid',$sku.'%');
+////            $likeSku = new Expression("p.entity_id=productcategory.entity_id or p.productid like '" . $sku . "%'");
+////            $select->join( array('p'=>'product'), $likeSku,array('sku'=>'productid'));
+//            $select->join( array('pr'=>'product'), "pr.productid like '" . $sku . "%'",array('sku'=>'productid'));
+//
+////            $select->join( array('prd'=>'product'), "prd.productid like '" .trim($sku)."%'",['sku'=>'productid']);
+//        }
+//
+//        $select->from('productcategory')
+//               ->columns(array('entityId'=>'entity_id','categortyId'=>'category_id', 'dataState'=>'dataState'))
+//               ->join( array('p'=>'product'), 'p.entity_id=productcategory.entity_id',array('sku'=>'productid'))
+//               ->join( ['u'=>'users'], 'u.userid = productcategory.changedby',['fname'=>'firstname','lname'=>'lastname'])
+//               ->join( ['c'=>'newcategory'] , 'c.category_id = productcategory.category_id', ['category'=>'title'])
+//               ->limit((int)$limit)
+//               ->where($filter);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -436,19 +575,29 @@ class MagentoTable {
         }
         //TODO have to implement a count feature for this.
         $categories = $resultSet->toArray();
-//        var_dump($categories);
+        foreach ( $categories as $key => $category ) {
+            $soapCategories[$categoryCount]['sku'] = $category['sku'];
+            $soapCategories[$categoryCount]['id'] = $category['entityId'];
+            $soapCategories[$categoryCount]['categortyId'] = $category['categortyId'];
+            $soapCategories[$categoryCount]['category'] = $category['category'];
+            $soapCategories[$categoryCount]['dataState'] = $category['dataState'];
+            $soapCategories[$categoryCount]['state'] = ( $category['dataState'] == 2 ) ? 'New' : "Delete";
+            $soapCategories[$categoryCount]['fullname'] = $category['fname']. ' ' . $category['lname'];
+            $categoryCount++;
+         }
+//        var_dump($soapCategories);
 //        die();
-        return $categories;
+//        return $categories;
+        return $soapCategories;
     }
 
     public function updateImagesToClean($images)
     {
         $result ='';
-        foreach($images as $image){
-            $update = $this->sql->update('productattribute_images')->set(['dataState'=>0])->where(['value_id'=>$image['value_id']]);
-            $statement = $this->sql->prepareStatementForSqlObject($update);
-            $result = $statement->execute();
-        }
+        $update = $this->sql->update('productattribute_images')->set(['dataState'=>0])->where(['value_id'=>$images['imageid']]);
+        $statement = $this->sql->prepareStatementForSqlObject($update);
+        $statement->execute();
+        $result .= $images['sku'] .  " with image label " . $images['label'] . " has been updated in Mage Admin.<br />";
         return $result;
     }
 
