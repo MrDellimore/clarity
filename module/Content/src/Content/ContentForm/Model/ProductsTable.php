@@ -481,7 +481,7 @@ class ProductsTable{
         return $resultSet->toArray();
     }
 
-    public function lookupAccessories($searchValue, $limit,$searchTerm,$setSkus =null){
+    public function lookupAccessories($searchValue, $limit,$searchTerm,$setSkus = array()){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from('product');
@@ -507,9 +507,14 @@ class ProductsTable{
             $searchTerm = 'product.productid';
         }
         $where->like($searchTerm,$searchValue.'%');
+        if (!(empty($setSkus))){
+            //$select->where("product.entity_id not id ?", $setSkus);
+            $where->notIn("product.entity_id", $setSkus);
+        }
+
         $select->where($where);
 
-       // $select->where("id NOT IN ?", $setSkus);
+
 
         $select->limit($limit);
 

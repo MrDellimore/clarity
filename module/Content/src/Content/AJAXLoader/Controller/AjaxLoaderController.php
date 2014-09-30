@@ -125,13 +125,22 @@ class AjaxLoaderController extends AbstractActionController
             $setAccessories = $loadAccessories['related'];
             $positions = $loadAccessories['position'];
             $firstElements = array();
+            $setIds = array();
 
-//Search Results
+
             if($limit == '-1'){
-                $limit = 100;
+                $limit = 50;
             }
-            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit,'sku');
-            //todo add to query where sku not in (array of linked skus)
+//grab set IDs to remove from results
+            if(isset($setAccessories)){
+                foreach($setAccessories as $value){
+                    array_push($setIds,$value['value']);
+                }
+            }
+
+
+
+            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit,'sku',$setIds);
             $loadedAccessories = $this->updateaccessories($loadedAccessories);
 
             if(isset($setAccessories)){
@@ -169,7 +178,7 @@ class AjaxLoaderController extends AbstractActionController
                     'draw'  =>  (int)$draw,
                     'data'  =>  $loadedAccessories,
                     'recordsTotal'  =>  1000,
-                    'recordsFiltered'   =>  $limit,
+                    'recordsFiltered'   =>  count($loadedAccessories),
                 )
             );
             $event    = $this->getEvent();
