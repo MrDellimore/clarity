@@ -26,9 +26,11 @@ class LoggingController extends AbstractActionController
         $request = $this->getRequest();
         if($request->isPost()) {
             $logsInfo = $request->getPost();
-//            var_dump($logsInfo);
             $draw = $logsInfo['draw'];
             $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
+
+            $Qty = $logsInfo['more_old'];
+            $qty = $logsInfo['moreold'];
 
 
 //            $filterDateRange = (!is_null($logsInfo['filterDateRange'])) ? $logsInfo['filterDateRange'] : null;
@@ -50,7 +52,7 @@ class LoggingController extends AbstractActionController
 //            if($limit == '-1'){
 //                $limit = 100;
 //            }
-            $loadedLogs = $logs->lookupLoggingInfo($searchParams);
+            $loadedLogs = $logs->lookupLoggingInfo($searchParams, $Qty, $qty);
 //            die();
             $result = json_encode(
                 array(

@@ -40,25 +40,21 @@ class LoggingTable
      */
     public function undo($params = array())
     {
-        $columns = array(
-            'attId' =>  'attribute_id',
-            'dataType'  =>  'backend_type',
-        );
         $where = array(
-             'attribute_code'=> $params['property'] == 'title' ? 'name' : $params['property']
+             'attribute_code'=> (strtolower($params['property']) == 'title') ? 'name' : strtolower(str_replace(' ', '_',$params['property']))
         );
-        $selectResult = $this->productAttribute($this->sql,$columns, $where, 'lookup')->toArray();
+        $selectResult = $this->productAttributeLookup($this->sql,$where);
 
         $attributeId = $selectResult[0]['attId'];
         $tableType  = $selectResult[0]['dataType'];
         $columnMap = array(
-            'entity_id' =>  $params['eid'],
-            'sku' =>  $params['sku'],
-            'oldvalue'  =>  $params['new'],
-            'newvalue'  =>  $params['old'],
-            'datechanged'   => date('Y-m-d h:i:s'),
-            'changedby' =>  $params['user'],
-            'property'  =>  $params['property'],
+            'entity_id'     =>  $params['eid'],
+            'sku'           =>  $params['sku'],
+            'oldvalue'      =>  $params['new'],
+            'newvalue'      =>  $params['old'],
+            'datechanged'   =>  date('Y-m-d h:i:s'),
+            'changedby'     =>  $params['user'],
+            'property'      =>  $params['property'],
         );
 
         $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $columnMap);//'fields' => $mapping,
@@ -105,7 +101,7 @@ class LoggingTable
      * @return $response array()
      */
 
-    public function lookupLoggingInfo($searchParams = array())
+    public function lookupLoggingInfo($searchParams = array(), $moreOld = Null, $old = Null)
     {
         $select = $this->sql->select();
         $select->from('logger');
@@ -135,9 +131,10 @@ class LoggingTable
 
         $intTable = new Expression('i.entity_id = logger.entity_id and attribute_id = 102');
         $optionTable = new Expression('o.attribute_id = 102 and o.option_id = i.value');
-
+        $select->join(['u'=>'users'] , 'logger.changedby=u.userid',['firstname'=>'firstname','lastname'=>'lastname']);
         $select->join(array('i' => 'productattribute_int'), $intTable ,array('attributeId' => 'attribute_id','optionID' => 'value'), Select::JOIN_LEFT);
         $select->join(array('o' => 'productattribute_option'), $optionTable ,array('manufacturer'=>'value'), Select::JOIN_LEFT);
+        $select->order('logger.datechanged DESC');
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -150,23 +147,37 @@ class LoggingTable
 
         $response = array();
 
-        foreach($logs as $key => $value){
-            $user = $logs[$key]['user'];
+        foreach($logs as $key => $history){
+            $manufacturer = $history['manufacturer'];
 
-            $manufacturer = $logs[$key]['manufacturer'];
+            $oldValue = $history['oldValue'];
+            $newValue = $history['newValue'];
+
+            /*Might use ellipses later on if requested*/
+//            if( (is_string($oldValue) && strlen($oldValue) > 50) || ( is_string($newValue) && strlen($newValue) > 50 ) && !is_null($old) ) {
+//                $shortOldValue = utf8_encode(substr(strip_tags($oldValue),0,50)) . " <a href='#' class='more_old' id='more_old_sku" . $key . "'>...</a>";
+//                $shortNewValue = utf8_encode(substr(strip_tags($newValue),0,50)) . " <a href='#' class='more_new' id='more_new_sku" . $key . "'>...</a>";;
+//
+//            } else {
+//                $shortOldValue = $oldValue;
+//                $shortNewValue = $newValue;
+//            }
 
 
+            $response[$key]['id']               = $history['id'];
+            $response[$key]['sku']              = $history['sku'];
+            $response[$key]['entityID']         = $history['entityID'];
+//            $response[$key]['oldValue'] = $shortOldValue;
+            $response[$key]['oldValue']         = strip_tags($oldValue);
+//            $response[$key]['newValue'] = $history['newValue'];
+//            $response[$key]['newValue'] = $shortNewValue;
+            $response[$key]['newValue']         = strip_tags($newValue);
+            $response[$key]['manufacturer']     = $manufacturer;
 
-            $response[$key]['id'] = $logs[$key]['id'];
-            $response[$key]['sku'] = $logs[$key]['sku'];
-            $response[$key]['entityID'] = $logs[$key]['entityID'];
-            $response[$key]['oldValue'] = $logs[$key]['oldValue'];
-            $response[$key]['newValue'] = $logs[$key]['newValue'];
-            $response[$key]['manufacturer'] = $manufacturer;
 
-
-            $response[$key]['dataChanged'] = $logs[$key]['dataChanged'];
-            $response[$key]['property'] = $logs[$key]['property'];
+            $response[$key]['dataChanged']      = date('m-d-Y',strtotime($history['dataChanged']));
+            $response[$key]['property']         = ucfirst($history['property']);
+            $response[$key]['user']             = $history['firstname']. ' ' . $history['lastname'];
 
             //Selects from options table;
 //            $selectMan= $this->sql->select();
@@ -187,27 +198,6 @@ class LoggingTable
 //            foreach($manufacturerResults  as $op => $man){
 //                $response[$key]['manufacturer'] = (!$manufacturerResults[$op]['manufacturer']) ? "N/A" : $manufacturerResults[$op]['manufacturer'] ;
 //            }
-
-            //Selects from users table;
-            $userListings = $this->sql->select();
-            $userListings->from('users');
-            $userListings->columns(array(
-                'firstName' => 'firstname',
-                'lastName' =>   'lastname',
-            ));
-            $userListings->where(array('userid'=>$user));
-            $userStatement = $this->sql->prepareStatementForSqlObject($userListings);
-            $userResult = $userStatement->execute();
-
-            $userResultSet = new ResultSet;
-
-            if ($userResult instanceof ResultInterface && $userResult->isQueryResult()) {
-                $userResultSet->initialize($userResult);
-            }
-            $users = $userResultSet->toArray();
-            foreach($users as $index => $person){
-                $response[$key]['user'] = $users[$index]['firstName'] . ' ' . $users[$index]['lastName'];
-            }
         }
         return $response;
     }
