@@ -168,6 +168,18 @@ class MagentoTable {
         return $grouped;
     }
 
+    public function groupNewSku($checkboxNewSku)
+    {
+        $count = 0;
+        $groupedNewSku = [];
+        foreach ($checkboxNewSku as $key => $newSku) {
+            $groupedNewSku[$count]['id'] = $newSku['id'];
+            $groupedNewSku[$count]['sku'] = $newSku['sku'];
+                    $count++;
+        }
+        return $groupedNewSku;
+    }
+
 
     public function groupCategories($checkboxCategory)
     {
@@ -708,6 +720,75 @@ class MagentoTable {
         return $results;
     }
 
+    public function fetchNewProducts($newProducts)
+    {
+        $soapBundle = [];
+        $startCount = 0;
+
+        foreach ( $newProducts as $key => $nProd ) {
+            $select = $this->sql->select()->from('product')->columns([
+                'productType'   =>  'product_type',
+                'website'       =>  'website',
+            ])->where(['entity_id'=>$nProd['id']]);
+            $statement = $this->sql->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+            $resultSet = new ResultSet;
+            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                $resultSet->initialize($result);
+            }
+            $entityId = $nProd['id'];
+            $sku = $nProd['sku'];
+            $products = $resultSet->toArray();
+            foreach($products as $index => $value) {
+                $attributes = $this->productAttributeLookup($this->sql);
+                foreach( $attributes as $key => $attribute ) {
+                    $tableType = (string)$attribute['dataType'];
+                    $attributeId = (int)$attribute['attId'];
+                    $attributeCode = $attribute['attCode'];
+                    $selectAtts = $this->sql->select()->from('productattribute_'. $tableType)
+                        ->columns([$attributeCode=>'value', 'attId'=>'attribute_id']);
+//                                                          ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);
+                    $filterAttributes = new Where;
+//                        $filterAttributes->equalTo('productattribute_'.$tableType.'.dataState',0);
+//                        $filterAttributes->equalTo('productattribute_'.$tableType.'.dataState',2);
+                    $filterAttributes->equalTo('productattribute_'.$tableType.'.entity_id',$entityId);
+                    $filterAttributes->equalTo('productattribute_'.$tableType.'.attribute_id',$attributeId);
+//                    $filterAttributes->in('productattribute_'.$tableType.'.dataState',array(2));
+                    $selectAtts->where($filterAttributes);
+                    $attStatement = $this->sql->prepareStatementForSqlObject($selectAtts);
+                    $attResult = $attStatement->execute();
+                    $attSet = new ResultSet;
+                    if ($attResult instanceof ResultInterface && $attResult->isQueryResult()) {
+                        $attSet->initialize($attResult);
+                    }
+                    $attributeValues = $attSet->toArray();
+                    foreach($attributeValues as $keyValue => $valueOption) {
+                        $soapBundle[$startCount]['sku'] = $sku;
+                        $soapBundle[$startCount]['website'] = $products[$index]['website'];
+                        if ( array_key_exists($attributeCode,$this->stockData) ) {
+                            $soapBundle[$startCount]['stock_data'][$attributeCode] = $valueOption[$attributeCode];
+                        } else {
+                            if( is_null($attributeValues[$keyValue][$attributeCode]) && $attributeCode ==  'status' ){
+                                $soapBundle[$startCount][$attributeCode] = 2;
+                            }
+                            if( isset($attributeValues[$keyValue][$attributeCode]) ){
+                                $soapBundle[$startCount][$attributeCode] = $valueOption[$attributeCode];
+                            }
+
+                        }
+                    }
+                }
+//                $startCount++;
+            }
+            $startCount++;
+        }
+
+//        echo '<pre>';
+//        var_dump($soapBundle);
+//        die();
+        return $soapBundle;
+
+    }
 
     public function fetchNewItems($sku,$limit)
     {
@@ -756,80 +837,58 @@ class MagentoTable {
         $startCount = 0;
 //        for( $i = 0; $i < $skuCount; $i++ ) {
             foreach($products as $product) {
-//                $soapBundle['sku'] = $product['sku'];
-//                $soapBundle['website'] = $product['website'];
-//                $startCount = 0;
-//                if($productSku[$i] == $value['sku']) {
-                    $entityId = $product['id'];
-                    $attributes = $this->productAttributeLookup($this->sql);
-                    foreach( $attributes as $attribute ) {
-//                        $startCount = 0;
-                        $tableType = (string)$attribute['dataType'];
-                        $attributeId = (int)$attribute['attId'];
-                        $attributeCode = $attribute['attCode'];
-                        $selectAtts = $this->sql->select()->from('productattribute_'. $tableType)
-                                                          ->columns([$attributeCode=>'value', 'attId'=>'attribute_id']);
-//                                                          ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);
-                        $filterAttributes = new Where;
-//                        $filterAttributes->equalTo('productattribute_'.$tableType.'.dataState',0);
-//                        $filterAttributes->equalTo('productattribute_'.$tableType.'.dataState',2);
-                        $filterAttributes->equalTo('productattribute_'.$tableType.'.entity_id',$entityId);
-                        $filterAttributes->equalTo('productattribute_'.$tableType.'.attribute_id',$attributeId);
-                        $filterAttributes->in('productattribute_'.$tableType.'.dataState',array(2));
-                        $selectAtts->where($filterAttributes);
-                        $attStatement = $this->sql->prepareStatementForSqlObject($selectAtts);
-                        $attResult = $attStatement->execute();
-                        $attSet = new ResultSet;
-                        if ($attResult instanceof ResultInterface && $attResult->isQueryResult()) {
-                            $attSet->initialize($attResult);
-                        }
-                        $attributeValues = $attSet->toArray();
-
-                        foreach($attributeValues as $keyValue => $valueOption) {
-//                            if ( $products[$index]['sku'] == 'BOSE359037-1300' ) {
-//                                echo $products[$index]['sku'] . ' ' . $attributeCode . '<br />';
+                $soapBundle[$startCount]['sku'] = $product['sku'];
+                $soapBundle[$startCount]['id'] = (int)$product['id'];
+                $soapBundle[$startCount]['creation'] = date('m-d-Y',strtotime($product['creation']));
+                $soapBundle[$startCount]['fullname'] = $product['fname'] . ' ' . $product['lname'];
+//                $entityId = $product['id'];
+//                $attributes = $this->productAttributeLookup($this->sql);
+//                foreach( $attributes as $attribute ) {
+//                    $tableType = (string)$attribute['dataType'];
+//                    $attributeId = (int)$attribute['attId'];
+//                    $attributeCode = $attribute['attCode'];
+//                    $selectAtts = $this->sql->select()->from('productattribute_'. $tableType)
+//                                                      ->columns([$attributeCode=>'value', 'attId'=>'attribute_id']);
+//                    $filterAttributes = new Where;
+//                    $filterAttributes->equalTo('productattribute_'.$tableType.'.entity_id',$entityId);
+//                    $filterAttributes->equalTo('productattribute_'.$tableType.'.attribute_id',$attributeId);
+//                    $filterAttributes->in('productattribute_'.$tableType.'.dataState',array(2));
+//                    $selectAtts->where($filterAttributes);
+//                    $attStatement = $this->sql->prepareStatementForSqlObject($selectAtts);
+//                    $attResult = $attStatement->execute();
+//                    $attSet = new ResultSet;
+//                    if ($attResult instanceof ResultInterface && $attResult->isQueryResult()) {
+//                        $attSet->initialize($attResult);
+//                    }
+//                    $attributeValues = $attSet->toArray();
+//
+//                    foreach($attributeValues as $keyValue => $valueOption) {
+//                        $soapBundle[$startCount]['website'] = $product['website'];
+//                        if ( array_key_exists($attributeCode,$this->stockData) ) {
+//                            $soapBundle[$startCount]['property'] = ['stock_data'=>ucfirst(str_replace('_', ' ' ,$attributeCode))] ;
+//                            $soapBundle[$startCount]['value'] = $valueOption[$attributeCode];
+//                        } else {
+//                            if( isset($valueOption[$attributeCode]) ){
+//                                $soapBundle[$startCount]['property'] = ucfirst(str_replace('_', ' ' ,$attributeCode));
+//                                $soapBundle[$startCount]['value'] = $valueOption[$attributeCode];
+//                                if( $attributeCode == 'status' && $valueOption[$attributeCode] == 2 ) {
+//                                    $soapBundle[$startCount]['value'] = 'Disabled';
+//                                }
+//                                if( $attributeCode == 'status' && $valueOption[$attributeCode] == 1 ) {
+//                                    $soapBundle[$startCount]['value'] = 'Enabled';
+//                                }
 //                            }
-//                            $soapBundle[$startCount]['productType'] = $product['productType'];
-                            $soapBundle[$startCount]['id'] = (int)$entityId;
-                            $soapBundle[$startCount]['website'] = $product['website'];
-                            $soapBundle[$startCount]['sku'] = $product['sku'];
-
-//                            $soapBundle[$startCount]['status'] = (is_null($product['status'])) ? 2 : $product['status'];
-                            if ( array_key_exists($attributeCode,$this->stockData) ) {
-                                $soapBundle[$startCount]['property'] = ['stock_data'=>ucfirst(str_replace('_', ' ' ,$attributeCode))] ;
-                                $soapBundle[$startCount]['value'] = $valueOption[$attributeCode];
-                            } else {
-                                if( isset($valueOption[$attributeCode]) ){
-                                    $soapBundle[$startCount]['property'] = ucfirst(str_replace('_', ' ' ,$attributeCode));
-                                    $soapBundle[$startCount]['value'] = $valueOption[$attributeCode];
-
-                                    if( $attributeCode == 'status' && $valueOption[$attributeCode] == 2 ) {
-                                        $soapBundle[$startCount]['value'] = 'Disabled';
-                                    }
-                                    if( $attributeCode == 'status' && $valueOption[$attributeCode] == 1 ) {
-                                        $soapBundle[$startCount]['value'] = 'Enabled';
-                                    }
-
-
-//                                    $soapBundle[$startCount][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
-                                }
-                                if( is_null($valueOption[$attributeCode]) && $attributeCode == 'status') {
-                                    $soapBundle[$startCount]['property'] = ucfirst(str_replace('_', ' ' ,$attributeCode));;
-                                    $soapBundle[$startCount]['value'] = '2';
-//                                    $soapBundle[$startCount][$attributeCode] =  '2';
-                                }
-                            }
-                            $soapBundle[$startCount]['creation'] = $product['creation'];
-                            $soapBundle[$startCount]['fullname'] = $product['fname'] . ' ' . $product['lname'];
-                            $startCount++;
-                        }
-//                        $startCount++;
-
-                    }
-//                    $startCount++;
+//                            if( is_null($valueOption[$attributeCode]) && $attributeCode == 'status') {
+//                                $soapBundle[$startCount]['property'] = ucfirst(str_replace('_', ' ' ,$attributeCode));;
+//                                $soapBundle[$startCount]['value'] = '2';
+//                            }
+//                        }
+//
+                        $startCount++;
+//                    }
+//
 //                }
             }
-//        }
 //        echo '<pre>';
 //        var_dump($soapBundle);
 //        die();
@@ -840,6 +899,7 @@ class MagentoTable {
 
     public function updateNewProduct( $oldEntity, $newEntity )
     {
+        $result = '';
         $select = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id'])->where(['productid'=>$oldEntity['sku']]);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $response = $statement->execute();
@@ -864,6 +924,7 @@ class MagentoTable {
                 $update = $this->sql->update('productattribute_'.$dataType)->set(['entity_id'=>$newEntity, 'dataState'=>0])->where(['attribute_id'=>$attributeId, 'entity_id'=>$oeid]);
                 $stmt = $this->sql->prepareStatementForSqlObject($update);
                 $attributeResp = $stmt->execute();
+
 
 //                $attSet = new ResultSet;
 //                if ($attResponse instanceof ResultInterface && $attResponse->isQueryResult()) {
@@ -892,6 +953,7 @@ class MagentoTable {
 
     public function validateSkuExists($newProducts ,$mageEntityId)
     {
+        $result  = '';
         $dupEntityIdExists = $this->sql->select()->from('product')->where(['entity_id'=>$mageEntityId]);
         $dupStatement = $this->sql->prepareStatementForSqlObject($dupEntityIdExists);
         $dupResponse = $dupStatement->execute();
@@ -906,12 +968,14 @@ class MagentoTable {
                 foreach( $eid as $maxEntityID ) {
                     $newEntityId = $maxEntityID + 1;
                     $response = $this->updateNewProduct( $newProducts, $newEntityId );
+                    $result .= $newProducts['sku'] . ' has been added to Magento Admin with new ID ' . $newEntityId . '<br />';
                 }
             }
         } else {
             $response = $this->updateNewProduct($newProducts, $mageEntityId);
+            $result .= $newProducts['sku'] . ' has been added to Magento Admin with ID ' . $mageEntityId . '<br />';
         }
-        return $response;
+        return $result;
     }
 
     public function updateNewItemsToClean($newProducts, $mageEntityId)

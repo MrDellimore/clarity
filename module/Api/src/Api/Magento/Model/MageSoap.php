@@ -278,9 +278,9 @@ class MageSoap extends AbstractSoap{
             $packet[$index] = array('simple', $attributeSet['set_id'], $sku, $attributes );
             $attributes = [];
         }
-        echo '<pre>';
-    var_dump($packet);
-        die();
+//        echo '<pre>';
+//    var_dump($packet);
+//        die();
          return $this->_soapCall($packet, 'catalog_product.create', $skuCollection);
     }
 

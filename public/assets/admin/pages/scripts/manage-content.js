@@ -257,6 +257,69 @@ var ManageContent = function () {
 //        });
     };
 
+    var mageNewProductHandle = function () {
+//        $('#all_items').on('click',function(){
+//            e.preventDefault();
+            $( "#mageNewProds" ).submit(function( event ) {
+//                var spinner = new Spinner({
+//                    lines: 12, // The number of lines to draw
+//                    length: 7, // The length of each line
+//                    width: 5, // The line thickness
+//                    radius: 10, // The radius of the inner circle
+//                    color: '#000', // #rbg or #rrggbb
+//                    speed: 1, // Rounds per second
+//                    trail: 100, // Afterglow percentage
+//                    shadow: true // Whether to render a shadow
+//                }).spin($('.page-content-wrapper')); // Place in DOM node called "ajaxContentHolder"
+                //            console.log('hoho');
+                event.preventDefault();
+                //            $('tr #sku_item').each(function(){
+                //                if ( $(this, '#skuItem').prop() ) {
+                //
+                //                }
+                //            });
+
+                //console.log($('#mageForm').serializeArray());
+                var form = $('#mageNewProds').serializeArray();
+                //            console.log(form);
+                //            var form = 'haha';
+                var url = '/api-feeds/magento/new-items';
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: form})
+                    .done(function( data ) {
+                        toastr.success(data);
+                        var table = $('#kpiNewProducts').dataTable();
+                        table.api().draw();
+                        /*keeps count of new images*/
+                        $.post('/api-feeds/mage-new-image-count', function(data){
+                            var count = jQuery.parseJSON(data);
+                            if( typeof count.newProdCount == 'undefined') {
+                                count.newProdCount = 0;
+                            }
+                            $('div#mage-new-products').empty().append(count.newProdCount);
+                        });
+                    });
+
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-full-width",
+                    "showDuration": "2000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+                //             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
+            });
+//        });
+    };
+
 
 
 
@@ -277,6 +340,7 @@ var ManageContent = function () {
             attributeManagementHandle();
             mageSkuHandle();
             mageImageHandle();
+            mageNewProductHandle();
         }
     };
 

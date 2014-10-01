@@ -363,34 +363,56 @@ class MagentoController  extends AbstractActionController
 
     public function soapNewItemsAction()
     {
-        $url = $this->url()->fromRoute('api-magento-new-items');
+//        $url = $this->url()->fromRoute('api-magento-new-items');
 //        echo '<pre>';
 //        var_dump($url);
+        $newProducts = [];
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-        $response = Null;
-//        echo '<pre>';
-        $newProducts = $this->getMagentoTable()->fetchNewItems();
+        $result = '';
+
+        $request = $this->getRequest();
+
+        if ( $request->isPost() ) {
+            $checkboxNewSku = $request->getPost();
+            if( !count( $checkboxNewSku ) ) {
+                return $this->redirect()->toRoute('apis');
+            }
+            if( !empty($checkboxNewSku['skuNewProduct']) ) {
+                $groupedNewProducts = $this->getMagentoTable()->groupNewSku($checkboxNewSku['skuNewProduct']);
+                $newProducts = $this->getMagentoTable()->fetchNewProducts($groupedNewProducts);
+            }
+        }
+
+//        $newProducts = $this->getMagentoTable()->fetchNewItems();
         if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
             $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
             foreach( $newProductResponse as $index => $newResponse ) {
                 foreach( $newResponse as $key => $newEntityId ) {
                     if( $newEntityId ) {
-                        $response = $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                        $result .= $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
                     }
                 }
             }
-//            die();
-            if( $response ) {
-                $url .= '?status=true';
-                return $this->redirect()->toRoute('apis');
-            }
+//            if( $response ) {
+////                $url .= '?status=true';
+//                return $this->redirect()->toRoute('apis');
+//            }
         }
-        $url .= '?status=false';
-        return $this->redirect()->toRoute('apis');
+        if( empty($result) ) {
+            $result = 'Nothing has been uploaded.';
+        }
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+
+        return $response;
+
+////        $url .= '?status=false';
+//        return $this->redirect()->toRoute('apis');
     }
 
     public function soapImagesAction()
