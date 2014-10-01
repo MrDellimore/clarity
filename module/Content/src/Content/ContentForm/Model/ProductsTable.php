@@ -8,6 +8,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\Operator;
 use Zend\EventManager\EventManagerAwareTrait;
@@ -171,11 +172,11 @@ class ProductsTable{
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch originalContent
-        $newAttibute = $this->fetchAttribute($entityid,'varchar','1658','orginalContent');
+        $newAttibute = $this->fetchAttribute($entityid,'int','1659','originalContent');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch contentReviewed
-        $newAttibute = $this->fetchAttribute($entityid,'varchar','1676','contentReviewed');
+        $newAttibute = $this->fetchAttribute($entityid,'int','1676','contentReviewed');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch metaDescrition
@@ -499,13 +500,13 @@ class ProductsTable{
         $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
         $statusJoin = new Expression('s.entity_id = product.entity_id and s.attribute_id = 273');
 
-        $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'));
+        $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'));
+        $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'));
+        $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('s' => 'productattribute_int'), $statusJoin ,array('status' => 'value'));
+        $select->join(array('s' => 'productattribute_int'), $statusJoin ,array('status' => 'value'), Select::JOIN_LEFT);
 
         $where = new Where();
         if($searchTerm == 'id'){

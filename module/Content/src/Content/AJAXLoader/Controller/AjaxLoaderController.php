@@ -145,6 +145,7 @@ class AjaxLoaderController extends AbstractActionController
 
             if(isset($setAccessories)){
             //Items set already
+
                 foreach($setAccessories as $key => $value){
                     $element = $form->lookupAccessories($value['value'],1,'id');
                     $element[0]['sort'] = $positions[$key]['value'];
@@ -152,7 +153,9 @@ class AjaxLoaderController extends AbstractActionController
                 }
                 //sort firstelements
                 $sort=array();
+
                 foreach($firstElements as $value){
+
                     $sort[$value[0]['entityid']] = $value[0]['sort'];
                 }
                 arsort($sort);
@@ -243,9 +246,9 @@ class AjaxLoaderController extends AbstractActionController
 
             $formData = (array) $request->getPost();
 
-//            echo '<pre>';
-//            var_dump($formData['oldData']);
-//            die();
+            echo '<pre>';
+            var_dump($formData);
+            die();
 
 
             //fix dates on post...

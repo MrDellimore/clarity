@@ -158,9 +158,9 @@ class Products {
 
     protected $website;
 
-    protected $contentReviewed;
+    protected $contentReviewed = 0;
 
-    protected $originalContent;
+    protected $originalContent = 0;
 
     protected $thumbnail;
 

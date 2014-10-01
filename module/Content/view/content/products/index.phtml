@@ -269,11 +269,11 @@
             <div class="col-md-6">
                 <div class="col-md-4">
                     <div class="form-group">
-                            <input name = "orginalContent" type="checkbox"> Original Content
+                            <input name = "orginalContent" type="checkbox" <?= $this->data->getOriginalContent() == 1 ? 'checked="checked"' : '' ?>> Original Content
                     </div>
                 </div><div class="col-md-4">
                     <div class="form-group">
-                        <input name="contentReviewed" type="checkbox">Content Reviewed
+                        <input name="contentReviewed" type="checkbox" <?= $this->data->getContentReviewed() == 1 ? 'checked="checked"' : '' ?>>Content Reviewed
 
                     </div>
                 </div>
@@ -309,7 +309,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="price">Price</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="price" placeholder="Price" style="width:140px" value="<?=$this->data->getPrice();?>" required/>
+                        <input type="text" class="form-control" name="price" placeholder="Price" style="width:140px" value="<?=$this->data->getPrice();?>"/>
                         <span class="help-block"></span>
                     </div>
                 </div>
