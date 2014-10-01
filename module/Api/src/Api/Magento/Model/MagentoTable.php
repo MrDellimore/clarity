@@ -148,10 +148,12 @@ class MagentoTable {
     public function groupSku($checkboxSku)
     {
         $count = 0;
-        $checkedIds = $checkedProperties = $grouped = [];
+        $checkedIds = $checkedProperties = $grouped = $checkedValues = $checkedSku = [];
         foreach ( $checkboxSku as $key => $checkbox ) {
             $checkedIds[$count] = $checkbox['id'];
             $checkedProperties[$count] = $checkbox['property'];
+            $checkedValues[$count] = $checkbox['newValue'];
+            $checkedSku[$count] = $checkbox['sku'];
             $count++;
         }
         $uniqueIds = array_values(array_unique($checkedIds));
@@ -161,10 +163,15 @@ class MagentoTable {
             foreach ( $checkedIds as $index => $ids ) {
                 if ( $uids == $ids ) {
                     $grouped[$key][$count]['property'] = $checkedProperties[$index];
+                    $grouped[$key][$count]['newValue'] = $checkedValues[$index];
+                    $grouped[$key][$count]['sku'] = $checkedSku[$index];
                     $count++;
                 }
             }
         }
+//        echo "\n";
+//        var_dump($grouped);
+//            die();
         return $grouped;
     }
 
@@ -626,7 +633,8 @@ class MagentoTable {
     public function updateImagesToClean($images)
     {
         $result ='';
-        $update = $this->sql->update('productattribute_images')->set(['dataState'=>0])->where(['value_id'=>$images['imageid']]);
+//        $update = $this->sql->update('productattribute_images')->set(['dataState'=>0])->where(['value_id'=>$images['imageid']]);
+        $update = $this->sql->update('productattribute_images')->set(['dataState'=>0])->where(['filename'=>$images['filename']]);
         $statement = $this->sql->prepareStatementForSqlObject($update);
         $statement->execute();
         $result .= $images['sku'] .  " with image label " . $images['label'] . " has been updated in Mage Admin.<br />";
@@ -677,7 +685,8 @@ class MagentoTable {
     public function updateToClean($changedProducts)
     {
         $results = '';
-//        var_dump($changedProducts);
+        var_dump($changedProducts);
+        die();
         $entityId = $changedProducts['id'];
         $sku = $changedProducts['sku'];
 //        $updated = $changedProducts['updated'];

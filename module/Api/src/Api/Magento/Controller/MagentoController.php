@@ -297,7 +297,7 @@ class MagentoController  extends AbstractActionController
             }
             if( !empty($checkboxSku['skuItem']) ) {
                 $groupedProd = $this->getMagentoTable()->groupSku($checkboxSku['skuItem']);
-                $changedProducts = $this->getMagentoTable()->fetchDirtyProducts($groupedProd);
+//                $changedProducts = $this->getMagentoTable()->fetchDirtyProducts($groupedProd);
             }
             if( !empty($checkboxSku['skuCategory']) ) {
                 $categorizedProd = $this->getMagentoTable()->groupCategories($checkboxSku['skuCategory']);
@@ -323,13 +323,15 @@ class MagentoController  extends AbstractActionController
             }
         }
         /*Update Mage with up-to-date products*/
-        if( !empty($changedProducts) ) {
-            $itemSoapResponse = $this->getMagentoSoap()->soapUpdateProducts($changedProducts);
+//        if( !empty($changedProducts) ) {
+        if( !empty($groupedProd) ) {
+//            $itemSoapResponse = $this->getMagentoSoap()->soapUpdateProducts($changedProducts);
+            $itemSoapResponse = $this->getMagentoSoap()->soapUpdateProducts($groupedProd);
 //            $updatedIds = $updateProducts->checkUpdates($normalizedProd);
             foreach ( $itemSoapResponse as $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ){
-                        $updateFields .= $this->getMagentoTable()->updateToClean($changedProducts[$key]);
+                        $updateFields .= $this->getMagentoTable()->updateToClean($groupedProd[$key]);
 //                        $updateFields .= $this->getMagentoTable()->updateToClean($updatedIds[$key]);
                     }
                 }

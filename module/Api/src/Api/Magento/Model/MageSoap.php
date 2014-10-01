@@ -76,17 +76,32 @@ class MageSoap extends AbstractSoap{
     {
         $this->startStopwatch();
         $packet = $skuCollection = $atts = [];
+//        echo 'changed Products';
+//        var_dump($changedProducts);
         foreach( $changedProducts as $key => $attributes ) {
-            $entityID = $attributes['id'];
-            $skuCollection[] = $attributes['sku'];
+//            echo 'attributes';
 //            var_dump($attributes);
+            $entityID = $attributes['id'];
             array_shift($attributes);
-            array_shift($attributes);
-            foreach( $attributes as $ind => $attribute ) {
-                $atts[$ind] = $attribute;
+
+            foreach( $attributes as $ind => $attrib ) {
+//                echo 'attribs';
+//                var_dump($attrib);
+
+                $skuCollection[] = $attrib['sku'];
+//                $property = $attrib['property'];
+                $newValue = $attrib['newValue'];
+//                $atts[$property] = $newValue;
+                foreach( $attrib as $prop => $attribute ) {
+                    if ( $prop == 'property' ) {
+                        $atts[$attribute] = $newValue;
+                    }
+//                    $packet[$key] = array('entity_id' => $entityID, $atts);
+                }
+                $packet[$key] = array('entity_id' => $entityID, $atts);
+//                $atts = [];
             }
-            $packet[$key] = array('entity_id' => $entityID, $atts);
-            $atts = [];
+                            $atts = [];
         }
 //var_dump($packet);
 //die();

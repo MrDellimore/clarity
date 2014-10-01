@@ -737,7 +737,9 @@ var TableManaged = function () {
                     "class": "eid",
                     "data": "id"
                 },
-                { "data": "item"},
+                {
+                    "class": "sku",
+                    "data": "item"},
                 {
                     "class": "hidden prty",
                     "data": "oproperty"
@@ -785,13 +787,12 @@ var TableManaged = function () {
             var idChange = $(this);
             var entityId = idChange.closest('td').siblings('td.eid').text();
             var property = idChange.closest('td').siblings('td.prty').text();
-//            var newValue = idChange.closest('td').siblings('td.newval').text();
+            var newValue = idChange.closest('td').siblings('td.newval').text();
+            var sku = idChange.closest('td').siblings('td.sku').text();
             var position = idChange.closest('tr').index();
 //            var position = idChange.closest('td').siblings('td.count').text();
             var uncheckedLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
             var checkboxLength = $('tbody input.skuItem:checkbox(":checked")').length;
-
-            console.log(uncheckedLength, checkboxLength);
 
 
 //            if( uncheckedLength == 0) {
@@ -836,22 +837,30 @@ var TableManaged = function () {
                 value: property
             });
 
-//            var hiddenNewValue = $('<input>').attr({
-//                type: 'hidden',
-//                name: 'skuItem['+position+'][newValue]',//$(this).attr('name'),
-//                class: 'SkuItem',
-//                value: newValue
-//            });
+            var hiddenNewValue = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuItem['+position+'][newValue]',//$(this).attr('name'),
+                class: 'SkuItem',
+                value: newValue
+            });
+            var hiddenSku = $('<input>').attr({
+                type: 'hidden',
+                name: 'skuItem['+position+'][sku]',//$(this).attr('name'),
+                class: 'SkuItem',
+                value: sku
+            });
 //            console.log(groupSku.prop('checked'));
             if( $(this).prop('checked') ) {
                 hiddenId.appendTo('form#mageForm');
                 hiddenProperty.appendTo('form#mageForm');
-//                hiddenNewValue.appendTo('form#mageForm');
+                hiddenNewValue.appendTo('form#mageForm');
+                hiddenSku.appendTo('form#mageForm');
             }
             if( !$(this).is(':checked') ) {
                 $("form#mageForm input[name='skuItem["+ position +"][id]']").remove();
                 $("form#mageForm input[name='skuItem["+ position +"][property]']").remove();
-//                $("form#mageForm input[name='skuItem["+ position +"][newValue]']").remove();
+                $("form#mageForm input[name='skuItem["+ position +"][newValue]']").remove();
+                $("form#mageForm input[name='skuItem["+ position +"][sku]']").remove();
             }
         });
 
@@ -916,7 +925,8 @@ var TableManaged = function () {
             item.each(function(i) {
                 var entityId = item.closest('td').siblings('td.eid').eq(i).text();
                 var property = item.closest('td').siblings('td.prty').eq(i).text();
-//                var newValue = item.closest('td').siblings('td.newval').eq(i).text();
+                var newValue = item.closest('td').siblings('td.newval').eq(i).text();
+                var sku = item.closest('td').siblings('td.sku').eq(i).text();
                 var position = item.closest('tr').index();
 
                 var hiddenId = $('<input>').attr({
@@ -931,15 +941,22 @@ var TableManaged = function () {
                     class: 'SkuItem',
                     value: property
                 });
-//                var hiddenNewValue = $('<input>').attr({
-//                    type: 'hidden',
-//                    name: 'skuItem['+i+'][newValue]',
-//                    class: 'SkuItem',
-//                    value: newValue
-//                });
+                var hiddenNewValue = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuItem['+i+'][newValue]',
+                    class: 'SkuItem',
+                    value: newValue
+                });
+                var hiddenSku = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'skuItem['+i+'][sku]',
+                    class: 'SkuItem',
+                    value: sku
+                });
                 hiddenId.appendTo('form#mageForm div.skuitem');
                 hiddenProperty.appendTo('form#mageForm div.skuitem');
-//                hiddenNewValue.appendTo('form#mageForm div.skuitem');
+                hiddenNewValue.appendTo('form#mageForm div.skuitem');
+                hiddenSku.appendTo('form#mageForm div.skuitem');
             });
         });
     };
