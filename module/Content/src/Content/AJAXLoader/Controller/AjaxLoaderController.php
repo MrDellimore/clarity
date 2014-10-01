@@ -243,6 +243,10 @@ class AjaxLoaderController extends AbstractActionController
 
             $formData = (array) $request->getPost();
 
+//            echo '<pre>';
+//            var_dump($formData['oldData']);
+//            die();
+
 
             //fix dates on post...
 

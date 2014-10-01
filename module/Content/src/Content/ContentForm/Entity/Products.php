@@ -180,8 +180,6 @@ class Products {
 
     protected $accessories = array();
 
-    protected $crossSells = array();
-
     /**
      * @param array $accessories
      */
@@ -430,24 +428,6 @@ class Products {
         return $this->cost;
     }
 
-    /**
-     * @param array $crossSells
-     */
-    public function setCrossSells($crossSells)
-    {
-        $hydrator = new ClassMethods();
-        foreach ($crossSells as  $value) {
-            $this->crossSells[] = $hydrator->hydrate($value, new CrossSell());
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getCrossSells()
-    {
-        return $this->crossSells;
-    }
 
     /**
      * @param mixed $description

@@ -115,13 +115,7 @@ class EntityCompare {
         $hydrator = new cHydrator;
         //loop through newArray
         foreach($newData as $key => $value){
-            //set items to array if object
-            /*
-            if(is_object($value)){
-                $value = $hydrator->extract($value);
-                $oldData[$key] = $hydrator->extract($oldData[$key]);
-            }
-*/
+
             if(is_array($value)){
                 if(array_key_exists($key,$oldData) && !(empty($oldData[$key])) ){
                     foreach($value as $key2 => $newValue){
@@ -175,11 +169,6 @@ class EntityCompare {
                 }
             }
         }
-
-        //var_dump($newData['color']);
-       // var_dump($oldData);
-//        var_dump($newArray);
-//        die();
         return $newArray;
 
     }
