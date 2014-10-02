@@ -795,61 +795,40 @@ var TableManaged = function () {
             var checkboxLength = $('tbody input.skuItem:checkbox(":checked")').length;
 
 
-//            if( uncheckedLength == 0) {
-//                console.log('unchecked');
-//                if( groupSku.prop('checked') ) {
-//                    console.log('group sku is unchecked');
-//                    $('form#mageForm .SkuItem').remove();
-//                }
-//            }
-
             if ( $(this).prop('checked') ) {
-//                $(this).val(entityId).attr({
-//                    name:'skuItem['+position+'][id]'
-////                    id: 'id'+position
-//                });
-//                $(this).after("<input type='hidden' id='property' name='skuItem["+position+"][property]' value='"+property+"'/>");
                 if( uncheckedLength == 0) {
                     groupSku.prop('checked','checked');
                 }
-//                $(this).val(property).attr('hidden','skuItem['+position+'][property]');
             } else {
-//                $(this).val('').attr('name','');
-//                $('#property').remove();
-//                console.log('unchecked');
-//                $('form#mageForm input.SkuItem').remove();
-
                 if( checkboxLength < 3 ) {
                     groupSku.prop('checked',false);
                 }
-//                $(this).after("<input type='hidden' name='' value=''/>");
             }
             var hiddenId = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuItem['+position+'][id]',//$(this).attr('name'),
+                name: 'skuItem['+position+'][id]',
                 class: 'SkuItem',
                 value: entityId
             });
             var hiddenProperty = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuItem['+position+'][property]',//$(this).attr('name'),
+                name: 'skuItem['+position+'][property]',
                 class: 'SkuItem',
                 value: property
             });
 
             var hiddenNewValue = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuItem['+position+'][newValue]',//$(this).attr('name'),
+                name: 'skuItem['+position+'][newValue]',
                 class: 'SkuItem',
                 value: newValue
             });
             var hiddenSku = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuItem['+position+'][sku]',//$(this).attr('name'),
+                name: 'skuItem['+position+'][sku]',
                 class: 'SkuItem',
                 value: sku
             });
-//            console.log(groupSku.prop('checked'));
             if( $(this).prop('checked') ) {
                 hiddenId.appendTo('form#mageForm');
                 hiddenProperty.appendTo('form#mageForm');
@@ -863,12 +842,6 @@ var TableManaged = function () {
                 $("form#mageForm input[name='skuItem["+ position +"][sku]']").remove();
             }
         });
-
-//        $('.show-updates').on('click', function (){
-//            var checkboxLength = $('tbody input:checkbox:not(":checked")').length;
-//            console.log(checkboxLength);
-
-//        });
 
         groupSku.on('change',function(){
             $('form#mageForm button').append('<div class="skuitem"></div>');
@@ -891,29 +864,13 @@ var TableManaged = function () {
                 }
             }
 
-//            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
-//                $("form#mageImages div.skuimg").remove();
-//            }
-
             if( uncheckedLength == 0) {
                 groupSku.prop('checked',true);
             }
 
-
-//            $("form#mageImages input[name='skuImage["+ x +"][imageid]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][id]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][filename]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][sku]']").remove();
-
             if( !$(this).prop('checked') ) {
                 $("form#mageForm div.skuitem").remove();
             }
-//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 4 && !groupImage.prop('checked'));
-//
-//            if ( uncheckedLength == 4 && !groupImage.prop('checked') ) {
-//                $("form#mageImages").empty();
-//            }
-
             if ( uncheckedLength < checkedLength  ) {
                 if ( $(this).prop('checked') ) {
                     $("form#mageForm div.skuitem").remove();
@@ -1039,52 +996,41 @@ var TableManaged = function () {
             var sku = categories.closest('td').siblings('td.sku').text();
             var dataState = categories.closest('td').siblings('td.dataState').text();
             var position = categories.closest('tr').index();
-//            var position = idChange.closest('td').siblings('td.count').text();
             var checkboxLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
             if ( $(this).prop('checked') ) {
-//                $(this).val(entityId).attr({
-//                    name:'skuCategory['+position+'][id]'
-////                    id: 'id'+position
-//                });
-//                $(this).after("<input type='hidden' id='property' name='skuItem["+position+"][property]' value='"+property+"'/>");
                 if( checkboxLength == 0) {
                     groupCategory.prop('checked','checked');
                 }
-//                $(this).val(property).attr('hidden','skuItem['+position+'][property]');
             } else {
-//                $(this).val('').attr('name','');
-//                $('#property').remove();
                 if( checkboxLength < 3 ) {
                     groupCategory.prop('checked',false);
                 }
-//                $(this).after("<input type='hidden' name='' value=''/>");
             }
             var hiddenId = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuCategory['+position+'][id]',//$(this).attr('name'),
+                name: 'skuCategory['+position+'][id]',
                 class: 'SkuCategory',
                 value: entityId
             });
             var hiddenSku = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuCategory['+position+'][sku]',//$(this).attr('name'),
+                name: 'skuCategory['+position+'][sku]',
                 class: 'SkuCategory',
                 value: sku
             });
             var hiddenCategoryId = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuCategory['+position+'][categoryId]',//$(this).attr('name'),
+                name: 'skuCategory['+position+'][categoryId]',
                 class: 'SkuCategory',
                 value: categoryId
             });
 
             var hiddenDataState = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuCategory['+position+'][dataState]',//$(this).attr('name'),
+                name: 'skuCategory['+position+'][dataState]',
                 class: 'SkuCategory',
                 value: dataState
             });
-//            console.log(groupSku.prop('checked'));
             if( $(this).prop('checked') ) {
                 hiddenId.appendTo('form#mageForm');
                 hiddenCategoryId.appendTo('form#mageForm');
@@ -1098,12 +1044,6 @@ var TableManaged = function () {
                 $("form#mageForm input[name='skuCategory["+ position +"][sku]']").remove();
             }
         });
-
-//        $('.show-updates').on('click', function (){
-//            var checkboxLength = $('tbody input:checkbox:not(":checked")').length;
-//            console.log(checkboxLength);
-
-//        });
 
         groupCategory.prop('checked',false);
         groupCategory.on('change',function(){
@@ -1128,29 +1068,13 @@ var TableManaged = function () {
                 groupCategory.prop('checked',false);
             }
 
-//            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
-//                $("form#mageImages div.skuimg").remove();
-//            }
-
             if( uncheckedLength == 0) {
                 groupCategory.prop('checked',true);
             }
 
-
-//            $("form#mageImages input[name='skuImage["+ x +"][imageid]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][id]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][filename]']").remove();
-//            $("form#mageImages input[name='skuImage["+ x +"][sku]']").remove();
-
             if( !$(this).prop('checked') ) {
                 $("form#mageForm div.skucategory").remove();
             }
-//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 4 && !groupImage.prop('checked'));
-//
-//            if ( uncheckedLength == 4 && !groupImage.prop('checked') ) {
-//                $("form#mageImages").empty();
-//            }
-
             if ( uncheckedLength < checkedLength  ) {
                 if ( $(this).prop('checked') ) {
                     $("form#mageForm div.skucategory").remove();
@@ -1159,8 +1083,6 @@ var TableManaged = function () {
             }
 
             category.each(function(i) {
-//                var entityId = category.closest('td').siblings('td.eid').eq(i).text();
-//                var property = category.closest('td').siblings('td.prty').eq(i).text();
                 var entityId = category.closest('td').siblings('td.eid').eq(i).text();
                 var categoryId = category.closest('td').siblings('td.catid').eq(i).text();
                 var dataState = category.closest('td').siblings('td.dataState').eq(i).text();
@@ -1169,27 +1091,27 @@ var TableManaged = function () {
 
                 var hiddenId = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuCategory['+i+'][id]',//$(this).attr('name'),
+                    name: 'skuCategory['+i+'][id]',
                     class: 'SkuCategory',
                     value: entityId
                 });
                 var hiddenCategoryId = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuCategory['+i+'][categoryId]',//$(this).attr('name'),
+                    name: 'skuCategory['+i+'][categoryId]',
                     class: 'SkuCategory',
                     value: categoryId
                 });
 
                 var hiddenDataState = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuCategory['+i+'][dataState]',//$(this).attr('name'),
+                    name: 'skuCategory['+i+'][dataState]',
                     class: 'SkuCategory',
                     value: dataState
                 });
 
                 var hiddenSku = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuCategory['+i+'][sku]',//$(this).attr('name'),
+                    name: 'skuCategory['+i+'][sku]',
                     class: 'SkuCategory',
                     value: sku
                 });
@@ -1287,59 +1209,48 @@ var TableManaged = function () {
             var dataState = link.closest('td').siblings('td.dataState').text();
             var type = link.closest('td').siblings('td.type').text();
             var position = link.closest('tr').index();
-//            var position = idChange.closest('td').siblings('td.count').text();
             var checkboxLength = $('tbody input.skuLink:checkbox:not(":checked")').length;
             if ( $(this).prop('checked') ) {
-//                $(this).val(entityId).attr({
-//                    name:'skuCategory['+position+'][id]'
-////                    id: 'id'+position
-//                });
-//                $(this).after("<input type='hidden' id='property' name='skuItem["+position+"][property]' value='"+property+"'/>");
                 if( checkboxLength == 0) {
                     groupLink.prop('checked','checked');
                 }
-//                $(this).val(property).attr('hidden','skuItem['+position+'][property]');
             } else {
-//                $(this).val('').attr('name','');
-//                $('#property').remove();
                 if( checkboxLength < 3 ) {
                     groupLink.prop('checked',false);
                 }
-//                $(this).after("<input type='hidden' name='' value=''/>");
             }
             var hiddenId = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuLink['+position+'][id]',//$(this).attr('name'),
+                name: 'skuLink['+position+'][id]',
                 class: 'SkuLink',
                 value: entityId
             });
             var hiddenSku = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuLink['+position+'][sku]',//$(this).attr('name'),
+                name: 'skuLink['+position+'][sku]',
                 class: 'SkuLink',
                 value: sku
             });
             var hiddenLinkedId = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuLink['+position+'][linkedId]',//$(this).attr('name'),
+                name: 'skuLink['+position+'][linkedId]',
                 class: 'SkuLink',
                 value: linkedId
             });
 
             var hiddenType = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuLink['+position+'][type]',//$(this).attr('name'),
+                name: 'skuLink['+position+'][type]',
                 class: 'SkuLink',
                 value: type
             });
 
             var hiddenDataState = $('<input>').attr({
                 type: 'hidden',
-                name: 'skuLink['+position+'][dataState]',//$(this).attr('name'),
+                name: 'skuLink['+position+'][dataState]',
                 class: 'SkuLink',
                 value: dataState
             });
-//            console.log(groupSku.prop('checked'));
             if( $(this).prop('checked') ) {
                 hiddenId.appendTo('form#mageForm');
                 hiddenSku.appendTo('form#mageForm');
@@ -1355,12 +1266,6 @@ var TableManaged = function () {
                 $("form#mageForm input[name='skuLink["+ position +"][dataState]']").remove();
             }
         });
-
-//        $('.show-updates').on('click', function (){
-//            var checkboxLength = $('tbody input:checkbox:not(":checked")').length;
-//            console.log(checkboxLength);
-
-//        });
 
         groupLink.prop('checked',false);
         groupLink.on('change',function(){
@@ -1402,8 +1307,6 @@ var TableManaged = function () {
             }
 
             link.each(function(i) {
-//                var entityId = category.closest('td').siblings('td.eid').eq(i).text();
-//                var property = category.closest('td').siblings('td.prty').eq(i).text();
                 var entityId = link.closest('td').siblings('td.eid').eq(i).text();
                 var sku = link.closest('td').siblings('td.sku').eq(i).text();
                 var linkedId = link.closest('td').siblings('td.linkedId').eq(i).text();
@@ -1413,33 +1316,33 @@ var TableManaged = function () {
 
                 var hiddenId = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuLink['+i+'][id]',//$(this).attr('name'),
+                    name: 'skuLink['+i+'][id]',
                     class: 'SkuLink',
                     value: entityId
                 });
                 var hiddenSku = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuLink['+i+'][sku]',//$(this).attr('name'),
+                    name: 'skuLink['+i+'][sku]',
                     class: 'SkuLink',
                     value: sku
                 });
                 var hiddenLinkedId = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuLink['+i+'][linkedId]',//$(this).attr('name'),
+                    name: 'skuLink['+i+'][linkedId]',
                     class: 'SkuLink',
                     value: linkedId
                 });
 
                 var hiddenType = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuLink['+i+'][type]',//$(this).attr('name'),
+                    name: 'skuLink['+i+'][type]',
                     class: 'SkuLink',
                     value: type
                 });
 
                 var hiddenDataState = $('<input>').attr({
                     type: 'hidden',
-                    name: 'skuLink['+i+'][dataState]',//$(this).attr('name'),
+                    name: 'skuLink['+i+'][dataState]',
                     class: 'SkuLink',
                     value: dataState
                 });
@@ -1527,8 +1430,6 @@ var TableManaged = function () {
         var groupImage = $('#skuImages');
 
         $('#kpiImages tbody').on('change', '#skuImage',function (e) {
-//            $('form#mageImages button').append('<div class="skuimg"></div>');
-
             e.preventDefault();
             var newImage = $(this);
             var imageId = newImage.closest('td').siblings('td.imageid').text();
@@ -1538,16 +1439,8 @@ var TableManaged = function () {
             var imgPos = newImage.closest('td').siblings('td.position').text();
             var filename = newImage.closest('td').siblings('td.filename').children('img').attr('src');
             var position = newImage.closest('tr').index();
-//            var position = idChange.closest('td').siblings('td.count').text();
             var uncheckedLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
             var checkedLength = $('tbody input.skuImage:checkbox(":checked")').length;
-//            console.log(uncheckedLength, checkedLength, !groupImage.prop('checked'), uncheckedLength == 0 && !groupImage.prop('checked'));
-
-//            if ( uncheckedLength == 0 && !groupImage.prop('checked') ) {
-//                console.log('haha');
-//                $("form#mageImages input.SkuImg").remove();
-//            }
-
             if ( $(this).prop('checked') ) {
                 if( uncheckedLength == 0) {
                     groupImage.prop('checked','checked');
@@ -1632,10 +1525,6 @@ var TableManaged = function () {
                     $('form#mageImages input.SkuImage').remove();
                 }
             }
-
-//            if( uncheckedLength == 0 && !groupImage.prop('checked') ) {
-//                $("form#mageImages div.skuimg").remove();
-//            }
 
             if( uncheckedLength == 0) {
                 groupImage.prop('checked',true);

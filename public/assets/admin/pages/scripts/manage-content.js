@@ -133,31 +133,9 @@ var ManageContent = function () {
     };
 
     var mageSkuHandle = function () {
-//        $('#all_items').on('click',function(){
-//            e.preventDefault();
             $( "#mageForm" ).submit(function( event ) {
-//                var spinner = new Spinner({
-//                    lines: 12, // The number of lines to draw
-//                    length: 7, // The length of each line
-//                    width: 5, // The line thickness
-//                    radius: 10, // The radius of the inner circle
-//                    color: '#000', // #rbg or #rrggbb
-//                    speed: 1, // Rounds per second
-//                    trail: 100, // Afterglow percentage
-//                    shadow: true // Whether to render a shadow
-//                }).spin($('.page-content-wrapper')); // Place in DOM node called "ajaxContentHolder"
-                //            console.log('hoho');
                 event.preventDefault();
-                //            $('tr #sku_item').each(function(){
-                //                if ( $(this, '#skuItem').prop() ) {
-                //
-                //                }
-                //            });
-
-                //console.log($('#mageForm').serializeArray());
                 var form = $('#mageForm').serializeArray();
-                //            console.log(form);
-                //            var form = 'haha';
                 var url = '/api-feeds/magento/items';
                 $.ajax({
                     url: url,
@@ -176,7 +154,6 @@ var ManageContent = function () {
                         $.post('/api-feeds/mage-update-count', function(data){
                             var count = jQuery.parseJSON(data);
                             $('div#mage-update').empty().append(count.updateCount + count.categoryCount + count.linkedCount);
-//                            $('div#mage-update').empty().append(count.updateCount);
                         });
                     });
 
@@ -193,37 +170,13 @@ var ManageContent = function () {
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 };
-                //             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
             });
-//        });
     };
 
     var mageImageHandle = function () {
-//        $('#all_items').on('click',function(){
-//            e.preventDefault();
             $( "#mageImages" ).submit(function( event ) {
-//                var spinner = new Spinner({
-//                    lines: 12, // The number of lines to draw
-//                    length: 7, // The length of each line
-//                    width: 5, // The line thickness
-//                    radius: 10, // The radius of the inner circle
-//                    color: '#000', // #rbg or #rrggbb
-//                    speed: 1, // Rounds per second
-//                    trail: 100, // Afterglow percentage
-//                    shadow: true // Whether to render a shadow
-//                }).spin($('.page-content-wrapper')); // Place in DOM node called "ajaxContentHolder"
-                //            console.log('hoho');
                 event.preventDefault();
-                //            $('tr #sku_item').each(function(){
-                //                if ( $(this, '#skuItem').prop() ) {
-                //
-                //                }
-                //            });
-
-                //console.log($('#mageForm').serializeArray());
                 var form = $('#mageImages').serializeArray();
-                //            console.log(form);
-                //            var form = 'haha';
                 var url = '/api-feeds/magento/new-images';
                 $.ajax({
                     url: url,
@@ -254,37 +207,13 @@ var ManageContent = function () {
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 };
-                //             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
             });
-//        });
     };
 
     var mageNewProductHandle = function () {
-//        $('#all_items').on('click',function(){
-//            e.preventDefault();
             $( "#mageNewProds" ).submit(function( event ) {
-//                var spinner = new Spinner({
-//                    lines: 12, // The number of lines to draw
-//                    length: 7, // The length of each line
-//                    width: 5, // The line thickness
-//                    radius: 10, // The radius of the inner circle
-//                    color: '#000', // #rbg or #rrggbb
-//                    speed: 1, // Rounds per second
-//                    trail: 100, // Afterglow percentage
-//                    shadow: true // Whether to render a shadow
-//                }).spin($('.page-content-wrapper')); // Place in DOM node called "ajaxContentHolder"
-                //            console.log('hoho');
                 event.preventDefault();
-                //            $('tr #sku_item').each(function(){
-                //                if ( $(this, '#skuItem').prop() ) {
-                //
-                //                }
-                //            });
-
-                //console.log($('#mageForm').serializeArray());
                 var form = $('#mageNewProds').serializeArray();
-                //            console.log(form);
-                //            var form = 'haha';
                 var url = '/api-feeds/magento/new-items';
                 $.ajax({
                     url: url,
@@ -318,23 +247,9 @@ var ManageContent = function () {
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 };
-                //             toastr.options.onHidden = function() { window.location = '/content/webassignment'; };
             });
-//        });
     };
-
-
-
-
-
-
 //submitting website form
-
-
-
-
-
-
     return {
         //main function to initiate the module
         init: function () {

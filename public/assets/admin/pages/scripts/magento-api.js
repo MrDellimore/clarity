@@ -9,20 +9,19 @@ var kpiUpdates = $('#kpiUpdates');
 var soapImages = $('#soapImages');
 var soapNewProducts = $('#soapNewProducts');
 var kpiImages = $('#kpiImages');
+var skuItem = $('#sku_item');
+var groupSku = $('#skuItems');
 magentoItems.hide();
 magentoImages.hide();
 magentoNewItems.hide();
 soapNewProducts.hide();
 soapUpdates.hide();
 soapImages.hide();
-var skuItem = $('#sku_item');
-var groupSku = $('#skuItems');
 
 $.post('/api-feeds/mage-update-count', function(data){
     var count = jQuery.parseJSON(data);
     $('div#mage-update').append(count.updateCount + count.categoryCount + count.linkedCount);
 });
-
 
 $.post('/api-feeds/mage-new-image-count', function(data){
     var count = jQuery.parseJSON(data);
@@ -76,8 +75,6 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
         $('.show-updates').on('click',function(e){
             e.preventDefault();
             magentoItems.show();
-//            kpiUpdates.show();
-//            kpiImages.hide();
             soapImages.hide();
             soapNewProducts.hide();
             soapUpdates.show();
@@ -87,8 +84,6 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
         $('.show-images').on('click',function(e){
             e.preventDefault();
             magentoItems.hide();
-//            kpiUpdates.hide();
-//            kpiImages.show();
             soapImages.show();
             soapUpdates.hide();
             soapNewProducts.hide();
