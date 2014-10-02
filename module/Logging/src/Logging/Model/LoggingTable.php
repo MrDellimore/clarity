@@ -40,17 +40,21 @@ class LoggingTable
      */
     public function undo($params = array())
     {
-        $selectResult = $this->productAttributeLookup($this->sql,['attribute_code'=> $params['property'] == 'title' ? 'name' : $params['property']]);
+        $where = array(
+             'attribute_code'=> (strtolower($params['property']) == 'title') ? 'name' : strtolower(str_replace(' ', '_',$params['property']))
+        );
+        $selectResult = $this->productAttributeLookup($this->sql,$where);
+
         $attributeId = $selectResult[0]['attId'];
         $tableType  = $selectResult[0]['dataType'];
         $columnMap = array(
-            'entity_id' =>  $params['eid'],
-            'sku' =>  $params['sku'],
-            'oldvalue'  =>  $params['new'],
-            'newvalue'  =>  $params['old'],
-            'datechanged'   => date('Y-m-d h:i:s'),
-            'changedby' =>  $params['user'],
-            'property'  =>  $params['property'],
+            'entity_id'     =>  $params['eid'],
+            'sku'           =>  $params['sku'],
+            'oldvalue'      =>  $params['new'],
+            'newvalue'      =>  $params['old'],
+            'datechanged'   =>  date('Y-m-d h:i:s'),
+            'changedby'     =>  $params['user'],
+            'property'      =>  $params['property'],
         );
 
         $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $columnMap);//'fields' => $mapping,
@@ -100,7 +104,7 @@ class LoggingTable
      * @return $response array()
      */
 
-    public function lookupLoggingInfo($searchParams = array(), $limit)
+    public function lookupLoggingInfo($searchParams = array(), $limit, $moreOld = Null, $old = Null)
     {
         $select = $this->sql->select();
         $select->from('logger');
@@ -111,7 +115,6 @@ class LoggingTable
             'oldValue'  =>  'oldvalue',
             'newValue'  =>  'newvalue',
             'dataChanged'   =>  'datechanged',
-//            'manufacturer'  =>  'manufacturer',
             'user'  =>  'changedby',
             'property'  =>  'property',
         ));
@@ -130,10 +133,11 @@ class LoggingTable
 
         $intTable = new Expression('i.entity_id = logger.entity_id and attribute_id = 102');
         $optionTable = new Expression('o.attribute_id = 102 and o.option_id = i.value');
-        $select->join(['u'=>'users'], 'logger.changedby=u.userid',['fname'=>'firstname','lname'=>'lastname']);
+        $select->limit((int)$limit);
+        $select->join(['u'=>'users'] , 'logger.changedby=u.userid',['firstname'=>'firstname','lastname'=>'lastname']);
         $select->join(array('i' => 'productattribute_int'), $intTable ,array('attributeId' => 'attribute_id','optionID' => 'value'), Select::JOIN_LEFT);
         $select->join(array('o' => 'productattribute_option'), $optionTable ,array('manufacturer'=>'value'), Select::JOIN_LEFT);
-        $select->limit((int)$limit);
+        $select->order('logger.datechanged DESC');
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -146,59 +150,33 @@ class LoggingTable
 
         $response = array();
 
-        foreach( $logs as $key => $fields ) {
-//            $user = $logs[$key]['user'];
-//            $manufacturer = $response['manufacturer'];
-            $response[$key]['id'] = $fields['id'];
-            $response[$key]['entityID'] = $fields['entityID'];
-            $response[$key]['sku'] = $fields['sku'];
-            $response[$key]['oldValue'] = $fields['oldValue'];
-            $response[$key]['newValue'] = $fields['newValue'];
-            $response[$key]['manufacturer'] = $fields['manufacturer'];//$manufacturer;
-            $response[$key]['user'] = $fields['fname'] . ' ' . $fields['lname'];
-            $response[$key]['dataChanged'] = $fields['dataChanged'];
-            $response[$key]['property'] = $fields['property'];
+        foreach($logs as $key => $history){
+            $manufacturer = $history['manufacturer'];
+            $oldValue = $history['oldValue'];
+            $newValue = $history['newValue'];
 
-            //Selects from options table;
-//            $selectMan= $this->sql->select();
-//            $selectMan->from('productattribute_option');
-//            $selectMan->columns(array(
-//                'manufacturer' => 'value',
-//            ));
-//            $selectMan->where(array('option_id'=>$manufacturer));
-//            $manufacturerStatement = $this->sql->prepareStatementForSqlObject($selectMan);
-//            $manufacturerResult = $manufacturerStatement->execute();
+            /*Might use ellipses later on if requested*/
+//            if( (is_string($oldValue) && strlen($oldValue) > 50) || ( is_string($newValue) && strlen($newValue) > 50 ) && !is_null($old) ) {
+//                $shortOldValue = utf8_encode(substr(strip_tags($oldValue),0,50)) . " <a href='#' class='more_old' id='more_old_sku" . $key . "'>...</a>";
+//                $shortNewValue = utf8_encode(substr(strip_tags($newValue),0,50)) . " <a href='#' class='more_new' id='more_new_sku" . $key . "'>...</a>";;
 //
-//            $manufacturerResultSet = new ResultSet;
-//            if ($manufacturerResult instanceof ResultInterface && $manufacturerResult->isQueryResult()) {
-//                $manufacturerResultSet->initialize($manufacturerResult);
-//            }
-//            $manufacturerResults = $manufacturerResultSet->toArray();
-//            if( !count($manufacturerResults) ) $response[$key]['manufacturer'] = 'N/A';
-//            foreach($manufacturerResults  as $op => $man){
-//                $response[$key]['manufacturer'] = (!$manufacturerResults[$op]['manufacturer']) ? "N/A" : $manufacturerResults[$op]['manufacturer'] ;
+//            } else {
+//                $shortOldValue = $oldValue;
+//                $shortNewValue = $newValue;
 //            }
 
-            //Selects from users table;
-//            $userListings = $this->sql->select();
-//            $userListings->from('users');
-//            $userListings->columns(array(
-//                'firstName' => 'firstname',
-//                'lastName' =>   'lastname',
-//            ));
-//            $userListings->where(array('userid'=>$user));
-//            $userStatement = $this->sql->prepareStatementForSqlObject($userListings);
-//            $userResult = $userStatement->execute();
-//
-//            $userResultSet = new ResultSet;
-//
-//            if ($userResult instanceof ResultInterface && $userResult->isQueryResult()) {
-//                $userResultSet->initialize($userResult);
-//            }
-//            $users = $userResultSet->toArray();
-//            foreach($users as $index => $person){
-//                $response[$key]['user'] = $users[$index]['firstName'] . ' ' . $users[$index]['lastName'];
-//            }
+            $response[$key]['id']               = $history['id'];
+            $response[$key]['sku']              = $history['sku'];
+            $response[$key]['entityID']         = $history['entityID'];
+//            $response[$key]['oldValue'] = $shortOldValue;
+            $response[$key]['oldValue']         = strip_tags($oldValue);
+//            $response[$key]['newValue'] = $history['newValue'];
+//            $response[$key]['newValue'] = $shortNewValue;
+            $response[$key]['newValue']         = strip_tags($newValue);
+            $response[$key]['manufacturer']     = $manufacturer;
+            $response[$key]['dataChanged']      = date('m-d-Y',strtotime($history['dataChanged']));
+            $response[$key]['property']         = ucfirst($history['property']);
+            $response[$key]['user']             = $history['firstname']. ' ' . $history['lastname'];
         }
         return $response;
     }
@@ -249,7 +227,6 @@ class LoggingTable
             $response[$key]['fullname'] = $fields['fname'] . ' ' . $fields['lname'];
             $response[$key]['datepushed'] = date('m-j-Y',strtotime($fields['datepushed']));
             $response[$key]['status'] = $fields['status'];
-
         }
         return $response;
     }

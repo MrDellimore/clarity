@@ -26,19 +26,8 @@ var UITree = function () {
                 });
             });
 
-//set diabled nodes based on website selected
-        /*
-        var cats = $('.selectedcat');
+//todo set diabled nodes based on website selected
 
-        for(i=0; i<cats.length; i++){
-            if ($(cats[i]).text().trim() == 'Focus' || $(cats[i]).text().trim() == 'aSavings')
-            console.log($(cats[i]).text().trim());
-        }
-        */
-        //case1 focus not in array
-            //disable focus
-        //case2 asavings not in array
-            //disable asavings
 
 
 
@@ -78,7 +67,10 @@ var UITree = function () {
             family = family.split(",");
             var inputString ='';
 
-
+            for(i=0; i<family.length; i++){
+                inputString += '<input type="hidden" name = "categories['+i+'][id]" value ="'+ family[i] +'">';
+                inputString += '<input type="hidden" name = "categories['+i+'][entityid]" value ="">';
+            }
 
             input = jQuery(inputString);
             $('#categoriesForm').empty().append(input);
@@ -91,17 +83,9 @@ var UITree = function () {
 
 
     return {
-
-        //main function to initiate the module
         init: function () {
 
-            //handleSample1();
-            //focustree();
-           // asavetree();
-            //focusnewtree();
             cattree();
-            //contextualMenuSample();
-            //ajaxTreeSample();
 
         }
 

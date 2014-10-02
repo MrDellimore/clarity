@@ -25,11 +25,13 @@ var ManageContent = function () {
             var generalForm = $('#generalForm').serializeArray();
             var imageForm = $('#imageForm').serializeArray();
             var categoryForm = $('#categoriesForm').serializeArray();
+            var accessoriesForm = $('#accessoriesForm').serializeArray();
+            var attributesForm = $('#attributesForm').serializeArray();
 
             var formData;
-            formData = generalForm.concat(imageForm).concat(categoryForm);
+            formData = generalForm.concat(imageForm).concat(categoryForm).concat(accessoriesForm).concat(attributesForm);
 
-            //console.log(formData);
+
             var goodData = [];
 
            // var badIndex = new Array(crossSellDisplay_length]);
@@ -41,6 +43,8 @@ var ManageContent = function () {
             }
 
 
+
+
             var url = '/content/product/submit';
             $.ajax({
                 url: url,
@@ -50,9 +54,11 @@ var ManageContent = function () {
                     //expty content div and display results
                     //$('#contentdiv').empty().append(data);
 
-//                   toastr.success(data);
-//
-                   console.log(data);
+                    // toastr.success(data);
+
+                    $('#contentdiv').empty().append(data);
+
+                    //console.log(data);
                 });
         });
     }
@@ -111,7 +117,7 @@ var ManageContent = function () {
                 .done(function( data ) {
                     toastr.success(data);
 
-//                   console.log(data);
+//                  console.log(data);
                 });
 
              toastr.options = {

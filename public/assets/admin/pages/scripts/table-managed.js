@@ -298,10 +298,12 @@ var TableManaged = function () {
                     "data": "sku"
                 },
                 {
-                    "class":"old_value",
+//                    "width": "5%",
+                    "class":"old_value ",
                     "data": "oldValue"
                 },
                 {
+//                    "width": "5%",
                     "class":"new_value",
                     "data": "newValue"
                 },
@@ -327,6 +329,18 @@ var TableManaged = function () {
                 }
 
             ],
+            "columnDefs": [
+                {
+                    "width": "5%",
+                    "targets": 2
+                },{
+                    "width": "30%",
+                    "targets": 3
+                },{
+                    "width": "30%",
+                    "targets": 4
+                }
+            ],
 
             "lengthMenu": [
                 [10, 20, 30, -1],
@@ -334,7 +348,7 @@ var TableManaged = function () {
             ],
             // set the initial value
             "pageLength": 10,
-            "pagingType": "bootstrap_full_number",
+            "pagingType": "full_numbers",
             "language": {
                 "lengthMenu": "_MENU_ records",
                 "paginate": {
@@ -349,6 +363,39 @@ var TableManaged = function () {
 //        alert( 'Data source: '+ table.api().ajax.url() );
 //        table.columns[0].attr('class','entityId');
 //        table.columns[4].attr('class','manId');
+        $('#skuHistoryDisplay tbody').on('click', 'a.more_old',function (e) {
+            e.preventDefault();
+            var more = $(this);
+            var position = more.closest('tr').index();
+            console.log(position);
+            var params = {
+                'more_old': position,
+                'moreold': 'moreold'
+            };
+//            var oldValue = revert.siblings('td.old_value').text();
+//            var newValue = revert.siblings('td.new_value').text();
+//            var entityID = revert.siblings('td.entity_id').text();
+//            var property = revert.siblings('td.property_name').text();
+//            var sku = revert.siblings('td.sku').text();
+//            var pk = revert.siblings('td.entityId').text();
+//            var manOptionID = revert.siblings('td.manId').text();
+//            var params = {
+//                'old'   :   oldValue,
+//                'new'   :   newValue,
+//                'eid'   :   entityID,
+//                'pk'    :   pk,
+//                'property': property,
+//                'sku':  sku
+////                'manOpId': manOptionID
+//            };
+//
+//
+            $.post('/sku-history', params, function(data){
+                //nothing should happen except redraw the table.
+                table.api().draw();
+            });
+        });
+
         $('#skuHistoryDisplay tbody').on('click', 'td.revert',function (e) {
             e.preventDefault();
             var revert= $(this);
@@ -368,6 +415,10 @@ var TableManaged = function () {
                 'sku':  sku
 //                'manOpId': manOptionID
             };
+//            if ( oldValue.length > 10 ) {
+//                var shortOldValue = oldValue.substr(0,7) + $('td.old_value').html("<a href='more' id='more_old_value' >... </a>");
+//            }
+
             $.post('/sku-history/revert', params, function(data){
                 //nothing should happen except redraw the table.
                 table.api().draw();

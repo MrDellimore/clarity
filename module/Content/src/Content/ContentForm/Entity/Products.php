@@ -158,9 +158,9 @@ class Products {
 
     protected $website;
 
-    protected $contentReviewed;
+    protected $contentReviewed = 0;
 
-    protected $originalContent;
+    protected $originalContent = 0;
 
     protected $thumbnail;
 
@@ -179,8 +179,6 @@ class Products {
     protected $imageGallery = array();
 
     protected $accessories = array();
-
-    protected $crossSells = array();
 
     /**
      * @param array $accessories
@@ -430,24 +428,6 @@ class Products {
         return $this->cost;
     }
 
-    /**
-     * @param array $crossSells
-     */
-    public function setCrossSells($crossSells)
-    {
-        $hydrator = new ClassMethods();
-        foreach ($crossSells as  $value) {
-            $this->crossSells[] = $hydrator->hydrate($value, new CrossSell());
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getCrossSells()
-    {
-        return $this->crossSells;
-    }
 
     /**
      * @param mixed $description

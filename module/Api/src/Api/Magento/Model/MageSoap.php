@@ -198,24 +198,6 @@ class MageSoap extends AbstractSoap{
 //        var_dump($packet);
 //        die();
         return $this->_soapCall($packet, Null, $skuCollection);
-
-        $a = 0;
-        $batch = [];
-        while( $a < count($packet) ){
-            $x = 0;
-            while($x < 10 && $a < count($packet)){
-                if( $packet[$a]['dataState'] == 3 ) {
-                    $batch[$x] = array('catalog_category.removeProduct', $packet[$a]);
-                } else {
-                    $batch[$x] = array('catalog_category.assignProduct', $packet[$a]);
-                }
-                $x++;
-                $a++;
-            }
-            sleep(15);
-            $result[] = $soapHandle->call('multiCall',array($session, $batch));
-        }
-        return $result;
     }
 
 
