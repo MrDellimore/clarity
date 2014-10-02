@@ -119,9 +119,7 @@ class MagentoController  extends AbstractActionController
             if($limit == '-1'){
                 $limit = 100;
             }
-            $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
-            $images = $this->getMagentoTable()->fetchNewImages($sku,$limit);//fetchImages
-//            $updateCount = $kpi->updateCount();
+            $images = $this->getMagentoTable()->fetchNewImages($sku,$limit);
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -190,7 +188,6 @@ class MagentoController  extends AbstractActionController
                 $limit = 100;
             }
             $skuData = $this->getMagentoTable()->fetchChangedProducts($sku,$limit);
-//            $updateCount = $kpi->updateCount();
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -226,7 +223,6 @@ class MagentoController  extends AbstractActionController
                 $limit = 100;
             }
             $categories = $this->getMagentoTable()->fetchChangedCategories($sku,$limit);
-//            $updateCount = $kpi->updateCount();
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -262,7 +258,6 @@ class MagentoController  extends AbstractActionController
                 $limit = 100;
             }
             $linkedProduct = $this->getMagentoTable()->fetchLinkedProducts($sku,$limit);
-//            $updateCount = $kpi->updateCount();
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -323,16 +318,12 @@ class MagentoController  extends AbstractActionController
             }
         }
         /*Update Mage with up-to-date products*/
-//        if( !empty($changedProducts) ) {
         if( !empty($groupedProd) ) {
-//            $itemSoapResponse = $this->getMagentoSoap()->soapUpdateProducts($changedProducts);
             $itemSoapResponse = $this->getMagentoSoap()->soapUpdateProducts($groupedProd);
-//            $updatedIds = $updateProducts->checkUpdates($normalizedProd);
             foreach ( $itemSoapResponse as $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
-                    if( $soapResponse ){
+                    if( $soapResponse ) {
                         $updateFields .= $this->getMagentoTable()->updateToClean($groupedProd[$key]);
-//                        $updateFields .= $this->getMagentoTable()->updateToClean($updatedIds[$key]);
                     }
                 }
             }
@@ -434,10 +425,7 @@ class MagentoController  extends AbstractActionController
                 return $this->redirect()->toRoute('apis');
             }
             $images = $this->getMagentoTable()->orderImages($checkboxImages['skuImage']);
-//            var_dump($images);
-//            die();
         }
-//        die();
         if($image = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapMedia($images)) {
             foreach($image as $key => $img){
                 foreach($img as $ind => $imgName){

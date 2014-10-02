@@ -34,21 +34,15 @@ abstract class AbstractSoap
     protected function _soapCall($packet, $resource = Null, $skuCollection)
     {
         $a = 0;
-//        echo '<pre>';
-
         $batch = $results = $result = $status = [];
         while( $a < count($packet) ){
             $x = 0;
             while($x < 10 && $a < count($packet)) {
                 if( isset($packet[$a]['dataState']) && $packet[$a]['dataState'] == 3 ) {
                     $resource = $packet[$a]['resource'];
-//                    unset($packet[$a]['resource']);
-//                    unset($packet[$a]['dataState']);
                     $batch[$x] = array($resource, $packet[$a]);
                 } else if( isset($packet[$a]['dataState']) && $packet[$a]['dataState'] == 2 ) {
                     $resource = $packet[$a]['resource'];
-//                    unset($packet[$a]['resource']);
-//                    unset($packet[$a]['dataState']);
                     $batch[$x] = array($resource, $packet[$a]);
                 } else {
                     $batch[$x] = array($resource, $packet[$a]);
@@ -57,13 +51,9 @@ abstract class AbstractSoap
                 $a++;
             }
             sleep(15);
-//            var_dump($batch);
             $results[] = $this->_soapHandle->call('multiCall',array($this->_session, $batch));
         }
         $totalTime = $this->stopStopwatch();
-
-//        die();
-
         foreach ( $results as $key => $res ) {
             foreach ( $res as $index => $r ) {
                 if( isset($r['faultCode']) && (int)$r['faultCode'] == 1 ) {

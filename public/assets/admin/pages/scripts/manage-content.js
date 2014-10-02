@@ -165,6 +165,7 @@ var ManageContent = function () {
                     data: form})
                     .done(function( data ) {
                         toastr.success(data);
+                        $('#skuItems').prop('checked',false);
 //                       console.log(data);
                         var update = $('#kpiUpdates').dataTable();
                         var cat = $('#kpiCategories').dataTable();
@@ -232,6 +233,7 @@ var ManageContent = function () {
                         toastr.success(data);
                         var table = $('#kpiImages').dataTable();
                         table.api().draw();
+                        $('#skuImages').prop('checked',false);
                         /*keeps count of new images*/
                         $.post('/api-feeds/mage-new-image-count', function(data){
                             var count = jQuery.parseJSON(data);
@@ -290,6 +292,7 @@ var ManageContent = function () {
                     data: form})
                     .done(function( data ) {
                         toastr.success(data);
+                        $('#skuNewProducts').prop('checked',false);
                         var table = $('#kpiNewProducts').dataTable();
                         table.api().draw();
                         /*keeps count of new images*/

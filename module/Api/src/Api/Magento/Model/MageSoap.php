@@ -76,32 +76,21 @@ class MageSoap extends AbstractSoap{
     {
         $this->startStopwatch();
         $packet = $skuCollection = $atts = [];
-//        echo 'changed Products';
-//        var_dump($changedProducts);
         foreach( $changedProducts as $key => $attributes ) {
-//            echo 'attributes';
-//            var_dump($attributes);
             $entityID = $attributes['id'];
             array_shift($attributes);
 
             foreach( $attributes as $ind => $attrib ) {
-//                echo 'attribs';
-//                var_dump($attrib);
-
                 $skuCollection[] = $attrib['sku'];
-//                $property = $attrib['property'];
                 $newValue = $attrib['newValue'];
-//                $atts[$property] = $newValue;
                 foreach( $attrib as $prop => $attribute ) {
                     if ( $prop == 'property' ) {
                         $atts[$attribute] = $newValue;
                     }
-//                    $packet[$key] = array('entity_id' => $entityID, $atts);
                 }
                 $packet[$key] = array('entity_id' => $entityID, $atts);
-//                $atts = [];
             }
-                            $atts = [];
+            $atts = [];
         }
 //var_dump($packet);
 //die();
@@ -110,8 +99,6 @@ class MageSoap extends AbstractSoap{
 
     public function soapLinkedProducts($linkedProds)
     {
-//        $soapHandle = new Client(SOAP_URL);
-//        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
         $packet = $skuCollection = array();
         $results = Null;
         foreach($linkedProds as $key => $linked){
@@ -147,18 +134,8 @@ class MageSoap extends AbstractSoap{
 
     public function soapMedia($media = array())
     {
-//        ["imageid"]=>
-//    string(6) "322288"
-//    ["id"]=>
-//    string(3) "169"
-//    ["filename"]=>
-//    string(53) "/images/10e4957d6fa56ce12a8fa333ef8bfd6ba74881f4.jpeg"
-//    ["sku"]=>
-//    string(8) "2292B001"
         $packet = $skuCollection = [];
         $this->startStopwatch();
-//        $soapHandle = new Client(SOAP_URL);
-//        $session = $soapHandle->call('login',[SOAP_USER, SOAP_USER_PASS]);
         foreach($media as $key => $imgFile) {
 //                $imgDomain = $media[$key]['domain'];//this will change to whatever cdn we will have.
             $imgName = $imgFile['filename'];
@@ -174,15 +151,6 @@ class MageSoap extends AbstractSoap{
                 'content'   =>  $fileContentsEncoded,
                 'mime'  =>  'image/jpeg',
             );
-//            $select = $this->sql->select();
-//            $select->from('product')->columns(array('sku'=>'productid'))->where(array('entity_id'=>$entityId));
-//            $statement = $this->sql->prepareStatementForSqlObject($select);
-//            $result = $statement->execute();
-//            $resultSet = new ResultSet;
-//            if ($result instanceof ResultInterface && $result->isQueryResult()) {
-//                $resultSet->initialize($result);
-//            }
-//            $products = $resultSet->toArray();
             $skuCollection[] = $sku = $imgFile['sku'];
             $packet[$key] = [
                 $sku,
@@ -204,10 +172,7 @@ class MageSoap extends AbstractSoap{
 
     public function soapCategoriesUpdate($categories)
     {
-//        $result = false;
-//        $soapHandle = new Client(SOAP_URL);
         $packet = $skuCollection = array();
-//        $session = $soapHandle->call('login',array(SOAP_USER, SOAP_USER_PASS));
         foreach($categories as $key => $category){
             $entityId = $category['id'];
             $skuCollection[] = $sku = $category['sku'];
@@ -259,30 +224,9 @@ class MageSoap extends AbstractSoap{
     {
         $packet = [];
         $attributeSet = $this->_getAttributeSet();
-//        $fetchAttributeList = [$session, 'product_attribute_set.list'];
-//        $attributeSets = $soapHandle->call('call', $fetchAttributeList);
-//        $attributeSet = current($attributeSets);
-//        $set = array(
-//            'name'    =>  'This is a Test for Name',
-//            'description'   =>  'This is a Test for Description',
-//        );
-//        $packet = [$session, 'catalog_product.create', ['simple', $attributeSet['set_id'], '123456654321', $set]];
-//        echo '<pre>';
-//        var_dump($packet);
-//        try{
-//            $results = $soapHandle->call('call', $packet );
-//        } catch (\SoapFault $e){
-//            trigger_error($e->getMessage(), E_USER_ERROR ); //should possibly go in log file?
-//            $results = $e->getCode(); //should be return to controller?
-//        }
-//        die();
-//        return $results;
-//
-////        $count = 0;
         $skuCollection = [];
         $attributes = [];
-//        var_dump($newProds);
-        foreach($newProds as $index => $fields) {
+        foreach( $newProds as $index => $fields ) {
             $keys = array_keys($newProds[$index]);
             $skuCollection[] = $sku = $newProds[$index]['sku'];
             array_shift($keys);
