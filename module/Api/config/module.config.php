@@ -141,9 +141,27 @@ return array(
             ),
         ),
     ),
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'soap-create-products' => array(
+                    'options' => array(
+                        'route' => 'createProduct',
+//                        'route' => 'get happen [--verbose|-v] <doname>',
+                        'defaults' => array(
+//                            '__NAMESPACE__' => 'Api\Magento\Controller',
+                            'controller' => 'Api\Magento\Controller\ConsoleMagento',
+                            'action' => 'soapCreateProducts'
+                        ),
+                    ),
+                ),
+            )
+        )
+    ),
     'controllers'   =>  array(
         'invokables'    =>  array(
-            'Api\Magento\Controller\Magento'    =>  'Api\Magento\Controller\MagentoController'
+            'Api\Magento\Controller\Magento'    =>  'Api\Magento\Controller\MagentoController',
+            'Api\Magento\Controller\ConsoleMagento'    =>  'Api\Magento\Controller\ConsoleMagentoController',
         ),
     ),
     'view_manager'  =>  array(

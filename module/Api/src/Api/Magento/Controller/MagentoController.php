@@ -16,7 +16,7 @@ use Content\ContentForm\Tables\Spex;
 use Zend\View\Helper\FlashMessenger;
 
 
-class MagentoController  extends AbstractActionController
+class MagentoController extends AbstractActionController
 {
     use Spex;
 
