@@ -6,4 +6,4 @@
  * Date: 10/3/14
  * Time: 9:25 AM
  */
-error_log('fucking work already!!');
+system('sudo mkdir tests');
