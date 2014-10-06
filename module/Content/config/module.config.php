@@ -25,6 +25,16 @@ return array(
 
     'router' => array(
         'routes' => array(
+//            'apis'   =>  array(
+//                'type'  =>  'Zend\Mvc\Router\Http\Literal',
+//                'options'   =>  array(
+//                    'route' =>  '/api-feeds',
+//                    'defaults'  =>  array(
+//                        'controller'    =>  'Content\ContentForm\Controller\AjaxLoader',
+//                        'action'        =>  'magento',
+//                    ),
+//                ),
+//            ),
             'search' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
@@ -221,6 +231,15 @@ return array(
                 'datechanged'   =>  'datechanged',
                 'changedby' =>  'changedby',
                 'property'  =>  'property',
+            ),
+        ),
+        'mage_logs'  =>  array(
+            'extra'    =>  array(
+                'sku' => 'sku',
+                'resource'   =>  'resource',
+                'speed'  =>  'speed',
+                'pushedby'  =>  'pushedby',
+                'datepushed'   =>  'datepushed',
             ),
         ),
     ),

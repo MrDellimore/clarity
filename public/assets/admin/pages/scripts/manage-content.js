@@ -1,8 +1,5 @@
 var ManageContent = function () {
 
-
-
-
     var contentFormHandle = function () {
         toastr.options = {
             "closeButton": true,
@@ -28,11 +25,13 @@ var ManageContent = function () {
             var generalForm = $('#generalForm').serializeArray();
             var imageForm = $('#imageForm').serializeArray();
             var categoryForm = $('#categoriesForm').serializeArray();
+            var accessoriesForm = $('#accessoriesForm').serializeArray();
+            var attributesForm = $('#attributesForm').serializeArray();
 
             var formData;
-            formData = generalForm.concat(imageForm).concat(categoryForm);
+            formData = generalForm.concat(imageForm).concat(categoryForm).concat(accessoriesForm).concat(attributesForm);
 
-            //console.log(formData);
+
             var goodData = [];
 
            // var badIndex = new Array(crossSellDisplay_length]);
@@ -41,7 +40,9 @@ var ManageContent = function () {
                     //console.log(formData[i]);
                     goodData.push(formData[i]);
                 }
-            };
+            }
+
+
 
 
             var url = '/content/product/submit';
@@ -53,9 +54,11 @@ var ManageContent = function () {
                     //expty content div and display results
                     //$('#contentdiv').empty().append(data);
 
-                   toastr.success(data);
+                    // toastr.success(data);
 
-                   //console.log(data);
+                    $('#contentdiv').empty().append(data);
+
+                    //console.log(data);
                 });
         });
     }
@@ -114,7 +117,7 @@ var ManageContent = function () {
                 .done(function( data ) {
                     toastr.success(data);
 
-//                   console.log(data);
+//                  console.log(data);
                 });
 
              toastr.options = {
@@ -135,24 +138,133 @@ var ManageContent = function () {
 
     };
 
+    var mageSkuHandle = function () {
+            $( "#mageForm" ).submit(function( event ) {
+                event.preventDefault();
+                var form = $('#mageForm').serializeArray();
+                var url = '/api-feeds/magento/items';
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: form})
+                    .done(function( data ) {
+                        toastr.success(data);
+                        $('#skuItems').prop('checked',false);
+//                       console.log(data);
+                        var update = $('#kpiUpdates').dataTable();
+                        var cat = $('#kpiCategories').dataTable();
+                        var link = $('#kpiRelatedProducts').dataTable();
+                        update.api().draw();
+                        cat.api().draw();
+                        link.api().draw();
+                        $.post('/api-feeds/mage-update-count', function(data){
+                            var count = jQuery.parseJSON(data);
+                            $('div#mage-update').empty().append(count.updateCount + count.categoryCount + count.linkedCount);
+                        });
+                    });
 
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-full-width",
+                    "showDuration": "2000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+            });
+    };
 
+    var mageImageHandle = function () {
+            $( "#mageImages" ).submit(function( event ) {
+                event.preventDefault();
+                var form = $('#mageImages').serializeArray();
+                var url = '/api-feeds/magento/new-images';
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: form})
+                    .done(function( data ) {
+                        toastr.success(data);
+                        var table = $('#kpiImages').dataTable();
+                        table.api().draw();
+                        $('#skuImages').prop('checked',false);
+                        /*keeps count of new images*/
+                        $.post('/api-feeds/mage-new-image-count', function(data){
+                            var count = jQuery.parseJSON(data);
+                            $('div#mage-image').empty().append(count.imageCount);
+                        });
+                    });
 
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-full-width",
+                    "showDuration": "2000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+            });
+    };
 
+    var mageNewProductHandle = function () {
+            $( "#mageNewProds" ).submit(function( event ) {
+                event.preventDefault();
+                var form = $('#mageNewProds').serializeArray();
+                var url = '/api-feeds/magento/new-items';
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: form})
+                    .done(function( data ) {
+                        toastr.success(data);
+                        $('#skuNewProducts').prop('checked',false);
+                        var table = $('#kpiNewProducts').dataTable();
+                        table.api().draw();
+                        /*keeps count of new images*/
+                        $.post('/api-feeds/mage-new-image-count', function(data){
+                            var count = jQuery.parseJSON(data);
+                            if( typeof count.newProdCount == 'undefined') {
+                                count.newProdCount = 0;
+                            }
+                            $('div#mage-new-products').empty().append(count.newProdCount);
+                        });
+                    });
 
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-full-width",
+                    "showDuration": "2000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+            });
+    };
 //submitting website form
-
-
-
-
-
-
     return {
         //main function to initiate the module
         init: function () {
             contentFormHandle();
             websiteAssignmentHandle();
             attributeManagementHandle();
+            mageSkuHandle();
+            mageImageHandle();
+            mageNewProductHandle();
         }
     };
 

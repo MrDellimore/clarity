@@ -3,32 +3,101 @@
  */
 var magentoItems = $('.magento-updates');
 var magentoImages = $('.magento-images');
+var magentoNewItems = $('.magento-new-items');
+var soapUpdates = $('#soapUpdates');
+var kpiUpdates = $('#kpiUpdates');
+var soapImages = $('#soapImages');
+var soapNewProducts = $('#soapNewProducts');
+var kpiImages = $('#kpiImages');
+var skuItem = $('#sku_item');
+var groupSku = $('#skuItems');
 magentoItems.hide();
 magentoImages.hide();
-//var MagentoApi = function () {
+magentoNewItems.hide();
+soapNewProducts.hide();
+soapUpdates.hide();
+soapImages.hide();
 
-//    var showUpdates = function (){
-//        console.log('haha');
+$.post('/api-feeds/mage-update-count', function(data){
+    var count = jQuery.parseJSON(data);
+    $('div#mage-update').append(count.updateCount + count.categoryCount + count.linkedCount);
+});
+
+$.post('/api-feeds/mage-new-image-count', function(data){
+    var count = jQuery.parseJSON(data);
+    $('div#mage-image').append(count.imageCount);
+});
+
+$.post('/api-feeds/mage-new-product-count', function(data){
+    var count = jQuery.parseJSON(data);
+    $('div#mage-new-products').append(count.newProdCount);
+});
+
+groupSku.on('change',function(){
+    var item = $('tr #sku_item #skuItem');
+
+    if( $(this).prop("checked") ) {
+        item.each(function(){
+            var input = $('<input>').attr({
+                type: 'hidden',
+                name: $(this).attr('name'),
+                value: $(this).val()
+            });
+            $(this).prop('checked','checked');
+            input.appendTo('form#mageForm');
+        });
+    } else {
+        item.each(function(){
+            var input = $('<input>').attr({
+                type: 'hidden',
+                name: item.attr('name'),
+                value: item.val()
+            });
+            $(this).prop('checked', '');
+            $('form#mageForm input').remove();
+        });
+    }
+});
+$('tr #sku_item').on('change', '#skuItem' ,function(){
+    var hidden = $('<input>').attr({
+        type: 'hidden',
+        name: $(this).attr('name'),
+        value: $(this).val()
+    });
+    if( $(this).prop('checked') ) {
+        hidden.appendTo('form#mageForm');
+    }
+    if( !$(this).is(':checked') ) {
+        $('form#mageForm input[value='+ $(this).val() +']').remove();
+    }
+});
+
         $('.show-updates').on('click',function(e){
             e.preventDefault();
-            console.log('haha');
             magentoItems.show();
+            soapImages.hide();
+            soapNewProducts.hide();
+            soapUpdates.show();
             magentoImages.hide();
+            magentoNewItems.hide();
         });
-//    };
-
-//    var showImages = function (){
-//        console.log('haha');
         $('.show-images').on('click',function(e){
             e.preventDefault();
             magentoItems.hide();
+            soapImages.show();
+            soapUpdates.hide();
+            soapNewProducts.hide();
             magentoImages.show();
+            magentoNewItems.hide();
         });
-//    };
-//    return {
-//        init: function () {
-//            showUpdates();
-//            showImages();
-//        }
-//    };
-//}();
+        $('.new-items').on('click',function(e){
+            e.preventDefault();
+            magentoItems.hide();
+            kpiUpdates.hide();
+            kpiImages.hide();
+            magentoImages.hide();
+            magentoNewItems.show();
+            soapImages.hide();
+            soapUpdates.hide();
+            soapNewProducts.show();
+        });

@@ -15,7 +15,7 @@ class LoggingController extends AbstractActionController
     /**
      * Description: this action on load will load all rows from the logger table into the data table in the view.
     */
-    public function indexAction()
+    public function skuLogAction()
     {
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
@@ -26,9 +26,56 @@ class LoggingController extends AbstractActionController
         $request = $this->getRequest();
         if($request->isPost()) {
             $logsInfo = $request->getPost();
-//            var_dump($logsInfo);
             $draw = $logsInfo['draw'];
             $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
+            $limit = $logsInfo['length'];
+
+//            $Qty = $logsInfo['more_old'];
+//            $qty = $logsInfo['moreold'];
+//            $filterDateRange = (!is_null($logsInfo['filterDateRange'])) ? $logsInfo['filterDateRange'] : null;
+//            $dateRange = explode('to',$filterDateRange);
+//            $fromDate = trim((string)$dateRange[0]);
+//            $toDate = trim((string)$dateRange[1]);
+//            $fromDate = date('Y-m-d h:i:s', strtotime($fromDate) );
+//            $toDate = date('Y-m-d h:i:s', strtotime($toDate) );
+
+
+            $searchParams = array('sku'=>$sku);//,'from'=>$fromDate,'to'=>$toDate);
+//            $dateRange = array('from'=>$fromDate,'to'=>$toDate);
+
+            if($limit == '-1'){
+                $limit = 100;
+            }
+            $loadedLogs = $logs->lookupLoggingInfo($searchParams, $limit);
+            $result = json_encode(
+                array(
+                    'draw'  =>  (int)$draw,
+                    'data'  =>  $loadedLogs,
+                    'recordsTotal'  =>  1000,
+                    'recordsFiltered'   =>  $limit,
+                )
+            );
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($result);
+            return $response;
+        }
+    }
+
+    public function mageSoapLogAction()
+    {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
+        $logs = $this->getLoggingTable();
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $logsInfo = $request->getPost();
+            $draw = $logsInfo['draw'];
+            $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
+            $limit = $logsInfo['length'];
 
 
 //            $filterDateRange = (!is_null($logsInfo['filterDateRange'])) ? $logsInfo['filterDateRange'] : null;
@@ -40,31 +87,24 @@ class LoggingController extends AbstractActionController
 
 
             $searchParams = array('sku'=>$sku);//,'from'=>$fromDate,'to'=>$toDate);
-//            var_dump($searchParams);
-//            die();
-
 //            $dateRange = array('from'=>$fromDate,'to'=>$toDate);
 
-//            var_dump($filterDateRange);
-//            $limit = $loadAccessories['length'];
-//            if($limit == '-1'){
-//                $limit = 100;
-//            }
-            $loadedLogs = $logs->lookupLoggingInfo($searchParams);
-//            die();
+            if($limit == '-1'){
+                $limit = 100;
+            }
+            $loadedLogs = $logs->fetchMageLogs($searchParams, $limit);
             $result = json_encode(
                 array(
                     'draw'  =>  (int)$draw,
                     'data'  =>  $loadedLogs,
                     'recordsTotal'  =>  1000,
-//                    'recordsFiltered'   =>  $limit,
+                    'recordsFiltered'   =>  $limit,
                 )
             );
             $event    = $this->getEvent();
             $response = $event->getResponse();
             $response->setContent($result);
             return $response;
-
         }
     }
 
@@ -72,8 +112,10 @@ class LoggingController extends AbstractActionController
     {
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
         $userID = $userLogin['userid'];
-//        var_dump($userLogin);
         $revert = $this->getLoggingTable();
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -89,8 +131,8 @@ class LoggingController extends AbstractActionController
             );
             $revert->undo($searchParams);
             $this->redirect()->toRoute('logging');
-
         }
+        $this->redirect()->toRoute('logging');
     }
 
     public function listUsersAction()

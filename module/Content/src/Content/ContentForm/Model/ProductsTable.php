@@ -8,6 +8,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Session\Container;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\Operator;
 use Zend\EventManager\EventManagerAwareTrait;
@@ -171,11 +172,11 @@ class ProductsTable{
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch originalContent
-        $newAttibute = $this->fetchAttribute($entityid,'varchar','1658','orginalContent');
+        $newAttibute = $this->fetchAttribute($entityid,'int','1659','originalContent');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch contentReviewed
-        $newAttibute = $this->fetchAttribute($entityid,'varchar','1676','contentReviewed');
+        $newAttibute = $this->fetchAttribute($entityid,'int','1676','contentReviewed');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch metaDescrition
@@ -352,7 +353,15 @@ class ProductsTable{
         $select = $this->sql->select();
         $select->from('productlink');
         $select->columns(array('id'=>'link_id','entity_id'=>'entity_id','linkedSku'=>'linked_entity_id','position' => 'position'));
-        $select->where(array('entity_id' => $entityid, 'link_type_id' =>'1'));
+
+        $filter = new Where();
+        $filter->equalTo('entity_id', $entityid);
+        $filter->equalTo('link_type_id', '1');
+        $pred = new Operator('dataState', Operator::OPERATOR_NOT_EQUAL_TO, 3);
+        $filter->addPredicate($pred);
+
+        $select->where($filter);
+        //select->where(array('entity_id' => $entityid, 'link_type_id' =>'1'));
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -481,7 +490,7 @@ class ProductsTable{
         return $resultSet->toArray();
     }
 
-    public function lookupAccessories($searchValue, $limit,$searchTerm,$setSkus = Null){
+    public function lookupAccessories($searchValue, $limit,$searchTerm,$setSkus = array()){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from('product');
@@ -491,13 +500,13 @@ class ProductsTable{
         $quantityJoin = new Expression('q.entity_id = product.entity_id and q.attribute_id = 1');
         $statusJoin = new Expression('s.entity_id = product.entity_id and s.attribute_id = 273');
 
-        $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'));
+        $select->join(array('t' => 'productattribute_varchar'), $titleJoin ,array('title' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'));
+        $select->join(array('p' => 'productattribute_decimal'), $priceJoin ,array('price' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'));
+        $select->join(array('q' => 'productattribute_int'), $quantityJoin ,array('quantity' => 'value'), Select::JOIN_LEFT);
 
-        $select->join(array('s' => 'productattribute_int'), $statusJoin ,array('status' => 'value'));
+        $select->join(array('s' => 'productattribute_int'), $statusJoin ,array('status' => 'value'), Select::JOIN_LEFT);
 
         $where = new Where();
         if($searchTerm == 'id'){
@@ -507,8 +516,15 @@ class ProductsTable{
             $searchTerm = 'product.productid';
         }
         $where->like($searchTerm,$searchValue.'%');
-//        $where->in('product.productid', $setSkus);
+        if (!(empty($setSkus))){
+            //$select->where("product.entity_id not id ?", $setSkus);
+            $where->notIn("product.entity_id", $setSkus);
+        }
+
         $select->where($where);
+
+
+
         $select->limit($limit);
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -532,15 +548,15 @@ class ProductsTable{
         $startMessage = 'The following fields have been updated :<br>';
         $updateditems = '';
 
-        //update sku
-        //update Title
+        //update sku NEVER!
+//update Title
         if(!(is_null($form->getTitle()))) {
             $property = 'title';
             $this->updateAttribute($form->getId(),$form->getTitle(),'96','varchar');
             $this->insertLogging($form->getId(),$oldData->getSku(), $form->getTitle(), $oldData->getTitle(), /*$oldData->getManufacturer(),*/ $property);//,'96','varchar');
             $updateditems .= 'Title<br>';
         }
-        //update description
+//update description
         if(!(is_null($form->getDescription()))) {
             $property = 'description';
             $this->updateAttribute($form->getId(),$form->getDescription(),'97','text');
@@ -573,7 +589,7 @@ class ProductsTable{
 //            $updateditems .= 'Visibility<br>';
 //        }
 
-        //update stock status
+//update stock status
         if(!(is_null($form->getStockStatus()))) {
             $property = 'stock status';
             $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
@@ -588,7 +604,7 @@ class ProductsTable{
             $updateditems .= 'In Box<br>';
         }
 
-        //update Includes Free
+//update Includes Free
         if(!(is_null($form->getIncludesFree()))) {
             $property = 'includes free';
             $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
@@ -596,7 +612,7 @@ class ProductsTable{
             $updateditems .= 'Includes Free<br>';
         }
 
-        //update Meta Description
+//update Meta Description
         if(!(is_null($form->getMetaDescription()))) {
             $property = 'meta description';
             $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
@@ -604,7 +620,7 @@ class ProductsTable{
             $updateditems .= 'Meta Description<br>';
         }
 
-        //update Original Content
+//update Original Content
         if(!(is_null($form->getOriginalContent()))) {
             $property = 'original content';
             $this->updateAttribute($form->getId(),$form->getOriginalContent(),'1659','int');
@@ -612,7 +628,7 @@ class ProductsTable{
             $updateditems .= 'Original Content<br>';
         }
 
-        //update Content Reviewed
+//update Content Reviewed
         if(!(is_null($form->getContentReviewed()))) {
             $property = 'content reviewed';
             $this->updateAttribute($form->getId(),$form->getContentReviewed(),'1676','int');
@@ -666,6 +682,18 @@ class ProductsTable{
             }
         }
 
+//update accessories
+        if(!(is_null($form->getAccessories()))) {
+            $accessoryHandler = new AccessoryTable($this->adapter);
+            //todo Dirty entity is returning all products when access is added
+
+            foreach($form->getAccessories() as  $value){
+                $accessoryHandler->updateAccessory($value);
+            }
+            $updateditems .= count($form->getAccessories()) .' Accessories Updated';
+        }
+
+
 
 
         if($updateditems != ''){
@@ -714,7 +742,7 @@ class ProductsTable{
         }
 
 
-        //Create new Image
+//Create new Image
         if(!(is_null($form->getImageGallery()))) {
             $imageHandler = new ImageTable($this->adapter);
             $images = $form->getImageGallery();
@@ -724,7 +752,7 @@ class ProductsTable{
             }
         }
 
-        //Add new Category
+//Add new Category
         if(!(is_null($form->getCategories()))) {
             $categoryHandler = new CategoryTable($this->adapter);
             $category = $form->getCategories();
@@ -733,6 +761,23 @@ class ProductsTable{
                 $inserteditems .= $result;
             }
         }
+
+//Add new Accessory
+        if(!(is_null($form->getAccessories()))) {
+            $accessoryHandler = new AccessoryTable($this->adapter);
+            $accessory = $form->getAccessories();
+            foreach($accessory as  $value){
+                $accessoryHandler->addAccessory($value);
+            }
+            if(count($accessory)>0){
+                $inserteditems .= count($accessory). ' Accessories Added';
+            }
+        }
+
+
+
+
+
 
         if($inserteditems != ''){
             $inserteditems = $startMessage.$inserteditems;
@@ -778,6 +823,8 @@ class ProductsTable{
 
     public function rinseHandle(Form $form){
         $rinsedItems = '';
+
+//remove categories
         if(!(is_null($form->getCategories()))) {
 
             $categoryHandler = new CategoryTable($this->adapter);
@@ -788,6 +835,23 @@ class ProductsTable{
                 $rinsedItems .= $result;
             }
         }
+
+//remove Accessories
+        if(!(is_null($form->getAccessories()))) {
+
+            $accessoriesHandler = new AccessoryTable($this->adapter);
+            $accessory = $form->getAccessories();
+
+            foreach($accessory as  $value){
+                $accessoriesHandler->removeAccessory($value);
+            }
+            if(count($accessory)>0){
+                $rinsedItems .= count($accessory).' Accessories Removed';
+            }
+
+        }
+
+
         return $rinsedItems;
     }
 
@@ -827,6 +891,6 @@ class ProductsTable{
         );
 
         $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,
-        $this->getEventManager()->trigger('constructLog', null, array('makeFields'=>$eventWritables));
+        $this->getEventManager()->trigger('construct_sku_log', null, array('makeFields'=>$eventWritables));
     }
 }

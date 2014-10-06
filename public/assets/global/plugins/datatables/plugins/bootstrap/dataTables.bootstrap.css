@@ -251,3 +251,15 @@ div.DTFC_LeftFootWrapper table {
 div.FixedHeader_Cloned table {
 	margin: 0 !important
 }
+
+
+/*
+Additional CSS for open/close expandables
+*/
+td.details-control {
+    background: url('../../media/images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../../media/images/details_open.png') no-repeat center center;
+}

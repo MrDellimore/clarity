@@ -269,11 +269,11 @@
             <div class="col-md-6">
                 <div class="col-md-4">
                     <div class="form-group">
-                            <input name = "orginalContent" type="checkbox"> Original Content
+                            <input name = "orginalContent" type="checkbox" <?= $this->data->getOriginalContent() == 1 ? 'checked="checked"' : '' ?>> Original Content
                     </div>
                 </div><div class="col-md-4">
                     <div class="form-group">
-                        <input name="contentReviewed" type="checkbox">Content Reviewed
+                        <input name="contentReviewed" type="checkbox" <?= $this->data->getContentReviewed() == 1 ? 'checked="checked"' : '' ?>>Content Reviewed
 
                     </div>
                 </div>
@@ -309,7 +309,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="price">Price</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="price" placeholder="Price" style="width:140px" value="<?=$this->data->getPrice();?>" required/>
+                        <input type="text" class="form-control" name="price" placeholder="Price" style="width:140px" value="<?=$this->data->getPrice();?>"/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -514,14 +514,14 @@
 
 
 
-
                     <!-- metaDescription-->
+
                     <div class="row col-md-11">
                         <div class="form-body">
                             <div class="form-group col-md-11">
                                 <label class="control-label col-md-3">MetaDescription:</label>
                                 <div class="col-md-11">
-                                    <textarea id="metadescriptionwys" class="form-control" name ="metadescription" rows="20" style = "height: 500px;"> <?= $this->data->getMetaDescription(); ?> </textarea>
+<!--                                    <textarea id="metadescriptionwys" class="form-control" name ="metadescription" rows="20" style = "height: 500px;"> --><?//= $this->data->getMetaDescription(); ?><!-- </textarea>-->
                                 </div>
                             </div>
 
@@ -541,7 +541,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3">Description</label>
                             <div class="col-md-11">
-                            <textarea id="descriptionwys" class="form-control" name ="description" rows="20" style = "height: 500px;"> <?= $this->data->getDescription(); ?> </textarea>
+<!--                            <textarea id="descriptionwys" class="form-control" name ="description" rows="20" style = "height: 500px;"> --><?//= $this->data->getDescription(); ?><!-- </textarea>-->
                                 </div>
                         </div>
 
@@ -554,7 +554,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3">Short Description</label>
                             <div class="col-md-11">
-                                <textarea  id="shortdescriptionwys" class="form-control" name="shortDescription" rows="6" style = "height: 500px;"> <?= $this->data->getShortDescription(); ?> </textarea>
+<!--                                <textarea  id="shortdescriptionwys" class="form-control" name="shortDescription" rows="6" style = "height: 500px;"> --><?//= $this->data->getShortDescription(); ?><!-- </textarea>-->
                             </div>
                         </div>
 
@@ -567,7 +567,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3">In Box</label>
                             <div class="col-md-11">
-                                <textarea id="inboxwys" class="form-control" name = "inBox" rows="6" style = "height: 500px;"> <?= $this->data->getInBox(); ?> </textarea>
+<!--                                <textarea id="inboxwys" class="form-control" name = "inBox" rows="6" style = "height: 500px;"> --><?//= $this->data->getInBox(); ?><!-- </textarea>-->
                             </div>
                         </div>
 
@@ -580,7 +580,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3" for="searchTerms">Includes Free</label>
                             <div class="col-md-11">
-                                <textarea id="includesfreewys" class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> <?php $this->data->getIncludesFree() ?> </textarea>
+<!--                                <textarea id="includesfreewys" class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> --><?php //$this->data->getIncludesFree() ?><!-- </textarea>-->
                             </div>
                         </div>
 
@@ -609,7 +609,7 @@
     <!-- Acessories-->
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <!-- Related products-->
             <div class="portlet box blue">
                 <div class="portlet-title">
@@ -626,12 +626,12 @@
 
                 <div class="portlet-body">
                     <div class="row">
-                        <div class="col-md-11">
+                        <div class="col-md-12">
                             <div class="table-toolbar">
-                                <div class="btn-group">
+                                <!--<div class="btn-group">
                                     <a class="btn green" data-toggle="modal" href="#acessoryModal">
                                         Add Accessory <i class="fa fa-plus"></i></a>
-                                </div>
+                                </div>-->
                              </div>
                             <form id="accessoriesForm">
                                 <?php
@@ -694,89 +694,94 @@
          </div>
 
 
-        <div class="col-md-6">
-            <!-- Related products-->
-            <div class="portlet box yellow">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-gift"></i>Cross Sells
-                    </div>
-                    <div class="tools">
-                        <a href="javascript:;" class="collapse">
-                        </a>
-
-                    </div>
-                </div>
 
 
-                <div class="portlet-body">
-                    <div class="row">
-                        <div class="col-md-11">
-                            <div class="table-toolbar">
-                                <div class="btn-group">
-                                    <a class="btn green" data-toggle="modal" href="#crossModal">
-                                        Add Cross Sell <i class="fa fa-plus"></i></a>
-                                </div>
-                            </div>
-                            <form id="crossSellForm">
-                                <?php
-                                $i=0;
-                                foreach($this->data->getCrossSells() as $value){
-                                    echo '<input type="hidden" name="accessories['.$i.'][id]" value = "'.$value->getId().'">';
-                                    echo '<input type="hidden" name="accessories['.$i.'][entityid]" value = "'.$value->getEntityid().'">';
-                                    echo '<input type="hidden" name="accessories['.$i.'][linkedSku]" value = "'.$value->getLinkedSku().'">';
-                                    echo '<input type="hidden" name="accessories['.$i.'][position]" value = "'.$value->getPosition().'">';
-                                    $i++;
-                                }
-                                ?>
+        <!-- removing cross sells -->
 
-                            </form>
-                            <table class="table table-striped table-bordered table-hover" id="crossSellDisplay">
-                                <thead>
-                                <tr>
-                                    <th>Sort</th>
-                                    <th>Sku</th>
-                                    <th>Product Name</th>
-                                    <th>Status</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th style="display: none;">linkedentityid</th> <!-- to pass to JS for click handles -->
-                                    <th>Edit</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
+<!--        <div class="col-md-6">-->
+<!--            <div class="portlet box yellow">-->
+<!--                <div class="portlet-title">-->
+<!--                    <div class="caption">-->
+<!--                        <i class="fa fa-gift"></i>Cross Sells-->
+<!--                    </div>-->
+<!--                    <div class="tools">-->
+<!--                        <a href="javascript:;" class="collapse">-->
+<!--                        </a>-->
+<!---->
+<!--                    </div>-->
+<!--                </div>-->
+<!---->
+<!---->
+<!--                <div class="portlet-body">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-11">-->
+<!--                            <div class="table-toolbar">-->
+<!--                                <div class="btn-group">-->
+<!--                                    <a class="btn green" data-toggle="modal" href="#crossModal">-->
+<!--                                        Add Cross Sell <i class="fa fa-plus"></i></a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <form id="crossSellForm">-->
+<!--                                --><?php
+//                                $i=0;
+//                                foreach($this->data->getCrossSells() as $value){
+//                                    echo '<input type="hidden" name="accessories['.$i.'][id]" value = "'.$value->getId().'">';
+//                                    echo '<input type="hidden" name="accessories['.$i.'][entityid]" value = "'.$value->getEntityid().'">';
+//                                    echo '<input type="hidden" name="accessories['.$i.'][linkedSku]" value = "'.$value->getLinkedSku().'">';
+//                                    echo '<input type="hidden" name="accessories['.$i.'][position]" value = "'.$value->getPosition().'">';
+//                                    $i++;
+//                                }
+//                                ?>
+<!---->
+<!--                            </form>-->
+<!--                            <table class="table table-striped table-bordered table-hover" id="crossSellDisplay">-->
+<!--                                <thead>-->
+<!--                                <tr>-->
+<!--                                    <th>Sort</th>-->
+<!--                                    <th>Sku</th>-->
+<!--                                    <th>Product Name</th>-->
+<!--                                    <th>Status</th>-->
+<!--                                    <th>Price</th>-->
+<!--                                    <th>Quantity</th>-->
+<!--                                    <th style="display: none;">linkedentityid</th> -->
+<!--                                    <th>Edit</th>-->
+<!--                                </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                <tr>-->
+<!---->
+<!--                                </tr>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!---->
+<!---->
+<!--                        <div class="modal fade" id="crossModal" tabindex="-1" role="crossModal" aria-hidden="true">-->
+<!--                            <div class="modal-dialog">-->
+<!--                                <div class="modal-content">-->
+<!--                                    <div class="modal-header">-->
+<!--                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>-->
+<!--                                        <h4 class="modal-title">Add Cross Sell Items</h4>-->
+<!--                                    </div>-->
+<!--                                    <div class="modal-body">-->
+<!--                                        Select 2 input (multi/ajax)-->
+<!--                                    </div>-->
+<!--                                    <div class="modal-footer">-->
+<!--                                        <button type="button" class="btn default" data-dismiss="modal">Close</button>-->
+<!--                                        Send Ajax Call to add on click<button type="button" class="btn blue">Save changes</button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
 
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
 
 
-                        <div class="modal fade" id="crossModal" tabindex="-1" role="crossModal" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add Cross Sell Items</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        Select 2 input (multi/ajax)
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn default" data-dismiss="modal">Close</button>
-                                        Send Ajax Call to add on click<button type="button" class="btn blue">Save changes</button>
-                                    </div>
-                                </div>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
-                        </div>
 
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 
 
@@ -892,7 +897,6 @@ $i=0;
         echo '<td><input type="text" class="form-control" name="imageGallery['.$i.'][label]" value="'.$image->getLabel().'"></td>';
         echo '<td><input type="text" class="form-control" name="imageGallery['.$i.'][position]" value="'.$image->getPosition().'"></td>';
         echo '<td><label><input type="radio" name="imageGallery['.$i.'][default]" value="1" '.$defaultImage.' class="defaultRadio"/></label></td>';
-
         echo'<td><input type="hidden" name="imageGallery['.$i.'][disabled]" value="'.$image->getDisabled().'">
         <a href="javascript:;" class="imageremove btn default btn-sm"><i class="fa fa-times"></i> Remove </a></td>';
 
@@ -985,7 +989,10 @@ $i=0;
         </div>
     </div>
 
+
+
     <div class="portlet-body">
+    <form id="attributesForm">
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
@@ -1469,6 +1476,10 @@ $i=0;
             </div>
         </div>
     </div>
+
+    </form>
     </div>
+
     </div>
+
     </div>

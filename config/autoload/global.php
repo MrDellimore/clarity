@@ -39,16 +39,55 @@ return array(
                 ),
             ),
             array(
-                'label' => 'API Calls',
-                'route' => 'apis',
+                'label' => 'API',
+                'route' => 'home',
+                'pages' =>  array(
+                    array(
+                        'label' =>  'Magento',
+                        'route' =>  'apis',
+                    ),
+                ),
             ),
             array(
                 'label' => 'History',
-                'route' => 'logging',
+                'route' => 'home',
+                'pages' =>  array(
+                    array(
+                        'label' =>  'SKU History',
+                        'route' =>  'logging'
+                    ),
+                    array(
+                        'label' =>  'Magento Soap History',
+                        'route' =>  'mage-soap-logging',
+                    ),
+                ),
             ),
               
              
         )
+    ),
+    'event_listener_construct' =>  array(
+        'logger'  =>  array(
+            'extra'    =>  array(
+                'entity_id' => 'entity_id',
+                'sku'   =>  'sku',
+                'oldvalue'  =>  'oldvalue',
+                'newvalue'  =>  'newvalue',
+                'datechanged'   =>  'datechanged',
+                'changedby' =>  'changedby',
+                'property'  =>  'property',
+            ),
+        ),
+        'mage_logs'  =>  array(
+            'extra'    =>  array(
+                'sku' => 'sku',
+                'resource'   =>  'resource',
+                'speed'  =>  'speed',
+                'pushedby'  =>  'pushedby',
+                'datepushed'   =>  'datepushed',
+                'status'        =>  'status',
+            ),
+        ),
     ),
     'service_manager' => array(
         'factories' => array(
@@ -70,6 +109,4 @@ return array(
                 }
         ),
     )
-     
- 
 );

@@ -9,12 +9,13 @@
 namespace Content\ContentForm\Tables;
 
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\ExpressionInterface;
 use Zend\Db\Sql\Where;
-
+use Zend\Db\Sql\Expression;
 
 trait Spex {
 
@@ -39,6 +40,9 @@ trait Spex {
         } else {
             $select->where($where);
         }
+        $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+
+//        $select->quantifier(Select::QUANTIFIER_DISTINCT);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -53,6 +57,7 @@ trait Spex {
     {
         $select = $sql->select();
         $select->from('productattribute_lookup');
+//        $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code']);
         $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code', 'frontend'=>'frontend_label', 'dateModified'=>'lastModifiedDate','user'=>'changedby']);
         if(count($where)){
             $select->where($where);
@@ -65,8 +70,6 @@ trait Spex {
         }
         return $resultSet->toArray();
     }
-
-
 
     public function productUpdateaAttributes(Sql $sql, $tableType, array $set = array(), array $where = array())
     {

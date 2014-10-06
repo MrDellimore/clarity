@@ -11,10 +11,48 @@ namespace Content\AJAXLoader\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Content\ContentForm\Entity\Products;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
+use Zend\Session\Container;
+
 
 class AjaxLoaderController extends AbstractActionController
 {
     protected $searchTable;
+
+//    public function magentoAction()
+//    {
+//        $loginSession= new Container('login');
+//        $userLogin = $loginSession->sessionDataforUser;
+//        if(empty($userLogin)){
+//            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+//        }
+//        $request = $this->getRequest();
+//
+//        if($request->isPost()){
+//            $apiData = $request->getPost();
+//            $draw = $apiData['draw'];
+//            $sku = $apiData['search']['value'];
+//            $limit = $apiData['length'];
+//
+//            if($limit == '-1'){
+//                $limit = 100;
+//            }
+//            $mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
+//            $skuData = $mage->fetchChangedProducts($sku,$limit );
+//            $result = json_encode(
+//                array(
+//                    'draw' => $draw,
+//                    'recordsTotal' => 1000,
+//                    'recordsFiltered' => $limit,
+//                    //results
+//                    'data' => $skuData)
+//            );
+//            $event    = $this->getEvent();
+//            $response = $event->getResponse();
+//            $response->setContent($result);
+//            return $response;
+//        }
+//    }
+
 
     public function quicksearchAction()
     {
@@ -125,17 +163,27 @@ class AjaxLoaderController extends AbstractActionController
             $setAccessories = $loadAccessories['related'];
             $positions = $loadAccessories['position'];
             $firstElements = array();
+            $setIds = array();
 
-//Search Results
+
             if($limit == '-1'){
-                $limit = 100;
+                $limit = 50;
             }
-            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit,'sku');
-            //todo add to query where sku not in (array of linked skus)
+//grab set IDs to remove from results
+            if(isset($setAccessories)){
+                foreach($setAccessories as $value){
+                    array_push($setIds,$value['value']);
+                }
+            }
+
+
+
+            $loadedAccessories = $form->lookupAccessories($sku, (int)$limit,'sku',$setIds);
             $loadedAccessories = $this->updateaccessories($loadedAccessories);
 
             if(isset($setAccessories)){
             //Items set already
+
                 foreach($setAccessories as $key => $value){
                     $element = $form->lookupAccessories($value['value'],1,'id');
                     $element[0]['sort'] = $positions[$key]['value'];
@@ -143,7 +191,9 @@ class AjaxLoaderController extends AbstractActionController
                 }
                 //sort firstelements
                 $sort=array();
+
                 foreach($firstElements as $value){
+
                     $sort[$value[0]['entityid']] = $value[0]['sort'];
                 }
                 arsort($sort);
@@ -169,7 +219,7 @@ class AjaxLoaderController extends AbstractActionController
                     'draw'  =>  (int)$draw,
                     'data'  =>  $loadedAccessories,
                     'recordsTotal'  =>  1000,
-                    'recordsFiltered'   =>  $limit,
+                    'recordsFiltered'   =>  count($loadedAccessories),
                 )
             );
             $event    = $this->getEvent();
@@ -233,6 +283,10 @@ class AjaxLoaderController extends AbstractActionController
             $oldData = new Products();
 
             $formData = (array) $request->getPost();
+
+            echo '<pre>';
+            var_dump($formData);
+            die();
 
 
             //fix dates on post...
