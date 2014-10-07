@@ -283,12 +283,6 @@ class AjaxLoaderController extends AbstractActionController
             $oldData = new Products();
 
             $formData = (array) $request->getPost();
-
-            echo '<pre>';
-            var_dump($formData);
-            die();
-
-
             //fix dates on post...
 
             //Hydrate into Old Data object
@@ -309,10 +303,6 @@ class AjaxLoaderController extends AbstractActionController
             $dirtyData = $comp->dirtCheck($oldData, $postData);
             $newData = $comp->newCheck($oldData, $postData);
             $rinseData = $comp->rinseCheck($oldData, $postData);
-
-
-
-
 
 
             //update/insert data

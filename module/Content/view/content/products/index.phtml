@@ -195,13 +195,14 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Visibility</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium" data-placeholder="No Visitility Set" name="visibility">
+                        <select class="form-control input-medium" data-placeholder="No Visitility Set" name="visibility[option]">
                             <option value="0"></option>
-                            <option value="1" <?= $this->data->getVisibility() == 1 ? 'selected' :''?>>Not Visible Indivdually</option>
-                            <option value="2" <?= $this->data->getVisibility() == 2 ? 'selected' :''?>>Catalog</option>
-                            <option value="3" <?= $this->data->getVisibility() == 3 ? 'selected' :''?>>Search</option>
-                            <option value="4" <?= $this->data->getVisibility() == 4 ? 'selected' :''?>>Catalog, Search</option>
+                            <option value="1" <?= $this->data->getVisibility()['option'] == 1 ? 'selected' :''?>>Not Visible Indivdually</option>
+                            <option value="2" <?= $this->data->getVisibility()['option'] == 2 ? 'selected' :''?>>Catalog</option>
+                            <option value="3" <?= $this->data->getVisibility()['option'] == 3 ? 'selected' :''?>>Search</option>
+                            <option value="4" <?= $this->data->getVisibility()['option'] == 4 ? 'selected' :''?>>Catalog, Search</option>
                         </select>
+                        <input type="hidden" name="visibility[value]" value="<?= $this->data->getVisibility()['value']; ?>">
                     </div>
                 </div>
             </div>
@@ -269,11 +270,11 @@
             <div class="col-md-6">
                 <div class="col-md-4">
                     <div class="form-group">
-                            <input name = "orginalContent" type="checkbox" <?= $this->data->getOriginalContent() == 1 ? 'checked="checked"' : '' ?>> Original Content
+                            <input name = "originalContent[option]" type="checkbox" <?= $this->data->getOriginalContent()['option'] == 1 ? 'checked="checked"' : '' ?>> Original Content
                     </div>
                 </div><div class="col-md-4">
                     <div class="form-group">
-                        <input name="contentReviewed" type="checkbox" <?= $this->data->getContentReviewed() == 1 ? 'checked="checked"' : '' ?>>Content Reviewed
+                        <input name="contentReviewed[option]" type="checkbox" <?= $this->data->getContentReviewed()['option'] == 1 ? 'checked="checked"' : '' ?>>Content Reviewed
 
                     </div>
                 </div>
@@ -364,7 +365,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">Rebate Price</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="rebatePrice"  placeholder="Rebate" style="width:140px" value="<?=$rebatePrice = is_null($this->data->getRebatePrice())? 0:  $this->data-getRebatePrice() ?>">
+                        <input type="text" class="form-control" name="rebatePrice"  placeholder="Rebate" style="width:140px" value="<?= $this->data->getRebatePrice();?>">
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -392,7 +393,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">Special Price</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control"  name="specialprice" placeholder="Special Price" style="width:140px" value="<?=$specialPrice = is_null($this->data->getSpecialPrice())? 0:  $this->data->getSpecialPrice() ?>"/>
+                        <input type="text" class="form-control"  name="specialprice" placeholder="Special Price" style="width:140px" value="<?= $this->data->getSpecialPrice(); ?>"/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -420,7 +421,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Mail in rebate</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="mailinrebate"  placeholder="Mail in Rebate" style="width:140px" value="<?=$mailinPrice = is_null($this->data->getMailInRebate())? 0:  $this->data->getMailInRebate() ?>">
+                        <input type="text" class="form-control" name="mailinrebate"  placeholder="Mail in Rebate" style="width:140px" value="<?= $this->data->getMailInRebate();?>">
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -491,7 +492,7 @@
                             <div class="form-group col-md-11">
                                 <label class="control-label col-md-3" for="metaKeywords">MetaKeywords:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="metaKeyword" placeholder="MetaKeywords" value="<?php $this->data->getMetaKeywords(); ?>"/>
+                                    <input type="text" class="form-control" name="metaKeyword" placeholder="MetaKeywords" value="<?= $this->data->getMetaKeywords(); ?>"/>
                                 </div>
                             </div>
                         </div>
@@ -505,7 +506,7 @@
                             <div class="form-group col-md-11">
                                 <label class="control-label col-md-3" for="metaKeywords">MetaTitle:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="metaTitle" placeholder="MetaTitle" value="<?php $this->data->getMetaTitle(); ?>"/>
+                                    <input type="text" class="form-control" name="metaTitle" placeholder="MetaTitle" value="<?= $this->data->getMetaTitle(); ?>"/>
                                 </div>
                             </div>
                         </div>
@@ -521,7 +522,7 @@
                             <div class="form-group col-md-11">
                                 <label class="control-label col-md-3">MetaDescription:</label>
                                 <div class="col-md-11">
-<!--                                    <textarea id="metadescriptionwys" class="form-control" name ="metadescription" rows="20" style = "height: 500px;"> --><?//= $this->data->getMetaDescription(); ?><!-- </textarea>-->
+                                    <textarea id="metadescriptionwys" class="form-control" name ="metadescription" rows="20" style = "height: 500px;"> <?= $this->data->getMetaDescription(); ?> </textarea>
                                 </div>
                             </div>
 
@@ -541,7 +542,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3">Description</label>
                             <div class="col-md-11">
-<!--                            <textarea id="descriptionwys" class="form-control" name ="description" rows="20" style = "height: 500px;"> --><?//= $this->data->getDescription(); ?><!-- </textarea>-->
+                            <textarea id="descriptionwys" class="form-control" name ="description" rows="20" style = "height: 500px;"> <?= trim($this->data->getDescription()); ?> </textarea>
                                 </div>
                         </div>
 
@@ -554,7 +555,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3">Short Description</label>
                             <div class="col-md-11">
-<!--                                <textarea  id="shortdescriptionwys" class="form-control" name="shortDescription" rows="6" style = "height: 500px;"> --><?//= $this->data->getShortDescription(); ?><!-- </textarea>-->
+                                <textarea  id="shortdescriptionwys" class="form-control" name="shortDescription" rows="6" style = "height: 500px;"> <?= $this->data->getShortDescription(); ?> </textarea>
                             </div>
                         </div>
 
@@ -567,7 +568,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3">In Box</label>
                             <div class="col-md-11">
-<!--                                <textarea id="inboxwys" class="form-control" name = "inBox" rows="6" style = "height: 500px;"> --><?//= $this->data->getInBox(); ?><!-- </textarea>-->
+                                <textarea id="inboxwys" class="form-control" name = "inBox" rows="6" style = "height: 500px;"> <?= $this->data->getInBox(); ?> </textarea>
                             </div>
                         </div>
 
@@ -580,7 +581,7 @@
                         <div class="form-group col-md-11">
                             <label class="control-label col-md-3" for="searchTerms">Includes Free</label>
                             <div class="col-md-11">
-<!--                                <textarea id="includesfreewys" class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> --><?php //$this->data->getIncludesFree() ?><!-- </textarea>-->
+                                <textarea id="includesfreewys" class="wysihtml5 form-control" rows="6" name="includesFree" style = "height: 500px;"> <?php $this->data->getIncludesFree() ?> </textarea>
                             </div>
                         </div>
 
@@ -894,6 +895,7 @@ $i=0;
         //echo '<div class="trRow" style="display: none; background-color:Silver; position:absolute; z-index:10000; opacity:0.5;"></div>';
         echo '<tr><td><img class="img-responsive" src="'.$image->getDomain().$image->getFilename().'" alt=""></td>';
         echo '<input type="hidden" name="imageGallery['.$i.'][filename]" value ="'.$image->getFilename().'">';
+        echo '<input type="hidden" name="imageGallery['.$i.'][entityid]" value ="'.$image->getEntityid().'">';
         echo '<td><input type="text" class="form-control" name="imageGallery['.$i.'][label]" value="'.$image->getLabel().'"></td>';
         echo '<td><input type="text" class="form-control" name="imageGallery['.$i.'][position]" value="'.$image->getPosition().'"></td>';
         echo '<td><label><input type="radio" name="imageGallery['.$i.'][default]" value="1" '.$defaultImage.' class="defaultRadio"/></label></td>';
@@ -1126,16 +1128,16 @@ $i=0;
                 <div class="col-md-6">
                     <select name="color[option]" class="form-control input-small" data-placeholder="Select Color">
                         <option value="0" >--</option>
-                        <option value="22" <?= $this->data->getColor() == 22 ? 'selected' : ''?> >Green</option>
-                        <option value="23" <?= $this->data->getColor() == 23 ? 'selected' : ''?> >Silver</option>
-                        <option value="24" <?= $this->data->getColor() == 24 ? 'selected' : ''?> >Black</option>
-                        <option value="25" <?= $this->data->getColor() == 25 ? 'selected' : ''?> >Blue</option>
-                        <option value="26" <?= $this->data->getColor() == 26 ? 'selected' : ''?> >Red</option>
-                        <option value="57" <?= $this->data->getColor() == 57 ? 'selected' : ''?> >Pink</option>
-                        <option value="58" <?= $this->data->getColor() == 58 ? 'selected' : ''?> >Magenta</option>
-                        <option value="59" <?= $this->data->getColor() == 59 ? 'selected' : ''?> >Brown</option>
-                        <option value="60" <?= $this->data->getColor() == 60 ? 'selected' : ''?> >White</option>
-                        <option value="61" <?= $this->data->getColor() == 61 ? 'selected' : ''?> >Gray</option>
+                        <option value="22" <?= $this->data->getColor()['option'] == 22 ? 'selected' : ''?> >Green</option>
+                        <option value="23" <?= $this->data->getColor()['option'] == 23 ? 'selected' : ''?> >Silver</option>
+                        <option value="24" <?= $this->data->getColor()['option'] == 24 ? 'selected' : ''?> >Black</option>
+                        <option value="25" <?= $this->data->getColor()['option'] == 25 ? 'selected' : ''?> >Blue</option>
+                        <option value="26" <?= $this->data->getColor()['option'] == 26 ? 'selected' : ''?> >Red</option>
+                        <option value="57" <?= $this->data->getColor()['option'] == 57 ? 'selected' : ''?> >Pink</option>
+                        <option value="58" <?= $this->data->getColor()['option'] == 58 ? 'selected' : ''?> >Magenta</option>
+                        <option value="59" <?= $this->data->getColor()['option'] == 59 ? 'selected' : ''?> >Brown</option>
+                        <option value="60" <?= $this->data->getColor()['option'] == 60 ? 'selected' : ''?> >White</option>
+                        <option value="61" <?= $this->data->getColor()['option'] == 61 ? 'selected' : ''?> >Gray</option>
                     </select>
                     <input type="hidden" name="color[value]" value="">
                 </div>

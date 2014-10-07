@@ -30,27 +30,106 @@ class EntityCompare {
         }
 
         //compare arrays
-        $dirt = $this->getDirtArray($oldData,$newData);
+        $dirt = $this->getDirty($oldData,$newData);
 
+//        echo '<pre>';
+//        var_dump($dirt);
+//        var_dump($oldData['image_gallery']);
+//        var_dump($newData['image_gallery']);
+//        die();
 
         $dirtyEntity = new Form();
         $hydrator->hydrate($dirt,$dirtyEntity);
-
         $dirtyEntity->setId($oldData['id']);
-        //var_dump($oldData['zoom_focal_length']);
-        //var_dump($newData['color']);
-//        var_dump($dirt);
+//        echo '<pre>';
+//        var_dump($dirtyEntity);
 //        die();
-
-
-
         return $dirtyEntity;
     }
 
+    public function getDirty($oldData,$newData){
+        $dirtyArray = Array();
+        $hydrator = new cHydrator;
 
-/*
- * todo make dirtcomparison iterative
- */
+        //loop through oldData for changes
+        foreach($oldData as $key => $value){
+            //begin comparison if key exists in new data
+            if(array_key_exists($key,$newData)){
+
+
+                //arrays and object comprison
+                if(is_array($value)){
+                    //option comparison
+                    if(array_key_exists('option',$value)){
+                        if($value['option'] != $newData[$key]['option'] && !(is_null($value['option'])) && $value['option'] != ""){
+                            $dirtyArray[$key] = $newData[$key];
+                        }
+                    }
+
+                    //object comparison
+                    else{
+                        //loop though collection of objects
+                        $unsetnodeFlag=true;
+                        foreach($value as $key2 => $value2){
+                            //extract current object
+                            if(is_object($value2)){
+                                $value2 = $hydrator->extract($value2);
+                                //$newData[$key][$key2] = $hydrator->extract($newData[$key][$key2]);
+                            }
+
+                                //loop through current object and find matching object in new data
+                                foreach($newData[$key] as $value3){
+                                    //extract new data object
+                                    if(is_object($value3)){
+                                        $value3 = $hydrator->extract($value3);
+
+                                        //when matching object is found compare
+                                        if($value2['id'] == $value3['id']){
+                                            //set id of matched object
+                                            $dirtyArray[$key][$key2]['id'] = $value2['id'];
+                                            $unsetidFlag = true;
+                                            //compare objects
+                                            foreach($value2 as $key4 => $value4){
+                                                if($value4 != $value3[$key4] && $key4 != 'id'){
+                                                    $dirtyArray[$key][$key2][$key4] = $value3[$key4];
+                                                    $unsetidFlag = false;
+                                                }
+                                            }
+
+                                            //unset id if nothing is found
+                                            if($unsetidFlag){
+                                                unset($dirtyArray[$key][$key2]);
+                                            }
+                                            else{
+                                                //found one id keep node
+                                                $unsetnodeFlag=false;
+                                            }
+
+                                            //unset object node if nothing is found
+                                            if($unsetnodeFlag){
+                                                unset($dirtyArray[$key]);
+                                            }
+                                        }
+                                    }
+                                }
+
+                        }
+                    }
+                }
+
+                //standard comparison
+                else if(strip_tags(html_entity_decode($value)) != strip_tags(html_entity_decode($newData[$key])) && !(is_null($newData[$key]))){
+                    $dirtyArray[$key] = $newData[$key];
+                }
+            }
+        }
+
+
+        return $dirtyArray;
+    }
+
+
+
 
     public function getDirtArray($oldData,$newData){
         $dirt = Array();

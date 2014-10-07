@@ -36,6 +36,12 @@ var ManageContent = function () {
 
            // var badIndex = new Array(crossSellDisplay_length]);
             for(var i = 0; i < formData.length; i++) {
+                //set checkbox value from "on" to 1
+                if(formData[i].name == 'originalContent[option]' || formData[i].name == 'contentReviewed[option]'){
+                    formData[i].value = '1';
+                }
+
+                //clean form
                 if(formData[i].name.slice(0,7) !== 'product' && formData[i].name !=='_wysihtml5_mode' && formData[i].name !=='acessoriesDisplay_length' && formData[i].name !=='crossSellDisplay_length' ){
                     //console.log(formData[i]);
                     goodData.push(formData[i]);
