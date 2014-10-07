@@ -619,14 +619,14 @@ class ProductsTable{
         }
 
 //update Original Content
-        if(!(is_null($form->getOriginalContent()))) {
+        if(array_key_exists('option',$form->getOriginalContent())) {
             $property = 'original content';
             $this->updateAttribute($form->getId(),$form->getOriginalContent()['option'],'1659','int');
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getOriginalContent()['option'], $oldData->getOriginalContent()['option'], $property);
             $updateditems .= 'Original Content<br>';
         }
 //update Content Reviewed
-        if(!(is_null($form->getContentReviewed()))) {
+        if(array_key_exists('option',$form->getContentReviewed())) {
             $property = 'content reviewed';
             $this->updateAttribute($form->getId(),$form->getContentReviewed()['option'],'1676','int');
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getContentReviewed()['option'], $oldData->getContentReviewed()['option'], /*$oldData->getManufacturer(),*/ $property);//,'1676','int');
@@ -741,7 +741,20 @@ class ProductsTable{
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getAperture()['option'], "",$property);
             $inserteditems .= 'Apeture<br>';
         }
-
+//Original Content
+        if(array_key_exists('option', $form->getOriginalContent())) {
+            $property = 'Original Content';
+            $this->insertAttribute($oldData->getId(),$form->getOriginalContent()['option'],'1659','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getOriginalContent()['option'], "",$property);
+            $inserteditems .= 'Original Content<br>';
+        }
+//Content Reviewed
+        if(array_key_exists('option', $form->getContentReviewed())) {
+            $property = 'Content Reviewed';
+            $this->insertAttribute($oldData->getId(),$form->getContentReviewed()['option'],'1676','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getContentReviewed()['option'], "",$property);
+            $inserteditems .= 'Content Reviewed<br>';
+        }
 
 //Create new Image
         if(!(is_null($form->getImageGallery()))) {
