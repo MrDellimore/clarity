@@ -200,6 +200,53 @@ class MageSoap extends AbstractSoap{
         return $this->_soapCall($packet, Null, $skuCollection);
     }
 
+//    public function soapUpdateProducts($changedProducts)
+//    {
+//        $this->startStopwatch();
+//        $packet = $skuCollection = $atts = [];
+//        foreach( $changedProducts as $key => $attributes ) {
+//            $entityID = $attributes['id'];
+//            array_shift($attributes);
+//
+//            foreach( $attributes as $ind => $attrib ) {
+//                $skuCollection[] = $attrib['sku'];
+//                $newValue = $attrib['newValue'];
+//                foreach( $attrib as $prop => $attribute ) {
+//                    if ( $prop == 'property' ) {
+//                        $atts[$attribute] = $newValue;
+//                    }
+//                }
+//                $packet[$key] = array('entity_id' => $entityID, $atts);
+//            }
+//            $atts = [];
+//        }
+//        return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
+//    }
+
+    public function soapChangedProducts($changedProds)
+    {
+        $packet = [];
+        $attributeSet = $this->_getAttributeSet();
+        $skuCollection = [];
+        $attributes = [];
+        foreach( $changedProds as $index => $fields ) {
+            $keys = array_keys($changedProds[$index]);
+            $skuCollection[] = $sku = $changedProds[$index]['sku'];
+            $entityID = $fields['id'];
+            array_shift($keys);
+            array_shift($changedProds[$index]);
+            foreach( $keys as $ind => $attFields ) {
+                $attributes[$attFields] = ($attFields == 'website') ? [$changedProds[$index][$attFields]] : $changedProds[$index][$attFields];
+            }
+            $packet[$index] = array('entity_id' => $entityID, $attributes);
+            $attributes = [];
+        }
+//        echo '<pre>';
+        var_dump($packet);
+        die();
+        return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
+    }
+
 
 
     public function soapAddProducts($newProds)
@@ -220,8 +267,8 @@ class MageSoap extends AbstractSoap{
             $attributes = [];
         }
 //        echo '<pre>';
-//    var_dump($packet);
-//        die();
+    var_dump($packet);
+        die();
          return $this->_soapCall($packet, 'catalog_product.create', $skuCollection);
     }
 

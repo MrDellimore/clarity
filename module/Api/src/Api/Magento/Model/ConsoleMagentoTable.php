@@ -49,6 +49,7 @@ class ConsoleMagentoTable
         foreach ($products as $product) {
             $entityId = $product['id'];
             $soap[$count]['id'] = $entityId;
+            $soap[$count]['sku'] = $product['sku'];
             $results = $this->productAttributeLookup($this->sql);
             foreach($results as $attribute){
                 $dataType = $attribute['dataType'];
@@ -69,8 +70,52 @@ class ConsoleMagentoTable
 //            return $result;
             $count++;
         }
+//        var_dump($soap);
+//        die();
         return $soap;
 //        var_dump($soap);
+    }
+
+    public function fetchNewItems()
+    {
+        //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
+        $soapBundle = [];
+        $count = 0;
+        $select = $this->sql->select()->from('product')->columns([
+            'entityId'      =>  'entity_id',
+            'sku'           =>  'productid',
+            'productType'   =>  'product_type',
+            'website'       =>  'website',
+            'dateCreated'   =>  'creationdate',
+        ])->where(array('dataState'=>2));
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet->initialize($result);
+        }
+        $products = $resultSet->toArray();
+        foreach($products as $index => $value){
+            $entityId = $value['entityId'];
+            $attributes = $this->productAttributeLookup($this->sql);
+            $soapBundle[$count]['sku'] = $value['sku'];
+            foreach( $attributes as $key => $fields ){
+                $tableType = $fields['dataType'];
+                $attributeId = (int)$fields['attId'];
+                $attributeCode = $fields['attCode'];
+                $attributeValues = $this->productAttribute($this->sql, [$attributeCode=>'value'],['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2],$tableType)->toArray();
+                foreach($attributeValues as $keyValue => $valueOption){
+                    $soapBundle[$count]['website'] = $value['website'];
+                    $soapBundle[$count][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+                }
+            }
+            $count++;
+
+        }
+//        var_dump($soapBundle);
+//        die();
+
+        return $soapBundle;
     }
 
 } 

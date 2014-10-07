@@ -286,9 +286,11 @@ class MagentoTable {
         $filter = new Where();
         if( $sku ) {
             $filter->like('product.productid',$sku.'%');
+            $select->where($filter);
         }
-        $select->where($filter);
-        $select->limit((int)$limit);
+        if( $limit ) {
+            $select->limit((int)$limit);
+        }
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -310,8 +312,8 @@ class MagentoTable {
             $linker[$linkCount]['fullname']     = $linked['fname'] . ' ' . $linked['lname'];
             $linkCount++;
         }
-//        var_dump($linkedProducts);
-//        die();
+        var_dump($linkedProducts);
+        die();
         return $linker;
     }
 

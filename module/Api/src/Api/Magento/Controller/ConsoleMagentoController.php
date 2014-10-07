@@ -23,20 +23,29 @@ class ConsoleMagentoController  extends AbstractActionController{
         $type = $request->getParam('type');
         $cron = new CronTab();
         $console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
+        $mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
+        $soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
+
 //        system('php public/index.php soap call ' . $type . ' product');
         switch($type){
             case 'create':
-                echo 'new';
+                $newItems = $console->fetchNewItems();
+                $soap->soapAddProducts($newItems);
+                var_dump($newItems);
                 break;
             case 'image':
                 echo 'image';
                 break;
             case 'update':
-                echo 'update';
+//                $changedProducts = $console->changedProducts();
+                $categories = $mage->fetchLinkedProducts();
+//                $soap->soapChangedProducts($changedProducts);
+//                var_dump($changedProducts);
+                var_dump($categories);
                 break;
         }
 
-        $changedProducts = $console->changedProducts();
+
 //        $cron->append_cronjob('54 10 3 10 5 /app/clarity/test.php &> /dev/null');
 //        var_dump($cron)
 //echo 'haha';
