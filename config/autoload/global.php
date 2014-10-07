@@ -33,6 +33,10 @@ return array(
                         'route' => 'manageattributes',
                     ),
                     array(
+                        'label' => 'Category Management',
+                        'route' => 'managecategories',
+                    ),
+                    array(
                         'label' => 'Website Assignment',
                         'route' => 'webassignment',
                     ),

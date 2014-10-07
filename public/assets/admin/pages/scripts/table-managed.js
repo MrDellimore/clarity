@@ -85,6 +85,99 @@ var TableManaged = function () {
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     };
 
+    var categoryProducts = function () {
+
+        var table = $('#manageCats');
+
+        // begin first table
+        table.dataTable({
+
+
+            "processing": true,
+            "serverSide": true,
+
+            "ajax": {
+                "url": "/content/manage-categories",
+                "type": 'POST',
+                "data": function (d){
+//                    d.related = $("#accessoriesForm input[name*='linkedSku]']").serializeArray();
+
+                    d.category = $("#categoryProductsForm input[name='category']").serializeArray();
+                }
+            },
+
+            "columns": [
+                {
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td id='category_product'>"+
+                        "<label for='categoryProduct'></label>"+
+                        "<input type='checkbox' class='categoryProduct' id='categoryProduct' name='categoryProduct[][sku]' value=''/></td>"
+                },
+                { "data": "sku" },
+                { "data": "value" },
+//                { "data": "imagename" },
+                { "data": "manufacturer" }
+            ],
+
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "lengthMenu": "_MENU_ records",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }/*,
+             "columnDefs": [{  // set default column settings
+             'orderable': false,
+             'targets': [0]
+             }, {
+             "searchable": false,
+             "targets": [0]
+             }]
+             /*
+             "order": [
+             [1, "asc"]
+             ] */// set first column as a default sort by asc
+        });
+        var groupCatProducts = $('#categoryProds');
+
+        if ( !table.find('input.categoryProduct').prop('checked') ) {
+            $('.category_remove').attr('disabled',true);
+        }
+
+
+        $('#manageCats tbody').on('change', '.categoryProduct',function (e) {
+            var uncheckedLength = $('tbody input.categoryProduct:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.categoryProduct:checkbox(":checked")').length;
+            if( $(this).prop('checked') ) {
+                $('.category_remove').removeAttr('disabled');
+            }
+            if ( uncheckedLength == checkedLength ) {
+                $('.category_remove').attr('disabled', true);
+            }
+        });
+
+        groupCatProducts.on('change',function(){
+            $('.categoryProduct').prop('checked',true);
+            if( $(this).prop('checked') ) {
+                $('.category_remove').removeAttr('disabled');
+            }
+            if ( !$(this).prop('checked') ) {
+                $('.categoryProduct').removeAttr('checked');
+                $('.category_remove').attr('disabled', true);
+            }
+        });
+    };
+
     var attributesPopulate = function () {
 
         var table = $('#attributeTable');
@@ -1929,6 +2022,7 @@ var TableManaged = function () {
             updateMageRelatedProducts();
             newSkuImages();
             newProducts();
+            categoryProducts();
         }
 
     };

@@ -166,6 +166,17 @@ return array(
                     ),
                 ),
             ),
+            'managecategories'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'index',
+
+                    ),
+                ),
+            ),
 
             'manageattributes'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',
@@ -219,6 +230,7 @@ return array(
                                                  'Content\AJAXLoader\Controller\AjaxLoader'   => 'Content\AJAXLoader\Controller\AjaxLoaderController',
                                                  'Content\ManageAttributes\Controller\Attributes'   => 'Content\ManageAttributes\Controller\AttributesController',
                                                  'Content\AjaxLoader\Controller\AttributesAjax'   => 'Content\AjaxLoader\Controller\AttributesAjaxController',
+                                                 'Content\ManageCategories\Controller\CategoryManager'   => 'Content\ManageCategories\Controller\CategoryManagerController',
                                                 )
     ),
     'event_listener_construct' =>  array(
