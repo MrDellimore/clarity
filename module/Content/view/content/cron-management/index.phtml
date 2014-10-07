@@ -1,0 +1,130 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Managed Attributes <small>Create and edit attributes</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li class="btn-group">
+            </li>
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/">Home</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="/">Manage Content</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="/content/attributemanagement">Attribute Management</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+
+
+<!-- BEGIN PAGE CONTENT-->
+
+<br /><br /><br />
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box purple-plum">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Attribute Management
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse">
+                    </a>
+                    <a href="#portlet-config" data-toggle="modal" class="config">
+                    </a>
+                    <a href="javascript:;" class="reload">
+                    </a>
+                    <a href="javascript:;" class="remove">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--------------------Modals--------------------------->
+
+
+
+<!----            Attribute edit     -->
+<div class="modal fade" id="attributeModal" tabindex="-1" role="attributeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Attribute Form</h4>
+            </div>
+            <form id="attributeForm">
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="control-label col-md-3 attribute_name" for="frontend_label">Name:</label>
+
+                            <div class="col-md-9">
+                                <input type="text" id="frontend_label" name="frontend_label" value="">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="control-label col-md-3" for="type">Type:</label>
+                            <select name="type" class="form-control input-small type" data-placeholder="Select Type">
+                                <option value="0">Text</option>
+                                <option value="1">Textarea</option>
+                                <option value="3">Date</option>
+                                <option value="4">Select</option>
+                                <option value="5">Weight</option>
+                                <option value="6">Boolean</option>
+                            </select>
+                            <input type="hidden" class="attributeId" />
+                        </div>
+                    </div>
+
+                    <br /> <hr>
+
+
+                    <a class='btn green-haze options' data-toggle='modal' href='#optionModal'>Add/Edit Options <i class='fa fa-plus'></i></a>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn blue" value="Save Changes">
+
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+
+
+<!---------- Option Edit ------------>
+<div class="modal fade bs-modal-lg" id="optionModal" tabindex="-1" role="optionModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Options Form</h4>
+            </div>
+            <form id="optionsForm">
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

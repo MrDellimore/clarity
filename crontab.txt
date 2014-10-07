@@ -1,1 +1,2 @@
-* * * * * /app/clarity/test.php
+* * * 10 1 /bin/sh /app/clarity/test.php
+* * * 10 1 vagrant date >> /vagrant/tempdate

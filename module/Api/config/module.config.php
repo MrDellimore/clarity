@@ -146,12 +146,12 @@ return array(
             'routes' => array(
                 'soap-create-products' => array(
                     'options' => array(
-                        'route' => 'createProduct',
+                        'route' => 'soap call <type> product',
 //                        'route' => 'get happen [--verbose|-v] <doname>',
                         'defaults' => array(
 //                            '__NAMESPACE__' => 'Api\Magento\Controller',
                             'controller' => 'Api\Magento\Controller\ConsoleMagento',
-                            'action' => 'soapCreateProducts'
+                            'action' => 'soapProducts'
                         ),
                     ),
                 ),

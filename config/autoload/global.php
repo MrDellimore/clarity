@@ -36,6 +36,10 @@ return array(
                         'label' => 'Website Assignment',
                         'route' => 'webassignment',
                     ),
+                    array(
+                        'label' => 'ApiCron Management',
+                        'route' => 'apimanage',
+                    ),
                 ),
             ),
             array(

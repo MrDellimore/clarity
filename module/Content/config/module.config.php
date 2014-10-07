@@ -162,11 +162,20 @@ return array(
                     'defaults'  =>  array(
                         'controller'    => 'Content\WebAssignment\Controller\WebAssignment',
                         'action'        =>  'submitForm',
-
                     ),
                 ),
             ),
 
+            'apimanage'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/cron-management',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\CronManagement\Controller\CronManagement',
+                        'action'        =>  'index',
+                    ),
+                ),
+            ),
             'manageattributes'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',
                 'options'    => array(
@@ -174,7 +183,6 @@ return array(
                     'defaults'  =>  array(
                         'controller'    => 'Content\ManageAttributes\Controller\Attributes',
                         'action'        =>  'index',
-
                     ),
                 ),
             ),
@@ -219,6 +227,7 @@ return array(
                                                  'Content\AJAXLoader\Controller\AjaxLoader'   => 'Content\AJAXLoader\Controller\AjaxLoaderController',
                                                  'Content\ManageAttributes\Controller\Attributes'   => 'Content\ManageAttributes\Controller\AttributesController',
                                                  'Content\AjaxLoader\Controller\AttributesAjax'   => 'Content\AjaxLoader\Controller\AttributesAjaxController',
+                                                 'Content\CronManagement\Controller\CronManagement'   => 'Content\CronManagement\Controller\CronManagementController',
                                                 )
     ),
     'event_listener_construct' =>  array(

@@ -10,14 +10,34 @@ namespace Api\Magento\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Api\Magento\Model\Ssh2CronTabManager as CronTab;
+use Zend\Console\Request as ConsoleRequest;
 
 class ConsoleMagentoController  extends AbstractActionController{
 
-    public function soapCreateProductsAction()
+    public function soapProductsAction()
     {
+        $request = $this->getRequest();
+        if ( !$request instanceof ConsoleRequest ) {
+            throw new \RuntimeException('You can only use this action from a console!');
+        }
+        $type = $request->getParam('type');
         $cron = new CronTab();
-        $cron->append_cronjob('54 10 3 10 5 /app/clarity/test.php &> /dev/null');
+        $console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
+//        system('php public/index.php soap call ' . $type . ' product');
+        switch($type){
+            case 'create':
+                echo 'new';
+                break;
+            case 'image':
+                echo 'image';
+                break;
+            case 'update':
+                echo 'update';
+                break;
+        }
 
+        $changedProducts = $console->changedProducts();
+//        $cron->append_cronjob('54 10 3 10 5 /app/clarity/test.php &> /dev/null');
 //        var_dump($cron)
 //echo 'haha';
 //        $shell = 'ls';
