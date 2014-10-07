@@ -312,8 +312,8 @@ class MagentoTable {
             $linker[$linkCount]['fullname']     = $linked['fname'] . ' ' . $linked['lname'];
             $linkCount++;
         }
-        var_dump($linkedProducts);
-        die();
+//        var_dump($linkedProducts);
+//        die();
         return $linker;
     }
 
@@ -390,24 +390,26 @@ class MagentoTable {
     }
 
 
-    public function fetchChangedCategories($sku, $limit)
+    public function fetchChangedCategories($sku = null, $limit = null)
     {
         $soapCategories = [];
         $categoryCount = 0;
         $select = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id', 'sku'=>'productid']);
         $dataState = new Expression("c.entity_id=product.entity_id and c.dataState in(2,3)");
 
-        $select->join(['c'=>'productcategory'], $dataState,['categortyId'=>'category_id', 'dataState'=>'dataState']);
+        $select->join(['c'=>'productcategory'], $dataState,['categoryId'=>'category_id', 'dataState'=>'dataState']);
 
-        $select->join(['u'=>'users'], 'u.userid = c.changedby',['fname'=>'firstname','lname'=>'lastname']);
+        $select->join(['u'=>'users'], 'u.userid = c.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
 
         $select->join(['cat'=>'newcategory'] , 'cat.category_id = c.category_id', ['category'=>'title']);
         $filter = new Where();
         if( $sku ) {
             $filter->like('product.productid',$sku.'%');
+            $select->where($filter);
         }
-        $select->where($filter);
-        $select->limit((int)$limit);
+        if( $limit ){
+            $select->limit((int)$limit);
+        }
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -420,7 +422,7 @@ class MagentoTable {
         foreach ( $categories as $key => $category ) {
             $soapCategories[$categoryCount]['sku'] = $category['sku'];
             $soapCategories[$categoryCount]['id'] = $category['entityId'];
-            $soapCategories[$categoryCount]['categortyId'] = $category['categortyId'];
+            $soapCategories[$categoryCount]['categoryId'] = $category['categoryId'];
             $soapCategories[$categoryCount]['category'] = $category['category'];
             $soapCategories[$categoryCount]['dataState'] = $category['dataState'];
             $soapCategories[$categoryCount]['state'] = ( $category['dataState'] == 2 ) ? 'New' : "Delete";

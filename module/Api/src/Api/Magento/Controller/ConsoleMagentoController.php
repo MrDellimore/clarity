@@ -38,10 +38,12 @@ class ConsoleMagentoController  extends AbstractActionController{
                 break;
             case 'update':
 //                $changedProducts = $console->changedProducts();
-                $categories = $mage->fetchLinkedProducts();
+//                $linked = $mage->fetchLinkedProducts();
+//                $categories = $mage->fetchChangedCategories();
+//                $soap->soapCategoriesUpdate($categories);
+//                $soap->soapLinkedProducts($linked);
 //                $soap->soapChangedProducts($changedProducts);
-//                var_dump($changedProducts);
-                var_dump($categories);
+//                die();
                 break;
         }
 

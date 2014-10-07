@@ -195,8 +195,8 @@ class MageSoap extends AbstractSoap{
                 ];
             }
         }
-//        var_dump($packet);
-//        die();
+        var_dump($packet);
+        die();
         return $this->_soapCall($packet, Null, $skuCollection);
     }
 
