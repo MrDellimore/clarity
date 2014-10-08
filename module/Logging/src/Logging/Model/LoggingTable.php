@@ -204,7 +204,7 @@ class LoggingTable
             }
             $select->where($filter);
         }
-        $select->join(['u'=>'users'], 'mage_logs.pushedby=u.userid',['fname'=>'firstname','lname'=>'lastname']);
+        $select->join(['u'=>'users'], 'mage_logs.pushedby=u.userid',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
         $select->limit((int)$limit);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -224,7 +224,11 @@ class LoggingTable
             $response[$key]['sku'] = $fields['sku'];
             $response[$key]['resource'] = $fields['resource'];
             $response[$key]['speed'] = $fields['speed']. ' secs';
-            $response[$key]['fullname'] = $fields['fname'] . ' ' . $fields['lname'];
+            if ( is_null($fields['fname']) ) {
+                $response[$key]['fullname'] = 'Cron Job';
+            } else {
+                $response[$key]['fullname'] = $fields['fname'] . ' ' . $fields['lname'];
+            }
             $response[$key]['datepushed'] = date('m-j-Y',strtotime($fields['datepushed']));
             $response[$key]['status'] = $fields['status'];
         }

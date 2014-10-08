@@ -127,8 +127,8 @@ class MageSoap extends AbstractSoap{
             }
         }
 //        echo '<pre>';
-        var_dump($packet);
-        die();
+//        var_dump($packet);
+//        die();
         return $this->_soapCall($packet, null, $skuCollection);
     }
 
@@ -195,8 +195,8 @@ class MageSoap extends AbstractSoap{
                 ];
             }
         }
-        var_dump($packet);
-        die();
+//        var_dump($packet);
+//        die();
         return $this->_soapCall($packet, Null, $skuCollection);
     }
 
@@ -244,8 +244,8 @@ class MageSoap extends AbstractSoap{
             $attributes = [];
         }
 //        echo '<pre>';
-        var_dump($packet);
-        die();
+//        var_dump($packet);
+//        die();
         return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
     }
 
@@ -258,10 +258,14 @@ class MageSoap extends AbstractSoap{
         $skuCollection = [];
         $attributes = [];
         foreach( $newProds as $index => $fields ) {
-            $keys = array_keys($newProds[$index]);
-            $skuCollection[] = $sku = $newProds[$index]['sku'];
+            $keys = array_keys($fields);
+            $skuCollection[] = $sku = $fields['sku'];
+//            array_shift($keys);
             array_shift($keys);
-            array_shift($newProds[$index]);
+            array_shift($keys);
+//            array_shift($fields);
+            array_shift($fields);
+            array_shift($fields);
             foreach( $keys as $ind => $attFields ) {
                 $attributes[$attFields] = ($attFields == 'website') ? [$newProds[$index][$attFields]] : $newProds[$index][$attFields];
             }
@@ -269,8 +273,8 @@ class MageSoap extends AbstractSoap{
             $attributes = [];
         }
 //        echo '<pre>';
-    var_dump($packet);
-        die();
+//    var_dump($packet);
+//        die();
          return $this->_soapCall($packet, 'catalog_product.create', $skuCollection);
     }
 

@@ -34,7 +34,7 @@ class ConsoleMagentoController  extends AbstractActionController{
             '* * * * * php public/index.php soapCreateImages',
         ];
         $cron->append_cronjob($cronJobs);
-        $this->console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
+//        $this->console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
 //        $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
 //        $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
 
@@ -77,34 +77,70 @@ class ConsoleMagentoController  extends AbstractActionController{
 
         $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
 
-//        $newItems = $this->console->fetchNewItems();
         $newItems = $console->fetchNewItems();
-        echo 'ahah';
-        die();
-        echo 'ahah';
-        var_dump($newItems);
-
-
-//        $this->soap->soapAddProducts($newItems);
-
+        if( !empty($newItems) ) {
+            if ( $newProductResponse = $this->soap->soapAddProducts($newItems) ) {
+                var_dump($newProductResponse);
+                $newProducts = $this->mage->adjustProductKeys($newItems);
+                foreach( $newProductResponse as $index => $newResponse ) {
+                    foreach( $newResponse as $key => $newEntityId ) {
+                        if( $newEntityId ) {
+                            $this->mage->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function soapUpdateProductsAction()
     {
-
-        $console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
-
+        $this->console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
         $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
-
         $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
 
-
-        $changedProducts = $console->changedProducts();
+        $changedProducts = $this->console->changedProducts();
+//        var_dump($changedProducts );
+//        die();
         $linked = $this->mage->fetchLinkedProducts();
+//        var_dump($linked);
+//        die();
         $categories = $this->mage->fetchChangedCategories();
-//works        $this->soap->soapCategoriesUpdate($categories);
-//works        $this->soap->soapLinkedProducts($linked);
-//works        $this->soap->soapChangedProducts($changedProducts);
+
+        if( !empty($changedProducts) ) {
+            $changeResponse = $this->soap->soapChangedProducts($changedProducts);
+            foreach ( $changeResponse as $itemResponse ) {
+                foreach ( $itemResponse as $key => $soapResponse ) {
+                    if( $soapResponse ) {
+                        $this->console->updateToClean($changedProducts[$key]);
+                    }
+                }
+            }
+        }
+        if( !empty($linked) ) {
+           $linkedResponse = $this->soap->soapLinkedProducts($linked);
+            foreach ( $linkedResponse as $linkResponse ) {
+                foreach ( $linkResponse as $key => $soapResponse ) {
+                    if( $soapResponse ) {
+                        $this->mage->updateLinkedProductstoClean($linked[$key]);
+                    }
+                }
+            }
+        }
+        if( !empty($categories) ) {
+//            var_dump($categories);
+//            die();
+            $categoryResponse = $this->soap->soapCategoriesUpdate($categories);
+            var_dump($categoryResponse);
+//            die();
+            foreach ( $categoryResponse as $catResponse ) {
+                foreach ( $catResponse as $key => $soapResponse ) {
+                    if( $soapResponse ) {
+                        $this->mage->updateProductCategoriesToClean($categories[$key]);
+                    }
+                }
+            }
+        }
         //var_dump($changedProducts);
         die();
 
@@ -115,17 +151,24 @@ class ConsoleMagentoController  extends AbstractActionController{
         $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
         $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
         $newImages = $this->mage->fetchNewImages();
-        foreach( $newImages as $key => $img ) {
-            preg_match( '/<img(.*)src(.*)=(.*)"(.*)"/U' , $img['filename'], $match );
-            $newImages[$key]['filename'] = array_pop($match);
+        if( !empty($newImages) ) {
+            foreach( $newImages as $key => $img ) {
+                preg_match( '/<img(.*)src(.*)=(.*)"(.*)"/U' , $img['filename'], $match );
+                $newImages[$key]['filename'] = array_pop($match);
+            }
+            if ( $image = $this->soap->soapMedia($newImages) ) {
+//            if($image = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapMedia($images)) {
+                foreach($image as $key => $img){
+                    foreach($img as $ind => $imgName){
+                        if(preg_match('/jpg/',$imgName)){
+                            $this->mage->updateImagesToClean($newImages[$ind]);
+                        }
+                    }
+                }
+            }
         }
 //        var_dump($newImages);
 //        die();
-
-
-
-        $this->soap->soapMedia($newImages);
-        var_dump($newImages);
 
     }
 } 

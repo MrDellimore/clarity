@@ -309,6 +309,7 @@ class MagentoController extends AbstractActionController
         /*Make api call to delete and update Sku with new categories*/
         if( !empty($categorizedProd) ) {
             $categorySoapResponse = $this->getMagentoSoap()->soapCategoriesUpdate($categorizedProd);
+
             foreach ( $categorySoapResponse as $catResponse ) {
                 foreach ( $catResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
@@ -382,6 +383,7 @@ class MagentoController extends AbstractActionController
 
 //        $newProducts = $this->getMagentoTable()->fetchNewItems();
         if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
+            var_dump($newProductResponse);
             $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
             foreach( $newProductResponse as $index => $newResponse ) {
                 foreach( $newResponse as $key => $newEntityId ) {

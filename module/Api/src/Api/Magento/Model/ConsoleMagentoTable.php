@@ -23,10 +23,33 @@ class ConsoleMagentoTable
 {
     use Spex;
 
+    protected $stockData  = [
+        'qty'=>'qty',
+        'is_in_stock'=> 'is_in_stock',
+    ];
+
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
         $this->sql = new Sql($this->adapter);
+    }
+
+    public function updateToClean($changedProducts)
+    {
+        $results = $sku = '';
+        $entityId = $changedProducts['id'];
+        $sku = $changedProducts['sku'];
+        array_shift($changedProducts);
+        array_shift($changedProducts);
+        foreach ( $changedProducts as $attribute => $attValue) {
+            $lookup = $this->productAttributeLookup($this->sql, ['attribute_code'=>$attribute]);
+            $attributeId = $lookup[0]['attId'];
+            $dataType = $lookup[0]['dataType'];
+            $update = $this->sql->update('productattribute_'.$dataType)->set(['dataState'=>0])->where(['attribute_id'=>$attributeId, 'entity_id'=>$entityId]);
+            $prdAttStatement = $this->sql->prepareStatementForSqlObject($update);
+            $prdAttStatement->execute();
+        }
+        return true;
     }
 
     public function changedProducts()
@@ -85,19 +108,13 @@ class ConsoleMagentoTable
         $soapBundle = [];
         $count = 0;
         $select = $this->sql->select()->from('product')->columns([
-            'entityId'      =>  'entity_id',
+            'id'      =>  'entity_id',
             'sku'           =>  'productid',
             'productType'   =>  'product_type',
             'website'       =>  'website',
             'dateCreated'   =>  'creationdate',
         ])->where(array('dataState'=>2));
-
-
         $statement = $this->sql->prepareStatementForSqlObject($select);
-        var_dump($statement);
-        die();
-//        echo 'works';
-//        die();
         $result = $statement->execute();
         $resultSet = new ResultSet;
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
@@ -105,8 +122,9 @@ class ConsoleMagentoTable
         }
         $products = $resultSet->toArray();
         foreach($products as $index => $value){
-            $entityId = $value['entityId'];
+            $entityId = $value['id'];
             $attributes = $this->productAttributeLookup($this->sql);
+            $soapBundle[$count]['id'] = $value['id'];
             $soapBundle[$count]['sku'] = $value['sku'];
             foreach( $attributes as $key => $fields ){
                 $tableType = $fields['dataType'];
@@ -115,7 +133,22 @@ class ConsoleMagentoTable
                 $attributeValues = $this->productAttribute($this->sql, [$attributeCode=>'value'],['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2],$tableType)->toArray();
                 foreach($attributeValues as $keyValue => $valueOption){
                     $soapBundle[$count]['website'] = $value['website'];
-                    $soapBundle[$count][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+//                    $soapBundle[$count][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+                    if ( array_key_exists($attributeCode,$this->stockData) ) {
+                        $soapBundle[$count]['stock_data'][$attributeCode] = $valueOption[$attributeCode];
+                    } else {
+                        if( is_null($attributeValues[$keyValue][$attributeCode]) && $attributeCode ==  'status' ){
+                            $soapBundle[$count][$attributeCode] = 2;
+                        }
+                        if( isset($attributeValues[$keyValue][$attributeCode]) ){
+                            if ( $attributeCode ==  'status' ) {
+                                $soapBundle[$count][$attributeCode] = (int)$valueOption[$attributeCode];
+                            } else {
+                                $soapBundle[$count][$attributeCode] = $valueOption[$attributeCode];
+                            }
+                        }
+
+                    }
                 }
             }
             $count++;
