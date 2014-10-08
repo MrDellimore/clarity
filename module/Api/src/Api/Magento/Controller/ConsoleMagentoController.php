@@ -100,11 +100,7 @@ class ConsoleMagentoController  extends AbstractActionController{
         $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
 
         $changedProducts = $this->console->changedProducts();
-//        var_dump($changedProducts );
-//        die();
         $linked = $this->mage->fetchLinkedProducts();
-//        var_dump($linked);
-//        die();
         $categories = $this->mage->fetchChangedCategories();
 
         if( !empty($changedProducts) ) {
@@ -128,11 +124,7 @@ class ConsoleMagentoController  extends AbstractActionController{
             }
         }
         if( !empty($categories) ) {
-//            var_dump($categories);
-//            die();
             $categoryResponse = $this->soap->soapCategoriesUpdate($categories);
-            var_dump($categoryResponse);
-//            die();
             foreach ( $categoryResponse as $catResponse ) {
                 foreach ( $catResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
@@ -141,9 +133,6 @@ class ConsoleMagentoController  extends AbstractActionController{
                 }
             }
         }
-        //var_dump($changedProducts);
-        die();
-
     }
 
     public function soapCreateMediaAction()
@@ -151,6 +140,7 @@ class ConsoleMagentoController  extends AbstractActionController{
         $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
         $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
         $newImages = $this->mage->fetchNewImages();
+
         if( !empty($newImages) ) {
             foreach( $newImages as $key => $img ) {
                 preg_match( '/<img(.*)src(.*)=(.*)"(.*)"/U' , $img['filename'], $match );
@@ -167,8 +157,5 @@ class ConsoleMagentoController  extends AbstractActionController{
                 }
             }
         }
-//        var_dump($newImages);
-//        die();
-
     }
 } 

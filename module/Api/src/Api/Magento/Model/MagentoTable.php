@@ -453,7 +453,7 @@ class MagentoTable {
     public function updateToClean($changedProducts)
     {
         $results = $sku = '';
-var_dump($changedProducts);
+//var_dump($changedProducts);
         $entityId = $changedProducts['id'];
         array_shift($changedProducts);
         foreach ( $changedProducts as $attribute ) {

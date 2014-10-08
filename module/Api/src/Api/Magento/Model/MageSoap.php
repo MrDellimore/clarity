@@ -165,8 +165,8 @@ class MageSoap extends AbstractSoap{
                 ]
             ];
         }
-        var_dump($packet);
-        die();
+//        var_dump($packet);
+//        die();
         return $this->_soapCall($packet, 'catalog_product_attribute_media.create', $skuCollection);
     }
 
@@ -283,12 +283,15 @@ class MageSoap extends AbstractSoap{
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
+//        if( is_null($user) ) {
+//            $user = 'Console';
+//        }
 //        foreach( $Skus as $sku ){
             $fieldValueMap = array(
-                'sku'   =>  $Sku,
+                'sku'       =>  $Sku,
                 'resource'  =>  $resource,
-                 'speed'  =>  $speed,
-                'pushedby'   =>   $user,
+                'speed'     =>  $speed,
+                'pushedby'  =>   $user,
                 'status'    =>  $status,
             );
             $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,

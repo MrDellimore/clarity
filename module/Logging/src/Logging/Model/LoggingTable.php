@@ -206,6 +206,7 @@ class LoggingTable
         }
         $select->join(['u'=>'users'], 'mage_logs.pushedby=u.userid',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
         $select->limit((int)$limit);
+        $select->order('mage_logs.datepushed DESC');
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -225,7 +226,7 @@ class LoggingTable
             $response[$key]['resource'] = $fields['resource'];
             $response[$key]['speed'] = $fields['speed']. ' secs';
             if ( is_null($fields['fname']) ) {
-                $response[$key]['fullname'] = 'Cron Job';
+                $response[$key]['fullname'] = 'Console';
             } else {
                 $response[$key]['fullname'] = $fields['fname'] . ' ' . $fields['lname'];
             }
