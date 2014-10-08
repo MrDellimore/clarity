@@ -23,7 +23,7 @@ class Images {
 
     protected $label;
 
-    protected $default;
+    protected $default = "0";
 
     protected $disabled;
 

@@ -94,6 +94,7 @@ var FormFileUpload = function () {
                 var url = data.jqXHR.responseJSON.files[0].url;
                 var name = data.jqXHR.responseJSON.files[0].name;
 
+                var entityid = $("#generalForm input[name$='id]']").val();
                 var rowcount = $('#currentImages tr').length;
                 var position = rowcount;
                 rowcount--;
@@ -101,6 +102,7 @@ var FormFileUpload = function () {
                 //create string to append to table
                 var newImage = '<tr><td><img class="img-responsive" src="'+url+'" alt="'+name+'"></td>';
                 newImage += '<input type="hidden" name="imageGallery['+rowcount+'][filename]" value ="'+url+'">';
+                newImage += '<input type="hidden" name="imageGallery['+rowcount+'][entityid]" value ="'+entityid+'">';
                 newImage += '<td><input type="text" class="form-control" name="imageGallery['+rowcount+'][label]" value="'+name+'"></td>';
                 newImage += '<td><input type="text" class="form-control" name="imageGallery['+rowcount+'][position]" value="'+position+'"></td>';
                 newImage += '<td><input type="radio" name="imageGallery['+rowcount+'][default]" value="1" class="defaultRadio"></td>';

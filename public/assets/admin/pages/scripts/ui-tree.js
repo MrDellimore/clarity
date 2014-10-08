@@ -63,13 +63,16 @@ var UITree = function () {
                 getparent(wtf[i]);
             }
 
-//set input boxes
+//get entityid
+            var entityid = $("#generalForm input[name$='id]']").val();
+
             family = family.split(",");
             var inputString ='';
 
+//set input boxes
             for(i=0; i<family.length; i++){
                 inputString += '<input type="hidden" name = "categories['+i+'][id]" value ="'+ family[i] +'">';
-                inputString += '<input type="hidden" name = "categories['+i+'][entityid]" value ="">';
+                inputString += '<input type="hidden" name = "categories['+i+'][entityid]" value ="'+entityid+'">';
             }
 
             input = jQuery(inputString);

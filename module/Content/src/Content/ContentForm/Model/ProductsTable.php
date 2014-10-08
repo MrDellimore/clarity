@@ -151,12 +151,10 @@ class ProductsTable{
 
         //Fetch inBox
         $newAttibute = $this->fetchAttribute($entityid,'text','1633','inBox');
-       // die(print_r($newAttibute));
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch includesFree
         $newAttibute = $this->fetchAttribute($entityid,'text','1679','includesFree');
-
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch Short Description
@@ -173,11 +171,11 @@ class ProductsTable{
 
         //Fetch originalContent
         $newAttibute = $this->fetchAttribute($entityid,'int','1659','originalContent');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+        $result[array_keys($newAttibute)[0]]['option'] = current($newAttibute);
 
         //Fetch contentReviewed
         $newAttibute = $this->fetchAttribute($entityid,'int','1676','contentReviewed');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+        $result[array_keys($newAttibute)[0]]['option'] = current($newAttibute);
 
         //Fetch metaDescrition
         $newAttibute = $this->fetchAttribute($entityid,'text','105','metaDescription');
@@ -621,18 +619,17 @@ class ProductsTable{
         }
 
 //update Original Content
-        if(!(is_null($form->getOriginalContent()))) {
+        if(array_key_exists('option',$form->getOriginalContent())) {
             $property = 'original content';
-            $this->updateAttribute($form->getId(),$form->getOriginalContent(),'1659','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getOriginalContent(), $oldData->getOriginalContent(), /*$oldData->getManufacturer(),*/ $property);//,'1659','int');
+            $this->updateAttribute($form->getId(),$form->getOriginalContent()['option'],'1659','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getOriginalContent()['option'], $oldData->getOriginalContent()['option'], $property);
             $updateditems .= 'Original Content<br>';
         }
-
 //update Content Reviewed
-        if(!(is_null($form->getContentReviewed()))) {
+        if(array_key_exists('option',$form->getContentReviewed())) {
             $property = 'content reviewed';
-            $this->updateAttribute($form->getId(),$form->getContentReviewed(),'1676','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getContentReviewed(), $oldData->getContentReviewed(), /*$oldData->getManufacturer(),*/ $property);//,'1676','int');
+            $this->updateAttribute($form->getId(),$form->getContentReviewed()['option'],'1676','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getContentReviewed()['option'], $oldData->getContentReviewed()['option'], /*$oldData->getManufacturer(),*/ $property);//,'1676','int');
             $updateditems .= 'Content Reviewed<br>';
         }
 
@@ -680,17 +677,21 @@ class ProductsTable{
                 $result=$imageHandler->updateImage($value);
                 $updateditems .= $result;
             }
+            if(count($form->getImageGallery())>0){
+                $updateditems .= count($form->getImageGallery()) .' Images Updated';
+            }
         }
 
 //update accessories
         if(!(is_null($form->getAccessories()))) {
             $accessoryHandler = new AccessoryTable($this->adapter);
-            //todo Dirty entity is returning all products when access is added
 
             foreach($form->getAccessories() as  $value){
                 $accessoryHandler->updateAccessory($value);
             }
-            $updateditems .= count($form->getAccessories()) .' Accessories Updated';
+            if(count($form->getAccessories())>0){
+                $updateditems .= count($form->getAccessories()) .' Accessories Updated';
+            }
         }
 
 
@@ -740,7 +741,20 @@ class ProductsTable{
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getAperture()['option'], "",$property);
             $inserteditems .= 'Apeture<br>';
         }
-
+//Original Content
+        if(array_key_exists('option', $form->getOriginalContent())) {
+            $property = 'Original Content';
+            $this->insertAttribute($oldData->getId(),$form->getOriginalContent()['option'],'1659','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getOriginalContent()['option'], "",$property);
+            $inserteditems .= 'Original Content<br>';
+        }
+//Content Reviewed
+        if(array_key_exists('option', $form->getContentReviewed())) {
+            $property = 'Content Reviewed';
+            $this->insertAttribute($oldData->getId(),$form->getContentReviewed()['option'],'1676','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getContentReviewed()['option'], "",$property);
+            $inserteditems .= 'Content Reviewed<br>';
+        }
 
 //Create new Image
         if(!(is_null($form->getImageGallery()))) {
