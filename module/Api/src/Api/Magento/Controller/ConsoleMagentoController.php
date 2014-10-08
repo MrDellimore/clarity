@@ -31,6 +31,7 @@ class ConsoleMagentoController  extends AbstractActionController{
         $cronJobs = [
             '* * * * * php public/index.php soapCreateItems',
             '* * * * * php public/index.php soapUpdateItems',
+            '* * * * * php public/index.php soapCreateImages',
         ];
         $cron->append_cronjob($cronJobs);
         $this->console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
@@ -99,13 +100,32 @@ class ConsoleMagentoController  extends AbstractActionController{
 
 
         $changedProducts = $console->changedProducts();
-//        $linked = $this->mage->fetchLinkedProducts();
-//        $categories = $this->mage->fetchChangedCategories();
-//        $this->soap->soapCategoriesUpdate($categories);
-//        $this->soap->soapLinkedProducts($linked);
-//        $this->soap->soapChangedProducts($changedProducts);
-        var_dump($changedProducts);
+        $linked = $this->mage->fetchLinkedProducts();
+        $categories = $this->mage->fetchChangedCategories();
+//works        $this->soap->soapCategoriesUpdate($categories);
+//works        $this->soap->soapLinkedProducts($linked);
+//works        $this->soap->soapChangedProducts($changedProducts);
+        //var_dump($changedProducts);
         die();
+
+    }
+
+    public function soapCreateMediaAction()
+    {
+        $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
+        $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
+        $newImages = $this->mage->fetchNewImages();
+        foreach( $newImages as $key => $img ) {
+            preg_match( '/<img(.*)src(.*)=(.*)"(.*)"/U' , $img['filename'], $match );
+            $newImages[$key]['filename'] = array_pop($match);
+        }
+//        var_dump($newImages);
+//        die();
+
+
+
+        $this->soap->soapMedia($newImages);
+        var_dump($newImages);
 
     }
 } 

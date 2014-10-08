@@ -176,6 +176,17 @@ return array(
                         ),
                     ),
                 ),
+
+                'soap-create-images' => array(
+                    'options' => array(
+                        'route' => 'soapCreateImages',
+                        'defaults' => array(
+//                            '__NAMESPACE__' => 'Api\Magento\Controller',
+                            'controller' => 'Api\Magento\Controller\ConsoleMagento',
+                            'action' => 'soapCreateMedia'
+                        ),
+                    ),
+                ),
             )
         )
     ),

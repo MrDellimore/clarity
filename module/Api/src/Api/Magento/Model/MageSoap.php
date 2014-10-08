@@ -127,8 +127,8 @@ class MageSoap extends AbstractSoap{
             }
         }
 //        echo '<pre>';
-//        var_dump($packet);
-//        die();
+        var_dump($packet);
+        die();
         return $this->_soapCall($packet, null, $skuCollection);
     }
 
@@ -165,8 +165,8 @@ class MageSoap extends AbstractSoap{
                 ]
             ];
         }
-//        var_dump($packet);
-//        die();
+        var_dump($packet);
+        die();
         return $this->_soapCall($packet, 'catalog_product_attribute_media.create', $skuCollection);
     }
 
@@ -226,15 +226,17 @@ class MageSoap extends AbstractSoap{
     public function soapChangedProducts($changedProds)
     {
         $packet = [];
-        $attributeSet = $this->_getAttributeSet();
         $skuCollection = [];
         $attributes = [];
+        //var_dump($changedProds);
         foreach( $changedProds as $index => $fields ) {
-            $keys = array_keys($changedProds[$index]);
-            $skuCollection[] = $sku = $changedProds[$index]['sku'];
+            $keys = array_keys($fields);
+            $skuCollection[] = $sku = $fields['sku'];
             $entityID = $fields['id'];
             array_shift($keys);
-            array_shift($changedProds[$index]);
+            array_shift($keys);
+            array_shift($fields);
+            array_shift($fields);
             foreach( $keys as $ind => $attFields ) {
                 $attributes[$attFields] = ($attFields == 'website') ? [$changedProds[$index][$attFields]] : $changedProds[$index][$attFields];
             }

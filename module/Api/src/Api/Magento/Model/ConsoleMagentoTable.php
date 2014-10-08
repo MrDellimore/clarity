@@ -39,9 +39,9 @@ class ConsoleMagentoTable
         $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
         $select->where(array( 'dataState' => '1'));
 
-//        $statement = $this->sql->prepareStatementForSqlObject($select);
-        var_dump($this->sql->prepareStatementForSqlObject($select));
-        die();
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+//        var_dump($this->sql->prepareStatementForSqlObject($select));
+//        die();
         $result = $statement->execute();
         $resultSet = new ResultSet;
         if ($result instanceof ResultInterface && $result->isQueryResult()) {

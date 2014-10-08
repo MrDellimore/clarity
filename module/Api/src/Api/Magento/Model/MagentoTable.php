@@ -51,7 +51,7 @@ class MagentoTable {
         $this->sql = new Sql($this->adapter);
     }
 
-    public function fetchNewImages($sku,$limit)
+    public function fetchNewImages($sku = Null, $limit = Null)
     {
         $select = $this->sql->select()
                   ->from('productattribute_images')
@@ -70,9 +70,12 @@ class MagentoTable {
         if ( $sku ){
             $filter->like('product.sku',$sku.'%');
         }
+        if ( $limit ) {
+            $select->limit($limit);
+        }
         $filter->equalTo('productattribute_images.dataState',2);
-        $select->limit($limit);
         $select->where($filter);
+
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -88,12 +91,13 @@ class MagentoTable {
             $newImages[$soapCount]['position'] = $image['position'];
             $newImages[$soapCount]['sku'] = $image['sku'];
             $newImages[$soapCount]['label'] = $image['label'];
-            $newImages[$soapCount]['filename'] = "<img width='50' height='50' src='".$image['filename']."' />";
+            $newImages[$soapCount]['filename'] = '<img width="50" height="50" src="'.$image['filename'].'" />';
             $newImages[$soapCount]['creation'] = $image['creation'];
             $newImages[$soapCount]['fullname'] = $image['fname'] . ' ' . $image['lname'] ;
             $soapCount++;
         }
-
+//var_dump($newImages);
+//        die();
         return $newImages;
     }
 
