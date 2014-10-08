@@ -44,15 +44,15 @@ class Products {
 
     protected $cost;
 
-    protected $rebatePrice;
+    protected $rebatePrice = 0;
 
     protected $rebateStartEndDate;
 
-    protected $specialPrice;
+    protected $specialPrice = 0;
 
     protected $specialStartEndDate;
 
-    protected $mailInRebate;
+    protected $mailInRebate = 0;
 
     protected $mailInStartEndDate;
 
@@ -158,9 +158,9 @@ class Products {
 
     protected $website;
 
-    protected $contentReviewed = 0;
+    protected $contentReviewed = array();
 
-    protected $originalContent = 0;
+    protected $originalContent = array();
 
     protected $thumbnail;
 
@@ -401,7 +401,7 @@ class Products {
      */
     public function setContentReviewed($contentReviewed)
     {
-        $this->contentReviewed = $contentReviewed;
+            $this->contentReviewed = $contentReviewed;
     }
 
     /**

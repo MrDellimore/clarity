@@ -34,8 +34,36 @@ var ManageContent = function () {
 
             var goodData = [];
 
-           // var badIndex = new Array(crossSellDisplay_length]);
+            //set default checkbox values if not in form
+            var contentInForm = true;
+            var originalInForm = true;
+
             for(var i = 0; i < formData.length; i++) {
+                if(formData[i].name == 'contentReviewed[option]'){
+                    contentInForm = false;
+                }
+                if(formData[i].name == 'originalContent[option]'){
+                    originalInForm = false;
+                }
+            }
+
+            if(originalInForm){
+                formData.push({name: "originalContent[option]",value: "0"});
+            }
+            if(contentInForm){
+                formData.push({name: "contentReviewed[option]",value: "0"});
+            }
+
+
+
+
+            for(var i = 0; i < formData.length; i++) {
+                //set checkbox value from "on" to 1
+                if((formData[i].name == 'originalContent[option]' || formData[i].name == 'contentReviewed[option]') && formData[i].value =="on"){
+                    formData[i].value = '1';
+                }
+
+                //clean form
                 if(formData[i].name.slice(0,7) !== 'product' && formData[i].name !=='_wysihtml5_mode' && formData[i].name !=='acessoriesDisplay_length' && formData[i].name !=='crossSellDisplay_length' ){
                     //console.log(formData[i]);
                     goodData.push(formData[i]);
@@ -54,9 +82,9 @@ var ManageContent = function () {
                     //expty content div and display results
                     //$('#contentdiv').empty().append(data);
 
-                    // toastr.success(data);
+                    toastr.success(data);
 
-                    $('#contentdiv').empty().append(data);
+                    //$('#contentdiv').empty().append(data);
 
                     //console.log(data);
                 });
