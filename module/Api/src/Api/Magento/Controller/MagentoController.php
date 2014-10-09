@@ -383,7 +383,7 @@ class MagentoController extends AbstractActionController
 
 //        $newProducts = $this->getMagentoTable()->fetchNewItems();
         if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
-            var_dump($newProductResponse);
+//            var_dump($newProductResponse);
             $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
             foreach( $newProductResponse as $index => $newResponse ) {
                 foreach( $newResponse as $key => $newEntityId ) {
