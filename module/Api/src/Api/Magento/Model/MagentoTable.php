@@ -68,7 +68,7 @@ class MagentoTable {
         $select->join(['p'=>'product'], 'p.entity_id = productattribute_images.entity_id',['sku'=>'productid']);
         $filter = new Where;
         if ( $sku ){
-            $filter->like('product.sku',$sku.'%');
+            $filter->like('p.productid',$sku.'%');
         }
         $filter->equalTo('productattribute_images.dataState',2);
         $select->limit($limit);
