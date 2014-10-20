@@ -80,7 +80,7 @@ class ConsoleMagentoController  extends AbstractActionController{
         $newItems = $console->fetchNewItems();
         if( !empty($newItems) ) {
             if ( $newProductResponse = $this->soap->soapAddProducts($newItems) ) {
-                var_dump($newProductResponse);
+//                var_dump($newProductResponse);
                 $newProducts = $this->mage->adjustProductKeys($newItems);
                 foreach( $newProductResponse as $index => $newResponse ) {
                     foreach( $newResponse as $key => $newEntityId ) {
