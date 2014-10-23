@@ -177,6 +177,28 @@ return array(
                     ),
                 ),
             ),
+            'managecategories-remove'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories/remove',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'removeProductCategories',
+
+                    ),
+                ),
+            ),
+            'managecategories-search'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories/search',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'searchProducts',
+
+                    ),
+                ),
+            ),
 
             'manageattributes'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',

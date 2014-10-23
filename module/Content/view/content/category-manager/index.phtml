@@ -86,26 +86,32 @@
                                         <i class="fa fa-gift"></i>Products
                                     </div>
                                 </div>
-
-
-
                                 <div class="portlet-body">
-
-                                    <form id="categoryProductsForm">
-
-                                        <br />
-                                        <br />
-                                        <div class="table-toolbar">
-                                            <a class='btn green-haze' data-toggle='modal' href='#catProductModal'>Add New Category<i class='fa fa-plus'></i></a>
-                                            <button class="btn blue category_remove pull-right" type="submit">
+                                    <div class="table-toolbar">
+                                        <form id="addCatsForm" style="display:inline">
+                                            <a class='btn green-haze' data-toggle='modal' href='#catProductModalAdd'>
+                                                Add New Products <i class='fa fa-plus'></i>
+                                            </a>
+                                        </form>
+                                        <form id="moveCatsForm" style="display:inline">
+                                            <a class="btn red category_move " data-toggle='modal' href='#catProductModalMove'>
+                                                <i class="fa fa-location-arrow"></i>
+                                                    <span>Move Selected Products </span>
+                                            </a>
+                                        </form>
+                                        <form id="removeCatsForm" style="display:inline">
+                                            <a class="btn blue category_remove pull-right" data-toggle='modal' href='#catProductModalRemove'>
                                                 <i class="fa fa-times"></i>
-                                                        <span>
-                                                        Remove Selected Categories </span>
-                                            </button>
-                                        </div>
+                                                    <span>Remove Selected Products </span>
+                                            </a>
+                                        </form>
+                                    </div>
+                                    <form id="categoryProductsForm">
+                                        <br />
+                                        <br />
+
                                         <table class="table table-striped table-bordered table-hover" id="manageCats">
                                             <thead>
-
                                             <tr>
                                                 <th><input type="checkbox" id="categoryProds" name="categoryProds[]" value="" /></th>
                                                 <th>Sku</th>
@@ -114,8 +120,6 @@
                                             </tr>
                                             </thead>
                                         </table>
-
-
                                     </form>
                                 </div>
                             </div>
@@ -127,26 +131,123 @@
     </div>
 </div>
 
-        <!-- Start Modals -->
-            <div class="modal fade" id="catProductModal" tabindex="-1" role="catProductModal" aria-hidden="true">
+<!-- Start Modals -->
+        <!-- Start Modal for Adding Categories-->
+            <div class="modal fade" id="catProductModalAdd" tabindex="-1" role="catProductModalAdd" aria-hidden="true">
+                <div class="custom-modal-dialog modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Add Products Form</h4>
+                        </div>
+                        <form id="addProductsSubmitForm">
+
+                            <div class="modal-body">
+                                <div class="row addProductsRow">
+                                    <table class="table table-striped table-bordered table-hover" id="addProductsForm">
+                                        <thead>
+                                        <tr>
+                                            <th class="table-checkbox"><input type="checkbox" id="addAllProducts"  /></th>
+                                            <th>ID</th>
+                                            <th>Sku</th>
+                                            <th>Product Name</th>
+                                            <th>Manufacturer</th>
+                                            <th>Remove</th>
+                                            <!--<th class="hidden-480">Manufacturer</th>-->
+<!--                                            <th>Price</th>-->
+<!--                                            <th>Quantity</th>-->
+<!--                                            <th>Site</th>-->
+<!--                                            <th>Status</th>-->
+<!--                                            <th>Visibility</th>-->
+                                        </tr>
+
+                                        </thead>
+
+                                        <tbody>
+                                        <tr>
+                                        </tr>
+                                        </tbody>
+
+                                    </table>
+<!--                                    <div class="verticalLine">&nbsp;</div>-->
+
+
+<!--                                    <div class="col-md-6">-->
+<!--                                        <label class="control-label col-md-3 " for="frontend_label">Name:</label>-->
+<!---->
+<!--                                        <div class="col-md-9">-->
+<!--                                            <input type="text" id="frontend_label" name="frontend_label" value="">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                    <div class="col-md-6">-->
+<!--                                        <label class="control-label col-md-3" for="type">Type:</label>-->
+<!--                                        <select name="type" class="form-control input-small type" data-placeholder="Select Type">-->
+<!--                                            <option value="0">Text</option>-->
+<!--                                            <option value="1">Textarea</option>-->
+<!--                                            <option value="3">Date</option>-->
+<!--                                            <option value="4">Select</option>-->
+<!--                                            <option value="5">Weight</option>-->
+<!--                                            <option value="6">Boolean</option>-->
+<!--                                        </select>-->
+<!--                                        <input type="hidden" class="attributeId" />-->
+<!--                                    </div>-->
+                                </div>
+                                <div class="row addedProductsRow">
+<!--                                    <table style="border: thin solid #dddddd">-->
+                                    <table class="table table-striped table-bordered table-hover" id="addedProductsForm">
+                                        <thead>
+                                        <tr>
+                                            <!--                                        <th class="table-checkbox"><input type="checkbox" id="addAllProducts"  /></th>-->
+<!--                                            <th>position</th>-->
+                                            <th>ID</th>
+                                            <th>Sku</th>
+                                            <th>Product Name</th>
+                                            <th>Manufacturer</th>
+                                            <th>Remove</th>
+                                        </tr>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <br /> <hr>
+
+
+<!--                                <a class='btn green-haze options' data-toggle='modal' href='#optionModal'>Add/Edit Options <i class='fa fa-plus'></i></a>-->
+
+
+                            </div>
+                            <div class="modal-footer AddProductsManagement">
+                                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                                <form id="addProductsSubmitForm">
+                                    <input type="submit" class="btn blue" value="Save Changes" />
+                                </form>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- End Modal for Adding Categories-->
+            <!-- Start Modal for Moving Categories-->
+            <div class="modal fade" id="catProductModalMove" tabindex="-1" role="catProductModalMove" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">Attribute Form</h4>
+                            <h4 class="modal-title">Move Product Form</h4>
                         </div>
                         <form id="">
-
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label class="control-label col-md-3 " for="frontend_label">Name:</label>
-
                                         <div class="col-md-9">
                                             <input type="text" id="frontend_label" name="frontend_label" value="">
                                         </div>
                                     </div>
-
                                     <div class="col-md-6">
                                         <label class="control-label col-md-3" for="type">Type:</label>
                                         <select name="type" class="form-control input-small type" data-placeholder="Select Type">
@@ -160,18 +261,12 @@
                                         <input type="hidden" class="attributeId" />
                                     </div>
                                 </div>
-
-                                <br /> <hr>
-
-
-                                <a class='btn green-haze options' data-toggle='modal' href='#optionModal'>Add/Edit Options <i class='fa fa-plus'></i></a>
-
-
+<!--                                <br /> <hr>-->
+<!--                                <a class='btn green-haze options' data-toggle='modal' href='#optionModal'>Add/Edit Options <i class='fa fa-plus'></i></a>-->
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn default" data-dismiss="modal">Close</button>
                                 <input type="submit" class="btn blue" value="Save Changes">
-
                             </div>
                         </form>
                     </div>
@@ -179,5 +274,45 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
+            <!-- End Modal for Moving Categories-->
+            <!-- Start Modal for Removing Categories-->
+<!--            <div class="modal fade" id="catProductModalRemove" tabindex="-1" role="catProductModalRemove" aria-hidden="true">-->
+<!--                <div class="modal-dialog">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>-->
+<!--                            <h4 class="modal-title">Remove Category Form</h4>-->
+<!--                        </div>-->
+<!--                        <form id="">-->
+<!--                            <div class="modal-body">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-md-6">-->
+<!--                                        <label class="control-label col-md-3 " for="frontend_label">SKU:</label>-->
+<!--                                        <div class="col-md-9">-->
+<!--                                            <input type="text" id="productid" name="productid" value="" disabled />-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-6">-->
+<!--                                        <label class="control-label col-md-3" for="type">Name:</label>-->
+<!--                                        <div class="col-md-9">-->
+<!--                                            <input type="text" id="name" name="name" value="" disabled />-->
+<!--                                        </div>-->
+<!--                                        <input type="hidden" class="attributeId" />-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-sm-3 pull-right">Are you Sure?</div><br />-->
+<!--                            <div class="modal-footer">-->
+<!--                                <button type="button" class="btn default" data-dismiss="modal">No</button>-->
+<!--                                <input type="submit" class="btn blue" value="Yes">-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                    <!-- /.modal-content -->
+<!--                </div>-->
+<!--                <!-- /.modal-dialog -->
+<!--            </div>-->
+            <!-- End Modal for Removing Categories-->
+
 <!-- End Modals -->
 

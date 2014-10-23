@@ -32,3 +32,16 @@ this is a test
     /*border-color: transparent;*/
     /*color: #000;*/
 /*}*/
+
+.custom-modal-dialog {
+    width: 1500px !important;
+}
+.addProductsRow{
+    float: left;
+    width: 50%;
+    clear: none;
+}
+.addedProductsRow{
+    float: right;
+    width: 50%;
+}
