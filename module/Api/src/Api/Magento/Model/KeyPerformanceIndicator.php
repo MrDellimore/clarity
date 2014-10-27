@@ -149,13 +149,62 @@ class KeyPerformanceIndicator {
 //        $this->setProductCount($prodUpdateCount);
         $lookup = $this->productAttributeLookup( $this->sql );
         $attributeCount = 0;
+        $varcharCount = $intCount = $textCount = 0;
         foreach( $lookup as $attributes ) {
             $attributeId = $attributes['attId'];
             $dataType = $attributes['dataType'];
-            $attributeCount += $this->productAttribute($this->sql, [], ['attribute_id'=>$attributeId, 'dataState'=>1], $dataType)->count();
+            if ( $dataType == 'varchar' ) {
+                $varchar = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
+                $statement = $this->sql->prepareStatementForSqlObject($varchar);
+                $result = $statement->execute();
+                $resultSet = new ResultSet;
+                if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                    $resultSet->initialize($result);
+                }
+                $varcharCount += $resultSet->count();
+            }
+            if ( $dataType == 'int' ) {
+                $varchar = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
+                $statement = $this->sql->prepareStatementForSqlObject($varchar);
+                $result = $statement->execute();
+                $resultSet = new ResultSet;
+                if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                    $resultSet->initialize($result);
+                }
+                $intCount += $resultSet->count();
+            }
+            if ( $dataType == 'text' ) {
+                $varchar = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
+                $statement = $this->sql->prepareStatementForSqlObject($varchar);
+                $result = $statement->execute();
+                $resultSet = new ResultSet;
+                if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                    $resultSet->initialize($result);
+                }
+                $textCount += $resultSet->count();
+            }
+
+//            $int = $this->sql->select()->from('productattribute_int')->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
+//            $statement = $this->sql->prepareStatementForSqlObject($varchar);
+//            $result = $statement->execute();
+//            $resultSet = new ResultSet;
+//            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//                $resultSet->initialize($result);
+//            }
+//            $varcharCount = $resultSet->count();
+//            $select = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
+//            $statement = $this->sql->prepareStatementForSqlObject($select);
+//            $result = $statement->execute();
+//            $resultSet = new ResultSet;
+//            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//                $resultSet->initialize($result);
+//            }
+//            $attributeCount += $resultSet->count();
+//            $attributeCount += $this->productAttribute($this->sql, [], ['attribute_id'=>$attributeId, 'dataState'=>1], $dataType)->count();
         }
+        $attributeCount = $varcharCount + $intCount + $textCount;
+//        echo $varcharCount . ' ' . $intCount . ' ' . $textCount;
         $this->setProductAttributeCount($attributeCount);
-//        return $this->getProductCount() + $this->getProductAttributeCount();
         return $this->getProductAttributeCount();
     }
 

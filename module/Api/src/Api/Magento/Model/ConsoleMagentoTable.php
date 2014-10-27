@@ -36,7 +36,7 @@ class ConsoleMagentoTable
 
     public function updateToClean($changedProducts)
     {
-        $results = $sku = '';
+        $result = '';
         $entityId = $changedProducts['id'];
         $sku = $changedProducts['sku'];
         array_shift($changedProducts);
@@ -49,39 +49,86 @@ class ConsoleMagentoTable
             $prdAttStatement = $this->sql->prepareStatementForSqlObject($update);
             $prdAttStatement->execute();
         }
-        return true;
+        $result .= $entityId . ' with Produc ID ' . $sku . ' has been pushed to Mage Admin .<br />';
+        return $result;
     }
 
+    /**
+     * @Description: what this Method does is stack all attributes under it's correspoding entity id.
+     * @param $products
+     * @return array | $grouped
+     * */
+    public function groupProducts($products)
+    {
+        $count = 0;
+        $changedAttributes = $changedValue = $changedID = $changedSkus = $grouped = [];
+        foreach ( $products as $product ) {
+            $changedID[$count] = $product['id'];
+            $changedSkus[$count] = $product['sku'];
+            array_shift($product);
+            array_shift($product);
+            $keys = array_keys($product);
+            foreach ( $keys as $attCount => $attribute ) {
+                $changedAttributes[$count] = $attribute;
+                $changedValue[$count] = $product[$attribute];
+            }
+            $count++;
+        }
+        $uniqueIds = array_values(array_unique($changedID));
+        $count = 0;
+        foreach ($uniqueIds as $key => $uids) {
+            $grouped[$key]['id'] = $uids;
+            $grouped[$key]['sku'] = $changedSkus[$count];
+            foreach ( $changedID as $index => $ids ) {
+                if ( $uids == $ids ) {
+                        $grouped[$count][$changedAttributes[$index]] = $changedValue[$index];
+                    }
+
+                }
+            $count++;
+            }
+//        var_dump($grouped);
+//            die();
+        return $grouped;
+    }
+
+    /**
+     * @Description: This method grabs all product attributes with a dataState of 1(changed). For attribute qty it adds another array called stock_data.
+     * Be mindful of this particular attribute, otherwise it will not update in Mage. Please refer to http://www.magentocommerce.com/api/soap/catalog/catalogProduct/catalog_product.update.html
+     * for more details. Look at catalogInventoryStockItemUpdateEntity for further explanation.
+     * @param null
+     * @return array | $soap
+     */
     public function changedProducts()
     {
         $soap = [];
         $count = 0;
-        $select = $this->sql->select();
-        $select->from('product');
-        $select->columns(array('id' => 'entity_id', 'sku' => 'productid', 'ldate'=>'lastModifiedDate', 'item' => 'productid'));
-        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
-        $select->where(array( 'dataState' => '1'));
+//        $select = $this->sql->select()->from('product')->columns(array('id' => 'entity_id', 'sku' => 'productid', 'ldate'=>'lastModifiedDate'));
+//        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+//        $select->where(array( 'dataState' => 1));
 
-        $statement = $this->sql->prepareStatementForSqlObject($select);
+//        $statement = $this->sql->prepareStatementForSqlObject($select);
 //        var_dump($this->sql->prepareStatementForSqlObject($select));
 //        die();
-        $result = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
-        }
-        $products = $resultSet->toArray();
-//        var_dump($products);
-        foreach ($products as $product) {
-            $entityId = $product['id'];
-            $soap[$count]['id'] = $entityId;
-            $soap[$count]['sku'] = $product['sku'];
-            $results = $this->productAttributeLookup($this->sql);
-            foreach($results as $attribute){
+//        $result = $statement->execute();
+//        $resultSet = new ResultSet;
+//        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//            $resultSet->initialize($result);
+//        }
+//        $products = $resultSet->toArray();
+        $lookup = $this->productAttributeLookup($this->sql);
+//        foreach ($products as $product) {
+            foreach( $lookup as $attribute ) {
+//                $entityId = $product['id'];
+//                $soap[$count]['id'] = $entityId;
+//                $soap[$count]['sku'] = $product['sku'];
                 $dataType = $attribute['dataType'];
                 $attributeId = $attribute['attId'];
                 $attributeCode = $attribute['attCode'];
-                $selectAttributes = $this->sql->select()->from('productattribute_'.$dataType)->columns([$attributeCode=>'value'])->where(['attribute_id'=>$attributeId, 'entity_id'=>$entityId, 'dataState'=>1]);
+                $selectAttributes = $this->sql->select()->from('productattribute_'.$dataType)->columns([$attributeCode=>'value'])->where(['attribute_id'=>$attributeId, 'productattribute_'.$dataType.'.dataState'=>1]);
+                $selectAttributes->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'),Select::JOIN_LEFT);
+                $selectAttributes->join(array('p' => 'product'),'p.entity_id = productattribute_'.$dataType.'.entity_id' ,array('id' => 'entity_id', 'sku' => 'productid'),Select::JOIN_LEFT);
+//                    echo $selectAttributes->getSqlString(new \PDO($this->adapter)) . "\n";
                 $statementAttributes = $this->sql->prepareStatementForSqlObject($selectAttributes);
                 $resultAttributes = $statementAttributes->execute();
                 $resultSetAttributes = new ResultSet;
@@ -90,16 +137,23 @@ class ConsoleMagentoTable
                 }
                 $attributes = $resultSetAttributes->toArray();
                 foreach ($attributes as $atts ) {
-                    $soap[$count][$attributeCode] = $atts[$attributeCode];
+                    $soap[$count]['id'] = $atts['id'];
+                    $soap[$count]['sku'] = $atts['sku'];
+                    if( $attributeCode == 'qty' ) {
+                        $soap[$count]['stock_data'][$attributeCode] = $atts[$attributeCode];
+                    } else {
+                        $soap[$count][$attributeCode] = $atts[$attributeCode];
+                    }
+                    $count++;
                 }
+//                $count++;
             }
 //            return $result;
-            $count++;
-        }
+//            $count++;
+//        }
 //        var_dump($soap);
 //        die();
         return $soap;
-//        var_dump($soap);
     }
 
     public function fetchNewItems()
@@ -152,11 +206,9 @@ class ConsoleMagentoTable
                 }
             }
             $count++;
-
         }
 //        var_dump($soapBundle);
 //        die();
-
         return $soapBundle;
     }
 

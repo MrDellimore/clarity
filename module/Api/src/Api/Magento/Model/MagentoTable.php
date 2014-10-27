@@ -232,15 +232,13 @@ class MagentoTable {
         $select = $this->sql->select();
         $select->from('product');
         $select->columns(array('id' => 'entity_id', 'ldate'=>'lastModifiedDate', 'item' => 'productid'));
-        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'), Select::JOIN_LEFT);
         $filter = new Where;
         if( !empty($sku) ){
             $filter->like('product.productid',$sku.'%');
         }
-
         $select->where($filter);
         $select->limit((int)$limit);
-
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -256,7 +254,16 @@ class MagentoTable {
                 $dataType = $attributes['dataType'];
                 $attributeId = $attributes['attId'];
                 $attributeCode = $attributes['attCode'];// === 'name' ? 'title' : $attributes['attCode'];
-                $productAttributes = $this->productAttribute($this->sql,[$attributeCode=>'value', 'ldate'=>'lastModifiedDate'],['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1], $dataType)->toArray();
+                $selectAttribute = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1])->columns([$attributeCode=>'value', 'ldate'=>'lastModifiedDate']);
+                $selectAttribute->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'), Select::JOIN_LEFT);
+                $attStmt = $this->sql->prepareStatementForSqlObject($selectAttribute);
+                $attResult = $attStmt->execute();
+                $attSet = new ResultSet;
+                if ($attResult instanceof ResultInterface && $attResult->isQueryResult()) {
+                    $attSet->initialize($attResult);
+                }
+                $productAttributes = $attSet->toArray();
+//                $productAttributes = $this->productAttribute($this->sql,[$attributeCode=>'value', 'ldate'=>'lastModifiedDate'],['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1], $dataType)->toArray();
                 if(!empty($productAttributes )) {
                     $soapBundle[$soapCount]['count'] = $soapCount;
                     $soapBundle[$soapCount]['id'] = $product['id'];
@@ -718,37 +725,32 @@ class MagentoTable {
 //        Mage entity id exists already so update with max entity id.
         $sku = $newProducts['sku'];
         $oldEntityId = $newProducts['id'];
-//        echo 'old entity id ' . $oldEntityId. ' existing sku ' . $existingSku . ' <br />';
-//        var_dump($newProducts);
         array_shift($newProducts);
         array_shift($newProducts);
         array_shift($newProducts);
-
         $existingProduct = $this->sql->update('product')->set(['entity_id'=>$maxEntityId])->where(['productid'=>$existingSku]);
         $existingStmt = $this->sql->prepareStatementForSqlObject($existingProduct);
         $existingResponse = $existingStmt->execute();
 
         $lookupExistingVals = $this->productAttributeLookup( $this->sql );
-//        var_dump($lookupExistingVals);
         foreach ( $lookupExistingVals as $key => $attributes ){
             $attributeId = $attributes['attId'];
             $dataType = $attributes['dataType'];
-//            echo 'datatype ' . $dataType . ' <br />';
-//            echo 'for max entity id ' . $attributeId . ' ' . $dataType. ' ' ;
             $update = $this->sql->update('productattribute_'.$dataType)->set(['entity_id'=>$maxEntityId])->where(['attribute_id'=>$attributeId, 'entity_id'=>$existingEntityId]);
             $stmt = $this->sql->prepareStatementForSqlObject($update);
             $attributeResp = $stmt->execute();
         }
-//        echo 'for max entity id ' . $maxEntityId . ' existing entity id ' . $existingEntityId . ' <br />' ;
         $updateExistingCat = $this->sql->update('productcategory')->set(['entity_id'=>$maxEntityId])->where(['entity_id'=>$existingEntityId]);
         $updateStatement = $this->sql->prepareStatementForSqlObject($updateExistingCat);
         $updateResponse = $updateStatement->execute();
         $updateExistingLink = $this->sql->update('productlink')->set(['entity_id'=>$maxEntityId])->where(['entity_id'=>$existingEntityId]);
         $updateExistingStmt = $this->sql->prepareStatementForSqlObject($updateExistingLink);
         $existingResponse = $updateExistingStmt->execute();
+        $updateExistingImage = $this->sql->update('productattribute_images')->set(['entity_id'=>$maxEntityId])->where(['entity_id'=>$existingEntityId]);
+        $updateImageStatement = $this->sql->prepareStatementForSqlObject($updateExistingImage);
+        $updateResponse = $updateImageStatement->execute();
 
 //        Update entity id with mage entity id.
-//        echo 'mage entity id ' . $mageEntityId . ' sku ' . $sku . ' <br />' ;
         $updateNew = $this->sql->update('product')->set(['entity_id'=>$mageEntityId, 'dataState'=>0])->where(['productid'=>$sku]);
         $updateStmt = $this->sql->prepareStatementForSqlObject($updateNew);
         $newResponse = $updateStmt->execute();
@@ -756,8 +758,6 @@ class MagentoTable {
         foreach ( $lookupNewVals as $key => $attributes ){
             $attributeId = $attributes['attId'];
             $dataType = $attributes['dataType'];
-//            echo 'datatype ' . $dataType . ' <br />';
-//            echo 'mage entity id ' . $mageEntityId. 'attribute id ' . $attributeId . ' data type ' . $dataType . ' old entity id ' . $oldEntityId. '<br />';
             $update = $this->sql->update('productattribute_'.$dataType)->set(['entity_id'=>$mageEntityId ,'dataState'=>0])->where(['attribute_id'=>$attributeId, 'entity_id'=>$oldEntityId]);
             $stmt = $this->sql->prepareStatementForSqlObject($update);
             $attributeResp = $stmt->execute();
@@ -788,7 +788,6 @@ class MagentoTable {
         $id = $dupSet->toArray();
         if( count($id) ) {
             $existingSku = $id[0]['sku'];
-//            echo $existingSku. ' this is the existing sku. which means entity id from mage already exist here in spex.';
             $existingEntityId = $id[0]['entityId'];
             $entityId = $this->adapter->query('Select max(entity_id) from product', Adapter::QUERY_MODE_EXECUTE);
             foreach( $entityId as $eid ) {
@@ -805,25 +804,36 @@ class MagentoTable {
         }
         return $result;
     }
-    public function adjustProductKeys($newProducts)
+
+    /**
+     * Note: the param was $newProducts but I changed it to $products to make it useful for new products and changed products since they both
+     * require qty to be an assoc array under stock_data.
+     * @Description: This method de-inserts/takes away the stock_data key so that when attributes are being cleaned it cleans the elements of stock_data.
+     * Since stock_data doesn't actually exist as an attribute but qty does, it being attribute_id 1 in the int attributes table.
+     * @param $products
+     * @return array | $productSkus
+     **/
+    public function adjustProductKeys($products)
     {
-        $shiftedStockData = [];
-        foreach( $newProducts as $key => $acode ) {
+        $shiftedStockData = $productSkus = [];
+        foreach( $products as $key => $acode ) {
             foreach( $acode as $index => $aValues ) {
-                if( $index == 'stock_data' && isset($newProducts[$key]['stock_data'][current(array_keys($this->stockData))]) ) {
+                if( $index == 'stock_data' && isset($products[$key]['stock_data'][current(array_keys($this->stockData))]) ) {
 //                    TODO might have to add a foreach here for stock_data,since this will have multiple attributes within.
 //                    if( isset($newProducts[$key]['stock_data'][current(array_keys($this->stockData))]) ) {
-                        $oldEntityIds[$key][current(array_keys($this->stockData))] = $newProducts[$key]['stock_data'][current(array_keys($this->stockData))];
-                        $shiftedAttribute = array_shift($this->stockData);
-                        $shiftedStockData[$shiftedAttribute] =  $shiftedAttribute;
+                    $productSkus[$key][current(array_keys($this->stockData))] = $products[$key]['stock_data'][current(array_keys($this->stockData))];
+                    $shiftedAttribute = array_shift($this->stockData);
+                    $shiftedStockData[$shiftedAttribute] =  $shiftedAttribute;
 //                    }
                 } else {
-                    $oldEntityIds[$key][$index] = $newProducts[$key][$index];
+                    $productSkus[$key][$index] = $products[$key][$index];
                 }
             }
             $this->stockData = $shiftedStockData + $this->stockData;
         }
-        return $oldEntityIds;
+//        var_dump($productSkus);
+//        die();
+        return $productSkus;
     }
 
 }

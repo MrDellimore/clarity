@@ -40,7 +40,7 @@ trait Spex {
         } else {
             $select->where($where);
         }
-        $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
+        $select->join(array('u' => 'users'),'u.userid = productattribute_'.$tableType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'), Select::JOIN_LEFT);
 
 //        $select->quantifier(Select::QUANTIFIER_DISTINCT);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -58,7 +58,7 @@ trait Spex {
         $select = $sql->select();
         $select->from('productattribute_lookup');
 //        $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code']);
-        $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code', 'frontend'=>'frontend_label', 'dateModified'=>'lastModifiedDate','user'=>'changedby']);
+        $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','attCode'=>'attribute_code', 'frontend'=>'frontend_label', 'dateModified'=>'lastModifiedDate']);
         if(count($where)){
             $select->where($where);
         }

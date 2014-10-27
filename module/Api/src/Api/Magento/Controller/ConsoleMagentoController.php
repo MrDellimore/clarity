@@ -102,17 +102,18 @@ class ConsoleMagentoController  extends AbstractActionController{
         $this->console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
         $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
         $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
-
         $changedProducts = $this->console->changedProducts();
         $linked = $this->mage->fetchLinkedProducts();
         $categories = $this->mage->fetchChangedCategories();
-
+        $result = '';
         if( !empty($changedProducts) ) {
+            $changedProducts = $this->console->groupProducts($changedProducts);
             $changeResponse = $this->soap->soapChangedProducts($changedProducts);
+            $changedProducts = $this->mage->adjustProductKeys($changedProducts);
             foreach ( $changeResponse as $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $this->console->updateToClean($changedProducts[$key]);
+                        $result .= $this->console->updateToClean($changedProducts[$key]);
                     }
                 }
             }
@@ -122,7 +123,7 @@ class ConsoleMagentoController  extends AbstractActionController{
             foreach ( $linkedResponse as $linkResponse ) {
                 foreach ( $linkResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $this->mage->updateLinkedProductstoClean($linked[$key]);
+                        $result .= $this->mage->updateLinkedProductstoClean($linked[$key]);
                     }
                 }
             }
@@ -132,11 +133,15 @@ class ConsoleMagentoController  extends AbstractActionController{
             foreach ( $categoryResponse as $catResponse ) {
                 foreach ( $catResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $this->mage->updateProductCategoriesToClean($categories[$key]);
+                        $result .= $this->mage->updateProductCategoriesToClean($categories[$key]);
                     }
                 }
             }
         }
+        if( empty($result) ) {
+            $result = 'Nothing has been uploaded.';
+        }
+        echo $result;
     }
 
     public function soapCreateMediaAction()
@@ -144,7 +149,7 @@ class ConsoleMagentoController  extends AbstractActionController{
         $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
         $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
         $newImages = $this->mage->fetchNewImages();
-
+        $result = '';
         if( !empty($newImages) ) {
             foreach( $newImages as $key => $img ) {
                 preg_match( '/<img(.*)src(.*)=(.*)"(.*)"/U' , $img['filename'], $match );
@@ -155,10 +160,14 @@ class ConsoleMagentoController  extends AbstractActionController{
                 foreach($image as $key => $img){
                     foreach($img as $ind => $imgName){
                         if(preg_match('/jpg/',$imgName)){
-                            $this->mage->updateImagesToClean($newImages[$ind]);
+                            $result .= $this->mage->updateImagesToClean($newImages[$ind]);
                         }
                     }
                 }
+                if( empty($result) ) {
+                    $result = 'Nothing has been uploaded.';
+                }
+                echo $result;
             }
         }
     }

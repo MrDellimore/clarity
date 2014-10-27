@@ -20,7 +20,7 @@ var ManageContent = function () {
 //submitting content form
         $( "#generalForm" ).submit(function( event ) {
             event.preventDefault();
-
+console.log('haha');
             //forms from content page
             var generalForm = $('#generalForm').serializeArray();
             var imageForm = $('#imageForm').serializeArray();
