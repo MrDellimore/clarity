@@ -206,6 +206,7 @@ class LoggingTable
         }
         $select->join(['u'=>'users'], 'mage_logs.pushedby=u.userid',['fname'=>'firstname','lname'=>'lastname']);
         $select->limit((int)$limit);
+        $select->order('mage_logs.datepushed DESC');
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 

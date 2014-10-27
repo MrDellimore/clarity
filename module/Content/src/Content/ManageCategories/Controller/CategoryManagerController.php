@@ -110,8 +110,19 @@ class CategoryManagerController extends AbstractActionController
             $queryData = $request->getPost();
             $draw = $queryData['draw'];
             $sku = $queryData['search']['value'];
+            $manangedProducts = $queryData['checkedManagedProducts'];
             $limit = $queryData['length'];
-
+//            if( !empty($manangedProducts) ) {
+//                var_dump($manangedProducts);
+//            }
+            if( isset($manangedProducts) ){
+                var_dump($manangedProducts);
+echo 'hahaha';
+//                foreach( $category as $cat ){
+//                    $cat = $cat['value'];
+//                }
+            }
+die();
             if( $limit == '-1' ) {
                 $limit = 100;
             }

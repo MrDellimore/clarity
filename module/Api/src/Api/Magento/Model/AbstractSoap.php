@@ -27,7 +27,7 @@ abstract class AbstractSoap
     {
         $fetchAttributeList = [$this->_session, 'product_attribute_set.list'];
         $attributeSets = $this->_soapHandle->call('call', $fetchAttributeList);
-        $attributeSet = end($attributeSets);
+        $attributeSet = current($attributeSets);
         return $attributeSet;
     }
 

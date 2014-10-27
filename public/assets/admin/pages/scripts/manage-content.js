@@ -259,11 +259,12 @@ var ManageContent = function () {
                         var table = $('#kpiNewProducts').dataTable();
                         table.api().draw();
                         /*keeps count of new images*/
-                        $.post('/api-feeds/mage-new-image-count', function(data){
+                        $.post('/api-feeds/mage-new-product-count', function(data){
                             var count = jQuery.parseJSON(data);
                             if( typeof count.newProdCount == 'undefined') {
                                 count.newProdCount = 0;
                             }
+//                            console.log(count.newProdCount);
                             $('div#mage-new-products').empty().append(count.newProdCount);
                         });
                     });
