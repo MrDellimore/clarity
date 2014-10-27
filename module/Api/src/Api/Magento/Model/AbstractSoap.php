@@ -27,7 +27,12 @@ abstract class AbstractSoap
     {
         $fetchAttributeList = [$this->_session, 'product_attribute_set.list'];
         $attributeSets = $this->_soapHandle->call('call', $fetchAttributeList);
-        $attributeSet = end($attributeSets);
+        $attributeSet = '';
+        foreach ( $attributeSets as $aSets ) {
+            if ( (int) $aSets['set_id'] === 9 ) {
+                $attributeSet = $aSets['set_id'];
+            }
+        }
         return $attributeSet;
     }
 

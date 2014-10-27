@@ -70,7 +70,7 @@ class ConsoleMagentoController  extends AbstractActionController{
 
     public function soapCreateProductsAction()
     {
-
+        $result = '';
         $console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
 
         $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
@@ -85,10 +85,14 @@ class ConsoleMagentoController  extends AbstractActionController{
                 foreach( $newProductResponse as $index => $newResponse ) {
                     foreach( $newResponse as $key => $newEntityId ) {
                         if( $newEntityId ) {
-                            $this->mage->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                            $result .= $this->mage->updateNewItemsToClean($newProducts[$key], $newEntityId);
                         }
                     }
                 }
+                if( empty($result) ) {
+                    $result = 'Nothing has been uploaded.';
+                }
+                echo $result;
             }
         }
     }
