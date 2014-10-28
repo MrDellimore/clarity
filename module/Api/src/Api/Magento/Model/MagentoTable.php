@@ -166,7 +166,11 @@ class MagentoTable {
             $grouped[$key]['id'] = $uids;
             foreach ( $checkedIds as $index => $ids ) {
                 if ( $uids == $ids ) {
-                    $grouped[$key][$count]['property'] = $checkedProperties[$index];
+                    if ( in_array($checkedProperties[$index], $this->stockData) ) {
+                        $grouped[$key][$count]['property'] = ['stock_data'=>$checkedProperties[$index]];
+                    } else {
+                        $grouped[$key][$count]['property'] = $checkedProperties[$index];
+                    }
                     $grouped[$key][$count]['newValue'] = $checkedValues[$index];
                     $grouped[$key][$count]['sku'] = $checkedSku[$index];
                     $count++;
@@ -460,7 +464,6 @@ class MagentoTable {
     public function updateToClean($changedProducts)
     {
         $results = $sku = '';
-//var_dump($changedProducts);
         $entityId = $changedProducts['id'];
         array_shift($changedProducts);
         foreach ( $changedProducts as $attribute ) {
@@ -803,6 +806,45 @@ class MagentoTable {
             $result .= $newProducts['sku'] . ' has been added to Magento Admin with ID ' . $mageEntityId . '<br />';
         }
         return $result;
+    }
+
+    /**
+     * @Description: This method is different because of the checkboxes in the UI. I will probably have to refactor this
+     * at some point in the future. For now it works perfectly. I have an index property that contains a string or an array.
+     * The array is because of qty. Qty in Mage Soap API has to be in the stock_data array. In spex it doens't exist so I have
+     * to account for this. When sent through the wire I have to insert it but when updating attributes tables I have to
+     * take it out so that update statement for int table works properly.
+     * @param $products
+     * @return array | $productSkus
+     * */
+
+    public function adjustUpdateProductKeys($products)
+    {
+        $productSkus = [];
+        foreach ( $products as $key => $atts ) {
+            $productSkus[$key]['id'] = $atts['id'];
+            array_shift($atts);
+            foreach ($atts as $index => $properties ) {
+                $productSkus[$key][$index]['sku'] = $properties['sku'];
+                foreach ( $properties as $attributes => $value ) {
+                    if( $attributes == 'property' ) {
+                        if ( is_array($value) ) {
+                            foreach( $value as $mageAtt => $spexAtt ) {
+                                $productSkus[$key][$index]['property'] = $spexAtt;
+                            }
+                        } else {
+                            $productSkus[$key][$index]['property'] = $value;
+                        }
+                    }
+                    if ( $attributes == 'newValue' ) {
+                        $productSkus[$key][$index]['newValue'] = $value;
+                    }
+                }
+            }
+        }
+//        var_dump($productSkus);
+//        die();
+        return $productSkus;
     }
 
     /**

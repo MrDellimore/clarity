@@ -321,6 +321,8 @@ class MagentoController extends AbstractActionController
         /*Update Mage with up-to-date products*/
         if( !empty($groupedProd) ) {
             $itemSoapResponse = $this->getMagentoSoap()->soapUpdateProducts($groupedProd);
+            $groupedProd = $this->getMagentoTable()->adjustUpdateProductKeys($groupedProd);
+//            $itemSoapResponse = $this->getMagentoSoap()->soapChangedProducts($groupedProd);
             foreach ( $itemSoapResponse as $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {

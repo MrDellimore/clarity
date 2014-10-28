@@ -72,20 +72,48 @@ class MageSoap extends AbstractSoap{
         return date("H:i:s", $this->_totalTime);
     }
 
+    //    public function soapUpdateProducts($changedProducts)
+//    {
+//        $this->startStopwatch();
+//        $packet = $skuCollection = $atts = [];
+//        foreach( $changedProducts as $key => $attributes ) {
+//            $entityID = $attributes['id'];
+//            array_shift($attributes);
+//
+//            foreach( $attributes as $ind => $attrib ) {
+//                $skuCollection[] = $attrib['sku'];
+//                $newValue = $attrib['newValue'];
+//                foreach( $attrib as $prop => $attribute ) {
+//                    if ( $prop == 'property' ) {
+//                        $atts[$attribute] = $newValue;
+//                    }
+//                }
+//                $packet[$key] = array('entity_id' => $entityID, $atts);
+//            }
+//            $atts = [];
+//        }
+//        return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
+//    }
+
     public function soapUpdateProducts($changedProducts)
     {
         $this->startStopwatch();
-        $packet = $skuCollection = $atts = [];
+        $packet = $skuCollection = $atts = $realAttribute = [];
         foreach( $changedProducts as $key => $attributes ) {
             $entityID = $attributes['id'];
             array_shift($attributes);
-
             foreach( $attributes as $ind => $attrib ) {
                 $skuCollection[] = $attrib['sku'];
                 $newValue = $attrib['newValue'];
                 foreach( $attrib as $prop => $attribute ) {
                     if ( $prop == 'property' ) {
-                        $atts[$attribute] = $newValue;
+                        if ( is_array($attribute) ) {
+                            foreach ( $attribute as $mageAttribute => $realAttribute ) {
+                                $atts[$mageAttribute][$realAttribute] = $newValue;
+                            }
+                        } else {
+                            $atts[$attribute] = $newValue;
+                        }
                     }
                 }
                 $packet[$key] = array('entity_id' => $entityID, $atts);
@@ -200,28 +228,6 @@ class MageSoap extends AbstractSoap{
         return $this->_soapCall($packet, Null, $skuCollection);
     }
 
-//    public function soapUpdateProducts($changedProducts)
-//    {
-//        $this->startStopwatch();
-//        $packet = $skuCollection = $atts = [];
-//        foreach( $changedProducts as $key => $attributes ) {
-//            $entityID = $attributes['id'];
-//            array_shift($attributes);
-//
-//            foreach( $attributes as $ind => $attrib ) {
-//                $skuCollection[] = $attrib['sku'];
-//                $newValue = $attrib['newValue'];
-//                foreach( $attrib as $prop => $attribute ) {
-//                    if ( $prop == 'property' ) {
-//                        $atts[$attribute] = $newValue;
-//                    }
-//                }
-//                $packet[$key] = array('entity_id' => $entityID, $atts);
-//            }
-//            $atts = [];
-//        }
-//        return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
-//    }
 
     public function soapChangedProducts($changedProds)
     {
