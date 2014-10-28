@@ -2088,19 +2088,22 @@ var TableManaged = function () {
             "serverSide": true,
             "ajax": {
                 url: "/content/manage-categories/search",
-                type: 'POST',
-                "data": function (d){
-                    $('#filterCheckedProducts').on('change',function(){
-                        if ( $(this).prop('checked') ) {
-                            if( $("form#addCatsForm").has('div.addproductcats') ) {
-                            }
-                            d.checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
-                            console.log(d.checkedManagedProducts);
-                            return d.checkedManagedProducts;
-    //                aTable.api().draw();
-                        }
-                    });
-                }
+                type: 'POST'
+//                data: function (d){
+////                    d.checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
+////                    console.log(d.checkedManagedProducts );
+//
+//                    $('#filterCheckedProducts').on('change',function(){
+//                        if ( $(this).prop('checked') ) {
+//                            if( $("form#addCatsForm").has('div.addproductcats') ) {
+//                            }
+//                            d.checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
+//                            console.log(d.checkedManagedProducts );
+//                            return d.checkedManagedProducts;
+//    //                aTable.api().draw();
+//                        }
+//                    });
+//                }
             },
 //            "rowCallback": function( row, data ) {
 ////                console.log(data);
@@ -2161,6 +2164,59 @@ var TableManaged = function () {
                 }
             }});
 
+        $('#filterCheckedProducts').on('change',function(){
+            if ( $(this).prop('checked') ) {
+                var checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
+                console.log(checkedManagedProducts);
+                $.post('/content/manage-categories/search', checkedManagedProducts, function(data){
+//                    console.log(data);
+                    $('#addProductsForm tbody').empty();
+                    var content =  jQuery.parseJSON(data);
+                    $.each(content, function(i,o){
+                        if ( i == 'data' ) {
+                            $.each(o,function(dt, val){
+                                var inputs =
+                                    "<tr>" +
+                                        "<td><label for='addCategoryProduct'></label><input checked type='checkbox' name='addCategoryProduct[][sku]' class='addCategoryProduct' /></td>" +
+                                        "<td>"+val.id+"</td>" +
+                                        "<td>"+val.sku+"</td>" +
+                                        "<td>"+val.value+"</td>" +
+                                        "<td>"+val.manufacturer+"</td>" +
+                                    "</tr>";
+                                $('#addProductsForm tbody').append(inputs);
+                            });
+                        }
+                    });
+                });
+            }
+            if ( !$(this).prop('checked') ) {
+                var checkedProducts = $('#addProductsForm tbody .addCategoryProduct');
+                aTable.api().draw();
+                $("#addCatsForm input.ManageCategoryProduct").each(function(i){
+                    var name = $(this).attr('name');
+                    var re = new RegExp('id');
+                    if ( name.match(re) ) {
+                       var id = $(this).val();
+                        $('#addProductsForm tbody .addCategoryProduct').each(function(ind,e){
+//                            console.log(e);
+//                            var td = checkedProducts.closest('td');
+//                            var tdid = td.siblings('td.id');
+//                            console.log(td);
+//                            console.log(tdid);
+                            var targetid = $(this).closest('td').siblings('td.id').eq(ind).text();
+//                            var targetid = e.next().text();
+                            console.log(targetid, 'target');
+                            if ( targetid == id ) {
+                                console.log(targetid , id);
+                                $(this).prop('checked',true);
+                            }
+                        });
+                    }
+//                    console.log(name.match(re));
+//                    console.log(name);
+                });
+            }
+        });
 
 
         var addAllProducts = $('#addAllProducts');

@@ -106,27 +106,30 @@ class CategoryManagerController extends AbstractActionController
     public function searchProductsAction()
     {
         $request = $this->getRequest();
+        $manangedProducts = [];
         if($request -> isPost()){
             $queryData = $request->getPost();
             $draw = $queryData['draw'];
             $sku = $queryData['search']['value'];
-            $manangedProducts = $queryData['checkedManagedProducts'];
+            if( isset($queryData['manageProduct']) ) {
+                $manangedProducts = $queryData['manageProduct'];
+//                echo 'does this work';
+//                var_dump($queryData);
+            }
             $limit = $queryData['length'];
 //            if( !empty($manangedProducts) ) {
 //                var_dump($manangedProducts);
 //            }
-            if( isset($manangedProducts) ){
-//                var_dump($manangedProducts);
-//echo 'hahaha';
-//                foreach( $category as $cat ){
-//                    $cat = $cat['value'];
+//            if( isset($manangedProducts) ) {
+//                foreach($manangedProducts as $value){
+//                    echo 'hahahahahahaha'. $value['value'];
+////                    array_push($setIds,$value['value']);
 //                }
-            }
-//die();
+//            }
             if( $limit == '-1' ) {
                 $limit = 100;
             }
-            $products = $this->getCategoryTable()->populateProducts($sku, (int)$limit);
+            $products = $this->getCategoryTable()->populateProducts($sku, (int)$limit, $manangedProducts);
             $result = json_encode(
                 array(
                     'draw' => $draw,

@@ -95,10 +95,21 @@ class CategoryTable {
      * Description: method will populate a datatable so that users can add product to specific categories.
      * @param null $sku
      * @param $limit
+     * @param null $manangedProducts
+     * @internal param Null $managedProducts
      * @return array
-     * */
-    public function populateProducts($sku = Null , $limit )
+     */
+    public function populateProducts($sku = Null , $limit, $manangedProducts = Null )
     {
+
+//        if ( count($manangedProducts) ) {
+//            echo 'works';
+//            foreach( $manangedProducts as $mgdProds ){
+//                var_dump($mgdProds['value']);
+//                var_dump($mgdProds['name']);
+//            }
+//        }
+        $hiddenInputs = [];
         $select = $this->sql->select()->from('product')->columns(array('id' => 'entity_id', 'sku' => 'productid'));
         $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
         $images = new Expression('i.entity_id = product.entity_id and i.default = 1 and i.disabled = 0');
@@ -113,13 +124,27 @@ class CategoryTable {
         $producttable = new ProductsTable($this->adapter);
         $filter = new Where();
 
-        if ( $sku ) {
-            if(!($producttable->validateSku($sku))){
+        if ( $sku || count($manangedProducts) ) {
+//            var_dump(count($manangedProducts));
+            $cnt = 0;
+            foreach ( $manangedProducts as $key => $products ) {
+//                $hiddenInputs[$key]['checked'] = "<td class='sorting_1'><label for='addCategoryProduct'></label><input type='checkbox' checked name='addCategoryProduct[][sku]' class='addCategoryProduct'></td>";
+                $hiddenInputs[$cnt]['id'] = $products['id'] ;
+                $hiddenInputs[$cnt]['sku'] = $products['sku'] ;
+//                $hiddenInputs[$key]['name'] = "<td class=' value'>" . $products['id'] . "</td>";
+                $hiddenInputs[$cnt]['value'] = "<img width='100' height='100' src='". $products['img'] . "' /><br />" . $products['name'] ;
+                $hiddenInputs[$cnt]['manufacturer'] = $products['manufacturer'] ;
+                $cnt++;
+//                echo $products['id'] . ' ' . $products['img']. ' ' . $products['name']. ' ' . $products['manufacturer']. ' ' . $products['sku'] ."\n";
+            }
+//            var_dump($manangedProducts['value']);
+//            var_dump($manangedProducts['name']);
+//            echo 'haha';
+            if( !($producttable->validateSku($sku)) ){
                 $filter->like('product.productid', $sku.'%');
                 $filter->orPredicate(new Predicate\Like('t.value','%'.$sku.'%'));
                 $select->where($filter);
-            }
-            else{
+            } else {
                 $select->where(['product.productid' => $sku]);
             }
         }
@@ -144,7 +169,9 @@ class CategoryTable {
             $product[$count]['manufacturer'] = $prods['manufacturer'];
             $count++;
         }
-//var_dump($product);
+        if ( !empty($hiddenInputs) ) {
+            return $hiddenInputs;
+        }
         return $product;
     }
 
