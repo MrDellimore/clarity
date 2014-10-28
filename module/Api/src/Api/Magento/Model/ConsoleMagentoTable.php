@@ -49,7 +49,7 @@ class ConsoleMagentoTable
             $prdAttStatement = $this->sql->prepareStatementForSqlObject($update);
             $prdAttStatement->execute();
         }
-        $result .= $entityId . ' with Produc ID ' . $sku . ' has been pushed to Mage Admin .<br />';
+        $result .= $entityId . ' with Product ID ' . $sku . " has been pushed to Mage Admin .\n";
         return $result;
     }
 
