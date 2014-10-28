@@ -164,18 +164,20 @@ class KeyPerformanceIndicator {
                 $varcharCount += $resultSet->count();
             }
             if ( $dataType == 'int' ) {
-                $varchar = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
-                $statement = $this->sql->prepareStatementForSqlObject($varchar);
-                $result = $statement->execute();
-                $resultSet = new ResultSet;
-                if ($result instanceof ResultInterface && $result->isQueryResult()) {
-                    $resultSet->initialize($result);
+                if ( $attributeId != 1 ) {
+                    $int = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
+                    $statement = $this->sql->prepareStatementForSqlObject($int);
+                    $result = $statement->execute();
+                    $resultSet = new ResultSet;
+                    if ($result instanceof ResultInterface && $result->isQueryResult()) {
+                        $resultSet->initialize($result);
+                    }
+                    $intCount += $resultSet->count();
                 }
-                $intCount += $resultSet->count();
             }
             if ( $dataType == 'text' ) {
-                $varchar = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
-                $statement = $this->sql->prepareStatementForSqlObject($varchar);
+                $text = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId, 'dataState'=>1]);
+                $statement = $this->sql->prepareStatementForSqlObject($text);
                 $result = $statement->execute();
                 $resultSet = new ResultSet;
                 if ($result instanceof ResultInterface && $result->isQueryResult()) {

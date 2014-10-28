@@ -103,17 +103,13 @@ class ConsoleMagentoController  extends AbstractActionController{
         $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
         $this->soap = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap');
         $changedProducts = $this->console->changedProducts();
-//        var_dump($changedProducts);
         $linked = $this->mage->fetchLinkedProducts();
         $categories = $this->mage->fetchChangedCategories();
         $result = '';
         if( !empty($changedProducts) ) {
             $changedProducts = $this->console->groupProducts($changedProducts);
-//            echo "=====================\n";
-//            var_dump($changedProducts);
-//            die();
             $changeResponse = $this->soap->soapChangedProducts($changedProducts);
-            $changedProducts = $this->mage->adjustProductKeys($changedProducts);
+//            $changedProducts = $this->mage->adjustProductKeys($changedProducts);
             foreach ( $changeResponse as $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {

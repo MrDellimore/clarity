@@ -384,23 +384,27 @@ class MagentoController extends AbstractActionController
         }
 
 //        $newProducts = $this->getMagentoTable()->fetchNewItems();
-        if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
-//            var_dump($newProductResponse);
-            $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
-            foreach( $newProductResponse as $index => $newResponse ) {
-                foreach( $newResponse as $key => $newEntityId ) {
-                    if( $newEntityId ) {
-                        $result .= $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+        if ( !empty($newProducts) ) {
+            if( $newProductResponse = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapAddProducts($newProducts) ) {
+    //            var_dump($newProductResponse);
+                $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
+                foreach( $newProductResponse as $index => $newResponse ) {
+                    foreach( $newResponse as $key => $newEntityId ) {
+                        if( $newEntityId ) {
+                            $result .= $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                        }
                     }
                 }
+    //            if( $response ) {
+    ////                $url .= '?status=true';
+    //                return $this->redirect()->toRoute('apis');
+    //            }
             }
-//            if( $response ) {
-////                $url .= '?status=true';
-//                return $this->redirect()->toRoute('apis');
-//            }
+        } else {
+            $result = "Error";
         }
         if( empty($result) ) {
-            $result = 'Nothing has been uploaded.';
+            $result = 'Nothing has been uploaded';
         }
         $event    = $this->getEvent();
         $response = $event->getResponse();

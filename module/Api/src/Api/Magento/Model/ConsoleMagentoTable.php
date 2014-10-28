@@ -83,6 +83,7 @@ class ConsoleMagentoTable
                 if ( $uids == $ids ) {
                         $grouped[$count][$changedAttributes[$index]] = $changedValue[$index];
                     }
+//                $count++;
 
                 }
             $count++;
@@ -103,6 +104,7 @@ class ConsoleMagentoTable
     {
         $soap = [];
         $count = 0;
+        $selectAttributes = '';
 //        $select = $this->sql->select()->from('product')->columns(array('id' => 'entity_id', 'sku' => 'productid', 'ldate'=>'lastModifiedDate'));
 //        $select->join(array('u' => 'users'),'u.userid = product.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'));
 //        $select->where(array( 'dataState' => 1));
@@ -125,9 +127,11 @@ class ConsoleMagentoTable
                 $dataType = $attribute['dataType'];
                 $attributeId = $attribute['attId'];
                 $attributeCode = $attribute['attCode'];
-                $selectAttributes = $this->sql->select()->from('productattribute_'.$dataType)->columns([$attributeCode=>'value'])->where(['attribute_id'=>$attributeId, 'productattribute_'.$dataType.'.dataState'=>1]);
-                $selectAttributes->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'),Select::JOIN_LEFT);
-                $selectAttributes->join(array('p' => 'product'),'p.entity_id = productattribute_'.$dataType.'.entity_id' ,array('id' => 'entity_id', 'sku' => 'productid'),Select::JOIN_LEFT);
+                if( $attributeCode != 'qty' ) {
+                    $selectAttributes = $this->sql->select()->from('productattribute_'.$dataType)->columns([$attributeCode=>'value'])->where(['attribute_id'=>$attributeId, 'productattribute_'.$dataType.'.dataState'=>1]);
+                    $selectAttributes->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'),Select::JOIN_LEFT);
+                    $selectAttributes->join(array('p' => 'product'),'p.entity_id = productattribute_'.$dataType.'.entity_id' ,array('id' => 'entity_id', 'sku' => 'productid'),Select::JOIN_LEFT);
+                }
 //                    echo $selectAttributes->getSqlString(new \PDO($this->adapter)) . "\n";
                 $statementAttributes = $this->sql->prepareStatementForSqlObject($selectAttributes);
                 $resultAttributes = $statementAttributes->execute();
@@ -139,11 +143,13 @@ class ConsoleMagentoTable
                 foreach ($attributes as $atts ) {
                     $soap[$count]['id'] = $atts['id'];
                     $soap[$count]['sku'] = $atts['sku'];
-                    if( $attributeCode == 'qty' ) {
-                        $soap[$count]['stock_data'][$attributeCode] = $atts[$attributeCode];
-                    } else {
+//                    if( $attributeCode == 'qty' ) {
+//                        $soap[$count]['stock_data'][$attributeCode] = $atts[$attributeCode];
+//                    } else {
+//                    if ( $attributeCode != 'qty' ) {
                         $soap[$count][$attributeCode] = $atts[$attributeCode];
-                    }
+//                    }
+//                    }
                     $count++;
                 }
 //                $count++;
@@ -192,7 +198,7 @@ class ConsoleMagentoTable
                         $soapBundle[$count]['stock_data'][$attributeCode] = $valueOption[$attributeCode];
                     } else {
                         if( is_null($attributeValues[$keyValue][$attributeCode]) && $attributeCode ==  'status' ){
-                            $soapBundle[$count][$attributeCode] = 2;
+                            $soapBundle[$count][$attributeCode] = 0;
                         }
                         if( isset($attributeValues[$keyValue][$attributeCode]) ){
                             if ( $attributeCode ==  'status' ) {

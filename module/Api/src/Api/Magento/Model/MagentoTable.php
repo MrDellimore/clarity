@@ -166,11 +166,13 @@ class MagentoTable {
             $grouped[$key]['id'] = $uids;
             foreach ( $checkedIds as $index => $ids ) {
                 if ( $uids == $ids ) {
-                    if ( in_array($checkedProperties[$index], $this->stockData) ) {
-                        $grouped[$key][$count]['property'] = ['stock_data'=>$checkedProperties[$index]];
-                    } else {
+//                    if ( in_array($checkedProperties[$index], $this->stockData) ) {
+//                        $grouped[$key][$count]['property'] = ['stock_data'=>$checkedProperties[$index]];
+//                    } else {
+                    if ( $checkedProperties[$index] != 'qty' ) {
                         $grouped[$key][$count]['property'] = $checkedProperties[$index];
                     }
+//                    }
                     $grouped[$key][$count]['newValue'] = $checkedValues[$index];
                     $grouped[$key][$count]['sku'] = $checkedSku[$index];
                     $count++;
@@ -258,8 +260,10 @@ class MagentoTable {
                 $dataType = $attributes['dataType'];
                 $attributeId = $attributes['attId'];
                 $attributeCode = $attributes['attCode'];// === 'name' ? 'title' : $attributes['attCode'];
-                $selectAttribute = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1])->columns([$attributeCode=>'value', 'ldate'=>'lastModifiedDate']);
-                $selectAttribute->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'), Select::JOIN_LEFT);
+                if ( $attributeCode != 'qty' ) {
+                    $selectAttribute = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1])->columns([$attributeCode=>'value', 'ldate'=>'lastModifiedDate']);
+                    $selectAttribute->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'), Select::JOIN_LEFT);
+                }
                 $attStmt = $this->sql->prepareStatementForSqlObject($selectAttribute);
                 $attResult = $attStmt->execute();
                 $attSet = new ResultSet;
@@ -272,10 +276,14 @@ class MagentoTable {
                     $soapBundle[$soapCount]['count'] = $soapCount;
                     $soapBundle[$soapCount]['id'] = $product['id'];
                     $soapBundle[$soapCount]['item'] = $product['item'];
-                    $soapBundle[$soapCount]['oproperty'] = $attributeCode;
-                    $property = preg_match('(_)',$attributeCode) ? str_replace('_',' ',$attributeCode) : $attributeCode;
-                    $soapBundle[$soapCount]['property'] = ucfirst($property);
-                    $soapBundle[$soapCount]['newValue'] = $productAttributes[0][$attributeCode];
+                    if ( $attributeCode == 'qty' ) {
+                        continue;
+                    } else {
+                        $soapBundle[$soapCount]['oproperty'] = $attributeCode;
+                        $property = preg_match('(_)',$attributeCode) ? str_replace('_',' ',$attributeCode) : $attributeCode;
+                        $soapBundle[$soapCount]['property'] = ucfirst($property);
+                        $soapBundle[$soapCount]['newValue'] = $productAttributes[0][$attributeCode];
+                    }
                     $soapBundle[$soapCount]['ldate'] = $productAttributes[0]['ldate'];
                     $soapBundle[$soapCount]['fullName'] = $productAttributes[0]['fName']. ' ' . $productAttributes[0]['lName'];
                     $soapCount++;
@@ -506,7 +514,7 @@ class MagentoTable {
                     $attributeId = (int)$attribute['attId'];
                     $attributeCode = $attribute['attCode'];
                     $selectAtts = $this->sql->select()->from('productattribute_'. $tableType)
-                        ->columns([$attributeCode=>'value', 'attId'=>'attribute_id']);
+                                                      ->columns([$attributeCode=>'value', 'attId'=>'attribute_id']);
                     $filterAttributes = new Where;
                     $filterAttributes->equalTo('productattribute_'.$tableType.'.entity_id',$entityId);
                     $filterAttributes->equalTo('productattribute_'.$tableType.'.attribute_id',$attributeId);
@@ -527,14 +535,15 @@ class MagentoTable {
                             $soapBundle[$startCount]['stock_data'][$attributeCode] = $valueOption[$attributeCode];
                         } else {
                             if( is_null($attributeValues[$keyValue][$attributeCode]) && $attributeCode ==  'status' ){
-                                $soapBundle[$startCount][$attributeCode] = 2;
+                                $soapBundle[$startCount][$attributeCode] = 0;
                             }
-                            if( isset($attributeValues[$keyValue][$attributeCode]) ){
-                                if ( $attributeCode ==  'status' ) {
-                                    $soapBundle[$startCount][$attributeCode] = (int)$valueOption[$attributeCode];
-                                } else {
-                                    $soapBundle[$startCount][$attributeCode] = $valueOption[$attributeCode];
-                                }
+                            if( isset($attributeValues[$keyValue][$attributeCode]) ) {
+                                $soapBundle[$startCount][$attributeCode] = $attributeCode == 'status' ? (int)$valueOption[$attributeCode] : $valueOption[$attributeCode] ;
+//                                if ( $attributeCode ==  'status' ) {
+//                                    $soapBundle[$startCount][$attributeCode] = (int)$valueOption[$attributeCode];
+//                                } else {
+//                                    $soapBundle[$startCount][$attributeCode] = $valueOption[$attributeCode];
+//                                }
                             }
 
                         }
