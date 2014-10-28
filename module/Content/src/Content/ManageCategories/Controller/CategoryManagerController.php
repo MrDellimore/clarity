@@ -116,13 +116,13 @@ class CategoryManagerController extends AbstractActionController
 //                var_dump($manangedProducts);
 //            }
             if( isset($manangedProducts) ){
-                var_dump($manangedProducts);
-echo 'hahaha';
+//                var_dump($manangedProducts);
+//echo 'hahaha';
 //                foreach( $category as $cat ){
 //                    $cat = $cat['value'];
 //                }
             }
-die();
+//die();
             if( $limit == '-1' ) {
                 $limit = 100;
             }

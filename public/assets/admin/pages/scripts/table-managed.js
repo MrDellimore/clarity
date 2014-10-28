@@ -2091,15 +2091,15 @@ var TableManaged = function () {
                 type: 'POST',
                 "data": function (d){
                     $('#filterCheckedProducts').on('change',function(){
-                    if ( $(this).prop('checked') ) {
-                        if( $("form#addCatsForm").has('div.addproductcats') ) {
+                        if ( $(this).prop('checked') ) {
+                            if( $("form#addCatsForm").has('div.addproductcats') ) {
+                            }
+                            d.checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
+                            console.log(d.checkedManagedProducts);
+                            return d.checkedManagedProducts;
+    //                aTable.api().draw();
                         }
-                        d.checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
-                        console.log(d.checkedManagedProducts);
-                        return d.checkedManagedProducts;
-//                aTable.api().draw();
-                    }
-                });
+                    });
                 }
             },
 //            "rowCallback": function( row, data ) {
