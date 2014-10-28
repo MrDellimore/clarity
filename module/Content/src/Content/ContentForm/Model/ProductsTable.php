@@ -576,16 +576,29 @@ class ProductsTable{
             $updateditems .= 'Manufacturer<br>';
         }
 
-        //update visibility
-        /*
-         * todo needs to be handled like an option.
-         */
-//        if(!(is_null($form->getVisibility()))) {
-//            $property = 'visibility';
-//            $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
-//            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getVisibility(), $oldData->getVisibility(),/*$oldData->getManufacturer(),*/ $property);//,'526','int');
-//            $updateditems .= 'Visibility<br>';
-//        }
+//update visibility
+        if(array_key_exists('option', $form->getVisibility())) {
+            $property = 'Visibility';
+            $this->updateAttribute($form->getId(),$form->getVisibility()['option'],'526','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getVisibility()['option'], $oldData->getVisibility()['option'], $property);
+            $updateditems .= 'Visibility<br>';
+        }
+
+//update tax class
+        if(array_key_exists('option', $form->getTaxClass())) {
+            $property = 'Tax Class';
+            $this->updateAttribute($form->getId(),$form->getTaxClass()['option'],'274','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getTaxClass()['option'], $oldData->getTaxClass()['option'], $property);
+            $updateditems .= 'Tax Class<br>';
+        }
+
+//update Condition
+        if(array_key_exists('option', $form->getCondition())) {
+            $property = 'Condition';
+            $this->updateAttribute($form->getId(),$form->getCondition()['option'],'1655','int');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getCondition()['option'], $oldData->getCondition()['option'], $property);
+            $updateditems .= 'Condition<br>';
+        }
 
 //update stock status
         if(!(is_null($form->getStockStatus()))) {
@@ -712,6 +725,22 @@ class ProductsTable{
 
         $inserteditems= '';
         $startMessage = 'The following fields have been inserted :<br>';
+
+//Condition
+        if(array_key_exists('option', $form->getCondition())) {
+            $property = 'Condition';
+            $this->insertAttribute($oldData->getId(),$form->getCondition()['option'],'1655','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getCondition()['option'], "",$property);
+            $inserteditems .= 'Condition<br>';
+        }
+
+//Visibility
+        if(array_key_exists('option', $form->getVisibility())) {
+            $property = 'Visibility';
+            $this->insertAttribute($oldData->getId(),$form->getVisibility()['option'],'526','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getVisibility()['option'], "",$property);
+            $inserteditems .= 'Visibility<br>';
+        }
 
 //Zoom Focal Length
         if(array_key_exists('option', $form->getZoomFocalLength())) {

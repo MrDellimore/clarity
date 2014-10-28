@@ -28,11 +28,11 @@ class Products {
 
     protected $manufacturer = array();
 
-    protected $visibility;
+    protected $visibility = array();
 
-    protected $condition;
+    protected $condition = array();
 
-    protected $taxClass;
+    protected $taxClass = array();
 
     protected $stockStatus;
 

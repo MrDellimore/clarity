@@ -32,7 +32,7 @@ class EntityCompare {
         //compare arrays
         $dirt = $this->getDirty($oldData,$newData);
 
-        echo '<pre>';
+//        echo '<pre>';
 //        var_dump($dirt);
 //        var_dump($oldData['image_gallery']);
 //        var_dump($newData['image_gallery']);
