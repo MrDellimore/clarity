@@ -284,6 +284,53 @@ var ManageContent = function () {
                 };
             });
     };
+
+    var productManagementCategories = function () {
+            $( "#ProductModalAdd" ).submit(function( event ) {
+                event.preventDefault();
+                var form = $('#addCatsForm').serializeArray();
+                var catId = $("#categoryProductsForm input[name='category']").serializeArray();
+                var formData = form.concat(catId);
+                console.log(form, catId, formData);
+
+                var url = '/content/manage-categories/add-products';
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: formData
+                }).done(function( data ) {
+                        toastr.success(data);
+//                        console.log(data);
+
+//                        $('#skuNewProducts').prop('checked',false);
+//                        var table = $('#kpiNewProducts').dataTable();
+//                        table.api().draw();
+//                        /*keeps count of new images*/
+//                        $.post('/api-feeds/mage-new-product-count', function(data){
+//                            var count = jQuery.parseJSON(data);
+//                            if( typeof count.newProdCount == 'undefined') {
+//                                count.newProdCount = 0;
+//                            }
+////                            console.log(count.newProdCount);
+//                            $('div#mage-new-products').empty().append(count.newProdCount);
+//                        });
+                    });
+
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-full-width",
+                    "showDuration": "2000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+            });
+    };
 //submitting website form
     return {
         //main function to initiate the module
@@ -294,6 +341,7 @@ var ManageContent = function () {
             mageSkuHandle();
             mageImageHandle();
             mageNewProductHandle();
+            productManagementCategories();
         }
     };
 

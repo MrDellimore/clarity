@@ -199,6 +199,17 @@ return array(
                     ),
                 ),
             ),
+            'managecategories-add-submit'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories/add-products',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'addProductsSubmit',
+
+                    ),
+                ),
+            ),
 
             'manageattributes'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',

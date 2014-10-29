@@ -60,7 +60,7 @@ class CategoryTable {
         $images = new Expression('i.entity_id = product.entity_id and i.default = 1 and i.disabled = 0');
         $intTable = new Expression('man.entity_id = product.entity_id and man.attribute_id = 1641');
         $manufacturer = new Expression('opt.option_id = man.value and opt.attribute_id = 1641');
-        $select->join(['c'=>'productcategory'],$cat, ['cateroty_id'=>'category_id']);
+        $select->join(['c'=>'productcategory'],$cat, ['catid'=>'catid','cateroty_id'=>'category_id']);
         $select->join(['v'=>'productattribute_varchar'],$name, ['value'=>'value'], Select::JOIN_LEFT);
         $select->join(['i'=>'productattribute_images'],$images, ['domain'=>'domain', 'filename'=>'filename'], Select::JOIN_LEFT);
         $select->join(['man'=>'productattribute_int'],$intTable, ['optionId'=>'value'], Select::JOIN_LEFT);
@@ -79,6 +79,7 @@ class CategoryTable {
         }
         $categoryProducts = $resultSet->toArray();
         foreach ( $categoryProducts as $prods ) {
+            $category[$count]['catid'] = $prods['catid'];
             $category[$count]['sku'] = $prods['sku'];
             $category[$count]['value'] = "<img src='".$prods['domain'].$prods['filename']."' width='100' height='100' /> <br />". $prods['value'];
 //            $category[$count]['imagename'] = "<img src='".$prods['domain'].$prods['filename']."' width='50' height='50' />";
@@ -99,7 +100,7 @@ class CategoryTable {
      * @internal param Null $managedProducts
      * @return array
      */
-    public function populateProducts($sku = Null , $limit, $manangedProducts = Null )
+    public function populateProducts($sku = Null , $limit, $manangedProducts = Null , $cat = Null)
     {
 
 //        if ( count($manangedProducts) ) {
@@ -115,11 +116,13 @@ class CategoryTable {
         $images = new Expression('i.entity_id = product.entity_id and i.default = 1 and i.disabled = 0');
         $intTable = new Expression('man.entity_id = product.entity_id and man.attribute_id = 1641');
         $manufacturer = new Expression('opt.option_id = man.value and opt.attribute_id = 1641');
-
+//        $category = new Expression('pc.category_id != '. $cat . ' and (pc.dataState != 3 or pc.dataState != 2)');
+//        $select->join(array('pc' => 'productcategory'), $category ,[], Select::JOIN_LEFT);
         $select->join(array('t' => 'productattribute_varchar'), $titleJoin,array('name' => 'value'), Select::JOIN_LEFT);
         $select->join(['i'=>'productattribute_images'],$images, ['domain'=>'domain', 'filename'=>'filename'], Select::JOIN_LEFT);
         $select->join(['man'=>'productattribute_int'],$intTable, ['optionId'=>'value'], Select::JOIN_LEFT);
         $select->join(['opt'=>'productattribute_option'],$manufacturer, ['manufacturer'=>'value'], Select::JOIN_LEFT);
+//        $select->quantifier(Select::QUANTIFIER_DISTINCT);
 
         $producttable = new ProductsTable($this->adapter);
         $filter = new Where();
@@ -184,27 +187,64 @@ class CategoryTable {
      * @param $user
      * @return string
      * */
-    public function removeCats($sku, $catId, $user)
+    public function removeProducts($sku, $catId, $catPk, $user)
     {
         $results = '';
-        $selectId = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id'])->where(['productid'=>$sku]);
-        $statement = $this->sql->prepareStatementForSqlObject($selectId);
-        $result = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
-        }
-        $prdEntity = $resultSet->toArray();
+//        $selectId = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id'])->where(['productid'=>$sku]);
+//        $statement = $this->sql->prepareStatementForSqlObject($selectId);
+//        $result = $statement->execute();
+//        $resultSet = new ResultSet;
+//        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//            $resultSet->initialize($result);
+//        }
+//        $prdEntity = $resultSet->toArray();
         $updateCat = $this->sql->update('productcategory')
                   ->set(['dataState'=>3,'changedby'=>$user])
                   ->where([
-                        'category_id'=> $catId,
-                        'entity_id'=> (int)$prdEntity[0]['entityId']
+                          'catid'   =>  $catPk,
+//                        'category_id'=> $catId,
+//                        'entity_id'=> (int)$prdEntity[0]['entityId']
             ]);
         $statement = $this->sql->prepareStatementForSqlObject($updateCat);
         $statement->execute();
         $results .= $sku . ' has been removed from category.';
         return $results;
+    }
+
+    /**
+     * @Description: This method will add/insert to the productcategory table new products or entity ids.
+     * @param $products
+     * @param $category
+     * @param $user
+     * @return string $result
+     * */
+    public function addProducts($products, $category, $user)
+    {
+        $res = $response = '';
+        foreach ( $products as $product ) {
+//            $select = $this->sql->select()->from('productcategory')->where(['entity_id'=>$product['id'], 'category_id'=>$category]);
+//            $statement = $this->sql->prepareStatementForSqlObject($select);
+//            $result = $statement->execute();
+//            $resultSet = new ResultSet;
+//            if ($result instanceof ResultInterface && $result->isQueryResult()) {
+//                $resultSet->initialize($result);
+//            }
+//            $cat = $resultSet->toArray();
+//            $response = !empty($cat);
+//            if ( !count($resultSet->toArray()) ) {
+                $insertCat = $this->sql->insert()->into('productcategory')
+                                                ->columns(['entity_id','category_id','dataState','changedby'])
+                                                ->values(['entity_id'=>$product['id'], 'category_id'=>$category, 'dataState'=>2,'changedby'=>$user]);
+                $statement = $this->sql->prepareStatementForSqlObject($insertCat);
+                $statement->execute();
+                $res .= "SKU: " . $product['sku'] . " for Category ID " . $category . " has been added.<br />";
+//            }
+//            if ( $response ) {
+//                $res = "";
+//        }
+        }
+
+        return $res;
     }
 
 } 

@@ -89,7 +89,7 @@ class CategoryManagerController extends AbstractActionController
             foreach ($checkedProducts as $managedCategories ) {
                 ksort($managedCategories);
                 foreach ( $managedCategories as $key => $product ) {
-                    $results .= $this->getCategoryTable()->removeCats($product['sku'], (int)$product['cat_id'], (int)$userLogin['userid']);
+                    $results .= $this->getCategoryTable()->removeProducts($product['sku'], (int)$product['cat_id'], (int)$product['catid'], (int)$userLogin['userid']);
                 }
             }
             $result = json_encode(
@@ -105,16 +105,28 @@ class CategoryManagerController extends AbstractActionController
 
     public function searchProductsAction()
     {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
         $request = $this->getRequest();
+        $cat = '';
         $manangedProducts = [];
         if($request -> isPost()){
             $queryData = $request->getPost();
+            $category = $queryData['category'];
             $draw = $queryData['draw'];
             $sku = $queryData['search']['value'];
             if( isset($queryData['manageProduct']) ) {
                 $manangedProducts = $queryData['manageProduct'];
 //                echo 'does this work';
 //                var_dump($queryData);
+            }
+            if( isset($category) ){
+                foreach( $category as $cat ) {
+                    $cat = $cat['value'];
+                }
             }
             $limit = $queryData['length'];
 //            if( !empty($manangedProducts) ) {
@@ -129,7 +141,7 @@ class CategoryManagerController extends AbstractActionController
             if( $limit == '-1' ) {
                 $limit = 100;
             }
-            $products = $this->getCategoryTable()->populateProducts($sku, (int)$limit, $manangedProducts);
+            $products = $this->getCategoryTable()->populateProducts($sku, (int)$limit, $manangedProducts);//, (int) $cat);
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -140,6 +152,27 @@ class CategoryManagerController extends AbstractActionController
             $event    = $this->getEvent();
             $response = $event->getResponse();
             $response->setContent($result);
+            return $response;
+        }
+    }
+
+    public function addProductsSubmitAction()
+    {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
+        $request = $this->getRequest();
+        if($request -> isPost()){
+            $categoryData = $request->getPost();
+            $results = $this->getCategoryTable()->addProducts($categoryData['manageProduct'], $categoryData['category'], (int)$userLogin['userid']);
+            if($results == ''){
+                $results = 'No changes to sku made.';
+            }
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($results);
             return $response;
         }
     }
