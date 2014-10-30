@@ -234,6 +234,13 @@ class CategoryTable {
         return $res;
     }
 
+    /**
+     * @Description: This method will move x number of products from one category to another. When it movies it, it changes the current category id to a dataState of 3
+     * while it makes the new category id a dataState of 2.
+     * @param $categoryData
+     * @param $user
+     * @return string
+     * */
     public function moveProducts($categoryData, $user)
     {
         $result = '';
