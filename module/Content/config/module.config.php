@@ -210,6 +210,17 @@ return array(
                     ),
                 ),
             ),
+            'managecategories-move'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories/move-products',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'moveProductsSubmit',
+
+                    ),
+                ),
+            ),
 
             'manageattributes'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',

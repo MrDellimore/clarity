@@ -285,7 +285,7 @@ var ManageContent = function () {
             });
     };
 
-    var productManagementCategories = function () {
+    var CategoriesAddProducts = function () {
             $( "#ProductModalAdd" ).submit(function( event ) {
                 event.preventDefault();
                 var form = $('#addCatsForm').serializeArray();
@@ -331,6 +331,35 @@ var ManageContent = function () {
                 };
             });
     };
+
+    var CategoriesMoveProducts = function () {
+            $( "#ProductModalMove" ).submit(function( event ) {
+                event.preventDefault();
+                var form = $('#moveCatsForm').serializeArray();
+                var url = '/content/manage-categories/move-products';
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: form
+                }).done(function( data ) {
+                        toastr.success(data);
+                    });
+
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-full-width",
+                    "showDuration": "2000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+            });
+    };
 //submitting website form
     return {
         //main function to initiate the module
@@ -341,7 +370,8 @@ var ManageContent = function () {
             mageSkuHandle();
             mageImageHandle();
             mageNewProductHandle();
-            productManagementCategories();
+            CategoriesAddProducts();
+            CategoriesMoveProducts();
         }
     };
 

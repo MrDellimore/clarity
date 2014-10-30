@@ -1916,7 +1916,11 @@ var TableManaged = function () {
                 "url": "/content/manage-categories",
                 "type": 'POST',
                 "data": function (d){
+//                    $("#categoryProductsForm input[name='category']").on('change',function(){
+//                        d.category = $("#categoryProductsForm input[name='category']").serializeArray();
+//                    });
 //                    d.related = $("#accessoriesForm input[name*='linkedSku]']").serializeArray();
+//                    var cat = $("#categoryProductsForm input[name='category']").val();
                     d.category = $("#categoryProductsForm input[name='category']").serializeArray();
                 }
             },
@@ -1970,6 +1974,22 @@ var TableManaged = function () {
              [1, "asc"]
              ] */// set first column as a default sort by asc
         });
+//        $('div#cat_manage_tree > ul > li > ul > li > ul > li').css('background-color','#ff0000');
+//        $('div#cat_manage_tree > ul > li > ul > li > ul > li').on('change', function(){
+//            console.log($(this).attr('id'));
+//        });
+
+//        $("#categoryProductsForm input[name='category']").on('change',function() {
+//            var category = {
+//                'cat' : $(this).val()
+//            };
+//            console.log($(this).val());
+//            $.post('/content/manage-categories',category,function(data){
+//                console.log(data);
+//                table.api().append(data);
+//            });
+//        });
+
         var groupCatProducts = $('#categoryProds');
 
         if ( !table.find('input.categoryProduct').prop('checked') ) {
@@ -2022,26 +2042,33 @@ var TableManaged = function () {
             var checkedLength = $('tbody input.categoryProduct:checkbox(":checked")').length;
             var manageCategory = $(this);
             var sku = manageCategory.closest('td').siblings('td.sku').text();
-            var catid = manageCategory.closest('td').siblings('td.catid').text();
+            var pk = manageCategory.closest('td').siblings('td.catid').text();
             var catId = $('input[name=category]').val();
             var position = manageCategory.closest('tr').index();
 
             var hiddenSku = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][sku]", 'class':'ManageCategory', 'value':sku});
-            var hiddenCatId = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][cat_id]", 'class':'ManageCategory', 'value':catId});
-            var hiddenCatID = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][catid]", 'class':'ManageCategory', 'value':catid});
+            var hiddenOldCatId = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][oldcatid]", 'class':'ManageCategory', 'value':catId});
+            var hiddenPK = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][pk]", 'class':'ManageCategory', 'value':pk});
 
             if( manageCategory.prop('checked') ) {
                 manageCategory.attr('checked',true);
                 $('.category_remove, .category_move').removeAttr('disabled');
                 hiddenSku.appendTo('form#removeCatsForm');
-                hiddenCatId.appendTo('form#removeCatsForm');
-                hiddenCatID.appendTo('form#removeCatsForm');
+                hiddenOldCatId.appendTo('form#removeCatsForm');
+                hiddenPK.appendTo('form#removeCatsForm');
+                hiddenSku.clone().appendTo("form#moveCatsForm");
+                hiddenOldCatId.clone().appendTo("form#moveCatsForm");
+                hiddenPK.clone().appendTo("form#moveCatsForm");
             }
             if( !$(this).prop('checked') ) {
                 $(this).attr('checked',false);
                 $("form#removeCatsForm input[name='manageCategory["+ position +"][sku]']").remove();
-                $("form#removeCatsForm input[name='manageCategory["+ position +"][cat_id]']").remove();
+                $("form#removeCatsForm input[name='manageCategory["+ position +"][oldcatid]']").remove();
                 $("form#removeCatsForm input[name='manageCategory["+ position +"][catid]']").remove();
+
+                $("form#moveCatsForm input[name='manageCategory["+ position +"][sku]']").remove();
+                $("form#moveCatsForm input[name='manageCategory["+ position +"][oldcatid]']").remove();
+                $("form#moveCatsForm input[name='manageCategory["+ position +"][catid]']").remove();
             }
 //            console.log(uncheckedLength , checkedLength);
             if( uncheckedLength < checkedLength ) {
@@ -2059,6 +2086,7 @@ var TableManaged = function () {
             var manageCategory = $('#manageCats tbody .categoryProduct');
             if( !$(this).prop('checked') ) {
                 $("form#removeCatsForm input.ManageCategory").remove();
+                $("form#moveCatsForm input.ManageCategory").remove();
             }
             /*Cache cat id for products*/
             var catId = $('input[name=category]').val();
@@ -2071,16 +2099,19 @@ var TableManaged = function () {
                         .siblings('td.sku')
                         .eq(i)
                         .text();
-                    var catid = manageCategory.closest('td')
+                    var pk = manageCategory.closest('td')
                         .siblings('td.catid')
                         .eq(i)
                         .text();
                     var hiddenSku = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][sku]',class:  'ManageCategory',value: sku});
-                    var hiddenCatId = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][cat_id]',class:  'ManageCategory',value: catId});
-                    var hiddenCatID = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][catid]',class:  'ManageCategory',value: catid});
+                    var hiddenOldCatId = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][oldcatid]',class:  'ManageCategory',value: catId});
+                    var hiddenPK = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][pk]',class:  'ManageCategory',value: pk});
                     hiddenSku.appendTo('form#removeCatsForm');
-                    hiddenCatId.appendTo('form#removeCatsForm');
-                    hiddenCatID.appendTo('form#removeCatsForm');
+                    hiddenOldCatId.appendTo('form#removeCatsForm');
+                    hiddenPK.appendTo('form#removeCatsForm');
+                    hiddenOldCatId.clone().appendTo("form#moveCatsForm");
+                    hiddenSku.clone().appendTo("form#moveCatsForm");
+                    hiddenPK.clone().appendTo("form#moveCatsForm");
                 });
             }
             $('.categoryProduct').prop('checked',true);
@@ -2104,32 +2135,9 @@ var TableManaged = function () {
                 url: "/content/manage-categories/search",
                 type: 'POST',
                 "data": function (d){
-//                    d.related = $("#accessoriesForm input[name*='linkedSku]']").serializeArray();
                     d.category = $("#categoryProductsForm input[name='category']").serializeArray();
                 }
-//                data: function (d){
-////                    d.checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
-////                    console.log(d.checkedManagedProducts );
-//
-//                    $('#filterCheckedProducts').on('change',function(){
-//                        if ( $(this).prop('checked') ) {
-//                            if( $("form#addCatsForm").has('div.addproductcats') ) {
-//                            }
-//                            d.checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
-//                            console.log(d.checkedManagedProducts );
-//                            return d.checkedManagedProducts;
-//    //                aTable.api().draw();
-//                        }
-//                    });
-//                }
             },
-//            "rowCallback": function( row, data ) {
-////                console.log(data);
-////                console.log(row);
-//                if ( $.inArray(data.id, selected) !== -1 ) {
-//                    $(row).addClass('selected');
-//                }
-//            },
             "columns": [
                 {
                     "orderable":    false,
@@ -2207,7 +2215,6 @@ var TableManaged = function () {
 
             if ( filterCheckedProducts.prop('checked') ) {
                 var checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
-//                console.log(checkedManagedProducts);
                 $.post('/content/manage-categories/search', checkedManagedProducts, function(data){
 //                    console.log(data);
                     $('#addProductsForm tbody').empty();
@@ -2230,28 +2237,29 @@ var TableManaged = function () {
                 });
             }
             if ( !filterCheckedProducts.prop('checked') ) {
+                $("#addCatsForm input.ManageCategoryProduct").remove();
                 aTable.api().draw();
-                var checkedProducts = $('#addProductsForm tbody input.addCategoryProduct');
-//                var addProductsCats = $('#addProductsForm tbody .addCategoryProduct');
-                $("#addCatsForm input.ManageCategoryProduct").each(function(i){
-                    var name = $(this).attr('name');
-                    var re = new RegExp('id');
-                    if ( name.match(re) ) {
-                       var id = $(this).val();
-                        checkedProducts.each(function(ind,e){
-                            var targetid = checkedProducts.closest('td').siblings('td.id').eq(ind).text();
-                            console.log(targetid, ind, 'target');
-                            if ( targetid == id ) {
-                                checkedProducts.closest('td').siblings('td.sorting_1').addClass('checker');
-                                console.log(targetid , id);
-                                checkedProducts.closest('td').siblings('td.checker').prop('checked',true);
-//                                checkedProducts.attr('checked',"checked");
-                            }
-                        });
-                    }
-//                    console.log(name.match(re));
-//                    console.log(name);
-                });
+//                $.post('/content/manage-categories/search',{},function(data){
+//                    console.log(data);
+//                });
+//                var checkedProducts = $('#addProductsForm tbody input.addCategoryProduct');
+//                $("#addCatsForm input.ManageCategoryProduct").each(function(i){
+//                    var name = $(this).attr('name');
+//                    var re = new RegExp('id');
+//                    if ( name.match(re) ) {
+//                       var id = $(this).val();
+//                        checkedProducts.each(function(ind,e){
+//                            var targetid = checkedProducts.closest('td').siblings('td.id').eq(ind).text();
+//                            console.log(targetid, ind, 'target');
+//                            if ( targetid == id ) {
+//                                checkedProducts.closest('td').siblings('td.sorting_1').addClass('checker');
+//                                console.log(targetid , id);
+//                                checkedProducts.closest('td').siblings('td.checker').prop('checked',true);
+////                                checkedProducts.attr('checked',"checked");
+//                            }
+//                        });
+//                    }
+//                });
 
             }
         });

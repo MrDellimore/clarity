@@ -29,22 +29,24 @@ class CategoryTable {
         $this->adapter = $adapter;
         $this->sql = new Sql($this->adapter);
     }
-//use spex;
-//select productid, v.value, i.domain, i.filename, o.value from product p
-//inner join productcategory g
-//on g.entity_id=p.entity_id and g.category_id = 3
-//left join productattribute_varchar v
-//on p.entity_id = v.entity_id and v.attribute_id = 96
-//left join productattribute_images i
-//on i.entity_id = p.entity_id and i.default = 1 and i.disabled = 0
-//left join productattribute_int iman
-//on iman.entity_id = p.entity_id and iman.attribute_id = 102
-//left join productattribute_option o
-//on o.option_id = iman.value and o.attribute_id = 102
-//limit 10;
+
     /**
-     * Description: Queries product table and left joins productcategory, varchar, imges, and (int,option) for manufacturer.
+     * @Description: Queries product table and left joins productcategory, varchar, imges, and (int,option) for manufacturer.
      * Filters by category id first with an inner join and then filters by sku and/or limit.
+     * Sql:
+     * use spex;
+     * select productid, v.value, i.domain, i.filename, o.value from product p
+     * inner join productcategory g
+     * on g.entity_id=p.entity_id and g.category_id = 47
+     * left join productattribute_varchar v
+     * on p.entity_id = v.entity_id and v.attribute_id = 96
+     * left join productattribute_images i
+     * on i.entity_id = p.entity_id and i.default = 1 and i.disabled = 0
+     * left join productattribute_int iman
+     * on iman.entity_id = p.entity_id and iman.attribute_id = 102
+     * left join productattribute_option o
+     * on o.option_id = iman.value and o.attribute_id = 102
+     * limit 10;
      * @param null $sku
      * @param null $limit
      * @param null $cats
@@ -93,23 +95,15 @@ class CategoryTable {
     }
 
     /**
-     * Description: method will populate a datatable so that users can add product to specific categories.
+     * @Description: method will populate a datatable so that users can add product to specific categories.
      * @param null $sku
      * @param $limit
      * @param null $manangedProducts
      * @internal param Null $managedProducts
      * @return array
      */
-    public function populateProducts($sku = Null , $limit, $manangedProducts = Null , $cat = Null)
+    public function populateProducts($sku = Null , $limit, $manangedProducts = Null )
     {
-
-//        if ( count($manangedProducts) ) {
-//            echo 'works';
-//            foreach( $manangedProducts as $mgdProds ){
-//                var_dump($mgdProds['value']);
-//                var_dump($mgdProds['name']);
-//            }
-//        }
         $hiddenInputs = [];
         $select = $this->sql->select()->from('product')->columns(array('id' => 'entity_id', 'sku' => 'productid'));
         $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
@@ -128,21 +122,16 @@ class CategoryTable {
         $filter = new Where();
 
         if ( $sku || count($manangedProducts) ) {
-//            var_dump(count($manangedProducts));
-            $cnt = 0;
-            foreach ( $manangedProducts as $key => $products ) {
-//                $hiddenInputs[$key]['checked'] = "<td class='sorting_1'><label for='addCategoryProduct'></label><input type='checkbox' checked name='addCategoryProduct[][sku]' class='addCategoryProduct'></td>";
-                $hiddenInputs[$cnt]['id'] = $products['id'] ;
-                $hiddenInputs[$cnt]['sku'] = $products['sku'] ;
-//                $hiddenInputs[$key]['name'] = "<td class=' value'>" . $products['id'] . "</td>";
-                $hiddenInputs[$cnt]['value'] = "<img width='100' height='100' src='". $products['img'] . "' /><br />" . $products['name'] ;
-                $hiddenInputs[$cnt]['manufacturer'] = $products['manufacturer'] ;
-                $cnt++;
-//                echo $products['id'] . ' ' . $products['img']. ' ' . $products['name']. ' ' . $products['manufacturer']. ' ' . $products['sku'] ."\n";
+            if ( count($manangedProducts) ) {
+                $cnt = 0;
+                foreach ( $manangedProducts as $products ) {
+                    $hiddenInputs[$cnt]['id'] = $products['id'] ;
+                    $hiddenInputs[$cnt]['sku'] = $products['sku'] ;
+                    $hiddenInputs[$cnt]['value'] = "<img width='100' height='100' src='". $products['img'] . "' /><br />" . $products['name'] ;
+                    $hiddenInputs[$cnt]['manufacturer'] = $products['manufacturer'] ;
+                    $cnt++;
+                }
             }
-//            var_dump($manangedProducts['value']);
-//            var_dump($manangedProducts['name']);
-//            echo 'haha';
             if( !($producttable->validateSku($sku)) ){
                 $filter->like('product.productid', $sku.'%');
                 $filter->orPredicate(new Predicate\Like('t.value','%'.$sku.'%'));
@@ -166,9 +155,6 @@ class CategoryTable {
             $product[$count]['id'] = $prods['id'];
             $product[$count]['sku'] = $prods['sku'];
             $product[$count]['value'] = "<img src='".$prods['domain'].$prods['filename']."' width='100' height='100' /> <br />".$prods['name'];
-//            $product[$count]['image'] = "<img src='".$prods['domain'].$prods['filename']."' width='100' height='100' /> <br />".$prods['name'];
-//            $category[$count]['imagename'] = "<img src='".$prods['domain'].$prods['filename']."' width='50' height='50' />";
-//            $category[$count]['imagename'] = $prods['domain'].$prods['filename'];
             $product[$count]['manufacturer'] = $prods['manufacturer'];
             $count++;
         }
@@ -180,12 +166,13 @@ class CategoryTable {
 
 
     /**
-     * Description: method will update productcategory table for selected catid and skus with a dataState of 3 (to be deleted). It must first query the product table to
+     * @Description: method will update productcategory table for selected catid and skus with a dataState of 3 (to be deleted). It must first query the product table to
      * acquire entity id.
      * @param $sku
      * @param $catId
+     * @param $catPk
      * @param $user
-     * @return string
+     * @return string $results
      * */
     public function removeProducts($sku, $catId, $catPk, $user)
     {
@@ -245,6 +232,36 @@ class CategoryTable {
         }
 
         return $res;
+    }
+
+    public function moveProducts($categoryData, $user)
+    {
+        $result = '';
+        $newCategoryId = $categoryData['newcatid'];
+        unset($categoryData['newcatid']);
+        ksort($categoryData);
+        $categoryData = array_values($categoryData);
+        foreach ( $categoryData as $products ) {
+            $update = $this->sql->update('productcategory')->set(['dataState'=>3, 'changedby'=>$user])->where(['catid'=>$products['pk']]);
+            $statement = $this->sql->prepareStatementForSqlObject($update);
+            $statement->execute();
+            $select = $this->sql->select()->from('product')->columns(['id'=>'entity_id'])->where(['productid'=>$products['sku']]);
+            $stmt = $this->sql->prepareStatementForSqlObject($select);
+            $results = $stmt->execute();
+            $resultSet = new ResultSet;
+            if ($results instanceof ResultInterface && $results->isQueryResult()) {
+                $resultSet->initialize($results);
+            }
+            foreach ( $resultSet->toArray() as $sku ) {
+                $insert = $this->sql->insert()->into('productcategory')
+                                    ->columns(['entity_id','category_id','dataState','changedby'])
+                                    ->values(['entity_id'=>$sku['id'],'category_id'=>$newCategoryId,'dataState'=>2,'changedby'=>$user]);
+                $statement = $this->sql->prepareStatementForSqlObject($insert);
+                $statement->execute();
+            }
+            $result .= $products['sku'] . " has been moved from Category ID " . $products['oldcatid']. " to " . $newCategoryId . " <br />";
+        }
+        return $result;
     }
 
 } 

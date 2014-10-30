@@ -46,7 +46,6 @@ class CategoryManagerController extends AbstractActionController
                     $cat = $cat['value'];
                 }
             }
-
             if($limit == '-1'){
                 $limit = 100;
             }
@@ -99,7 +98,7 @@ class CategoryManagerController extends AbstractActionController
             $event    = $this->getEvent();
             $response = $event->getResponse();
             $response->setContent($result);
-            return $result;
+            return $response;
         }
     }
 
@@ -141,7 +140,7 @@ class CategoryManagerController extends AbstractActionController
             if( $limit == '-1' ) {
                 $limit = 100;
             }
-            $products = $this->getCategoryTable()->populateProducts($sku, (int)$limit, $manangedProducts);//, (int) $cat);
+            $products = $this->getCategoryTable()->populateProducts($sku, (int)$limit, $manangedProducts);
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -167,6 +166,29 @@ class CategoryManagerController extends AbstractActionController
         if($request -> isPost()){
             $categoryData = $request->getPost();
             $results = $this->getCategoryTable()->addProducts($categoryData['manageProduct'], $categoryData['category'], (int)$userLogin['userid']);
+            if($results == ''){
+                $results = 'No changes to sku made.';
+            }
+            $event    = $this->getEvent();
+            $response = $event->getResponse();
+            $response->setContent($results);
+            return $response;
+        }
+    }
+
+    public function moveProductsSubmitAction()
+    {
+        $loginSession= new Container('login');
+        $userLogin = $loginSession->sessionDataforUser;
+        if(empty($userLogin)){
+            return $this->redirect()->toRoute('auth', array('action'=>'index') );
+        }
+        $request = $this->getRequest();
+        if($request -> isPost()){
+            $categoryData = $request->getPost();
+//            var_dump($categoryData);
+            $results = $this->getCategoryTable()->moveProducts($categoryData['manageCategory'], (int)$userLogin['userid']);
+//            die();
             if($results == ''){
                 $results = 'No changes to sku made.';
             }
