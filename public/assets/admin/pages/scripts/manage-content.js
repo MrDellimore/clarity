@@ -290,7 +290,7 @@ var ManageContent = function () {
             $( "#ProductModalAdd" ).submit(function( event ) {
                 event.preventDefault();
                 var form = $('#addCatsForm').serializeArray();
-                var catId = $("#categoryProductsForm input[name='category']").serializeArray();
+                var catId = $("#categoryProductsForm input[name='id']").serializeArray();
                 var formData = form.concat(catId);
                 console.log(form, catId, formData);
 
@@ -337,11 +337,15 @@ var ManageContent = function () {
             $( "#ProductModalMove" ).submit(function( event ) {
                 event.preventDefault();
                 var form = $('#moveCatsForm').serializeArray();
+                var catId = $("#categoryProductsForm input[name='id']").serializeArray();
+                var newCatId = $("#categoryProductsForm input[name='newid']").serializeArray();
+                var formData = form.concat(catId).concat(newCatId);
+
                 var url = '/content/manage-categories/move-products';
                 $.ajax({
                     url: url,
                     type: "POST",
-                    data: form
+                    data: formData
                 }).done(function( data ) {
                         toastr.success(data);
                     });

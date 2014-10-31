@@ -30,6 +30,22 @@ class CategoryTable {
         $this->sql = new Sql($this->adapter);
     }
 
+    public function filterProduct($categoryData)
+    {
+        $cnt = 0;
+        $products = [];
+        foreach ( $categoryData as $key => $product ) {
+//            unset($product['sku']);
+//            unset($product['img']);
+//            unset($product['name']);
+//            unset($product['manufacturer']);
+            $products[$cnt]['Entityid'] = $product['Entityid'];
+//            $products[$cnt]['Id'] = $categoryId;
+            $cnt++;
+        }
+        return $products;
+    }
+
     /**
      * @Description: Queries product table and left joins productcategory, varchar, imges, and (int,option) for manufacturer.
      * Filters by category id first with an inner join and then filters by sku and/or limit.
@@ -56,7 +72,7 @@ class CategoryTable {
     {
         $category = [];
         $count = 0;
-        $select = $this->sql->select()->from('product')->columns(['sku'=>'productid']);
+        $select = $this->sql->select()->from('product')->columns(['id'=>'entity_id','sku'=>'productid']);
         $cat = new Expression('c.entity_id=product.entity_id and c.category_id = '. $cats . ' and c.dataState != 3');
         $name = new Expression('v.entity_id = product.entity_id and v.attribute_id = 96');
         $images = new Expression('i.entity_id = product.entity_id and i.default = 1 and i.disabled = 0');
@@ -82,6 +98,7 @@ class CategoryTable {
         $categoryProducts = $resultSet->toArray();
         foreach ( $categoryProducts as $prods ) {
             $category[$count]['catid'] = $prods['catid'];
+            $category[$count]['Entityid'] = $prods['id'];
             $category[$count]['sku'] = $prods['sku'];
             $category[$count]['value'] = "<img src='".$prods['domain'].$prods['filename']."' width='100' height='100' /> <br />". $prods['value'];
 //            $category[$count]['imagename'] = "<img src='".$prods['domain'].$prods['filename']."' width='50' height='50' />";
@@ -105,7 +122,7 @@ class CategoryTable {
     public function populateProducts($sku = Null , $limit, $manangedProducts = Null )
     {
         $hiddenInputs = [];
-        $select = $this->sql->select()->from('product')->columns(array('id' => 'entity_id', 'sku' => 'productid'));
+        $select = $this->sql->select()->from('product')->columns(array('Entityid' => 'entity_id', 'sku' => 'productid'));
         $titleJoin = new Expression('t.entity_id = product.entity_id and t.attribute_id = 96');
         $images = new Expression('i.entity_id = product.entity_id and i.default = 1 and i.disabled = 0');
         $intTable = new Expression('man.entity_id = product.entity_id and man.attribute_id = 1641');
@@ -125,7 +142,7 @@ class CategoryTable {
             if ( count($manangedProducts) ) {
                 $cnt = 0;
                 foreach ( $manangedProducts as $products ) {
-                    $hiddenInputs[$cnt]['id'] = $products['id'] ;
+                    $hiddenInputs[$cnt]['Entityid'] = $products['Entityid'] ;
                     $hiddenInputs[$cnt]['sku'] = $products['sku'] ;
                     $hiddenInputs[$cnt]['value'] = "<img width='100' height='100' src='". $products['img'] . "' /><br />" . $products['name'] ;
                     $hiddenInputs[$cnt]['manufacturer'] = $products['manufacturer'] ;
@@ -152,7 +169,7 @@ class CategoryTable {
         $product = [];
         $products = $resultSet->toArray();
         foreach ( $products as $prods ) {
-            $product[$count]['id'] = $prods['id'];
+            $product[$count]['Entityid'] = $prods['Entityid'];
             $product[$count]['sku'] = $prods['sku'];
             $product[$count]['value'] = "<img src='".$prods['domain'].$prods['filename']."' width='100' height='100' /> <br />".$prods['name'];
             $product[$count]['manufacturer'] = $prods['manufacturer'];

@@ -11,6 +11,8 @@ namespace Content\ManageCategories\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
+use Zend\Stdlib\Hydrator\ClassMethods;
+use Content\ContentForm\Entity\Category;
 
 class CategoryManagerController extends AbstractActionController
 {
@@ -36,7 +38,7 @@ class CategoryManagerController extends AbstractActionController
 
         if($request->isPost()){
             $apiData = $request->getPost();
-            $category = $apiData['category'];
+            $category = $apiData['id'];
             $draw = $apiData['draw'];
             $sku = $apiData['search']['value'];
             $limit = $apiData['length'];
@@ -85,19 +87,20 @@ class CategoryManagerController extends AbstractActionController
         if($request->isPost()){
 
             $checkedProducts = $request->getPost();
-            foreach ($checkedProducts as $managedCategories ) {
-                ksort($managedCategories);
-                foreach ( $managedCategories as $key => $product ) {
-                    $results .= $this->getCategoryTable()->removeProducts($product['sku'], (int)$product['cat_id'], (int)$product['catid'], (int)$userLogin['userid']);
-                }
+            $cat = $checkedProducts['id'];
+            unset($checkedProducts['id']);
+            $products = $this->getCategoryTable()->filterProduct($checkedProducts['manageCategory']);
+            $category = new Category();
+            $category->setId($cat);
+            foreach ($products as $product ) {
+                $results .= $this->getServiceLocator()->get('Content\ContentForm\Model\CategoryTable')->removeCategory($category, $product['Entityid']);
             }
-            $result = json_encode(
-                array(
-                    'result' => $results)
-            );
+            if($results == ''){
+                $results = 'No changes to sku made.';
+            }
             $event    = $this->getEvent();
             $response = $event->getResponse();
-            $response->setContent($result);
+            $response->setContent($results);
             return $response;
         }
     }
@@ -114,7 +117,7 @@ class CategoryManagerController extends AbstractActionController
         $manangedProducts = [];
         if($request -> isPost()){
             $queryData = $request->getPost();
-            $category = $queryData['category'];
+            $category = $queryData['Id'];
             $draw = $queryData['draw'];
             $sku = $queryData['search']['value'];
             if( isset($queryData['manageProduct']) ) {
@@ -165,7 +168,16 @@ class CategoryManagerController extends AbstractActionController
         $request = $this->getRequest();
         if($request -> isPost()){
             $categoryData = $request->getPost();
-            $results = $this->getCategoryTable()->addProducts($categoryData['manageProduct'], $categoryData['category'], (int)$userLogin['userid']);
+            $categoryId = $categoryData['id'];
+            unset($categoryData['id']);
+            $products = $this->getCategoryTable()->filterProduct($categoryData['manageProduct']);
+            $results = '';
+            $cat = $this->getServiceLocator()->get('Content\ContentForm\Entity\Category');
+            $cat->setId($categoryId);
+            foreach ( $products as $product ) {
+                $results .= $this->getServiceLocator()->get('Content\ContentForm\Model\CategoryTable')->addCategory($cat, $product['Entityid']);
+            }
+//            $results = $this->getCategoryTable()->addProducts($categoryData['manageProduct'], $categoryData['category'], (int)$userLogin['userid']);
             if($results == ''){
                 $results = 'No changes to sku made.';
             }
@@ -186,9 +198,20 @@ class CategoryManagerController extends AbstractActionController
         $request = $this->getRequest();
         if($request -> isPost()){
             $categoryData = $request->getPost();
-//            var_dump($categoryData);
-            $results = $this->getCategoryTable()->moveProducts($categoryData['manageCategory'], (int)$userLogin['userid']);
-//            die();
+            $oldCatID = $categoryData['id'];
+            $newCatID = $categoryData['newid'];
+            $oldCat = new Category();
+            $newCat = new Category();
+            $oldCat->setId($oldCatID);
+            $newCat->setId($newCatID);
+            unset($categoryData['id']);
+            unset($categoryData['newid']);
+            $products = $this->getCategoryTable()->filterProduct($categoryData['manageCategory']);
+            $results = '';
+            foreach ( $products as $product ) {
+                $results .= $this->getServiceLocator()->get('Content\ContentForm\Model\CategoryTable')->addCategory($newCat, $product['Entityid']);
+                $results .= $this->getServiceLocator()->get('Content\ContentForm\Model\CategoryTable')->removeCategory($oldCat, $product['Entityid']);
+            }
             if($results == ''){
                 $results = 'No changes to sku made.';
             }

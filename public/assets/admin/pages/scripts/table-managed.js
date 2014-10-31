@@ -1921,7 +1921,7 @@ var TableManaged = function () {
 //                    });
 //                    d.related = $("#accessoriesForm input[name*='linkedSku]']").serializeArray();
 //                    var cat = $("#categoryProductsForm input[name='category']").val();
-                    d.category = $("#categoryProductsForm input[name='category']").serializeArray();
+                    d.id = $("#categoryProductsForm input[name='id']").serializeArray();
                 }
             },
 
@@ -1936,6 +1936,10 @@ var TableManaged = function () {
                 {
                     "class": "catid hidden",
                     "data": "catid"
+                },
+                {
+                    "class": "id hidden",
+                    "data": "Entityid"
                 },
                 {
                     "class": "sku",
@@ -1999,10 +2003,12 @@ var TableManaged = function () {
         $('.category_remove').on('click',function(e){
             e.preventDefault();
             var data = $("#removeCatsForm").serializeArray();
-            $.post('/content/manage-categories/remove',data,function(result){
-//                console.log(result);
-//                toastr.success(result);
+            var catId = $('input[name=id]').serializeArray();
+            var formData = data.concat(catId);
+            $.post('/content/manage-categories/remove',formData,function(result){
                 table.api().draw();
+//                toastr.success(result);
+
             });
 
 //            var data = $("#categoryProductsForm input[name='sku']").serializeArray();
@@ -2042,32 +2048,38 @@ var TableManaged = function () {
             var checkedLength = $('tbody input.categoryProduct:checkbox(":checked")').length;
             var manageCategory = $(this);
             var sku = manageCategory.closest('td').siblings('td.sku').text();
+            var id = manageCategory.closest('td').siblings('td.id').text();
             var pk = manageCategory.closest('td').siblings('td.catid').text();
-            var catId = $('input[name=category]').val();
+            var catId = $('input[name=id]').val();
             var position = manageCategory.closest('tr').index();
 
+            var hiddenId = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][Entityid]", 'class':'ManageCategory', 'value':id});
             var hiddenSku = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][sku]", 'class':'ManageCategory', 'value':sku});
-            var hiddenOldCatId = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][oldcatid]", 'class':'ManageCategory', 'value':catId});
+//            var hiddenOldCatId = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][oldcatid]", 'class':'ManageCategory', 'value':catId});
             var hiddenPK = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][pk]", 'class':'ManageCategory', 'value':pk});
 
             if( manageCategory.prop('checked') ) {
                 manageCategory.attr('checked',true);
                 $('.category_remove, .category_move').removeAttr('disabled');
+                hiddenId.appendTo('form#removeCatsForm');
                 hiddenSku.appendTo('form#removeCatsForm');
-                hiddenOldCatId.appendTo('form#removeCatsForm');
+//                hiddenOldCatId.appendTo('form#removeCatsForm');
                 hiddenPK.appendTo('form#removeCatsForm');
+
+                hiddenId.clone().appendTo("form#moveCatsForm");
                 hiddenSku.clone().appendTo("form#moveCatsForm");
-                hiddenOldCatId.clone().appendTo("form#moveCatsForm");
+//                hiddenOldCatId.clone().appendTo("form#moveCatsForm");
                 hiddenPK.clone().appendTo("form#moveCatsForm");
             }
             if( !$(this).prop('checked') ) {
                 $(this).attr('checked',false);
+                $("form#removeCatsForm input[name='manageCategory["+ position +"][Entityid]']").remove();
                 $("form#removeCatsForm input[name='manageCategory["+ position +"][sku]']").remove();
-                $("form#removeCatsForm input[name='manageCategory["+ position +"][oldcatid]']").remove();
+//                $("form#removeCatsForm input[name='manageCategory["+ position +"][oldcatid]']").remove();
                 $("form#removeCatsForm input[name='manageCategory["+ position +"][catid]']").remove();
 
                 $("form#moveCatsForm input[name='manageCategory["+ position +"][sku]']").remove();
-                $("form#moveCatsForm input[name='manageCategory["+ position +"][oldcatid]']").remove();
+//                $("form#moveCatsForm input[name='manageCategory["+ position +"][oldcatid]']").remove();
                 $("form#moveCatsForm input[name='manageCategory["+ position +"][catid]']").remove();
             }
 //            console.log(uncheckedLength , checkedLength);
@@ -2089,12 +2101,16 @@ var TableManaged = function () {
                 $("form#moveCatsForm input.ManageCategory").remove();
             }
             /*Cache cat id for products*/
-            var catId = $('input[name=category]').val();
+            var catId = $('input[name=id]').val();
 
             if ( groupCatProducts.prop('checked') ) {
                 $("form#removeCatsForm input.ManageCategory").remove();
                 manageCategory.each(function(i) {
                     /*Cache sku for given row*/
+                    var id = manageCategory.closest('td')
+                        .siblings('td.id')
+                        .eq(i)
+                        .text();
                     var sku = manageCategory.closest('td')
                         .siblings('td.sku')
                         .eq(i)
@@ -2103,13 +2119,16 @@ var TableManaged = function () {
                         .siblings('td.catid')
                         .eq(i)
                         .text();
+                    var hiddenId = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][Entityid]',class:  'ManageCategory',value: id});
                     var hiddenSku = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][sku]',class:  'ManageCategory',value: sku});
-                    var hiddenOldCatId = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][oldcatid]',class:  'ManageCategory',value: catId});
+//                    var hiddenOldCatId = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][oldcatid]',class:  'ManageCategory',value: catId});
                     var hiddenPK = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][pk]',class:  'ManageCategory',value: pk});
+                    hiddenId.appendTo('form#removeCatsForm');
                     hiddenSku.appendTo('form#removeCatsForm');
-                    hiddenOldCatId.appendTo('form#removeCatsForm');
+//                    hiddenOldCatId.appendTo('form#removeCatsForm');
                     hiddenPK.appendTo('form#removeCatsForm');
-                    hiddenOldCatId.clone().appendTo("form#moveCatsForm");
+                    hiddenId.clone().appendTo("form#moveCatsForm");
+//                    hiddenOldCatId.clone().appendTo("form#moveCatsForm");
                     hiddenSku.clone().appendTo("form#moveCatsForm");
                     hiddenPK.clone().appendTo("form#moveCatsForm");
                 });
@@ -2135,7 +2154,7 @@ var TableManaged = function () {
                 url: "/content/manage-categories/search",
                 type: 'POST',
                 "data": function (d){
-                    d.category = $("#categoryProductsForm input[name='category']").serializeArray();
+                    d.id = $("#categoryProductsForm input[name='id']").serializeArray();
                 }
             },
             "columns": [
@@ -2148,7 +2167,7 @@ var TableManaged = function () {
                 },
                 {
                     "class": "id",
-                    "data": "id"
+                    "data": "Entityid"
                 },
                 {
                     "class": "sku",
@@ -2225,7 +2244,7 @@ var TableManaged = function () {
                                 var inputs =
                                     "<tr>" +
                                         "<td><label for='addCategoryProduct'></label><input checked type='checkbox' name='addCategoryProduct[][sku]' class='addCategoryProduct' /></td>" +
-                                        "<td class='id'>"+val.id+"</td>" +
+                                        "<td class='id'>"+val.Entityid+"</td>" +
                                         "<td>"+val.sku+"</td>" +
                                         "<td>"+val.value+"</td>" +
                                         "<td>"+val.manufacturer+"</td>" +
@@ -2324,7 +2343,7 @@ var TableManaged = function () {
             var manufacturer = addProduct.closest('td').siblings('td.manufacturer').text();
             var position = addProduct.closest('tr').index();
 
-            var hiddenId = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][id]", 'class':'ManageCategoryProduct', 'value':id});
+            var hiddenId = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][Entityid]", 'class':'ManageCategoryProduct', 'value':id});
             var hiddenSku = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][sku]", 'class':'ManageCategoryProduct', 'value':sku});
             var hiddenImage = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][img]", 'class':'ManageCategoryProduct', 'value':img});
             var hiddenName = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][name]", 'class':'ManageCategoryProduct', 'value':name});
@@ -2340,7 +2359,7 @@ var TableManaged = function () {
             }
             if( !$(this).is(':checked') ) {
 //                console.log(position);
-                $("form#addCatsForm input[name='manageProduct["+ position +"][id]']").remove();
+                $("form#addCatsForm input[name='manageProduct["+ position +"][Entityid]']").remove();
                 $("form#addCatsForm input[name='manageProduct["+ position +"][sku]']").remove();
                 $("form#addCatsForm input[name='manageProduct["+ position +"][img]']").remove();
                 $("form#addCatsForm input[name='manageProduct["+ position +"][name]']").remove();
@@ -2354,7 +2373,7 @@ var TableManaged = function () {
 //                addProduct.closest('td').removeClass('checker');
                 addProduct.attr('checked',false);
 //                addProduct.closest('tr').removeClass('row_selected');
-                $("form#addCatsForm input[name='manageProduct["+ position +"][id]']").remove();
+                $("form#addCatsForm input[name='manageProduct["+ position +"][Entityid]']").remove();
                 $("form#addCatsForm input[name='manageProduct["+ position +"][sku]']").remove();
                 $("form#addCatsForm input[name='manageProduct["+ position +"][img]']").remove();
                 $("form#addCatsForm input[name='manageProduct["+ position +"][name]']").remove();

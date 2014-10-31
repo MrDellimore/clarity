@@ -109,7 +109,7 @@ var UITree = function () {
             });
         $('.category_add').attr('disabled',true);
         $('#cat_manage_tree').bind('select_node.jstree', function (e, data) {
-            $("#categoryProductsForm input[name='category']").val(data.node.id);
+            $("#categoryProductsForm input[name='id']").val(data.node.id);
             var table = $('#manageCats');
             $('#removeCatsForm input.ManageCategory').remove();
             $('#moveCatsForm input.ManageCategory').remove();
@@ -147,10 +147,12 @@ var UITree = function () {
             });
         $('.category_add').attr('disabled',true);
         $('#cat_manage_tree_move').bind('select_node.jstree', function (e, data) {
-            var hiddenNewCatID = $('<input>').attr({'type':'hidden','name':"manageCategory[newcatid]", 'id':'move-category', 'class':'ManageCategory', 'value':data.node.id});
-            console.log(data.node.id);
-            $('#move-category').remove();
-            hiddenNewCatID.appendTo('form#moveCatsForm');
+            var catId = $('input[name=newid]').val(data.node.id);
+//            var hiddenNewCatID = $('<input>').attr({'type':'hidden','name':"manageCategory[newcatid]", 'id':'move-category', 'class':'ManageCategory', 'value':data.node.id});
+//            console.log(data.node.id);
+//            $('#move-category').remove();
+//            hiddenNewCatID.appendTo('form#moveCatsForm');
+
 //            $("#categoryProductsForm input[name='category']").val(data.node.id);
 //            var table = $('#manageCats');
 //            $('#removeCatsForm input.ManageCategory').remove();
