@@ -997,7 +997,7 @@ var TableManaged = function () {
                 },
                 {
                     "class": "hidden catid",
-                    "data": "categortyId"
+                    "data": "categoryId"
                 },
                 {
                     "data": "category"

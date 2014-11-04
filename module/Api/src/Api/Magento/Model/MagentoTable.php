@@ -51,7 +51,7 @@ class MagentoTable {
         $this->sql = new Sql($this->adapter);
     }
 
-    public function fetchNewImages($sku,$limit)
+    public function fetchNewImages($sku = Null, $limit = Null)
     {
         $select = $this->sql->select()
                   ->from('productattribute_images')
@@ -70,9 +70,12 @@ class MagentoTable {
         if ( $sku ){
             $filter->like('p.productid',$sku.'%');
         }
+        if ( $limit ) {
+            $select->limit($limit);
+        }
         $filter->equalTo('productattribute_images.dataState',2);
-        $select->limit($limit);
         $select->where($filter);
+
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -88,12 +91,13 @@ class MagentoTable {
             $newImages[$soapCount]['position'] = $image['position'];
             $newImages[$soapCount]['sku'] = $image['sku'];
             $newImages[$soapCount]['label'] = $image['label'];
-            $newImages[$soapCount]['filename'] = "<img width='50' height='50' src='".$image['filename']."' />";
+            $newImages[$soapCount]['filename'] = '<img width="50" height="50" src="'.$image['filename'].'" />';
             $newImages[$soapCount]['creation'] = $image['creation'];
             $newImages[$soapCount]['fullname'] = $image['fname'] . ' ' . $image['lname'] ;
             $soapCount++;
         }
-
+//var_dump($newImages);
+//        die();
         return $newImages;
     }
 
@@ -286,9 +290,11 @@ class MagentoTable {
         $filter = new Where();
         if( $sku ) {
             $filter->like('product.productid',$sku.'%');
+            $select->where($filter);
         }
-        $select->where($filter);
-        $select->limit((int)$limit);
+        if( $limit ) {
+            $select->limit((int)$limit);
+        }
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -318,13 +324,15 @@ class MagentoTable {
     public function updateLinkedProductstoClean($linkedProducts)
     {
         $result = '';
+//        var_dump($linkedProducts);
+//        die();
         $dataState = (int)$linkedProducts['dataState'];
         if ( $dataState === 3 ) {
             $delete = $this->sql->delete('productlink');
             $delete->where(array('entity_id'=>$linkedProducts['id'], 'linked_entity_id'=>$linkedProducts['linkedId']));
             $statement = $this->sql->prepareStatementForSqlObject($delete);
             $statement->execute();
-            $result .= $linkedProducts['id'] . ' is not longer linked to ' . $linkedProducts['linkedId'].'<br />';
+            $result .= $linkedProducts['id'] . ' is no longer linked to ' . $linkedProducts['linkedId'].'<br />';
         } else {
             $update = $this->sql->update('productlink');
             $update->set(array('dataState'=>0))
@@ -388,24 +396,26 @@ class MagentoTable {
     }
 
 
-    public function fetchChangedCategories($sku, $limit)
+    public function fetchChangedCategories($sku = null, $limit = null)
     {
         $soapCategories = [];
         $categoryCount = 0;
         $select = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id', 'sku'=>'productid']);
         $dataState = new Expression("c.entity_id=product.entity_id and c.dataState in(2,3)");
 
-        $select->join(['c'=>'productcategory'], $dataState,['categortyId'=>'category_id', 'dataState'=>'dataState']);
+        $select->join(['c'=>'productcategory'], $dataState,['categoryId'=>'category_id', 'dataState'=>'dataState']);
 
-        $select->join(['u'=>'users'], 'u.userid = c.changedby',['fname'=>'firstname','lname'=>'lastname']);
+        $select->join(['u'=>'users'], 'u.userid = c.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
 
         $select->join(['cat'=>'newcategory'] , 'cat.category_id = c.category_id', ['category'=>'title']);
         $filter = new Where();
         if( $sku ) {
             $filter->like('product.productid',$sku.'%');
+            $select->where($filter);
         }
-        $select->where($filter);
-        $select->limit((int)$limit);
+        if( $limit ){
+            $select->limit((int)$limit);
+        }
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -418,7 +428,7 @@ class MagentoTable {
         foreach ( $categories as $key => $category ) {
             $soapCategories[$categoryCount]['sku'] = $category['sku'];
             $soapCategories[$categoryCount]['id'] = $category['entityId'];
-            $soapCategories[$categoryCount]['categortyId'] = $category['categortyId'];
+            $soapCategories[$categoryCount]['categoryId'] = $category['categoryId'];
             $soapCategories[$categoryCount]['category'] = $category['category'];
             $soapCategories[$categoryCount]['dataState'] = $category['dataState'];
             $soapCategories[$categoryCount]['state'] = ( $category['dataState'] == 2 ) ? 'New' : "Delete";
@@ -443,7 +453,7 @@ class MagentoTable {
     public function updateToClean($changedProducts)
     {
         $results = $sku = '';
-
+//var_dump($changedProducts);
         $entityId = $changedProducts['id'];
         array_shift($changedProducts);
         foreach ( $changedProducts as $attribute ) {
@@ -500,6 +510,7 @@ class MagentoTable {
                     }
                     $attributeValues = $attSet->toArray();
                     foreach($attributeValues as $keyValue => $valueOption) {
+                        $soapBundle[$startCount]['id'] = $entityId;
                         $soapBundle[$startCount]['sku'] = $sku;
                         $soapBundle[$startCount]['website'] = $products[$index]['website'];
                         if ( array_key_exists($attributeCode,$this->stockData) ) {
@@ -573,42 +584,84 @@ class MagentoTable {
     }
 
 
-
-    public function updateNewProduct( $oldEntity, $newEntity )
+    public function updateNewProduct( $newProducts, $mageEntityId )
     {
-        $result = '';
-        $select = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id'])->where(['productid'=>$oldEntity['sku']]);
-        $statement = $this->sql->prepareStatementForSqlObject($select);
-        $response = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($response instanceof ResultInterface && $response->isQueryResult()) {
-            $resultSet->initialize($response);
-        }
-        $oEntityId = $resultSet->toArray();
-        $oeid = $oEntityId[0]['entityId'];
-        $updateProduct = $this->sql->update('product')->set(['entity_id'=>$newEntity, 'dataState'=>0 ])->where(['productid'=>$oldEntity['sku']]);
+        $sku = $newProducts['sku'];
+        $oldEntityId = $newProducts['id'];
+        array_shift($newProducts);
+        array_shift($newProducts);
+        array_shift($newProducts);
+        $updateProduct = $this->sql->update('product')->set(['entity_id'=>$mageEntityId, 'dataState'=>0 ])->where(['productid'=>$sku]);
         $prdStmt = $this->sql->prepareStatementForSqlObject($updateProduct);
         $response = $prdStmt->execute();
-        array_shift($oldEntity);
-        array_shift($oldEntity);
-        foreach( $oldEntity as $attributeCode => $attributeValue ) {
-
+        foreach( $newProducts as $attributeCode => $attributeValue ) {
             $lookupVals = $this->productAttributeLookup($this->sql, ['attribute_code'=>$attributeCode] );
             if( !empty($lookupVals[0]) ) {
                 $attributeId = $lookupVals[0]['attId'];
                 $dataType = $lookupVals[0]['dataType'];
-                $update = $this->sql->update('productattribute_'.$dataType)->set(['entity_id'=>$newEntity, 'dataState'=>0])->where(['attribute_id'=>$attributeId, 'entity_id'=>$oeid]);
+                $update = $this->sql->update('productattribute_'.$dataType)->set(['entity_id'=>$mageEntityId, 'dataState'=>0])->where(['attribute_id'=>$attributeId, 'entity_id'=>$oldEntityId]);//$oeid]);
                 $stmt = $this->sql->prepareStatementForSqlObject($update);
                 $attributeResp = $stmt->execute();
             }
         }
-        return $attributeResp;
+        return true;
     }
 
-    public function validateSkuExists($newProducts ,$mageEntityId)
+    public function updateExistingProduct($newProducts, $maxEntityId, $existingSku, $existingEntityId, $mageEntityId)
+    {
+//        Mage entity id exists already so update with max entity id.
+        $sku = $newProducts['sku'];
+        $oldEntityId = $newProducts['id'];
+        array_shift($newProducts);
+        array_shift($newProducts);
+        array_shift($newProducts);
+        $existingProduct = $this->sql->update('product')->set(['entity_id'=>$maxEntityId])->where(['productid'=>$existingSku]);
+        $existingStmt = $this->sql->prepareStatementForSqlObject($existingProduct);
+        $existingResponse = $existingStmt->execute();
+        $lookupExistingVals = $this->productAttributeLookup( $this->sql );
+        foreach ( $lookupExistingVals as $key => $attributes ){
+            $attributeId = $attributes[0]['attId'];
+            $dataType = $attributes[0]['dataType'];
+            $update = $this->sql->update('productattribute_'.$dataType)->set(['entity_id'=>$maxEntityId])->where(['attribute_id'=>$attributeId, 'entity_id'=>$existingEntityId]);
+            $stmt = $this->sql->prepareStatementForSqlObject($update);
+            $attributeResp = $stmt->execute();
+        }
+
+        $updateExistingCat = $this->sql->update('productcategory')->set(['entity_id'=>$maxEntityId])->where(['entity_id'=>$existingEntityId]);
+        $updateStatement = $this->sql->prepareStatementForSqlObject($updateExistingCat);
+        $updateResponse = $updateStatement->execute();
+        $updateExistingLink = $this->sql->update('productlink')->set(['entity_id'=>$maxEntityId])->where(['entity_id'=>$existingEntityId]);
+        $updateExistingStmt = $this->sql->prepareStatementForSqlObject($updateExistingLink);
+        $existingResponse = $updateExistingStmt->execute();
+
+//        Update entity id with mage entity id.
+        $updateNew = $this->sql->update('product')->set(['entity_id'=>$mageEntityId, 'dataState'=>0])->where(['productid'=>$sku]);
+        $updateStmt = $this->sql->prepareStatementForSqlObject($updateNew);
+        $newResponse = $updateStmt->execute();
+        $lookupNewVals = $this->productAttributeLookup( $this->sql );
+        foreach ( $lookupNewVals as $key => $attributes ){
+            $attributeId = $attributes[0]['attId'];
+            $dataType = $attributes[0]['dataType'];
+            $update = $this->sql->update('productattribute_'.$dataType)->set(['entity_id'=>$mageEntityId ,'dataState'=>0])->where(['attribute_id'=>$attributeId, 'entity_id'=>$oldEntityId]);
+            $stmt = $this->sql->prepareStatementForSqlObject($update);
+            $attributeResp = $stmt->execute();
+        }
+        $existingEntityCategory = $this->sql->update('productcategory')->set(['entity_id'=>$mageEntityId])->where(['entity_id'=>$oldEntityId]);
+        $existingEntityCategoryStmt = $this->sql->prepareStatementForSqlObject($existingEntityCategory);
+        $existingResponse = $existingEntityCategoryStmt->execute();
+        $existingEntityLink = $this->sql->update('productlink')->set(['entity_id'=>$mageEntityId])->where(['entity_id'=>$oldEntityId]);
+        $existingEntityLinkStmt = $this->sql->prepareStatementForSqlObject($existingEntityLink);
+        $existingResponse = $existingEntityLinkStmt->execute();
+//            $existingEntityImage = $this->sql->update('productattribute_imags')->set(['entity_id'=>$maxEntityId])->where(['entity_id'=>$oldEntityId]);
+//            $existingEntityImageStmt = $this->sql->prepareStatementForSqlObject($existingEntityImage);
+//            $existingResponse = $existingEntityImageStmt->execute();
+        return true;
+    }
+
+    public function updateNewItemsToClean($newProducts, $mageEntityId)
     {
         $result  = '';
-        $dupEntityIdExists = $this->sql->select()->from('product')->where(['entity_id'=>$mageEntityId]);
+        $dupEntityIdExists = $this->sql->select()->from('product')->columns(['entityId'=>'entity_id','sku'=>'productid'])->where(['entity_id'=>$mageEntityId]);
         $dupStatement = $this->sql->prepareStatementForSqlObject($dupEntityIdExists);
         $dupResponse = $dupStatement->execute();
         $dupSet = new ResultSet;
@@ -617,12 +670,14 @@ class MagentoTable {
         }
         $id = $dupSet->toArray();
         if( count($id) ) {
+            $existingSku = $id[0]['sku'];
+            $existingEntityId = $id[0]['entityId'];
             $entityId = $this->adapter->query('Select max(entity_id) from product', Adapter::QUERY_MODE_EXECUTE);
             foreach( $entityId as $eid ) {
                 foreach( $eid as $maxEntityID ) {
-                    $newEntityId = $maxEntityID + 1;
-                    $response = $this->updateNewProduct( $newProducts, $newEntityId );
-                    $result .= $newProducts['sku'] . ' has been added to Magento Admin with new ID ' . $newEntityId . '<br />';
+                    $maxEntityId = $maxEntityID + 1;
+                    $this->updateExistingProduct( $newProducts, $maxEntityId, $existingSku, $existingEntityId, $mageEntityId );
+                    $result .= $newProducts['sku'] . ' has been added to Magento Admin with new ID ' . $mageEntityId . '<br />';
                 }
             }
         } else {
@@ -630,11 +685,6 @@ class MagentoTable {
             $result .= $newProducts['sku'] . ' has been added to Magento Admin with ID ' . $mageEntityId . '<br />';
         }
         return $result;
-    }
-
-    public function updateNewItemsToClean($newProducts, $mageEntityId)
-    {
-        return $this->validateSkuExists($newProducts, $mageEntityId);
     }
 
     public function adjustProductKeys($newProducts)
