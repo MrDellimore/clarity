@@ -460,7 +460,7 @@ class MagentoController extends AbstractActionController
     {
         if (!$this->mageSoap) {
             $sm = $this->getServiceLocator();
-            $this->mageSoap = $sm->get('Api\\Magento\\Model\\MageSoap');
+            $this->mageSoap = $sm->get('Api\Magento\Model\MageSoap');
         }
         return $this->mageSoap;
     }
