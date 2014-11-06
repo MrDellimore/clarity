@@ -1,13 +1,15 @@
 /**
  * Created by wsalazar on 8/15/14.
  */
-var magentoItems = $('.magento-updates');
-var magentoImages = $('.magento-images');
-var magentoNewItems = $('.magento-new-items');
-var soapUpdates = $('#soapUpdates');
+var magentoItems = $('.magento-updates');       //button for updated items.
+var magentoImages = $('.magento-images');       //button for new images.
+var magentoNewItems = $('.magento-new-items');  //button for new items.
+
+var soapUpdates = $('#soapUpdates');                //div for datatable.
+var soapImages = $('#soapImages');                  //div for datatable.
+var soapNewProducts = $('#soapNewProducts');        //div for datatable.
+
 var kpiUpdates = $('#kpiUpdates');
-var soapImages = $('#soapImages');
-var soapNewProducts = $('#soapNewProducts');
 var kpiImages = $('#kpiImages');
 var skuItem = $('#sku_item');
 var groupSku = $('#skuItems');
@@ -17,7 +19,6 @@ magentoNewItems.hide();
 soapNewProducts.hide();
 soapUpdates.hide();
 soapImages.hide();
-
 $.post('/api-feeds/mage-update-count', function(data){
     var count = jQuery.parseJSON(data);
     console.log(count.updateCount ,count.categoryCount ,count.linkedCount);
@@ -75,30 +76,31 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
 
         $('.show-updates').on('click',function(e){
             e.preventDefault();
-            magentoItems.show();
-            soapImages.hide();
-            soapNewProducts.hide();
-            soapUpdates.show();
-            magentoImages.hide();
-            magentoNewItems.hide();
+            soapUpdates.show();     //displays datatable
+            magentoItems.show();    //displays button
+
+            magentoImages.hide();   //hides button to new images.
+            soapImages.hide();      //hides datatable to new images.
+            soapNewProducts.hide(); //hides datatable to new items.
+            magentoNewItems.hide(); //hides button to new items.
         });
         $('.show-images').on('click',function(e){
             e.preventDefault();
-            magentoItems.hide();
-            soapImages.show();
-            soapUpdates.hide();
-            soapNewProducts.hide();
-            magentoImages.show();
-            magentoNewItems.hide();
+            magentoImages.show();   //displays button to new images.
+            soapImages.show();      //displays datatable to new images.
+
+            soapUpdates.hide();     //hides datatable to updated items.
+            magentoItems.hide();    //hides button to updated items.
+            soapNewProducts.hide(); //hides datatable to new items.
+            magentoNewItems.hide(); //hides button to new items.
         });
         $('.new-items').on('click',function(e){
             e.preventDefault();
-            magentoItems.hide();
-            kpiUpdates.hide();
-            kpiImages.hide();
-            magentoImages.hide();
-            magentoNewItems.show();
-            soapImages.hide();
-            soapUpdates.hide();
-            soapNewProducts.show();
+            magentoNewItems.show(); //displays button to new items.
+            soapNewProducts.show(); //displays datatable to new items.
+
+            magentoItems.hide();    //hides button to updated items.
+            magentoImages.hide();   //hides button to new images.
+            soapImages.hide();      //hides datatable to new images.
+            soapUpdates.hide();     //hides datatable to updated items.
         });

@@ -763,8 +763,8 @@ var TableManaged = function () {
     };
 
     var updateMageItems = function () {
-        var dTable = $('#kpiUpdates');
-        var dtable = dTable.DataTable({
+        var updateItems = $('#kpiUpdates');
+        var uItems = updateItems.DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
@@ -1408,8 +1408,8 @@ var TableManaged = function () {
     };
 
     var newSkuImages = function () {
-        var dTable = $('#kpiImages');
-        var dtable = dTable.DataTable({
+        var newImages = $('#kpiImages');
+        var nImages = newImages.DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
@@ -1652,8 +1652,8 @@ var TableManaged = function () {
     };
 
     var newProducts = function () {
-        var dTable = $('#kpiNewProducts');
-        var dtable = dTable.dataTable({
+        var newProductTable = $('#kpiNewProducts');
+        var npTable = newProductTable.dataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {

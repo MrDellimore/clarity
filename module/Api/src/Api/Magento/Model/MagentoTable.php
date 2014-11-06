@@ -232,7 +232,7 @@ class MagentoTable {
     }
 
 
-    public function fetchChangedProducts($sku, $limit)
+    public function fetchChangedProducts($sku = Null , $limit= Null)
     {
         $soapBundle = [];
         $select = $this->sql->select();
@@ -260,6 +260,7 @@ class MagentoTable {
                 $dataType = $attributes['dataType'];
                 $attributeId = $attributes['attId'];
                 $attributeCode = $attributes['attCode'];// === 'name' ? 'title' : $attributes['attCode'];
+
                 if ( $attributeCode != 'qty' ) {
                     $selectAttribute = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1])->columns([$attributeCode=>'value', 'ldate'=>'lastModifiedDate']);
                     $selectAttribute->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'), Select::JOIN_LEFT);
@@ -273,7 +274,7 @@ class MagentoTable {
                 $productAttributes = $attSet->toArray();
 //                $productAttributes = $this->productAttribute($this->sql,[$attributeCode=>'value', 'ldate'=>'lastModifiedDate'],['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1], $dataType)->toArray();
                 if(!empty($productAttributes )) {
-                    $soapBundle[$soapCount]['count'] = $soapCount;
+//                    $soapBundle[$soapCount]['count'] = $soapCount;
                     $soapBundle[$soapCount]['id'] = $product['id'];
                     $soapBundle[$soapCount]['item'] = $product['item'];
                     if ( $attributeCode == 'qty' ) {
