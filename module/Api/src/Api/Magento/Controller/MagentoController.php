@@ -371,17 +371,23 @@ class MagentoController extends AbstractActionController
         $result = '';
 
         $request = $this->getRequest();
-
+//echo '<pre>';
         if ( $request->isPost() ) {
             $checkboxNewSku = $request->getPost();
+//            var_dump($checkboxNewSku);
             if( !count( $checkboxNewSku ) ) {
                 return $this->redirect()->toRoute('apis');
             }
             if( !empty($checkboxNewSku['skuNewProduct']) ) {
+//                echo 'haha';
                 $groupedNewProducts = $this->getMagentoTable()->groupNewSku($checkboxNewSku['skuNewProduct']);
+//                var_dump($groupedNewProducts);
                 $newProducts = $this->getMagentoTable()->fetchNewProducts($groupedNewProducts);
             }
         }
+
+//        var_dump($newProducts);
+//die();
 
 //        $newProducts = $this->getMagentoTable()->fetchNewItems();
         if ( !empty($newProducts) ) {

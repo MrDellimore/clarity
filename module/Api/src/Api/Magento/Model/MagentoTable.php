@@ -507,6 +507,7 @@ class MagentoTable {
             $entityId = $nProd['id'];
             $sku = $nProd['sku'];
             $products = $resultSet->toArray();
+//            var_dump($products, 'haha');
             foreach($products as $index => $value) {
                 $attributes = $this->productAttributeLookup($this->sql);
                 foreach( $attributes as $key => $attribute ) {
@@ -527,6 +528,7 @@ class MagentoTable {
                         $attSet->initialize($attResult);
                     }
                     $attributeValues = $attSet->toArray();
+//                    var_dump($attributeValues);
                     foreach($attributeValues as $keyValue => $valueOption) {
                         $soapBundle[$startCount]['id'] = $entityId;
                         $soapBundle[$startCount]['sku'] = $sku;
