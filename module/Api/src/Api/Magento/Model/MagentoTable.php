@@ -262,7 +262,10 @@ class MagentoTable {
                 $attributeCode = $attributes['attCode'];// === 'name' ? 'title' : $attributes['attCode'];
 
                 if ( $attributeCode != 'qty' ) {
-                    $selectAttribute = $this->sql->select()->from('productattribute_'.$dataType)->where(['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1])->columns([$attributeCode=>'value', 'ldate'=>'lastModifiedDate']);
+                    $selectAttribute = $this->sql->select()
+                                                 ->from('productattribute_'.$dataType)
+                                                 ->where(['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1])
+                                                 ->columns([$attributeCode=>'value', 'ldate'=>'lastModifiedDate']);
                     $selectAttribute->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'), Select::JOIN_LEFT);
                 }
                 $attStmt = $this->sql->prepareStatementForSqlObject($selectAttribute);
@@ -578,6 +581,8 @@ class MagentoTable {
         $filter->in('product.dataState',array(2));
 
         $select->join(['u'=>'users'],'u.userid=product.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
+        $contentReviewed = new Expression("i.entity_id=product.entity_id and attribute_id = 1676 and value = 1");
+        $select->join(['i'=>'productattribute_int'],$contentReviewed,['value'=>'value']);
         if( $sku ) {
             $filter->like('product.productid',$sku.'%');
         }

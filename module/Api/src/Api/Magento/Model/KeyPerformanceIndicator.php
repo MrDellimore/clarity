@@ -62,7 +62,9 @@ class KeyPerformanceIndicator {
     {
         $select = $this->sql->select();
         $select->from('product');
-        $select->where(array( 'dataState' => '2'));
+        $select->where(array( 'product.dataState' => '2'));
+        $contentReviewed = new Expression("i.entity_id=product.entity_id and attribute_id = 1676 and value = 1");
+        $select->join(['i'=>'productattribute_int'],$contentReviewed,['value'=>'value']);
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -71,6 +73,7 @@ class KeyPerformanceIndicator {
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
+//        echo $select->getSqlString(new \Pdo($this->adapter));
         return $resultSet->count();
     }
 

@@ -174,6 +174,8 @@ class ConsoleMagentoTable
             'website'       =>  'website',
             'dateCreated'   =>  'creationdate',
         ])->where(array('dataState'=>2));
+        $contentReviewed = new Expression("i.entity_id=product.entity_id and attribute_id = 1676 and value = 1");
+        $select->join(['i'=>'productattribute_int'],$contentReviewed,['value'=>'value']);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;
@@ -190,7 +192,17 @@ class ConsoleMagentoTable
                 $tableType = $fields['dataType'];
                 $attributeId = (int)$fields['attId'];
                 $attributeCode = $fields['attCode'];
-                $attributeValues = $this->productAttribute($this->sql, [$attributeCode=>'value'],['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2],$tableType)->toArray();
+                $selectAttributes = $this->sql->select()->from('productattribute_'.$tableType)
+                          ->columns([$attributeCode=>'value'])
+                          ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2]);
+                $statementAtts = $this->sql->prepareStatementForSqlObject($selectAttributes);
+                $resultAtts = $statementAtts->execute();
+                $resultSetAtts = new ResultSet;
+                if ($resultAtts instanceof ResultInterface && $resultAtts->isQueryResult()) {
+                    $resultSetAtts->initialize($resultAtts);
+                }
+                $attributeValues = $resultSetAtts->toArray();
+//                $attributeValues = $this->productAttribute($this->sql, [$attributeCode=>'value'],['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2],$tableType)->toArray();
                 foreach($attributeValues as $keyValue => $valueOption){
                     $soapBundle[$count]['website'] = $value['website'];
 //                    $soapBundle[$count][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
@@ -201,11 +213,13 @@ class ConsoleMagentoTable
                             $soapBundle[$count][$attributeCode] = 0;
                         }
                         if( isset($attributeValues[$keyValue][$attributeCode]) ){
-                            if ( $attributeCode ==  'status' ) {
-                                $soapBundle[$count][$attributeCode] = (int)$valueOption[$attributeCode];
-                            } else {
-                                $soapBundle[$count][$attributeCode] = $valueOption[$attributeCode];
-                            }
+//                            if( $attributeCode == 'content_reviewed' && (int)$valueOption[$attributeCode] == 1 ) {
+                                if ( $attributeCode ==  'status' ) {
+                                    $soapBundle[$count][$attributeCode] = (int)$valueOption[$attributeCode];
+                                } else {
+                                    $soapBundle[$count][$attributeCode] = $valueOption[$attributeCode];
+                                }
+//                            }
                         }
 
                     }
