@@ -21,7 +21,6 @@ var ManageContent = function () {
         $( "#generalForm" ).submit(function( event ) {
             $("#submitForm").attr("disabled","disabled");
             event.preventDefault();
-console.log('haha');
             //forms from content page
             var generalForm = $('#generalForm').serializeArray();
             var imageForm = $('#imageForm').serializeArray();
