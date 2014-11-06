@@ -64,7 +64,7 @@ return array(
                         'options'    => array(
                             'route' =>  '/content/product[/][/:sku]',
                             'constraints'   =>  array(
-                                'sku'    =>  '[0-9a-zA-Z\-]+',
+                                'sku'    =>  '[0-9a-zA-Z].+',
                             ),
                             'defaults'  =>  array(
                                 'controller'    => 'Content\ContentForm\Controller\Products',

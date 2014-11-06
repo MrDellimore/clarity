@@ -118,7 +118,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">SKU</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="sku" value="<?= $this->data->getSku(); ?>" placeholder="SKU" style="width:140px" required/>
+                        <input type="text" class="form-control" name="sku" value="<?=$this->data->getSku(); ?>" placeholder="SKU" style="width:140px" required/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -983,20 +983,20 @@ $i=0;
 
     </div>
     <div class = "col-md-9">
-    <div class="portlet box green-meadow">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class="fa fa-gift"></i>Attributes
-        </div>
-    </div>
+        <div class="portlet box green-meadow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>Attributes
+                </div>
+            </div>
 
 
 
     <div class="portlet-body">
-    <form id="attributesForm">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="form-group">
+        <form id="attributesForm">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
                 <label class="control-label col-md-6" style="color:#ff0000">Zoom Focal Length</label>
                 <div class="col-md-6">
                     <select name="zoomFocalLength[option]" class="form-control input-small" data-placeholder="Select Focal Length[Lens]">

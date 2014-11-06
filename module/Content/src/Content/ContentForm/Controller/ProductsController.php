@@ -59,8 +59,13 @@ class ProductsController extends AbstractActionController {
         else{
             return $this->redirect()->toRoute('search');
         }
-
+//        echo '<pre>';
+//        var_dump($skuData);
+//        echo "==============";
+//        var_dump($queriedData);
+//        exit();
         $view = new ViewModel(array('data'=>$queriedData,'originalData' => $skuData));
+//        $view->setTerminal(true);
 
         return $view;
     }
