@@ -19,6 +19,7 @@ var ManageContent = function () {
 
 //submitting content form
         $( "#generalForm" ).submit(function( event ) {
+            $("#submitForm").attr("disabled","disabled");
             event.preventDefault();
 console.log('haha');
             //forms from content page
