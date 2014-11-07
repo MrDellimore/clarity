@@ -200,55 +200,6 @@ class MageSoap extends AbstractSoap{
         return $this->_soapCall($packet, Null, $skuCollection);
     }
 
-//    public function soapUpdateProducts($changedProducts)
-//    {
-//        $this->startStopwatch();
-//        $packet = $skuCollection = $atts = [];
-//        foreach( $changedProducts as $key => $attributes ) {
-//            $entityID = $attributes['id'];
-//            array_shift($attributes);
-//
-//            foreach( $attributes as $ind => $attrib ) {
-//                $skuCollection[] = $attrib['sku'];
-//                $newValue = $attrib['newValue'];
-//                foreach( $attrib as $prop => $attribute ) {
-//                    if ( $prop == 'property' ) {
-//                        $atts[$attribute] = $newValue;
-//                    }
-//                }
-//                $packet[$key] = array('entity_id' => $entityID, $atts);
-//            }
-//            $atts = [];
-//        }
-//        return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
-//    }
-
-    public function soapChangedProducts($changedProds)
-    {
-        $packet = [];
-        $skuCollection = [];
-        $attributes = [];
-        //var_dump($changedProds);
-        foreach( $changedProds as $index => $fields ) {
-            $keys = array_keys($fields);
-            $skuCollection[] = $sku = $fields['sku'];
-            $entityID = $fields['id'];
-            array_shift($keys);
-            array_shift($keys);
-            array_shift($fields);
-            array_shift($fields);
-            foreach( $keys as $ind => $attFields ) {
-                $attributes[$attFields] = ($attFields == 'website') ? [$changedProds[$index][$attFields]] : $changedProds[$index][$attFields];
-            }
-            $packet[$index] = array('entity_id' => $entityID, $attributes);
-            $attributes = [];
-        }
-//        echo '<pre>';
-//        var_dump($packet);
-//        die();
-        return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
-    }
-
 
 
     public function soapAddProducts($newProds)
@@ -258,14 +209,10 @@ class MageSoap extends AbstractSoap{
         $skuCollection = [];
         $attributes = [];
         foreach( $newProds as $index => $fields ) {
-            $keys = array_keys($fields);
-            $skuCollection[] = $sku = $fields['sku'];
-//            array_shift($keys);
+            $keys = array_keys($newProds[$index]);
+            $skuCollection[] = $sku = $newProds[$index]['sku'];
             array_shift($keys);
-            array_shift($keys);
-//            array_shift($fields);
-            array_shift($fields);
-            array_shift($fields);
+            array_shift($newProds[$index]);
             foreach( $keys as $ind => $attFields ) {
                 $attributes[$attFields] = ($attFields == 'website') ? [$newProds[$index][$attFields]] : $newProds[$index][$attFields];
             }
@@ -283,15 +230,12 @@ class MageSoap extends AbstractSoap{
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-//        if( is_null($user) ) {
-//            $user = 'Console';
-//        }
 //        foreach( $Skus as $sku ){
             $fieldValueMap = array(
-                'sku'       =>  $Sku,
+                'sku'   =>  $Sku,
                 'resource'  =>  $resource,
-                'speed'     =>  $speed,
-                'pushedby'  =>   $user,
+                 'speed'  =>  $speed,
+                'pushedby'   =>   $user,
                 'status'    =>  $status,
             );
             $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,
