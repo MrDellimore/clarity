@@ -577,6 +577,13 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaKeywords(), $oldData->getMetaKeywords(),$property);
             $updateditems .= $property.'<br>';
         }
+//update Meta Description
+        if(!(is_null($form->getMetaDescription()))) {
+            $property = 'meta description';
+            $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaDescription(), $oldData->getMetaDescription(), /*$oldData->getManufacturer(),*/ $property);//,'105','varchar');
+            $updateditems .= 'Meta Description<br>';
+        }
 //update status
         if(!(is_null($form->getStatus()))) {
             $property = 'status';
@@ -646,13 +653,6 @@ class ProductsTable{
             $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getIncludesFree(), $oldData->getIncludesFree(), /*$oldData->getManufacturer(),*/ $property);//,'1679','text');ws
             $updateditems .= 'Includes Free<br>';
-        }
-//update Meta Description
-        if(!(is_null($form->getMetaDescription()))) {
-            $property = 'meta description';
-            $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaDescription(), $oldData->getMetaDescription(), /*$oldData->getManufacturer(),*/ $property);//,'105','varchar');
-            $updateditems .= 'Meta Description<br>';
         }
 //update Original Content
         if(array_key_exists('option',$form->getOriginalContent())) {
