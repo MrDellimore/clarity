@@ -278,18 +278,18 @@ class MagentoTable {
 //                $productAttributes = $this->productAttribute($this->sql,[$attributeCode=>'value', 'ldate'=>'lastModifiedDate'],['attribute_id'=>$attributeId,'entity_id'=>$product['id'], 'dataState'=>1], $dataType)->toArray();
                 if(!empty($productAttributes )) {
 //                    $soapBundle[$soapCount]['count'] = $soapCount;
-                    $soapBundle[$soapCount]['id'] = $product['id'];
-                    $soapBundle[$soapCount]['item'] = $product['item'];
                     if ( $attributeCode == 'qty' ) {
                         continue;
                     } else {
+                        $soapBundle[$soapCount]['id'] = $product['id'];
+                        $soapBundle[$soapCount]['item'] = $product['item'];
                         $soapBundle[$soapCount]['oproperty'] = $attributeCode;
                         $property = preg_match('(_)',$attributeCode) ? str_replace('_',' ',$attributeCode) : $attributeCode;
                         $soapBundle[$soapCount]['property'] = ucfirst($property);
                         $soapBundle[$soapCount]['newValue'] = $productAttributes[0][$attributeCode];
+                        $soapBundle[$soapCount]['ldate'] = $productAttributes[0]['ldate'];
+                        $soapBundle[$soapCount]['fullName'] = $productAttributes[0]['fName']. ' ' . $productAttributes[0]['lName'];
                     }
-                    $soapBundle[$soapCount]['ldate'] = $productAttributes[0]['ldate'];
-                    $soapBundle[$soapCount]['fullName'] = $productAttributes[0]['fName']. ' ' . $productAttributes[0]['lName'];
                     $soapCount++;
                 }
             }
