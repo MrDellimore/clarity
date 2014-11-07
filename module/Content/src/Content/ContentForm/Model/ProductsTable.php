@@ -170,7 +170,7 @@ class ProductsTable{
         $result[array_keys($newAttibute)[0]]['option'] = current($newAttibute);
 
         //Fetch metaDescrition
-        $newAttibute = $this->fetchAttribute($entityid,'text','105','metaDescription');
+        $newAttibute = $this->fetchAttribute($entityid,'varchar','105','metaDescription');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch Manufacturer Option
@@ -570,6 +570,13 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getDescription(), $oldData->getDescription(), /*$oldData->getManufacturer(),*/ $property);//'97','text');
             $updateditems .= 'Description<br>';
         }
+//update MetaTitle
+        if(!(is_null($form->getMetaTitle()))) {
+            $property = 'MetaTitle';
+            $this->updateAttribute($form->getId(),$form->getMetaTitle(),'103','varchar');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaTitle(), $oldData->getMetaTitle(),$property);
+            $updateditems .= $property.'<br>';
+        }
 //update MetaKeywords
         if(!(is_null($form->getMetaKeywords()))) {
             $property = 'MetaKeywords';
@@ -579,7 +586,7 @@ class ProductsTable{
         }
 //update Meta Description
         if(!(is_null($form->getMetaDescription()))) {
-            $property = 'meta description';
+            $property = 'MetaDescription';
             $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaDescription(), $oldData->getMetaDescription(), /*$oldData->getManufacturer(),*/ $property);//,'105','varchar');
             $updateditems .= 'Meta Description<br>';
@@ -746,18 +753,32 @@ class ProductsTable{
         $inserteditems= '';
         $startMessage = 'The following fields have been inserted :<br>';
 
-//update Title
+//Title
         if(!(is_null($form->getSpecialPrice()))) {
             $property = 'Special Price';
             $this->insertAttribute($oldData->getId(),$form->getSpecialPrice(),'567','decimal');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getSpecialPrice(), "",$property);
             $inserteditems .= $property.'<br>';
         }
-//update Metakeywords
+//Metakeywords
         if(!(is_null($form->getMetaKeywords()))) {
             $property = 'MetaKeywords';
             $this->insertAttribute($oldData->getId(),$form->getMetaKeywords(),'104','text');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getMetaKeywords(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//MetaTitle
+        if(!(is_null($form->getMetaTitle()))) {
+            $property = 'MetaTitle';
+            $this->insertAttribute($oldData->getId(),$form->getMetaTitle(),'103','varchar');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getMetaTitle(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//MetaDescription
+        if(!(is_null($form->getMetaDescription()))) {
+            $property = 'MetaDescription';
+            $this->insertAttribute($oldData->getId(),$form->getMetaDescription(),'105','varchar');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getMetaDescription(), "",$property);
             $inserteditems .= $property.'<br>';
         }
 //Manufacturer

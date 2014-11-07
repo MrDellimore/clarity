@@ -38,7 +38,7 @@
     </div>
 
     <div class="actions btn-set">
-        <button type="button" name="back" class="btn default"><i class="fa fa-angle-left"></i> Back</button>
+        <a class="btn default" href="/content/search"><i class="fa fa-angle-left"></i> Back</a>
         <button class="btn green" id="submitForm"><i class="fa fa-check" ></i> Save</button>
         <!--<input class="btn default" value="Save" type="submit">-->
     </div>
@@ -226,10 +226,10 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Condition</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium" data-placeholder="No Condition Set" name="condition">
+                        <select class="form-control input-medium" data-placeholder="No Condition Set" name="condition[option]">
                             <option value=""></option>
-                            <option value="1332" <?= $this->data->getCondition() == 1332 ? 'selected' :''?> >New</option>
-                            <option value="1331" <?= $this->data->getCondition() == 1331 ? 'selected' :''?> >Refurbished</option>
+                            <option value="1332" <?= $this->data->getCondition()['option'] == 1332 ? 'selected' :''?> >New</option>
+                            <option value="1331" <?= $this->data->getCondition()['option'] == 1331 ? 'selected' :''?> >Refurbished</option>
                         </select>
                     </div>
                 </div>
@@ -238,12 +238,12 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Tax Class</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium" data-placeholder="Select..." name="taxClass">
+                        <select class="form-control input-medium" data-placeholder="Select..." name="taxClass[option]">
 
-                            <option value="0" <?= $this->data->getTaxClass() == 0 ? 'selected' :''?> >None</option>
-                            <option value="1" <?= $this->data->getTaxClass() == 1 ? 'selected' :''?> >Default</option>
-                            <option value="2" <?= $this->data->getTaxClass() == 2 ? 'selected' :''?> >Taxable Goods</option>
-                            <option value="4" <?= $this->data->getTaxClass() == 3 ? 'selected' :''?> >Shipping</option>
+                            <option value="0" <?= $this->data->getTaxClass()['option'] == 0 ? 'selected' :''?> >None</option>
+                            <option value="1" <?= $this->data->getTaxClass()['option'] == 1 ? 'selected' :''?> >Default</option>
+                            <option value="2" <?= $this->data->getTaxClass()['option'] == 2 ? 'selected' :''?> >Taxable Goods</option>
+                            <option value="4" <?= $this->data->getTaxClass()['option'] == 3 ? 'selected' :''?> >Shipping</option>
                         </select>
                     </div>
                 </div>
@@ -255,12 +255,12 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Custom Stock Status</label>
                     <div class="col-md-9">
-                        <select class="form-control input-medium" data-placeholder="Select..." name="stockStatus">
-                            <option value="0" <?= $this->data->getStockStatus() == 0 ? 'selected' :''?> > </option>
-                            <option value="3756" <?= $this->data->getStockStatus() == 3756 ? 'selected' :''?> >Pre-Order Only </option>
-                            <option value="4265" <?= $this->data->getStockStatus() == 4265 ? 'selected' :''?> >Call to Order</option>
-                            <option value="3784" <?= $this->data->getStockStatus() == 3784 ? 'selected' :''?> >Ships in 5-7 Days</option>
-                            <option value="3755" <?= $this->data->getStockStatus() == 3755 ? 'selected' :''?> >Ships in 3-4 Days</option>
+                        <select class="form-control input-medium" data-placeholder="Select..." name="stockStatus[option]">
+                            <option value="0" <?= $this->data->getStockStatus()['option'] == 0 ? 'selected' :''?> > </option>
+                            <option value="3756" <?= $this->data->getStockStatus()['option'] == 3756 ? 'selected' :''?> >Pre-Order Only </option>
+                            <option value="4265" <?= $this->data->getStockStatus()['option'] == 4265 ? 'selected' :''?> >Call to Order</option>
+                            <option value="3784" <?= $this->data->getStockStatus()['option'] == 3784 ? 'selected' :''?> >Ships in 5-7 Days</option>
+                            <option value="3755" <?= $this->data->getStockStatus()['option'] == 3755 ? 'selected' :''?> >Ships in 3-4 Days</option>
                         </select>
                     </div>
                 </div>
