@@ -81,8 +81,16 @@ class ProductsTable{
         $newAttibute = $this->fetchAttribute($entityid,'int','273','Status');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
+        //Fetch Condition
+        $newAttibute = $this->fetchAttribute($entityid,'int','1655','Condition');
+        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+
         //Fetch Tax Class
         $newAttibute = $this->fetchAttribute($entityid,'int','274','taxclass');
+        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+
+        //Fetch Stock Status
+        $newAttibute = $this->fetchAttribute($entityid,'int','1661','stockStatus');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch URLkey
@@ -154,7 +162,7 @@ class ProductsTable{
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch metaKeywords
-        $newAttibute = $this->fetchAttribute($entityid,'text','104','metaKeywords');
+        $newAttibute = $this->fetchAttribute($entityid,'varchar','104','metaKeywords');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch metaTitle
@@ -227,23 +235,6 @@ class ProductsTable{
         //Fetch Visibility Option
         $newAttibute = $this->fetchAttribute($entityid,'int','526','Visibility');
         $newOption = $this->fetchOption(current($newAttibute),'526','Visibility');
-        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
-
-        //Fetch Condition
-        $newAttibute = $this->fetchAttribute($entityid,'int','1655','Condition');
-        $newOption = $this->fetchOption(current($newAttibute),'1655','Condition');
-        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
-
-        //Fetch Custom Stock Status
-        $newAttibute = $this->fetchAttribute($entityid,'int','1661','stockStatus');
-        $newOption = $this->fetchOption(current($newAttibute),'1661','stockStatus');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
-        $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
-
-        //Fetch Tax Class
-        $newAttibute = $this->fetchAttribute($entityid,'int','274','taxClass');
-        $newOption = $this->fetchOption(current($newAttibute),'274','taxClass');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
         $result[array_keys($newAttibute)[0]] = array('option' => current($newAttibute), 'value' => current($newOption));
 
 
@@ -560,7 +551,7 @@ class ProductsTable{
         if(!(is_null($form->getTitle()))) {
             $property = 'title';
             $this->updateAttribute($form->getId(),$form->getTitle(),'96','varchar');
-            $this->insertLogging($form->getId(),$oldData->getSku(), $form->getTitle(), $oldData->getTitle(), $property);
+            $this->insertLogging($form->getId(),$oldData->getSku(), $form->getTitle(), $oldData->getTitle(), /*$oldData->getManufacturer(),*/ $property);//,'96','varchar');
             $updateditems .= 'Title<br>';
         }
 //update description
@@ -570,26 +561,12 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getDescription(), $oldData->getDescription(), /*$oldData->getManufacturer(),*/ $property);//'97','text');
             $updateditems .= 'Description<br>';
         }
-//update MetaKeywords
-        if(!(is_null($form->getMetaKeywords()))) {
-            $property = 'MetaKeywords';
-            $this->updateAttribute($form->getId(),$form->getMetaKeywords(),'104','text');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaKeywords(), $oldData->getMetaKeywords(),$property);
-            $updateditems .= $property.'<br>';
-        }
 //update status
         if(!(is_null($form->getStatus()))) {
             $property = 'status';
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStatus(), $oldData->getStatus(), /*$oldData->getManufacturer(),*/ $property);//,'273','int');
             $updateditems .= 'Status<br>';
-        }
-//update special price
-        if(!(is_null($form->getSpecialPrice()))) {
-            $property = 'Special Price';
-            $this->updateAttribute($form->getId(),$form->getSpecialPrice(),'567','decimal');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getSpecialPrice(), $oldData->getSpecialPrice(), $property);
-            $updateditems .= $property.'<br>';
         }
 //update manufacturer
         if(array_key_exists('option',$form->getManufacturer())) {
@@ -598,40 +575,24 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getManufacturer()['option'], $oldData->getManufacturer()['option'], $property);
             $updateditems .= 'Manufacturer<br>';
         }
-//update Brand
-        if(array_key_exists('option',$form->getBrand())) {
-            $property = 'Brand';
-            $this->updateAttribute($form->getId(),$form->getBrand()['option'],'1641','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getBrand()['option'], $oldData->getBrand()['option'], $property);
-            $updateditems .= $property.'<br>';
-        }
-//update visibility
-        if(array_key_exists('option', $form->getVisibility())) {
-            $property = 'Visibility';
-            $this->updateAttribute($form->getId(),$form->getVisibility()['option'],'526','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getVisibility()['option'], $oldData->getVisibility()['option'], $property);
-            $updateditems .= 'Visibility<br>';
-        }
-//update tax class
-        if(array_key_exists('option', $form->getTaxClass())) {
-            $property = 'Tax Class';
-            $this->updateAttribute($form->getId(),$form->getTaxClass()['option'],'274','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getTaxClass()['option'], $oldData->getTaxClass()['option'], $property);
-            $updateditems .= 'Tax Class<br>';
-        }
-//update Condition
-        if(array_key_exists('option', $form->getCondition())) {
-            $property = 'Condition';
-            $this->updateAttribute($form->getId(),$form->getCondition()['option'],'1655','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getCondition()['option'], $oldData->getCondition()['option'], $property);
-            $updateditems .= 'Condition<br>';
-        }
-//update Custom Stock Status
-        if(array_key_exists('option', $form->getStockStatus())) {
-            $property = 'Custom Stock Status';
-            $this->updateAttribute($form->getId(),$form->getStockStatus()['option'],'1661','int');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStockStatus()['option'], $oldData->getStockStatus()['option'], $property);
-            $updateditems .= 'Custom Stock Status<br>';
+
+        //update visibility
+        /*
+         * todo needs to be handled like an option.
+         */
+//        if(!(is_null($form->getVisibility()))) {
+//            $property = 'visibility';
+//            $this->updateAttribute($form->getId(),$form->getVisibility(),'526','int');
+//            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getVisibility(), $oldData->getVisibility(),/*$oldData->getManufacturer(),*/ $property);//,'526','int');
+//            $updateditems .= 'Visibility<br>';
+//        }
+
+//update stock status
+        if(!(is_null($form->getStockStatus()))) {
+            $property = 'stock status';
+            $this->updateAttribute($form->getId(),$form->getStockStatus(),'1661','int');
+            $this->insertLogging($form->getId(),$form->getStockStatus(), $oldData->getStockStatus(),$oldData->getManufacturer(), $property);//,'1661','int');
+            $updateditems .= 'Stock Status<br>';
         }
 //update in box
         if(!(is_null($form->getInBox()))) {
@@ -640,6 +601,7 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getInBox(), $oldData->getInBox(),/*$oldData->getManufacturer(),*/ $property);//,'1633','text');
             $updateditems .= 'In Box<br>';
         }
+
 //update Includes Free
         if(!(is_null($form->getIncludesFree()))) {
             $property = 'includes free';
@@ -647,6 +609,7 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getIncludesFree(), $oldData->getIncludesFree(), /*$oldData->getManufacturer(),*/ $property);//,'1679','text');ws
             $updateditems .= 'Includes Free<br>';
         }
+
 //update Meta Description
         if(!(is_null($form->getMetaDescription()))) {
             $property = 'meta description';
@@ -654,6 +617,7 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaDescription(), $oldData->getMetaDescription(), /*$oldData->getManufacturer(),*/ $property);//,'105','varchar');
             $updateditems .= 'Meta Description<br>';
         }
+
 //update Original Content
         if(array_key_exists('option',$form->getOriginalContent())) {
             $property = 'original content';
@@ -668,6 +632,7 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getContentReviewed()['option'], $oldData->getContentReviewed()['option'], /*$oldData->getManufacturer(),*/ $property);//,'1676','int');
             $updateditems .= 'Content Reviewed<br>';
         }
+
 //update Short Description
         if(!(is_null($form->getShortDescription()))) {
             $property = 'short description';
@@ -730,6 +695,8 @@ class ProductsTable{
         }
 
 
+
+
         if($updateditems != ''){
             $updateditems = $startMessage.$updateditems;
         }
@@ -746,103 +713,47 @@ class ProductsTable{
         $inserteditems= '';
         $startMessage = 'The following fields have been inserted :<br>';
 
-//update Title
-        if(!(is_null($form->getSpecialPrice()))) {
-            $property = 'Special Price';
-            $this->insertAttribute($oldData->getId(),$form->getSpecialPrice(),'567','decimal');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getSpecialPrice(), "",$property);
-            $inserteditems .= $property.'<br>';
-        }
-//update Metakeywords
-        if(!(is_null($form->getMetaKeywords()))) {
-            $property = 'MetaKeywords';
-            $this->insertAttribute($oldData->getId(),$form->getMetaKeywords(),'104','text');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getMetaKeywords(), "",$property);
-            $inserteditems .= $property.'<br>';
-        }
-//Manufacturer
-        if(array_key_exists('option', $form->getManufacturer())) {
-            $property = 'Manufacturer';
-            $this->insertAttribute($oldData->getId(),$form->getManufacturer()['option'],'102','int');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getManufacturer()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
-        }
-//Brand
-        if(array_key_exists('option', $form->getBrand())) {
-            $property = 'Brand';
-            $this->insertAttribute($oldData->getId(),$form->getBrand()['option'],'1641','int');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getBrand()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
-        }
-//Custom Stock Status
-        if(array_key_exists('option', $form->getStockStatus())) {
-            $property = 'Custom Stock Status';
-            $this->insertAttribute($oldData->getId(),$form->getStockStatus()['option'],'1661','int');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getStockStatus()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
-        }
-//Tax Class
-        if(array_key_exists('option', $form->getTaxClass())) {
-            $property = 'Tax Class';
-            $this->insertAttribute($oldData->getId(),$form->getTaxClass()['option'],'274','int');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getTaxClass()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
-        }
-//Condition
-        if(array_key_exists('option', $form->getCondition())) {
-            $property = 'Condition';
-            $this->insertAttribute($oldData->getId(),$form->getCondition()['option'],'1655','int');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getCondition()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
-        }
-//Visibility
-        if(array_key_exists('option', $form->getVisibility())) {
-            $property = 'Visibility';
-            $this->insertAttribute($oldData->getId(),$form->getVisibility()['option'],'526','int');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getVisibility()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
-        }
 //Zoom Focal Length
         if(array_key_exists('option', $form->getZoomFocalLength())) {
             $property = 'Zoom Focal Length';
             $this->insertAttribute($oldData->getId(),$form->getZoomFocalLength()['option'],'1731','int');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getZoomFocalLength()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
+            $inserteditems .= 'Zoom Focal Length<br>';
         }
 //Prime focal length
         if(array_key_exists('option', $form->getPrimeFocalLength())) {
             $property = 'Prime Focal Length';
             $this->insertAttribute($oldData->getId(),$form->getPrimeFocalLength()['option'],'1713','int');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getPrimeFocalLength()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
+            $inserteditems .= 'Prime Focal Length<br>';
         }
 //Camera Style
         if(array_key_exists('option', $form->getCameraStyle())) {
             $property = 'Camera Style';
             $this->insertAttribute($oldData->getId(),$form->getCameraStyle()['option'],'1717','int');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getCameraStyle()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
+            $inserteditems .= 'Camera Style<br>';
         }
 //Apeture
         if(array_key_exists('option', $form->getAperture())) {
             $property = 'Apeture';
             $this->insertAttribute($oldData->getId(),$form->getAperture()['option'],'1715','int');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getAperture()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
+            $inserteditems .= 'Apeture<br>';
         }
 //Original Content
         if(array_key_exists('option', $form->getOriginalContent())) {
             $property = 'Original Content';
             $this->insertAttribute($oldData->getId(),$form->getOriginalContent()['option'],'1659','int');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getOriginalContent()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
+            $inserteditems .= 'Original Content<br>';
         }
 //Content Reviewed
         if(array_key_exists('option', $form->getContentReviewed())) {
             $property = 'Content Reviewed';
             $this->insertAttribute($oldData->getId(),$form->getContentReviewed()['option'],'1676','int');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getContentReviewed()['option'], "",$property);
-            $inserteditems .= $property.'<br>';
+            $inserteditems .= 'Content Reviewed<br>';
         }
 
 //Create new Image
@@ -876,6 +787,10 @@ class ProductsTable{
                 $inserteditems .= count($accessory). ' Accessories Added';
             }
         }
+
+
+
+
 
 
         if($inserteditems != ''){

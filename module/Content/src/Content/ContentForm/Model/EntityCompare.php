@@ -32,7 +32,7 @@ class EntityCompare {
         //compare arrays
         $dirt = $this->getDirty($oldData,$newData);
 
-//        echo '<pre>';
+        echo '<pre>';
 //        var_dump($dirt);
 //        var_dump($oldData['image_gallery']);
 //        var_dump($newData['image_gallery']);
@@ -118,7 +118,7 @@ class EntityCompare {
                 }
 
                 //standard comparison
-                else if(strip_tags(html_entity_decode($value)) != strip_tags(html_entity_decode($newData[$key])) && !(is_null($newData[$key]) && $value != null )){
+                else if(strip_tags(html_entity_decode($value)) != strip_tags(html_entity_decode($newData[$key])) && !(is_null($newData[$key]))){
                     $dirtyArray[$key] = $newData[$key];
                 }
             }
@@ -185,9 +185,6 @@ class EntityCompare {
         $hydrator->hydrate($newArray,$newEntity);
 
         $newEntity->setId($old['id']);
-
-        //var_dump($newEntity->getSpecialPrice());
-        //die();
         return $newEntity;
 
     }

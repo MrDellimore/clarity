@@ -28,13 +28,13 @@ class Products {
 
     protected $manufacturer = array();
 
-    protected $visibility = array();
+    protected $visibility;
 
-    protected $condition = array();
+    protected $condition;
 
-    protected $taxClass = array();
+    protected $taxClass;
 
-    protected $stockStatus = array();
+    protected $stockStatus;
 
     protected $price;
 
@@ -44,15 +44,15 @@ class Products {
 
     protected $cost;
 
-    protected $rebatePrice;
+    protected $rebatePrice = 0;
 
     protected $rebateStartEndDate;
 
-    protected $specialPrice;
+    protected $specialPrice = 0;
 
     protected $specialStartEndDate;
 
-    protected $mailInRebate;
+    protected $mailInRebate = 0;
 
     protected $mailInStartEndDate;
 
