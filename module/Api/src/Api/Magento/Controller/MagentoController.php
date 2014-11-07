@@ -47,14 +47,17 @@ class MagentoController extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
-        $updateCount = $kpi->updateCount();
+        $attributeCount = $kpi->updateCount();
         $categoryCount = $kpi->fetchCategoryCount();
         $linkedCount = $kpi->fetchLinkedCount();
+//        echo $attributeCount . ' ' . $categoryCount . ' ' . $linkedCount . ' ' ;
 
+        $updateCount = (int)$attributeCount + (int) $categoryCount + (int) $linkedCount;
+//echo $updateCount . ' ' ;
         $result = json_encode([
-                'updateCount'       =>      $updateCount,
-                'categoryCount'     =>      $categoryCount,
-                'linkedCount'     =>      $linkedCount,
+                'updateCount'       =>      (int)$updateCount,
+//                'categoryCount'     =>      (int)$categoryCount,
+//                'linkedCount'     =>      (int)$linkedCount,
                 ]
         );
         $event    = $this->getEvent();
@@ -182,7 +185,7 @@ class MagentoController extends AbstractActionController
             $apiData = $request->getPost();
             $draw = $apiData['draw'];
             $sku = $apiData['search']['value'];
-            $limit = $apiData['length'];
+            $limit = (int)$apiData['length'];
 
             if($limit == '-1'){
                 $limit = 100;

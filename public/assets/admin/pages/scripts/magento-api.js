@@ -21,8 +21,8 @@ soapUpdates.hide();
 soapImages.hide();
 $.post('/api-feeds/mage-update-count', function(data){
     var count = jQuery.parseJSON(data);
-    console.log(count.updateCount ,count.categoryCount ,count.linkedCount);
-    $('div#mage-update').append(count.updateCount + count.categoryCount + count.linkedCount);
+    console.log(count.updateCount ); //,count.categoryCount ,count.linkedCount
+    $('div#mage-update').append(count.updateCount); // + count.categoryCount + count.linkedCount
 });
 
 $.post('/api-feeds/mage-new-image-count', function(data){
