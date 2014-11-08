@@ -762,6 +762,37 @@ var TableManaged = function () {
         });
     };
 
+    function checkedUpdatedDataTable()
+    {
+        //            This is for updated products
+        var uncheckedItemLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
+        var checkedItemLength = $('tbody input.skuItem:checkbox(":checked")').length;
+        var checkedItems = checkedItemLength - uncheckedItemLength;
+
+        //            This is for new or deleted categories
+        var uncheckedCategoryLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+        var checkboxCategoryLength = $('tbody input.skuCategory:checkbox(":checked")').length;
+        var checkedCategories = checkboxCategoryLength - uncheckedCategoryLength;
+
+        //            This is for new or deleted related products
+        var uncheckedLinkedLength = $('tbody input.skuLink:checkbox:not(":checked")').length;
+        var checkboxLinkedLength = $('tbody input.skuLink:checkbox(":checked")').length;
+        var checkedLinked = checkboxLinkedLength - uncheckedLinkedLength;
+
+        //            console.log(checkedItems, checkedCategories, checkedLinked);
+
+        var checked = checkedItems + checkedCategories + checkedLinked;
+
+        $('.pushItemsBtn').empty().append("Push " + checked + " Items");
+
+        if ( checked > 0 ) {
+            $('.pushItemsBtn').attr('disabled',false);
+        }
+        if ( checked == 0 ) {
+            $('.pushItemsBtn').attr('disabled',true);
+        }
+    }
+
     var updateMageItems = function () {
         var updateItems = $('#kpiUpdates');
         var uItems = updateItems.DataTable({
@@ -842,44 +873,50 @@ var TableManaged = function () {
             var sku = idChange.closest('td').siblings('td.sku').text();
             var position = idChange.closest('tr').index();
 //            var position = idChange.closest('td').siblings('td.count').text();
-            var uncheckedLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
-            var checkboxLength = $('tbody input.skuItem:checkbox(":checked")').length;
 
+            checkedUpdatedDataTable();
+
+
+////            This is for updated products
+            var uncheckedItemLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
+            var checkedItemLength = $('tbody input.skuItem:checkbox(":checked")').length;
+//            var checkedItems = checkedItemLength - uncheckedItemLength;
+//
+////            This is for new or deleted categories
+//            var uncheckedCategoryLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+//            var checkboxCategoryLength = $('tbody input.skuCategory:checkbox(":checked")').length;
+//            var checkedCategories = checkboxCategoryLength - uncheckedCategoryLength;
+//
+////            This is for new or deleted related products
+//            var uncheckedLinkedLength = $('tbody input.skuLink:checkbox:not(":checked")').length;
+//            var checkboxLinkedLength = $('tbody input.skuLink:checkbox(":checked")').length;
+//            var checkedLinked = checkboxLinkedLength - uncheckedLinkedLength;
+//
+////            console.log(checkedItems, checkedCategories, checkedLinked);
+//
+//            var checked = checkedItems + checkedCategories + checkedLinked;
+//
+//            if ( checked > 0 ) {
+//                $('.pushItemsBtn').attr('disabled',false);
+//            }
+//            if ( checked == 0 ) {
+//                $('.pushItemsBtn').attr('disabled',true);
+//            }
 
             if ( $(this).prop('checked') ) {
-                if( uncheckedLength == 0) {
+                if( uncheckedItemLength == 0) {
                     groupSku.prop('checked','checked');
                 }
             } else {
-                if( checkboxLength < 3 ) {
+                if( uncheckedItemLength < checkedItemLength ) {
                     groupSku.prop('checked',false);
                 }
             }
-            var hiddenId = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuItem['+position+'][id]',
-                class: 'SkuItem',
-                value: entityId
-            });
-            var hiddenProperty = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuItem['+position+'][property]',
-                class: 'SkuItem',
-                value: property
-            });
+            var hiddenId = $('<input>').attr({type: 'hidden',name: 'skuItem['+position+'][id]',class: 'SkuItem',value: entityId});
+            var hiddenProperty = $('<input>').attr({type: 'hidden',name: 'skuItem['+position+'][property]',class: 'SkuItem',value: property});
 
-            var hiddenNewValue = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuItem['+position+'][newValue]',
-                class: 'SkuItem',
-                value: newValue
-            });
-            var hiddenSku = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuItem['+position+'][sku]',
-                class: 'SkuItem',
-                value: sku
-            });
+            var hiddenNewValue = $('<input>').attr({type: 'hidden',name: 'skuItem['+position+'][newValue]',class: 'SkuItem',value: newValue});
+            var hiddenSku = $('<input>').attr({type: 'hidden',name: 'skuItem['+position+'][sku]',class: 'SkuItem',value: sku});
             if( $(this).prop('checked') ) {
                 hiddenId.appendTo('form#mageForm');
                 hiddenProperty.appendTo('form#mageForm');
@@ -898,31 +935,64 @@ var TableManaged = function () {
             $('form#mageForm button').append('<div class="skuitem"></div>');
             if( $(this).prop("checked") ) {
                 $('.skuItem').prop('checked',true);
+//                $('.pushItemsBtn').attr('disabled',false);
             } else {
                 $('form#mageForm input.SkuItem').remove();
                 $('.skuItem').prop('checked',false);
+//                $('.pushItemsBtn').attr('disabled',true);
             }
             var item = $('#kpiUpdates tbody #skuItem');
-            var uncheckedLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
-            var checkedLength = $('tbody input.skuItem:checkbox(":checked")').length;
-            if ( uncheckedLength < checkedLength  ) {
+//            var uncheckedItemLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
+//            var checkedItemLength = $('tbody input.skuItem:checkbox(":checked")').length;
+
+//            //            This is for updated products
+            var uncheckedItemLength = $('tbody input.skuItem:checkbox:not(":checked")').length;
+            var checkedItemLength = $('tbody input.skuItem:checkbox(":checked")').length;
+//            var checkedItems = checkedItemLength - uncheckedItemLength;
+
+            checkedUpdatedDataTable();
+
+//
+////            This is for new or deleted categories
+//            var uncheckedCategoryLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+//            var checkboxCategoryLength = $('tbody input.skuCategory:checkbox(":checked")').length;
+//            var checkedCategories = checkboxCategoryLength - uncheckedCategoryLength;
+//
+////            This is for new or deleted related products
+//            var uncheckedLinkedLength = $('tbody input.skuLink:checkbox:not(":checked")').length;
+//            var checkboxLinkedLength = $('tbody input.skuLink:checkbox(":checked")').length;
+//            var checkedLinked = checkboxLinkedLength - uncheckedLinkedLength;
+//
+////            console.log(checkedItems, checkedCategories, checkedLinked);
+//
+//            var checked = checkedItems + checkedCategories + checkedLinked;
+//
+//            if ( checked > 0 ) {
+//                $('.pushItemsBtn').attr('disabled',false);
+//            }
+//            if ( checked == 0 ) {
+//                $('.pushItemsBtn').attr('disabled',true);
+//            }
+
+
+            if ( uncheckedItemLength < checkedItemLength  ) {
                 groupSku.prop('checked',false);
             }
 
             if( !groupSku.prop('checked') ) {
-                if( uncheckedLength < checkedLength ) {
+                if( uncheckedItemLength < checkedItemLength ) {
                     $('form#mageForm input.SkuItem').remove();
                 }
             }
 
-            if( uncheckedLength == 0) {
+            if( uncheckedItemLength == 0) {
                 groupSku.prop('checked',true);
             }
 
             if( !$(this).prop('checked') ) {
                 $("form#mageForm div.skuitem").remove();
             }
-            if ( uncheckedLength < checkedLength  ) {
+            if ( uncheckedItemLength < checkedItemLength  ) {
                 if ( $(this).prop('checked') ) {
                     $("form#mageForm div.skuitem").remove();
                     $('form#mageForm button').append('<div class="skuitem"></div>');
@@ -935,7 +1005,7 @@ var TableManaged = function () {
                 var property = item.closest('td').siblings('td.prty').eq(i).text();
                 var newValue = item.closest('td').siblings('td.newval').eq(i).text();
                 var sku = item.closest('td').siblings('td.sku').eq(i).text();
-                var position = item.closest('tr').index();
+//                var position = item.closest('tr').index();
 
                 var hiddenId = $('<input>').attr({
                     type: 'hidden',
@@ -1047,13 +1117,28 @@ var TableManaged = function () {
             var sku = categories.closest('td').siblings('td.sku').text();
             var dataState = categories.closest('td').siblings('td.dataState').text();
             var position = categories.closest('tr').index();
-            var checkboxLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+//            var checkboxLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+            checkedUpdatedDataTable();
+
+
+            var uncheckedLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
+            var checkboxLength = $('tbody input.skuCategory:checkbox(":checked")').length;
+
+//            var checked = checkboxLength - uncheckedLength;
+//
+//            if ( checked > 0 ) {
+//                $('.pushItemsBtn').attr('disabled',false);
+//            }
+//            if ( checked == 0 ) {
+//                $('.pushItemsBtn').attr('disabled',true);
+//            }
+
             if ( $(this).prop('checked') ) {
-                if( checkboxLength == 0) {
+                if( uncheckedLength == 0) {
                     groupCategory.prop('checked','checked');
                 }
             } else {
-                if( checkboxLength < 3 ) {
+                if( uncheckedLength < 3 ) {
                     groupCategory.prop('checked',false);
                 }
             }
@@ -1107,15 +1192,27 @@ var TableManaged = function () {
             }
             var category = $('#kpiCategories tbody #skuCategory');
             var uncheckedLength = $('tbody input.skuCategory:checkbox:not(":checked")').length;
-            var checkedLength = $('tbody input.skuCategory:checkbox(":checked")').length;
+            var checkboxLength = $('tbody input.skuCategory:checkbox(":checked")').length;
+
+            checkedUpdatedDataTable();
+
+
+//            var checked = checkboxLength - uncheckedLength;
+//
+//            if ( checked > 0 ) {
+//                $('.pushItemsBtn').attr('disabled',false);
+//            }
+//            if ( checked == 0 ) {
+//                $('.pushItemsBtn').attr('disabled',true);
+//            }
 
             if( groupCategory.prop('checked') ) {
-                if( uncheckedLength < checkedLength ) {
+                if( uncheckedLength < checkboxLength ) {
                     $('form#mageForm input.SkuCategory').remove();
                 }
             }
 
-            if ( uncheckedLength < checkedLength  ) {
+            if ( uncheckedLength < checkboxLength  ) {
                 groupCategory.prop('checked',false);
             }
 
@@ -1126,7 +1223,7 @@ var TableManaged = function () {
             if( !$(this).prop('checked') ) {
                 $("form#mageForm div.skucategory").remove();
             }
-            if ( uncheckedLength < checkedLength  ) {
+            if ( uncheckedLength < checkboxLength  ) {
                 if ( $(this).prop('checked') ) {
                     $("form#mageForm div.skucategory").remove();
                     $('form#mageForm button').append('<div class="skucategory"></div>');
@@ -1260,48 +1357,36 @@ var TableManaged = function () {
             var dataState = link.closest('td').siblings('td.dataState').text();
             var type = link.closest('td').siblings('td.type').text();
             var position = link.closest('tr').index();
-            var checkboxLength = $('tbody input.skuLink:checkbox:not(":checked")').length;
+            var uncheckedLinkedLength = $('tbody input.skuLink:checkbox:not(":checked")').length;
+            var checkboxLinkedLength = $('tbody input.skuLink:checkbox(":checked")').length;
+
+            checkedUpdatedDataTable();
+
+
+//            var checkedLinked = checkboxLinkedLength - uncheckedLinkedLength;
+//
+//            if ( checkedLinked > 0 ) {
+//                $('.pushItemsBtn').attr('disabled',false);
+//            }
+//            if ( checkedLinked == 0 ) {
+//                $('.pushItemsBtn').attr('disabled',true);
+//            }
+
             if ( $(this).prop('checked') ) {
-                if( checkboxLength == 0) {
+                if( uncheckedLinkedLength == 0) {
                     groupLink.prop('checked','checked');
                 }
             } else {
-                if( checkboxLength < 3 ) {
+                if( uncheckedLinkedLength < 3 ) {
                     groupLink.prop('checked',false);
                 }
             }
-            var hiddenId = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuLink['+position+'][id]',
-                class: 'SkuLink',
-                value: entityId
-            });
-            var hiddenSku = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuLink['+position+'][sku]',
-                class: 'SkuLink',
-                value: sku
-            });
-            var hiddenLinkedId = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuLink['+position+'][linkedId]',
-                class: 'SkuLink',
-                value: linkedId
-            });
+            var hiddenId = $('<input>').attr({type: 'hidden',name: 'skuLink['+position+'][id]',class: 'SkuLink',value: entityId});
+            var hiddenSku = $('<input>').attr({type: 'hidden',name: 'skuLink['+position+'][sku]',class: 'SkuLink',value: sku});
+            var hiddenLinkedId = $('<input>').attr({type: 'hidden',name: 'skuLink['+position+'][linkedId]',class: 'SkuLink',value: linkedId});
+            var hiddenType = $('<input>').attr({type: 'hidden',name: 'skuLink['+position+'][type]',class: 'SkuLink',value: type});
+            var hiddenDataState = $('<input>').attr({type: 'hidden',name: 'skuLink['+position+'][dataState]',class: 'SkuLink',value: dataState});
 
-            var hiddenType = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuLink['+position+'][type]',
-                class: 'SkuLink',
-                value: type
-            });
-
-            var hiddenDataState = $('<input>').attr({
-                type: 'hidden',
-                name: 'skuLink['+position+'][dataState]',
-                class: 'SkuLink',
-                value: dataState
-            });
             if( $(this).prop('checked') ) {
                 hiddenId.appendTo('form#mageForm');
                 hiddenSku.appendTo('form#mageForm');
@@ -1328,21 +1413,33 @@ var TableManaged = function () {
                 $('.skuLink').prop('checked',false);
             }
             var link = $('#kpiRelatedProducts tbody #skuLink');
-            var uncheckedLength = $('tbody input.skuLink:checkbox:not(":checked")').length;
-            var checkedLength = $('tbody input.skuLink:checkbox(":checked")').length;
+            var uncheckedLinkedLength = $('tbody input.skuLink:checkbox:not(":checked")').length;
+            var checkboxLinkedLength = $('tbody input.skuLink:checkbox(":checked")').length;
+
+            checkedUpdatedDataTable();
+
+
+//            var checkedLinked = checkboxLinkedLength - uncheckedLinkedLength;
+//
+//            if ( checkedLinked > 0 ) {
+//                $('.pushItemsBtn').attr('disabled',false);
+//            }
+//            if ( checkedLinked == 0 ) {
+//                $('.pushItemsBtn').attr('disabled',true);
+//            }
 
             if( groupLink.prop('checked') ) {
-                if( uncheckedLength < checkedLength ) {
+                if( uncheckedLinkedLength < checkboxLinkedLength ) {
                     $('form#mageForm input.SkuLink').remove();
                 }
             }
 
-            if ( uncheckedLength < checkedLength  ) {
+            if ( uncheckedLinkedLength < checkboxLinkedLength  ) {
                 groupLink.prop('checked',false);
             }
 
 
-            if( uncheckedLength == 0) {
+            if( uncheckedLinkedLength == 0) {
                 groupLink.prop('checked',true);
             }
 
@@ -1350,7 +1447,7 @@ var TableManaged = function () {
                 $("form#mageForm div.skulink").remove();
             }
 
-            if ( uncheckedLength < checkedLength  ) {
+            if ( uncheckedLinkedLength < checkboxLinkedLength  ) {
                 if ( $(this).prop('checked') ) {
                     $("form#mageForm div.skulink").remove();
                     $('form#mageForm button').append('<div class="skulink"></div>');
@@ -1406,6 +1503,25 @@ var TableManaged = function () {
             });
         });
     };
+
+    function checkedImagesDataTable()
+    {
+        var uncheckedImageLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
+        var checkedImageLength = $('tbody input.skuImage:checkbox(":checked")').length;
+
+        var checkedImages = checkedImageLength - uncheckedImageLength;
+
+        $('.pushImagesBtn').empty().append("Push " + checkedImages + " New Images");
+
+
+        if ( checkedImages > 0 ) {
+            $('.pushImagesBtn').attr('disabled',false);
+        }
+
+        if ( checkedImages == 0 ) {
+            $('.pushImagesBtn').attr('disabled',true);
+        }
+    }
 
     var newSkuImages = function () {
         var newImages = $('#kpiImages');
@@ -1490,14 +1606,27 @@ var TableManaged = function () {
             var imgPos = newImage.closest('td').siblings('td.position').text();
             var filename = newImage.closest('td').siblings('td.filename').children('img').attr('src');
             var position = newImage.closest('tr').index();
-            var uncheckedLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
-            var checkedLength = $('tbody input.skuImage:checkbox(":checked")').length;
+
+            var uncheckedImageLength = $('tbody input.skuImage:checkbox:not(":checked")').length;
+            var checkedImageLength = $('tbody input.skuImage:checkbox(":checked")').length;
+
+            checkedImagesDataTable();
+//            var checkedImages = checkedImageLength - uncheckedImageLength;
+
+//            if ( checkedImages > 0 ) {
+//                $('.pushImagesBtn').attr('disabled',false);
+//            }
+//
+//            if ( checkedImages == 0 ) {
+//                $('.pushImagesBtn').attr('disabled',true);
+//            }
+
             if ( $(this).prop('checked') ) {
-                if( uncheckedLength == 0) {
+                if( uncheckedImageLength == 0) {
                     groupImage.prop('checked','checked');
                 }
             } else {
-                if( uncheckedLength < checkedLength ) {
+                if( uncheckedImageLength < checkedImageLength ) {
                     groupImage.prop('checked',false);
                 }
             }
@@ -1576,6 +1705,7 @@ var TableManaged = function () {
                     $('form#mageImages input.SkuImage').remove();
                 }
             }
+            checkedImagesDataTable();
 
             if( uncheckedLength == 0) {
                 groupImage.prop('checked',true);
@@ -1650,6 +1780,25 @@ var TableManaged = function () {
             });
         });
     };
+
+    function checkedNewProductsDataTable()
+    {
+        var uncheckedLength = $('tbody input.skuNewProduct:checkbox:not(":checked")').length;
+        var checkedLength = $('tbody input.skuNewProduct:checkbox(":checked")').length;
+
+        var checkedProducts = checkedLength - uncheckedLength;
+
+        $('.pushNewProducts').empty().append("Push " + checkedProducts + " New Products");
+
+
+        if ( checkedProducts == 0 ) {
+            $('.pushNewProducts').attr('disabled',true);
+        }
+        if ( checkedProducts > 0 ) {
+            $('.pushNewProducts').attr('disabled', false);
+        }
+    }
+
 
     var newProducts = function () {
         var newProductTable = $('#kpiNewProducts');
@@ -1762,6 +1911,9 @@ var TableManaged = function () {
 //            var position = idChange.closest('td').siblings('td.count').text();
             var uncheckedLength = $('tbody input.skuNewProduct:checkbox:not(":checked")').length;
             var checkedLength = $('tbody input.skuNewProduct:checkbox(":checked")').length;
+
+            checkedNewProductsDataTable();
+
             if ( uncheckedLength == 0 && !groupNewSku.prop('checked') ) {
                 $("form#mageNewProds input.SkuNewProds").remove();
             }
@@ -1812,6 +1964,8 @@ var TableManaged = function () {
             }
             var uncheckedLength = $('tbody input.skuNewProduct:checkbox:not(":checked")').length;
             var checkedLength = $('tbody input.skuNewProduct:checkbox(":checked")').length;
+            checkedNewProductsDataTable();
+
             if ( uncheckedLength < checkedLength  ) {
                 groupNewSku.prop('checked',false);
             }
@@ -1909,6 +2063,16 @@ var TableManaged = function () {
     };
 
     return {
+
+        datatableUpdateChecked: function () {
+            checkedUpdatedDataTable();
+        },
+        datatableImageChecked: function() {
+            checkedImagesDataTable();
+        },
+        datatableNewProductChecked: function() {
+            checkedNewProductsDataTable();
+        },
 
         //main function to initiate the module
         init: function () {

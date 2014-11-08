@@ -275,7 +275,7 @@ class MageSoap extends AbstractSoap{
             foreach( $keys as $ind => $attFields ) {
                 $attributes[$attFields] = ($attFields == 'website') ? [$newProds[$index][$attFields]] : $newProds[$index][$attFields];
             }
-            $packet[$index] = array('simple', $attributeSet['set_id'], $sku, $attributes );
+            $packet[$index] = array('simple', $attributeSet, $sku, $attributes );
             $attributes = [];
         }
 //        echo '<pre>';

@@ -288,9 +288,9 @@ class MagentoTable {
                                 $soapBundle[$soapCount]['oproperty'] = $attributeCode;
                                 $property = preg_match('(_)',$attributeCode) ? str_replace('_',' ',$attributeCode) : $attributeCode;
                                 $soapBundle[$soapCount]['property'] = ucfirst($property);
-                                $soapBundle[$soapCount]['newValue'] = $prdAtts[0][$attributeCode];
-                                $soapBundle[$soapCount]['ldate'] = $prdAtts[0]['ldate'];
-                                $soapBundle[$soapCount]['fullName'] = $prdAtts[0]['fName']. ' ' . $productAttributes[0]['lName'];
+                                $soapBundle[$soapCount]['newValue'] = $prdAtts[$attributeCode];
+                                $soapBundle[$soapCount]['ldate'] = $prdAtts['ldate'];
+                                $soapBundle[$soapCount]['fullName'] = $prdAtts['fName']. ' ' . $prdAtts['lName'];
                             }
                             $soapCount++;
                         }

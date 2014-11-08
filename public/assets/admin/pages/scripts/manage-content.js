@@ -178,7 +178,8 @@ var ManageContent = function () {
                     .done(function( data ) {
                         toastr.success(data);
                         $('#skuItems').prop('checked',false);
-//                       console.log(data);
+                        $('.pushItemsBtn').empty().append("Push 0 Items");
+                        $('.pushItemsBtn').attr('disabled',true);
                         var update = $('#kpiUpdates').dataTable();
                         var cat = $('#kpiCategories').dataTable();
                         var link = $('#kpiRelatedProducts').dataTable();
@@ -221,6 +222,8 @@ var ManageContent = function () {
                         var table = $('#kpiImages').dataTable();
                         table.api().draw();
                         $('#skuImages').prop('checked',false);
+                        $('.pushImagesBtn').empty().append("Push 0 New Images");
+                        $('.pushImagesBtn').attr('disabled',true);
                         /*keeps count of new images*/
                         $.post('/api-feeds/mage-new-image-count', function(data){
                             var count = jQuery.parseJSON(data);
@@ -262,6 +265,8 @@ var ManageContent = function () {
                         $('#skuNewProducts').prop('checked',false);
                         var table = $('#kpiNewProducts').dataTable();
                         table.api().draw();
+                        $('.pushNewProducts').empty().append("Push 0 New Products");
+                        $('.pushNewProducts').attr('disabled',true);
                         /*keeps count of new images*/
                         $.post('/api-feeds/mage-new-product-count', function(data){
                             var count = jQuery.parseJSON(data);

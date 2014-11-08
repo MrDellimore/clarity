@@ -50,16 +50,9 @@ class MagentoController extends AbstractActionController
         $attributeCount = $kpi->updateCount();
         $categoryCount = $kpi->fetchCategoryCount();
         $linkedCount = $kpi->fetchLinkedCount();
-//        echo $attributeCount . ' ' . $categoryCount . ' ' . $linkedCount . ' ' ;
-
         $updateCount = (int)$attributeCount + (int) $categoryCount + (int) $linkedCount;
-//echo $updateCount . ' ' ;
-        $result = json_encode([
-                'updateCount'       =>      (int)$updateCount,
-//                'categoryCount'     =>      (int)$categoryCount,
-//                'linkedCount'     =>      (int)$linkedCount,
-                ]
-        );
+//        var_dump($attributeCount, $categoryCount, $linkedCount);
+        $result = json_encode(['updateCount' => (int)$updateCount]);
         $event    = $this->getEvent();
         $response = $event->getResponse();
         $response->setContent($result);
@@ -372,30 +365,20 @@ class MagentoController extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $result = '';
-
         $request = $this->getRequest();
-//echo '<pre>';
         if ( $request->isPost() ) {
             $checkboxNewSku = $request->getPost();
-//            var_dump($checkboxNewSku);
             if( !count( $checkboxNewSku ) ) {
                 return $this->redirect()->toRoute('apis');
             }
             if( !empty($checkboxNewSku['skuNewProduct']) ) {
-//                echo 'haha';
                 $groupedNewProducts = $this->getMagentoTable()->groupNewSku($checkboxNewSku['skuNewProduct']);
-//                var_dump($groupedNewProducts);
                 $newProducts = $this->getMagentoTable()->fetchNewProducts($groupedNewProducts);
             }
         }
-
-//        var_dump($newProducts);
-//die();
-
 //        $newProducts = $this->getMagentoTable()->fetchNewItems();
         if ( !empty($newProducts) ) {
             if( $newProductResponse = $this->getMagentoSoap()->soapAddProducts($newProducts) ) {
-    //            var_dump($newProductResponse);
                 $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
                 foreach( $newProductResponse as $index => $newResponse ) {
                     foreach( $newResponse as $key => $newEntityId ) {
