@@ -63,12 +63,12 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
             e.preventDefault();
             soapUpdates.show();     //displays datatable
             magentoItems.show();    //displays button
-            var updateItems = $('#kpiUpdates').DataTable();
-            updateItems.draw();
-            var updateCategories = $('#kpiCategories').DataTable();
-            updateCategories.draw();
-            var updateLinked = $('#kpiRelatedProducts').DataTable();
-            updateLinked.draw();
+//            var updateItems = $('#kpiUpdates').DataTable();
+//            updateItems.draw();
+//            var updateCategories = $('#kpiCategories').DataTable();
+//            updateCategories.draw();
+//            var updateLinked = $('#kpiRelatedProducts').DataTable();
+//            updateLinked.draw();
             TableManaged.datatableUpdateChecked();
             magentoImages.hide();   //hides button to new images.
             soapImages.hide();      //hides datatable to new images.
@@ -80,8 +80,8 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
             magentoImages.show();   //displays button to new images.
             soapImages.show();      //displays datatable to new images.
             TableManaged.datatableImageChecked();
-            var newImages = $('#kpiImages').DataTable();
-            newImages.draw();
+//            var newImages = $('#kpiImages').DataTable();
+//            newImages.draw();
             soapUpdates.hide();     //hides datatable to updated items.
             magentoItems.hide();    //hides button to updated items.
             soapNewProducts.hide(); //hides datatable to new items.
@@ -92,8 +92,8 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
             magentoNewItems.show(); //displays button to new items.
             soapNewProducts.show(); //displays datatable to new items.
             TableManaged.datatableNewProductChecked();
-            var newProducts = $('#kpiNewProducts').dataTable();
-            newProducts.api().draw();
+//            var newProducts = $('#kpiNewProducts').dataTable();
+//            newProducts.api().draw();
             magentoItems.hide();    //hides button to updated items.
             magentoImages.hide();   //hides button to new images.
             soapImages.hide();      //hides datatable to new images.

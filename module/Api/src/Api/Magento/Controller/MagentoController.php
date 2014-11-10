@@ -14,7 +14,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Content\ContentForm\Tables\Spex;
 use Zend\View\Helper\FlashMessenger;
-
+use Content\ContentForm\Model\ProductsTable;
 
 class MagentoController extends AbstractActionController
 {
@@ -183,7 +183,8 @@ class MagentoController extends AbstractActionController
             if($limit == '-1'){
                 $limit = 100;
             }
-            $skuData = $this->getMagentoTable()->fetchChangedProducts($sku,$limit);
+            $productTable = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
+            $skuData = $this->getMagentoTable()->fetchChangedProducts( $sku, $limit, $productTable);
             $result = json_encode(
                 array(
                     'draw' => $draw,
