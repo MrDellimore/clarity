@@ -178,7 +178,8 @@ var ManageContent = function () {
                     .done(function( data ) {
                         toastr.success(data);
                         $('#skuItems').prop('checked',false);
-//                       console.log(data);
+                        $('.pushItemsBtn').empty().append("Push Items");
+                        $('.pushItemsBtn').attr('disabled',true);
                         var update = $('#kpiUpdates').dataTable();
                         var cat = $('#kpiCategories').dataTable();
                         var link = $('#kpiRelatedProducts').dataTable();
@@ -187,7 +188,7 @@ var ManageContent = function () {
                         link.api().draw();
                         $.post('/api-feeds/mage-update-count', function(data){
                             var count = jQuery.parseJSON(data);
-                            $('div#mage-update').empty().append(count.updateCount + count.categoryCount + count.linkedCount);
+                            $('div#mage-update').empty().append(count.updateCount);// + count.categoryCount + count.linkedCount
                         });
                     });
 
@@ -221,6 +222,8 @@ var ManageContent = function () {
                         var table = $('#kpiImages').dataTable();
                         table.api().draw();
                         $('#skuImages').prop('checked',false);
+                        $('.pushImagesBtn').empty().append("Push New Images");
+                        $('.pushImagesBtn').attr('disabled',true);
                         /*keeps count of new images*/
                         $.post('/api-feeds/mage-new-image-count', function(data){
                             var count = jQuery.parseJSON(data);
@@ -262,6 +265,8 @@ var ManageContent = function () {
                         $('#skuNewProducts').prop('checked',false);
                         var table = $('#kpiNewProducts').dataTable();
                         table.api().draw();
+                        $('.pushNewProducts').empty().append("Push New Products");
+                        $('.pushNewProducts').attr('disabled',true);
                         /*keeps count of new images*/
                         $.post('/api-feeds/mage-new-product-count', function(data){
                             var count = jQuery.parseJSON(data);

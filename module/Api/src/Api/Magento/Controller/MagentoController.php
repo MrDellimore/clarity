@@ -14,7 +14,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Content\ContentForm\Tables\Spex;
 use Zend\View\Helper\FlashMessenger;
-
+use Content\ContentForm\Model\ProductsTable;
 
 class MagentoController extends AbstractActionController
 {
@@ -47,16 +47,12 @@ class MagentoController extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
-        $updateCount = $kpi->updateCount();
+        $attributeCount = $kpi->updateCount();
         $categoryCount = $kpi->fetchCategoryCount();
         $linkedCount = $kpi->fetchLinkedCount();
-
-        $result = json_encode([
-                'updateCount'       =>      $updateCount,
-                'categoryCount'     =>      $categoryCount,
-                'linkedCount'     =>      $linkedCount,
-                ]
-        );
+        $updateCount = (int)$attributeCount + (int) $categoryCount + (int) $linkedCount;
+//        var_dump($attributeCount, $categoryCount, $linkedCount);
+        $result = json_encode(['updateCount' => (int)$updateCount]);
         $event    = $this->getEvent();
         $response = $event->getResponse();
         $response->setContent($result);
@@ -182,12 +178,13 @@ class MagentoController extends AbstractActionController
             $apiData = $request->getPost();
             $draw = $apiData['draw'];
             $sku = $apiData['search']['value'];
-            $limit = $apiData['length'];
+            $limit = (int)$apiData['length'];
 
             if($limit == '-1'){
                 $limit = 100;
             }
-            $skuData = $this->getMagentoTable()->fetchChangedProducts($sku,$limit);
+            $productTable = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
+            $skuData = $this->getMagentoTable()->fetchChangedProducts( $sku, $limit, $productTable);
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -367,30 +364,20 @@ class MagentoController extends AbstractActionController
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $result = '';
-
         $request = $this->getRequest();
-//echo '<pre>';
         if ( $request->isPost() ) {
             $checkboxNewSku = $request->getPost();
-//            var_dump($checkboxNewSku);
             if( !count( $checkboxNewSku ) ) {
                 return $this->redirect()->toRoute('apis');
             }
             if( !empty($checkboxNewSku['skuNewProduct']) ) {
-//                echo 'haha';
                 $groupedNewProducts = $this->getMagentoTable()->groupNewSku($checkboxNewSku['skuNewProduct']);
-//                var_dump($groupedNewProducts);
                 $newProducts = $this->getMagentoTable()->fetchNewProducts($groupedNewProducts);
             }
         }
-
-//        var_dump($newProducts);
-//die();
-
 //        $newProducts = $this->getMagentoTable()->fetchNewItems();
         if ( !empty($newProducts) ) {
             if( $newProductResponse = $this->getMagentoSoap()->soapAddProducts($newProducts) ) {
-    //            var_dump($newProductResponse);
                 $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
                 foreach( $newProductResponse as $index => $newResponse ) {
                     foreach( $newResponse as $key => $newEntityId ) {

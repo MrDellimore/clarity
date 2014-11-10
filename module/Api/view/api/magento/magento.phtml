@@ -121,11 +121,11 @@
 //            echo $flash->render('success', array('alert', 'alert-dismissable', 'alert-success'));
         ?>
                 <div class="row magento-updates">
-                    <div class="col-md-4 ">
+                    <div class="col-md-4 pushItems">
                         <form id="mageForm" action="/api-feeds/magento/items" method="post">
-                            <button class="btn blue btn-block btn-lg m-icon-big">
+                            <button class="btn blue btn-block btn-lg m-icon-big pushItemsBtn" >
                                 <!--                                href="/api-feeds/magento/items"-->
-                                Push All Items <i class="m-icon-big-swapright m-icon-white"></i>
+                                Push Items <i class="m-icon-big-swapright m-icon-white"></i>
                             </button>
                         </form>
                     </div>
@@ -133,10 +133,10 @@
                 <div class="row magento-images">
                     <div class="col-md-4">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 ">
                         <form id="mageImages" action="/api-feeds/magento/new-images" method="post">
-                            <button href="/api-feeds/magento/images" class="btn green btn-block btn-lg m-icon-big">
-                                Push All Images <i class="m-icon-big-swapright m-icon-white"></i>
+                            <button href="/api-feeds/magnto/images" class="btn green btn-block btn-lg m-icon-big pushImagesBtn">
+                                Push Images <i class="m-icon-big-swapright m-icon-white"></i>
                             </button>
 <!--                            <div class="skuimg">-->
 <!--                            </div>-->
@@ -150,7 +150,7 @@
                     </div>
                     <div class="col-md-4 ">
                         <form id="mageNewProds" action="/api-feeds/magento/new-items" method="post">
-                            <button href="/api-feeds/magento/new-items" class="btn red btn-block btn-lg m-icon-big">
+                            <button href="/api-feeds/magento/new-items" class="btn red btn-block btn-lg m-icon-big pushNewProducts">
                                 Push New Items <i class="m-icon-big-swapright m-icon-white"></i>
                             </button>
                         </form>
@@ -270,7 +270,7 @@
                                         <th>ID</th>
                                         <th>Sku</th>
                                         <th>Label</th>
-                                        <th>Filename</th>
+                                        <th>Image</th>
                                         <th>Date Created</th>
                                         <th>Created By</th>
                                     </tr>
