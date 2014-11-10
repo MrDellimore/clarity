@@ -782,8 +782,12 @@ var TableManaged = function () {
         //            console.log(checkedItems, checkedCategories, checkedLinked);
 
         var checked = checkedItems + checkedCategories + checkedLinked;
+        if ( checked ) {
+            $('.pushItemsBtn').empty().append("Push " + checked + " Items");
+        } else {
+            $('.pushItemsBtn').empty().append("Push Items");
+        }
 
-        $('.pushItemsBtn').empty().append("Push " + checked + " Items");
 
         if ( checked > 0 ) {
             $('.pushItemsBtn').attr('disabled',false);
@@ -1511,8 +1515,11 @@ var TableManaged = function () {
 
         var checkedImages = checkedImageLength - uncheckedImageLength;
 
-        $('.pushImagesBtn').empty().append("Push " + checkedImages + " New Images");
-
+        if ( checkedImages ) {
+            $('.pushImagesBtn').empty().append("Push " + checkedImages + " New Images");
+        } else {
+            $('.pushImagesBtn').empty().append("Push New Images");
+        }
 
         if ( checkedImages > 0 ) {
             $('.pushImagesBtn').attr('disabled',false);
@@ -1788,7 +1795,11 @@ var TableManaged = function () {
 
         var checkedProducts = checkedLength - uncheckedLength;
 
-        $('.pushNewProducts').empty().append("Push " + checkedProducts + " New Products");
+        if ( checkedProducts ) {
+            $('.pushNewProducts').empty().append("Push " + checkedProducts + " New Products");
+        } else {
+            $('.pushNewProducts').empty().append("Push New Products");
+        }
 
 
         if ( checkedProducts == 0 ) {

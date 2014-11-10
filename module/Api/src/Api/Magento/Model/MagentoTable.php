@@ -92,7 +92,7 @@ class MagentoTable {
             $newImages[$soapCount]['position'] = $image['position'];
             $newImages[$soapCount]['sku'] = $image['sku'];
             $newImages[$soapCount]['label'] = $image['label'];
-            $newImages[$soapCount]['filename'] = '<img width="50" height="50" src="'.$image['filename'].'" /><br />'.$image['filename'];
+            $newImages[$soapCount]['filename'] = '<img width="50" height="50" src="'.$image['filename'].'" />';
             $newImages[$soapCount]['creation'] = $image['creation'];
             $newImages[$soapCount]['fullname'] = $image['fname'] . ' ' . $image['lname'] ;
             $soapCount++;
@@ -274,12 +274,12 @@ class MagentoTable {
 //                      If user didn't submit a sku then don't check for skus.
                         if ( $sku ) {
 //                            Makes sure that Sku exists
-                            if( !( $productsTable->validateSku( $sku ) ) ) {
-                                $filter->like('p.productid', $sku.'%');
-                                $filter->orPredicate(new Predicate\Like('productattribute_'.$dataType.'.value','%'.$sku.'%'));
-                            } else {
-                                $selectAttribute->where(['p.productid' => $sku]);
-                            }
+//                            if( !( $productsTable->validateSku( $sku ) ) ) {
+//                                $filter->like('p.productid', $sku.'%');
+//                                $filter->orPredicate(new Predicate\Like('productattribute_'.$dataType.'.value','%'.$sku.'%'));
+//                            } else {
+                            $filter->like('p.productid' , $sku.'%');
+//                            }
                         }
                         $selectAttribute->where($filter);
                         $selectAttribute->order('productattribute_'.$dataType.'.lastModifiedDate ASC');
@@ -303,7 +303,7 @@ class MagentoTable {
                                     $soapBundle[$soapCount]['oproperty'] = $attributeCode;
                                     $property = preg_match('(_)',$attributeCode) ? str_replace('_',' ',$attributeCode) : $attributeCode;
                                     $soapBundle[$soapCount]['property'] = ucfirst($property);
-                                    $soapBundle[$soapCount]['newValue'] = strip_tags($prdAtts[$attributeCode]);
+                                    $soapBundle[$soapCount]['newValue'] = $prdAtts[$attributeCode];
                                     $soapBundle[$soapCount]['ldate'] = date('m-d-Y H:i:s',strtotime( $prdAtts['ldate'] ) );
                                     $soapBundle[$soapCount]['fullName'] = $prdAtts['fName']. ' ' . $prdAtts['lName'];
     //                                }
@@ -517,7 +517,7 @@ class MagentoTable {
         $soapBundle = [];
         $startCount = 0;
 
-        foreach ( $newProducts as $key => $nProd ) {
+        foreach ( $newProducts as $nProd ) {
             $select = $this->sql->select()->from('product')->columns([
                 'productType'   =>  'product_type',
                 'website'       =>  'website',
@@ -531,7 +531,6 @@ class MagentoTable {
             $entityId = $nProd['id'];
             $sku = $nProd['sku'];
             $products = $resultSet->toArray();
-//            var_dump($products, 'haha');
             foreach($products as $index => $value) {
                 $attributes = $this->productAttributeLookup($this->sql);
                 foreach( $attributes as $key => $attribute ) {
@@ -543,7 +542,7 @@ class MagentoTable {
                     $filterAttributes = new Where;
                     $filterAttributes->equalTo('productattribute_'.$tableType.'.entity_id',$entityId);
                     $filterAttributes->equalTo('productattribute_'.$tableType.'.attribute_id',$attributeId);
-                    $filterAttributes->equalTo('productattribute_'.$tableType.'.dataState',2);
+//                    $filterAttributes->equalTo('productattribute_'.$tableType.'.dataState',2);
                     $selectAtts->where($filterAttributes);
                     $attStatement = $this->sql->prepareStatementForSqlObject($selectAtts);
                     $attResult = $attStatement->execute();
@@ -556,7 +555,7 @@ class MagentoTable {
                     foreach($attributeValues as $keyValue => $valueOption) {
                         $soapBundle[$startCount]['id'] = $entityId;
                         $soapBundle[$startCount]['sku'] = $sku;
-                        $soapBundle[$startCount]['website'] = $products[$index]['website'];
+                        $soapBundle[$startCount]['websites'] = [$products[$index]['website']];
                         if ( array_key_exists($attributeCode,$this->stockData) ) {
                             $soapBundle[$startCount]['stock_data'][$attributeCode] = $valueOption[$attributeCode];
                         } else {

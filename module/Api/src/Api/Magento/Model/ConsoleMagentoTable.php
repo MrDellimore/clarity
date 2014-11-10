@@ -188,13 +188,13 @@ class ConsoleMagentoTable
             $attributes = $this->productAttributeLookup($this->sql);
             $soapBundle[$count]['id'] = $value['id'];
             $soapBundle[$count]['sku'] = $value['sku'];
-            foreach( $attributes as $key => $fields ){
+            foreach( $attributes as $fields ){
                 $tableType = $fields['dataType'];
                 $attributeId = (int)$fields['attId'];
                 $attributeCode = $fields['attCode'];
                 $selectAttributes = $this->sql->select()->from('productattribute_'.$tableType)
                           ->columns([$attributeCode=>'value'])
-                          ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2]);
+                          ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);//, 'dataState'=>2
                 $statementAtts = $this->sql->prepareStatementForSqlObject($selectAttributes);
                 $resultAtts = $statementAtts->execute();
                 $resultSetAtts = new ResultSet;
@@ -202,9 +202,8 @@ class ConsoleMagentoTable
                     $resultSetAtts->initialize($resultAtts);
                 }
                 $attributeValues = $resultSetAtts->toArray();
-//                $attributeValues = $this->productAttribute($this->sql, [$attributeCode=>'value'],['entity_id'=>$entityId,'attribute_id'=>$attributeId, 'dataState'=>2],$tableType)->toArray();
                 foreach($attributeValues as $keyValue => $valueOption){
-                    $soapBundle[$count]['website'] = $value['website'];
+                    $soapBundle[$count]['websites'] = [$value['website']];
 //                    $soapBundle[$count][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
                     if ( array_key_exists($attributeCode,$this->stockData) ) {
                         $soapBundle[$count]['stock_data'][$attributeCode] = $valueOption[$attributeCode];
