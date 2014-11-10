@@ -225,8 +225,7 @@ class MagentoTable {
 
     /**
      * Description: This method is to populate the DataTable for changed/dirty products to be sent over the wire to focuscamera.
-     * I did not use the limit on the product table because if the first 10 Skus with corresponding attributes were not dirty
-     * then I would be pulling nothing into the DataTable.
+     * It grabs all attributes that have a dataState of 1.
      * @param $sku
      * @param $limit
      * @param $productsTable
@@ -267,19 +266,19 @@ class MagentoTable {
                                                      ->columns(['id'=>'entity_id', $attributeCode=>'value', 'ldate'=>'lastModifiedDate']);
                         $selectAttribute->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'), Select::JOIN_LEFT);
                         $selectAttribute->join(array('p' => 'product'),'p.entity_id= productattribute_'.$dataType.'.entity_id' ,['item'=>'productid'], Select::JOIN_LEFT);
+                        //TODO If website is to be sent over this join is where it will go.
                         $filter = new Where;
                         $filter->equalTo('productattribute_'.$dataType.'.attribute_id',$attributeId);
                         $filter->equalTo('productattribute_'.$dataType.'.dataState',1);
-
 //                      If user didn't submit a sku then don't check for skus.
                         if ( $sku ) {
 //                            Makes sure that Sku exists
-//                            if( !( $productsTable->validateSku( $sku ) ) ) {
-//                                $filter->like('p.productid', $sku.'%');
-//                                $filter->orPredicate(new Predicate\Like('productattribute_'.$dataType.'.value','%'.$sku.'%'));
-//                            } else {
-                            $filter->like('p.productid' , $sku.'%');
-//                            }
+                            if( !( $productsTable->validateSku( $sku ) ) ) {
+                                $filter->like('p.productid', $sku.'%');
+                                $filter->orPredicate(new Predicate\Like('productattribute_'.$dataType.'.value','%'.$sku.'%'));
+                            } else {
+                               $filter->equalTo('p.productid' , $sku);
+                            }
                         }
                         $selectAttribute->where($filter);
                         $selectAttribute->order('productattribute_'.$dataType.'.lastModifiedDate ASC');
@@ -295,9 +294,6 @@ class MagentoTable {
                         if(!empty($productAttributes )) {
 //                            for ( $i = 0; $i < $limit; $i++ ) {
                                 foreach ( $productAttributes as $prdAtts ) {
-    //                                if ( $attributeCode == 'qty' ) {
-    //                                    continue;
-    //                                } else {
                                     $soapBundle[$soapCount]['id'] = $prdAtts['id'];
                                     $soapBundle[$soapCount]['item'] = $prdAtts['item'];
                                     $soapBundle[$soapCount]['oproperty'] = $attributeCode;
@@ -306,16 +302,12 @@ class MagentoTable {
                                     $soapBundle[$soapCount]['newValue'] = $prdAtts[$attributeCode];
                                     $soapBundle[$soapCount]['ldate'] = date('m-d-Y H:i:s',strtotime( $prdAtts['ldate'] ) );
                                     $soapBundle[$soapCount]['fullName'] = $prdAtts['fName']. ' ' . $prdAtts['lName'];
-    //                                }
                                     $soapCount++;
                                 }       // End of foreach
 //                            }   //      End of for loop
                         }       //  End of if
                     }       //  End of if
             }       //End of foreach
-//        }
-//        var_dump($soapBundle);
-//        die();
         return $soapBundle;
     }
 
@@ -478,8 +470,6 @@ class MagentoTable {
             $soapCategories[$categoryCount]['fullname'] = $category['fname']. ' ' . $category['lname'];
             $categoryCount++;
          }
-//        var_dump($soapCategories);
-//        die();
         return $soapCategories;
     }
 
@@ -621,11 +611,8 @@ class MagentoTable {
             $soapBundle[$startCount]['id'] = (int)$product['id'];
             $soapBundle[$startCount]['creation'] = date('m-d-Y',strtotime($product['creation']));
             $soapBundle[$startCount]['fullname'] = $product['fname'] . ' ' . $product['lname'];
-                    $startCount++;
+            $startCount++;
         }
-//        echo '<pre>';
-//        var_dump($soapBundle);
-//        die();
         return $soapBundle;
     }
 

@@ -94,8 +94,8 @@ class AjaxLoaderController extends AbstractActionController
     public function updatequicksearch(Array $r){
         foreach($r as $key => $value){
             $r[$key]['sku'] = '<a href = "/content/product/'.$value['sku'].'">'.$value['sku'].'</a>';
+            $r[$key]['status'] = $r[$key]['status'] == '1' ?'<span class="label label-sm label-success">Enabled</span>' : '<span class="label label-sm label-danger">Disabled</span>';
 
-            $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
             $r[$key]['site'] = $r[$key]['site'] == 3 ? 'aSavings' : 'Focus';
             switch ($r[$key]['visibility']){
                 case '1':
@@ -232,7 +232,7 @@ class AjaxLoaderController extends AbstractActionController
     public function updateaccessories(Array $r){
         foreach($r as $key => $value){
             $r[$key]['Sku'] = $r[$key]['Sku']."<br /><h6>".$r[$key]['entityid']."</h6>";
-            $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
+            $r[$key]['status'] = $r[$key]['status'] == '1' ?'<span class="label label-sm label-success">Enabled</span>' : '<span class="label label-sm label-danger">Disabled</span>';
             $r[$key]['sort'] = '<input type="text" name="sort" size="1" disabled>';
             $r[$key]['edit'] = "<a href='javascript:;' id=\"addCross\">Add</a>";
         }
@@ -242,7 +242,7 @@ class AjaxLoaderController extends AbstractActionController
     public function updateSetaccessories(Array $r){
         foreach($r as $key => $value){
             $r[$key]['Sku'] = $r[$key]['Sku']."<br /><h6>".$r[$key]['entityid']."</h6>";
-            $r[$key]['status'] = $r[$key]['status'] == '0' ?'<span class="label label-sm label-danger">Disabled</span>' : '<span class="label label-sm label-success">Enabled</span>';
+            $r[$key]['status'] = $r[$key]['status'] == '1' ?'<span class="label label-sm label-success">Enabled</span>' : '<span class="label label-sm label-danger">Disabled</span>';
             $r[$key]['sort'] = '<input class="pos" type="text" size="1" value="'.$r[$key]['sort'].'">';
             $r[$key]['edit'] = "<a href='javascript:;'  id=\"removeCross\">Delete</a>";
         }

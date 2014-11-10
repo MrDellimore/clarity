@@ -44,15 +44,15 @@ class Products {
 
     protected $cost;
 
-    protected $rebatePrice;
+    protected $rebatePrice = 0;
 
     protected $rebateStartEndDate;
 
-    protected $specialPrice;
+    protected $specialPrice = 0;
 
     protected $specialStartEndDate;
 
-    protected $mailInRebate;
+    protected $mailInRebate = 0;
 
     protected $mailInStartEndDate;
 

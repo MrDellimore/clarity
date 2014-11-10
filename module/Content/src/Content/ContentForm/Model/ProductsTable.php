@@ -170,7 +170,7 @@ class ProductsTable{
         $result[array_keys($newAttibute)[0]]['option'] = current($newAttibute);
 
         //Fetch metaDescrition
-        $newAttibute = $this->fetchAttribute($entityid,'text','105','metaDescription');
+        $newAttibute = $this->fetchAttribute($entityid,'varchar','105','metaDescription');
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch Manufacturer Option
@@ -570,12 +570,40 @@ class ProductsTable{
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getDescription(), $oldData->getDescription(), /*$oldData->getManufacturer(),*/ $property);//'97','text');
             $updateditems .= 'Description<br>';
         }
+//update in box
+        if(!(is_null($form->getInBox()))) {
+            $property = 'inbox';
+            $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getInBox(), $oldData->getInBox(),/*$oldData->getManufacturer(),*/ $property);//,'1633','text');
+            $updateditems .= 'In Box<br>';
+        }
+//update Includes Free
+        if(!(is_null($form->getIncludesFree()))) {
+            $property = 'includes free';
+            $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getIncludesFree(), $oldData->getIncludesFree(), /*$oldData->getManufacturer(),*/ $property);//,'1679','text');ws
+            $updateditems .= 'Includes Free<br>';
+        }
+//update MetaTitle
+        if(!(is_null($form->getMetaTitle()))) {
+            $property = 'MetaTitle';
+            $this->updateAttribute($form->getId(),$form->getMetaTitle(),'103','varchar');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaTitle(), $oldData->getMetaTitle(),$property);
+            $updateditems .= $property.'<br>';
+        }
 //update MetaKeywords
         if(!(is_null($form->getMetaKeywords()))) {
             $property = 'MetaKeywords';
             $this->updateAttribute($form->getId(),$form->getMetaKeywords(),'104','text');
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaKeywords(), $oldData->getMetaKeywords(),$property);
             $updateditems .= $property.'<br>';
+        }
+//update Meta Description
+        if(!(is_null($form->getMetaDescription()))) {
+            $property = 'MetaDescription';
+            $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaDescription(), $oldData->getMetaDescription(), /*$oldData->getManufacturer(),*/ $property);//,'105','varchar');
+            $updateditems .= 'Meta Description<br>';
         }
 //update status
         if(!(is_null($form->getStatus()))) {
@@ -632,27 +660,6 @@ class ProductsTable{
             $this->updateAttribute($form->getId(),$form->getStockStatus()['option'],'1661','int');
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStockStatus()['option'], $oldData->getStockStatus()['option'], $property);
             $updateditems .= 'Custom Stock Status<br>';
-        }
-//update in box
-        if(!(is_null($form->getInBox()))) {
-            $property = 'inbox';
-            $this->updateAttribute($form->getId(),$form->getInBox(),'1633','text');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getInBox(), $oldData->getInBox(),/*$oldData->getManufacturer(),*/ $property);//,'1633','text');
-            $updateditems .= 'In Box<br>';
-        }
-//update Includes Free
-        if(!(is_null($form->getIncludesFree()))) {
-            $property = 'includes free';
-            $this->updateAttribute($form->getId(),$form->getIncludesFree(),'1679','text');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getIncludesFree(), $oldData->getIncludesFree(), /*$oldData->getManufacturer(),*/ $property);//,'1679','text');ws
-            $updateditems .= 'Includes Free<br>';
-        }
-//update Meta Description
-        if(!(is_null($form->getMetaDescription()))) {
-            $property = 'meta description';
-            $this->updateAttribute($form->getId(),$form->getMetaDescription(),'105','varchar');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getMetaDescription(), $oldData->getMetaDescription(), /*$oldData->getManufacturer(),*/ $property);//,'105','varchar');
-            $updateditems .= 'Meta Description<br>';
         }
 //update Original Content
         if(array_key_exists('option',$form->getOriginalContent())) {
@@ -745,19 +752,60 @@ class ProductsTable{
 
         $inserteditems= '';
         $startMessage = 'The following fields have been inserted :<br>';
-
-//update Title
+//Title
+        if(!(is_null($form->getTitle()))) {
+            $property = 'Title';
+            $this->insertAttribute($oldData->getId(),$form->gettitle(),'96','varchar');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getTitle(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//Includes Free
+        if(!(is_null($form->getIncludesFree()))) {
+            $property = 'Includes Free';
+            $this->insertAttribute($oldData->getId(),$form->getIncludesFree(),'1679','text');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getIncludesFree(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//Description
+        if(!(is_null($form->getDescription()))) {
+            $property = 'Description';
+            $this->insertAttribute($oldData->getId(),$form->getDescription(),'97','text');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getDescription(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//in box
+        if(!(is_null($form->getInBox()))) {
+            $property = 'In Box';
+            $this->insertAttribute($oldData->getId(),$form->getInBox(),'1633','text');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getInBox(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//Special Price
         if(!(is_null($form->getSpecialPrice()))) {
             $property = 'Special Price';
             $this->insertAttribute($oldData->getId(),$form->getSpecialPrice(),'567','decimal');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getSpecialPrice(), "",$property);
             $inserteditems .= $property.'<br>';
         }
-//update Metakeywords
+//Metakeywords
         if(!(is_null($form->getMetaKeywords()))) {
             $property = 'MetaKeywords';
             $this->insertAttribute($oldData->getId(),$form->getMetaKeywords(),'104','text');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getMetaKeywords(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//MetaTitle
+        if(!(is_null($form->getMetaTitle()))) {
+            $property = 'MetaTitle';
+            $this->insertAttribute($oldData->getId(),$form->getMetaTitle(),'103','varchar');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getMetaTitle(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//MetaDescription
+        if(!(is_null($form->getMetaDescription()))) {
+            $property = 'MetaDescription';
+            $this->insertAttribute($oldData->getId(),$form->getMetaDescription(),'105','varchar');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getMetaDescription(), "",$property);
             $inserteditems .= $property.'<br>';
         }
 //Manufacturer
@@ -772,6 +820,13 @@ class ProductsTable{
             $property = 'Brand';
             $this->insertAttribute($oldData->getId(),$form->getBrand()['option'],'1641','int');
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getBrand()['option'], "",$property);
+            $inserteditems .= $property.'<br>';
+        }
+//Status
+        if(!(is_null($form->getStatus()))) {
+            $property = 'Status';
+            $this->insertAttribute($oldData->getId(),$form->getStatus(),'273','int');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getStatus(), "",$property);
             $inserteditems .= $property.'<br>';
         }
 //Custom Stock Status
@@ -910,7 +965,7 @@ class ProductsTable{
             'entity_id' => $entityid,
             'attribute_id' => $attributeid,
             'value' => $value,
-            'dataState' => 2,
+            'dataState' => 1,
             'changedby' => $user
         ));
 

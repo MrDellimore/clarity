@@ -38,9 +38,7 @@
     </div>
 
     <div class="actions btn-set">
-        <a class="btn default" href="/content/search">
-            <i class="fa fa-angle-left"></i> Back</a>
-
+        <a class="btn default" href="/content/search"><i class="fa fa-angle-left"></i> Back</a>
         <button class="btn green" id="submitForm"><i class="fa fa-check" ></i> Save</button>
         <!--<input class="btn default" value="Save" type="submit">-->
     </div>
@@ -48,7 +46,7 @@
 <div class="portlet-body">
 <div class="tabbable">
 <ul class="nav nav-tabs">
-    <li >
+    <li class="active">
         <a href="#tab_general" data-toggle="tab">
             General </a>
     </li>
@@ -61,7 +59,7 @@
             Images
             <span class="badge badge-success"><?= count($this->data->getImageGallery())?></span></a>
     </li>
-    <li class="active">
+    <li>
         <a href="#tab_categories" data-toggle="tab">
             Categories
         </a>
@@ -74,7 +72,7 @@
 
 
 <div class="tab-content no-space">
-<div class="tab-pane" id="tab_general">
+<div class="tab-pane active" id="tab_general">
 <br /> <br />
 <!-- General Tab info-->
 
@@ -154,7 +152,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">URL Key</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="urlkey" placeholder="URL Key" value="<?=$this->data->getUrlKey()?>"  required/>
+                        <input type="text" class="form-control" name="urlkey" placeholder="URL Key" value="<?=$this->data->getUrlKey()?>" />
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -494,7 +492,7 @@
                             <div class="form-group col-md-11">
                                 <label class="control-label col-md-3" for="metaKeywords">MetaKeywords:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="metaKeywords" placeholder="MetaKeywords" value="<?= $this->data->getMetaKeywords(); ?>"/>
+                                    <input type="text" class="form-control" name="metaKeyword" placeholder="MetaKeywords" value="<?= $this->data->getMetaKeywords(); ?>"/>
                                 </div>
                             </div>
                         </div>
@@ -609,7 +607,7 @@
 
 
 <div class="tab-pane" id="tab_acessories">
-    <!-- Accessories-->
+    <!-- Acessories-->
 
     <div class="row">
         <div class="col-md-12">
@@ -930,7 +928,7 @@ $i=0;
 </div>
 
 
-<div class="tab-pane active" id="tab_categories">
+<div class="tab-pane" id="tab_categories">
     <!-- categories -->
     <div class = "row">
     <div class = "col-md-3">
