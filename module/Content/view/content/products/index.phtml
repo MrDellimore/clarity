@@ -34,7 +34,7 @@
 <div class="portlet">
 <div class="portlet-title">
     <div class="caption">
-        <i class="fa fa-shopping-cart"></i><a href="http://focuscamera.com/<?=$this->data->getUrlKey()?>.html" target="_blank"><?=$this->data->getTitle()?></a>
+        <i class="fa fa-shopping-cart"></i><a href="http://focuscamera.com/<?=$this->data->getUrlKey()?>.html" target="_blank"><?=str_replace('"','&quot;',$this->data->getTitle())?></a>
     </div>
 
     <div class="actions btn-set">
@@ -128,7 +128,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Name</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control"  name="title" placeholder="Title" value="<?=$this->data->getTitle()?>" required/>
+                        <input type="text" class="form-control"  name="title" placeholder="Title" value="<?=str_replace('"','&quot;',$this->data->getTitle())?>" required/>
                         <span class="help-block"></span>
                     </div>
                 </div>
@@ -492,7 +492,7 @@
                             <div class="form-group col-md-11">
                                 <label class="control-label col-md-3" for="metaKeywords">MetaKeywords:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="metaKeyword" placeholder="MetaKeywords" value="<?= $this->data->getMetaKeywords(); ?>"/>
+                                    <input type="text" class="form-control" name="metaKeyword" placeholder="MetaKeywords" value="<?= str_replace('"','&quot;',$this->data->getMetaKeywords()); ?>"/>
                                 </div>
                             </div>
                         </div>
@@ -506,7 +506,7 @@
                             <div class="form-group col-md-11">
                                 <label class="control-label col-md-3" for="metaKeywords">MetaTitle:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="metaTitle" placeholder="MetaTitle" value="<?= $this->data->getMetaTitle(); ?>"/>
+                                    <input type="text" class="form-control" name="metaTitle" placeholder="MetaTitle" value="<?= str_replace('"','&quot;',$this->data->getMetaTitle()); ?>"/>
                                 </div>
                             </div>
                         </div>

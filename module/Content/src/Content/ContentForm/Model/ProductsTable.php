@@ -10,6 +10,7 @@ use Zend\Session\Container;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\Operator;
 use Zend\EventManager\EventManagerAwareTrait;
 use Zend\EventManager\EventManager;
@@ -368,7 +369,6 @@ class ProductsTable{
         $filter->addPredicate($pred);
 
         $select->where($filter);
-        //select->where(array('entity_id' => $entityid, 'link_type_id' =>'1'));
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -522,16 +522,14 @@ class ProductsTable{
         else {
             $searchTerm = 'product.productid';
         }
+
         $where->like($searchTerm,$searchValue.'%');
+        $where->orPredicate(new Predicate\Like('t.value','%'.$searchValue.'%'));
         if (!(empty($setSkus))){
-            //$select->where("product.entity_id not id ?", $setSkus);
             $where->notIn("product.entity_id", $setSkus);
         }
 
         $select->where($where);
-
-
-
         $select->limit($limit);
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -613,12 +611,12 @@ class ProductsTable{
             $updateditems .= 'Status<br>';
         }
 //update special price
-        if(!(is_null($form->getSpecialPrice()))) {
-            $property = 'Special Price';
-            $this->updateAttribute($form->getId(),$form->getSpecialPrice(),'567','decimal');
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getSpecialPrice(), $oldData->getSpecialPrice(), $property);
-            $updateditems .= $property.'<br>';
-        }
+//        if(!(is_null($form->getSpecialPrice()))) {
+//            $property = 'Special Price';
+//            $this->updateAttribute($form->getId(),$form->getSpecialPrice(),'567','decimal');
+//            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getSpecialPrice(), $oldData->getSpecialPrice(), $property);
+//            $updateditems .= $property.'<br>';
+//        }
 //update manufacturer
         if(array_key_exists('option',$form->getManufacturer())) {
             $property = 'Manufacturer';
@@ -773,6 +771,13 @@ class ProductsTable{
             $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getDescription(), "",$property);
             $inserteditems .= $property.'<br>';
         }
+//Short Description
+        if(!(is_null($form->getShortDescription()))) {
+            $property = 'Short Description';
+            $this->insertAttribute($oldData->getId(),$form->getShortDescription(),'506','text');
+            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getShortDescription(), "",$property);
+            $inserteditems .= $property.'<br>';
+        }
 //in box
         if(!(is_null($form->getInBox()))) {
             $property = 'In Box';
@@ -781,12 +786,12 @@ class ProductsTable{
             $inserteditems .= $property.'<br>';
         }
 //Special Price
-        if(!(is_null($form->getSpecialPrice()))) {
-            $property = 'Special Price';
-            $this->insertAttribute($oldData->getId(),$form->getSpecialPrice(),'567','decimal');
-            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getSpecialPrice(), "",$property);
-            $inserteditems .= $property.'<br>';
-        }
+//        if(!(is_null($form->getSpecialPrice()))) {
+//            $property = 'Special Price';
+//            $this->insertAttribute($oldData->getId(),$form->getSpecialPrice(),'567','decimal');
+//            $this->insertLogging($oldData->getId(),$oldData->getSku(), $form->getSpecialPrice(), "",$property);
+//            $inserteditems .= $property.'<br>';
+//        }
 //Metakeywords
         if(!(is_null($form->getMetaKeywords()))) {
             $property = 'MetaKeywords';
