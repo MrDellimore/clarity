@@ -107,16 +107,24 @@ class MageSoap extends AbstractSoap{
                 $newValue = $attrib['newValue'];
                 foreach( $attrib as $prop => $attribute ) {
                     if ( $prop == 'property' ) {
-                        if ( is_array($attribute) ) {
-                            foreach ( $attribute as $mageAttribute => $realAttribute ) {
-                                $atts[$mageAttribute][$realAttribute] = $newValue;
+//                        This condition was for stock_status. But since we're doing qty/inventory every hour through sellercloud we dont need this here.
+//                        if ( is_array($attribute) ) {
+//                            echo 'haha';
+//                            foreach ( $attribute as $mageAttribute => $realAttribute ) {
+//                                $atts[$mageAttribute][$realAttribute] = $newValue;
+//                            }
+//                        } else {
+//                          This condition wraps strings that contain html elements inside so that they could be properly formatted when they are received in magento.
+                            if ( !(strcmp($newValue,strip_tags( $newValue ) ) === 0) ) {
+//                                $atts[$attribute] = "<![CDATA[" . $newValue . "]]>";
+                                $atts[$attribute] = html_entity_decode ($newValue );
+                            } else {
+                                $atts[$attribute] = $newValue;
                             }
-                        } else {
-                            $atts[$attribute] = $newValue;
-                        }
+//                        }
                     }
                 }
-                $packet[$key] = array('entity_id' => $entityID, $atts);
+                $packet[$key] = array('entity_id' => (int)$entityID, $atts);
             }
             $atts = [];
         }

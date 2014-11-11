@@ -168,6 +168,7 @@ var ManageContent = function () {
 
     var mageSkuHandle = function () {
             $( "#mageForm" ).submit(function( event ) {
+                $('#spinblue').removeClass('hidden');
                 event.preventDefault();
                 var form = $('#mageForm').serializeArray();
                 var url = '/api-feeds/magento/items';
@@ -176,7 +177,9 @@ var ManageContent = function () {
                     type: "POST",
                     data: form})
                     .done(function( data ) {
+                        $('#spinblue').addClass('hidden');
                         toastr.success(data);
+                        $('input.SkuItem input.SkuCategory input.SkuLink').remove();
                         $('#skuItems').prop('checked',false);
                         $('.pushItemsBtn').empty().append("Push Items");
                         $('.pushItemsBtn').attr('disabled',true);
@@ -221,6 +224,7 @@ var ManageContent = function () {
                         toastr.success(data);
                         var table = $('#kpiImages').dataTable();
                         table.api().draw();
+                        $('input.SkuImage').remove();
                         $('#skuImages').prop('checked',false);
                         $('.pushImagesBtn').empty().append("Push New Images");
                         $('.pushImagesBtn').attr('disabled',true);
@@ -250,6 +254,7 @@ var ManageContent = function () {
     var mageNewProductHandle = function () {
             $( "#mageNewProds" ).submit(function( event ) {
                 event.preventDefault();
+                $('#spinred').removeClass('hidden');
                 var form = $('#mageNewProds').serializeArray();
                 var url = '/api-feeds/magento/new-items';
                 $.ajax({
@@ -263,8 +268,10 @@ var ManageContent = function () {
                         toastr.success(data);
 //                        }
                         $('#skuNewProducts').prop('checked',false);
+                        $('#spinred').addClass('hidden');
                         var table = $('#kpiNewProducts').dataTable();
                         table.api().draw();
+                        $('input.skuNewProduct').remove();
                         $('.pushNewProducts').empty().append("Push New Products");
                         $('.pushNewProducts').attr('disabled',true);
                         /*keeps count of new images*/

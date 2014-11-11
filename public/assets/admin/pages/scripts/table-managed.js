@@ -873,7 +873,8 @@ var TableManaged = function () {
             var idChange = $(this);
             var entityId = idChange.closest('td').siblings('td.eid').text();
             var property = idChange.closest('td').siblings('td.prty').text();
-            var newValue = idChange.closest('td').siblings('td.newval').text();
+            var newValue = idChange.closest('td').siblings('td.newval').html();
+//            console.log(newValue);
             var sku = idChange.closest('td').siblings('td.sku').text();
             var position = idChange.closest('tr').index();
 //            var position = idChange.closest('td').siblings('td.count').text();
@@ -1007,7 +1008,7 @@ var TableManaged = function () {
             item.each(function(i) {
                 var entityId = item.closest('td').siblings('td.eid').eq(i).text();
                 var property = item.closest('td').siblings('td.prty').eq(i).text();
-                var newValue = item.closest('td').siblings('td.newval').eq(i).text();
+                var newValue = item.closest('td').siblings('td.newval').eq(i).html();
                 var sku = item.closest('td').siblings('td.sku').eq(i).text();
 //                var position = item.closest('tr').index();
 

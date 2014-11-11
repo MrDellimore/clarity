@@ -50,6 +50,7 @@ abstract class AbstractSoap
                     $resource = $packet[$a]['resource'];
                     $batch[$x] = array($resource, $packet[$a]);
                 } else {
+//                    echo $resource;
                     $batch[$x] = array($resource, $packet[$a]);
                 }
                 $x++;
@@ -58,6 +59,7 @@ abstract class AbstractSoap
             sleep(15);
             $results[] = $this->_soapHandle->call('multiCall',array($this->_session, $batch));
         }
+//        var_dump($results);
         $totalTime = $this->stopStopwatch();
         foreach ( $results as $key => $res ) {
             foreach ( $res as $index => $r ) {
