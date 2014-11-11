@@ -63,12 +63,12 @@ $('tr #sku_item').on('change', '#skuItem' ,function(){
             e.preventDefault();
             soapUpdates.show();     //displays datatable
             magentoItems.show();    //displays button
-//            var updateItems = $('#kpiUpdates').DataTable();
-//            updateItems.draw();
-//            var updateCategories = $('#kpiCategories').DataTable();
-//            updateCategories.draw();
-//            var updateLinked = $('#kpiRelatedProducts').DataTable();
-//            updateLinked.draw();
+            var updateItems = $('#kpiUpdates').DataTable();
+            updateItems.draw();
+            var updateCategories = $('#kpiCategories').DataTable();
+            updateCategories.draw();
+            var updateLinked = $('#kpiRelatedProducts').DataTable();
+            updateLinked.draw();
             TableManaged.datatableUpdateChecked();
             magentoImages.hide();   //hides button to new images.
             soapImages.hide();      //hides datatable to new images.

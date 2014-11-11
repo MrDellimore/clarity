@@ -178,6 +178,9 @@ class MagentoTable {
                 }
             }
         }
+//        echo '<pre>';
+//        var_dump($grouped);
+//        die();
         return $grouped;
     }
 
@@ -429,7 +432,15 @@ class MagentoTable {
         }
         return $result;
     }
-
+/*
+ * select p.entity_id as entityId, p.productid, c.categoryId as categoryId, c.dataState, u.firstname as fname, u.lastname as lname, cat.category as title as sku from product p
+ * inner join productcategory c
+ * on c.entity_id=product.entity_id and c.dataState in(2,3)
+ * left join users u
+ * on u.userid = c.changedby
+ * inner join newcategory cat
+ * cat.category_id = c.category_id
+ * */
 
     public function fetchChangedCategories($sku = null, $limit = null)
     {
@@ -442,7 +453,7 @@ class MagentoTable {
 
         $select->join(['u'=>'users'], 'u.userid = c.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
 
-        $select->join(['cat'=>'newcategory'] , 'cat.category_id = c.category_id', ['category'=>'title']);
+        $select->join(['cat'=>'category'] , 'cat.category_id = c.category_id', ['category'=>'title']);
         $filter = new Where();
         if( $sku ) {
             $filter->like('product.productid',$sku.'%');
@@ -588,10 +599,9 @@ class MagentoTable {
         ]);
         $filter = new Where;
         $filter->in('product.dataState',array(2));
-
-        $select->join(['u'=>'users'],'u.userid=product.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
         $contentReviewed = new Expression("i.entity_id=product.entity_id and attribute_id = 1676 and value = 1");
         $select->join(['i'=>'productattribute_int'],$contentReviewed,['value'=>'value']);
+        $select->join(['u'=>'users'],'u.userid=i.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);
         if( $sku ) {
             $filter->like('product.productid',$sku.'%');
         }
@@ -604,6 +614,7 @@ class MagentoTable {
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet->initialize($result);
         }
+//        echo $select->getSqlString(new \Pdo($this->adapter));
         $products = $resultSet->toArray();
         $startCount = 0;
         foreach($products as $product) {
@@ -729,6 +740,7 @@ class MagentoTable {
         array_shift($newProducts);
         array_shift($newProducts);
         array_shift($newProducts);
+//        var_dump($newProducts);
         $updateProduct = $this->sql->update('product')->set(['entity_id'=>$mageEntityId, 'dataState'=>0 ])->where(['productid'=>$sku]);
         $prdStmt = $this->sql->prepareStatementForSqlObject($updateProduct);
         $response = $prdStmt->execute();

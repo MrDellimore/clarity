@@ -32,3 +32,10 @@ this is a test
     /*border-color: transparent;*/
     /*color: #000;*/
 /*}*/
+#spinner1 #spinner2 #spinner3 {
+    display: none;
+    opacity:0.5;
+    z-index: 100;
+    background-color: silver;
+    position: absolute;
+}

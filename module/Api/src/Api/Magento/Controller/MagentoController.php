@@ -381,6 +381,9 @@ class MagentoController extends AbstractActionController
         if ( !empty($newProducts) ) {
             if( $newProductResponse = $this->getMagentoSoap()->soapAddProducts($newProducts) ) {
                 $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
+//                echo '<pre>';
+//                var_dump($newProducts);
+//                die();
                 foreach( $newProductResponse as $index => $newResponse ) {
                     foreach( $newResponse as $key => $newEntityId ) {
                         if( $newEntityId ) {
@@ -388,6 +391,7 @@ class MagentoController extends AbstractActionController
                         }
                     }
                 }
+//                die();
     //            if( $response ) {
     ////                $url .= '?status=true';
     //                return $this->redirect()->toRoute('apis');

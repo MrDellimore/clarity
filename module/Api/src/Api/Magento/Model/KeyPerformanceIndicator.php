@@ -55,6 +55,13 @@ class KeyPerformanceIndicator {
         $this->sql = new Sql($this->adapter);
     }
 
+/*
+ * Select * from product
+ * inner join productattribute_int i
+ * on i.entity_id=product.entity_id and i.attribute_id = 1676 and i.value = 1
+ * where product dataState = 2;
+ * */
+
     /**
      * @return int
      */
@@ -62,6 +69,7 @@ class KeyPerformanceIndicator {
     {
         $select = $this->sql->select();
         $select->from('product');
+        $select->columns(['id'=>'entity_id']);
         $select->where(array( 'product.dataState' => '2'));
         $contentReviewed = new Expression("i.entity_id=product.entity_id and attribute_id = 1676 and value = 1");
         $select->join(['i'=>'productattribute_int'],$contentReviewed,['value'=>'value']);
