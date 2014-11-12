@@ -48,7 +48,7 @@ class ProductsTable{
     public function lookupForm($entityid){
         $select = $this->sql->select();
         $select->from('product');
-        $select->columns(array('id' => 'entity_id', 'sku' => 'productid'));
+        $select->columns(array('id' => 'entity_id', 'sku' => 'productid','status' => 'status','price' => 'price','Inventory' => 'quantity'));
 
 
         $select->where(array('product.entity_id' => $entityid));
@@ -71,16 +71,16 @@ class ProductsTable{
         $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch Price
-        $newAttibute = $this->fetchAttribute($entityid,'decimal','99','price');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+//        $newAttibute = $this->fetchAttribute($entityid,'decimal','99','price');
+//        $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch Inventory
-        $newAttibute = $this->fetchAttribute($entityid,'int','1','Inventory');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+//        $newAttibute = $this->fetchAttribute($entityid,'int','1','Inventory');
+//        $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch Status
-        $newAttibute = $this->fetchAttribute($entityid,'int','273','Status');
-        $result[array_keys($newAttibute)[0]] = current($newAttibute);
+//        $newAttibute = $this->fetchAttribute($entityid,'int','273','Status');
+//        $result[array_keys($newAttibute)[0]] = current($newAttibute);
 
         //Fetch Tax Class
         $newAttibute = $this->fetchAttribute($entityid,'int','274','taxclass');
@@ -607,6 +607,7 @@ class ProductsTable{
         if(!(is_null($form->getStatus()))) {
             $property = 'status';
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
+            $this->updateStatus($form->getId(),$form->getStatus());
             $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStatus(), $oldData->getStatus(), /*$oldData->getManufacturer(),*/ $property);//,'273','int');
             $updateditems .= 'Status<br>';
         }
@@ -714,8 +715,9 @@ class ProductsTable{
         if(!(is_null($form->getImageGallery()))) {
             $imageHandler = new ImageTable($this->adapter);
             foreach($form->getImageGallery() as  $value){
-                $result=$imageHandler->updateImage($value);
-                $updateditems .= $result;
+                $imageHandler->updateImage($value);
+                //$updateditems .= $result;
+                //$this->insertLogging($form->getId(), $oldData->getSku(), $form->getAperture()['option'], $oldData->getAperture()['option'], $property);
             }
             if(count($form->getImageGallery())>0){
                 $updateditems .= count($form->getImageGallery()) .' Images Updated';
@@ -946,6 +948,21 @@ class ProductsTable{
         return $inserteditems;
     }
 
+    /**
+     * update status in product table
+     */
+    public function updateStatus($entityid,$value){
+        $loginSession= new Container('login');
+        $userData = $loginSession->sessionDataforUser;
+        $user = $userData['userid'];
+        $update = $this->sql->update('product')
+            ->set(array('status' => $value,'dataState' => '1', 'changedby' => $user, 'lastModifiedDate'=>date('Y-m-d h:i:s')))
+            ->where(array('entity_id ='.$entityid));
+        $statement = $this->sql->prepareStatementForSqlObject($update);
+        return $statement->execute();
+    }
+
+
     public function updateAttribute($entityid,$value,$attributeid,$tableType){
 
         $loginSession= new Container('login');
@@ -1032,7 +1049,7 @@ class ProductsTable{
         return $this->eventManager;
     }
 
-    public function insertLogging($entityid, $sku ,$newValue, $oldValue, /*$manufacturer, */$property)//, $attributeid,$tableType)
+    public function insertLogging($entityid, $sku ,$newValue, $oldValue, $property)
     {
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
@@ -1043,13 +1060,12 @@ class ProductsTable{
             'sku'   =>  $sku,
             'oldvalue'  =>  $oldValue,
             'newvalue'  =>  $newValue,
-//            'manufacturer'  =>  current(array_keys($manufacturer)),
             'datechanged'   => date('Y-m-d h:i:s'),
             'changedby' =>  $user,
             'property'  =>  $property,
         );
 
-        $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);
         $this->getEventManager()->trigger('construct_sku_log', null, array('makeFields'=>$eventWritables));
     }
 }

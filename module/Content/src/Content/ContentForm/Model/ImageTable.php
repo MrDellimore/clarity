@@ -106,7 +106,7 @@ class ImageTable{
         if(!(is_null($image->getDisabled()))){
             $setArray['disabled'] = $image->getDisabled();
         }
-        if(!(is_null($image->getDisabled()))){
+        if(!(is_null($image->getDefault()))){
             $setArray['default'] = $image->getDefault();
         }
 
