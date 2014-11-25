@@ -254,7 +254,7 @@ var ManageContent = function () {
     var mageNewProductHandle = function () {
             $( "#mageNewProds" ).submit(function( event ) {
                 event.preventDefault();
-                $('#spinner3').show();
+                $('#spinred').removeClass('hidden');
                 var form = $('#mageNewProds').serializeArray();
                 var url = '/api-feeds/magento/new-items';
                 $.ajax({
@@ -265,7 +265,6 @@ var ManageContent = function () {
 //                        if ( data == 'Error' ) {
 //                            console.log('haha');
 //                        } else {
-                        $('#spinner3').hide();
                         toastr.success(data);
 //                        }
                         $('#skuNewProducts').prop('checked',false);

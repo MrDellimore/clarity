@@ -956,7 +956,7 @@ class ProductsTable{
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
         $update = $this->sql->update('product')
-            ->set(array('status' => $value,'dataState' => '1', 'changedby' => $user, 'lastModifiedDate'=>date('Y-m-d h:i:s')))
+            ->set(array('status' => $value, 'changedby' => $user, 'lastModifiedDate'=>date('Y-m-d h:i:s')))
             ->where(array('entity_id ='.$entityid));
         $statement = $this->sql->prepareStatementForSqlObject($update);
         return $statement->execute();
