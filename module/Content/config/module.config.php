@@ -154,6 +154,16 @@ return array(
                     ),
                 ),
             ),
+            'webassignmentquicksearch'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/webassignment/quicksearch',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\AJAXLoader\Controller\AjaxLoader',
+                        'action'        =>  'webAssignmentSearch',
+                    ),
+                ),
+            ),
 //this webassignmentsubmit might change for controller since we are making an ajaxloader directory under content
             'webassignmentsubmit'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',

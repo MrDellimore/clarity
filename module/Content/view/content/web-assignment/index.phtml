@@ -54,22 +54,7 @@ Website Assignment <small></small>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php foreach($this->web as $key => $value): ?>
-                                    <?php
-                                    if ($this->web[$key]['website'] == 0 ){ $site = 'aSavings';}
-                                    if ($this->web[$key]['website'] == 1 ){ $site = 'Focus';}
-                                    if ($this->web[$key]['website'] == 2 ){ $site = 'Focus / aSavings';}
-                                    if (is_null($this->web[$key]['fname']) ){ $changedby = 'N/A';}
-                                    else{$changedby = $this->web[$key]['fname'] . ' ' . $this->web[$key]['lname'];}
-                                    ?>
-                                    <tr>
-                                    <td><?=$this->web[$key]['manufacturer']?></td>
-                                    <td><?=$site?></td>
-                                    <td><?=$lastModifiedDate = ($this->web[$key]['lastModifiedDate'] == '0000-00-00 00:00:00' ) ? 'N/A' : $this->web[$key]['lastModifiedDate']?> </td>
-                                    <td><?=$changedby?></td>
-                                    <td><a class='btn green mfcedit' data-toggle='modal' href='#crossModal'>Edit <i class='fa fa-plus'></i></a></td>
-                                    </tr>
-                                    <?php endforeach;?>
+
                                 </tbody>
                             </table>
                         </div>

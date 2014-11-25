@@ -11,8 +11,11 @@ namespace Content\WebAssignment\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Where;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
+use Zend\Db\Sql\Expression;
+
 
 
 class WebAssignTable
@@ -22,11 +25,18 @@ class WebAssignTable
         $this->sql = new Sql($this->adapter);
     }
 
-    public function accessWeb()
+    public function accessWeb($searchTerm)
     {
         $select = $this->sql->select();
         $select->from('webassignment');
-        $select->join(array('u'=>'users'), 'webassignment.changedby=u.userid',array('fname'=>'firstname','lname'=>'lastname'), Select::JOIN_LEFT);
+        $concatName = new Expression("concat(u.firstname, ' ',u.lastname)");
+
+        $select->columns(array('Manufacturer'=>'manufacturer','Site'=>'website','Date Assigned'=>'lastModifiedDate','Edit'=>'id'));
+        $select->join(array('u'=>'users'), 'webassignment.changedby=u.userid',array('Changed by'=>$concatName), Select::JOIN_LEFT);
+        $filter = new Where();
+        $filter->like('manufacturer', $searchTerm.'%');
+        $select->where($filter);
+        $select->limit(10);
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $resultSet = new ResultSet;

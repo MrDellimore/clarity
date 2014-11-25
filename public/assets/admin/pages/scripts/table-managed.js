@@ -2032,6 +2032,21 @@ var TableManaged = function () {
         var table = $('#webassignmenttable');
 
         table.dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/content/webassignment/quicksearch",
+                type: 'POST'
+
+            },
+            "columns":
+                [
+                    { "data": "Manufacturer", "orderable": false },
+                    { "data": "Site", "orderable": false },
+                    { "data": "Date Assigned", "orderable": false },
+                    { "data": "Changed by", "orderable": false  },
+                    { "data": "Edit", "orderable": false }
+                ],
             "lengthMenu": [
                 [10, 20, 30, -1],
                 [10, 20, 30, "All"] // change per page values here

@@ -25,23 +25,15 @@ class WebAssignmentController extends AbstractActionController{
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
-        $web = $this->getWebTable()->accessWeb();
-        $viewResult = new ViewModel(array('web'=>$web));
+
+        $viewResult = new ViewModel();
         return $viewResult;
 
     }
 
-    public function getWebTable()
-    {
-        if (!$this->webassignTable) {
-            $sm = $this->getServiceLocator();
-            $this->webassignTable = $sm->get('Content\WebAssignment\Model\WebAssignTable');
-        }
-        return $this->webassignTable;
-    }
 
-    public function submitFormAction()
-    {
+
+    public function submitFormAction(){
         $result = '';
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;

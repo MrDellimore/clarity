@@ -91,6 +91,7 @@ class AjaxLoaderController extends AbstractActionController
         return $response;
 
     }
+
     public function updatequicksearch(Array $r){
         foreach($r as $key => $value){
             $r[$key]['sku'] = '<a href = "/content/product/'.$value['sku'].'">'.$value['sku'].'</a>';
@@ -325,6 +326,7 @@ class AjaxLoaderController extends AbstractActionController
 
         }
     }
+
     public function brandLoadAction()
     {
         $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
@@ -367,5 +369,45 @@ class AjaxLoaderController extends AbstractActionController
             return $response;
         }
 
+    }
+
+    public function webAssignmentSearchAction(){
+        $result = '';
+        $request = $this->getRequest();
+
+
+        if($request -> isPost()){
+            $searchTerm='';
+            $queryData = $request->getPost();
+            $draw = $queryData['draw'];
+            $searchTerm =$queryData['search']['value'];
+            $limit = $queryData['length'];
+
+            if($limit == '-1'){
+                $limit = 100;
+            }
+
+            $search = $this->getServiceLocator()->get('Content\WebAssignment\Model\WebAssignTable');;
+            $searchResult = $search->accessWeb($searchTerm);
+
+            foreach($searchResult as $key => $value){
+                $searchResult[$key]['Edit'] = "<a class='btn green mfcedit' data-toggle='modal' href='#crossModal'>Edit <i class='fa fa-plus'></i></a>";
+                 //var_dump($searchResult[$key]['Edit']);
+            }
+
+
+
+            $result = json_encode(
+                array(
+                    'draw' => $draw,
+                    'recordsTotal' => 1000,
+                    'recordsFiltered' => 10, $limit,
+                    'data' => $searchResult));
+        }
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
+        $response->setContent($result);
+
+        return $response;
     }
 } 
