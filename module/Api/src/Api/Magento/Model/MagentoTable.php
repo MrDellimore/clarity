@@ -877,8 +877,6 @@ class MagentoTable {
                 }
             }
         }
-//        var_dump($productSkus);
-//        die();
         return $productSkus;
     }
 

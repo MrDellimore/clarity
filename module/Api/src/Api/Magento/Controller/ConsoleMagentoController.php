@@ -14,12 +14,26 @@ use Zend\Console\Request as ConsoleRequest;
 
 class ConsoleMagentoController  extends AbstractActionController{
 
+    /**
+     * @var $console object
+     */
     protected $console;
 
+    /**
+     * @var $mage object
+     */
     protected $mage;
 
+    /**
+     * @var $soap object
+     */
     protected $soap;
 
+    /**
+     * This action was to be used for developing a front end for Cron Job Management. It would allow the user
+     * to do CRUD on products as they liked.
+     * @throws \RuntimeException
+     */
     public function soapProductsAction()
     {
         $request = $this->getRequest();
@@ -62,12 +76,16 @@ class ConsoleMagentoController  extends AbstractActionController{
 
 //        $cron->append_cronjob('54 10 3 10 5 /app/clarity/test.php &> /dev/null');
 //        var_dump($cron)
-//echo 'haha';
 //        $shell = 'ls';
 //        $shellResult = system($shell, $ret);
 //        echo "shell Result " . $shellResult . "<hr /> return " . $ret ;
     }
 
+    /**
+     * This action fetches all products that are new and places them in an array for persistence into Mage's DB
+     * But it has to be audited for optimization.
+     * @return void $result string
+     */
     public function soapCreateProductsAction()
     {
         $result = '';
@@ -80,12 +98,15 @@ class ConsoleMagentoController  extends AbstractActionController{
         $newItems = $console->fetchNewItems();
         if( !empty($newItems) ) {
             if ( $newProductResponse = $this->soap->soapAddProducts($newItems) ) {
-//                var_dump($newProductResponse);
                 $newProducts = $this->mage->adjustProductKeys($newItems);
                 foreach( $newProductResponse as $index => $newResponse ) {
                     foreach( $newResponse as $key => $newEntityId ) {
                         if( $newEntityId ) {
-                            $result .= $this->mage->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                            if ( $index == 0 ) {
+                                $result .= $this->mage->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                            } else {
+                                $result .= $this->mage->updateNewItemsToClean($newProducts[(int)$index.$key], $newEntityId);
+                            }
                         }
                     }
                 }
@@ -97,6 +118,12 @@ class ConsoleMagentoController  extends AbstractActionController{
         }
     }
 
+    /**
+     * Fetches all product attributes, linked products, and categories that have been changed/added/to-be-removed and
+     * does CRUD on Mage DB
+     * This also has to be audited for optimization
+     * @return void $result string
+     */
     public function soapUpdateProductsAction()
     {
         $this->console = $this->getServiceLocator()->get('Api\Magento\Model\ConsoleMagentoTable');
@@ -106,34 +133,53 @@ class ConsoleMagentoController  extends AbstractActionController{
         $linked = $this->mage->fetchLinkedProducts();
         $categories = $this->mage->fetchChangedCategories();
         $result = '';
+
+//      if there are any products that have changed
         if( !empty($changedProducts) ) {
             $changedProducts = $this->console->groupProducts($changedProducts);
             $changeResponse = $this->soap->soapChangedProducts($changedProducts);
+
+//            I commented this out because as per Andrew qty is updated on a job he made through the reporting server in Management Studio
 //            $changedProducts = $this->mage->adjustProductKeys($changedProducts);
-            foreach ( $changeResponse as $itemResponse ) {
+//            The response back from Mage is an 2-d Array.
+            foreach ( $changeResponse as $index => $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $result .= $this->console->updateToClean($changedProducts[$key]);
+                        if ( $index == 0 ) {
+                            $result .= $this->console->updateToClean($changedProducts[$key]);
+                        } else {
+                            $result .= $this->console->updateToClean($changedProducts[(int)$index.$key]);
+                        }
                     }
                 }
             }
         }
+//        If there are any Related Products that have been deleted or added.
         if( !empty($linked) ) {
            $linkedResponse = $this->soap->soapLinkedProducts($linked);
-            foreach ( $linkedResponse as $linkResponse ) {
+            foreach ( $linkedResponse as $index => $linkResponse ) {
                 foreach ( $linkResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $result .= $this->mage->updateLinkedProductstoClean($linked[$key]);
+                        if( $index == 0 ) {
+                            $result .= $this->mage->updateLinkedProductstoClean($linked[$key]);
+                        } else {
+                            $result .= $this->mage->updateLinkedProductstoClean($linked[(int)$index.$key]);
+                        }
                     }
                 }
             }
         }
+//        If there are any categories that have been deleted or added for any skus
         if( !empty($categories) ) {
             $categoryResponse = $this->soap->soapCategoriesUpdate($categories);
-            foreach ( $categoryResponse as $catResponse ) {
+            foreach ( $categoryResponse as $index => $catResponse ) {
                 foreach ( $catResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $result .= $this->mage->updateProductCategoriesToClean($categories[$key]);
+                        if ( $index == 0 ) {
+                            $result .= $this->mage->updateProductCategoriesToClean($categories[$key]);
+                        } else {
+                            $result .= $this->mage->updateProductCategoriesToClean($categories[(int)$index.$key]);
+                        }
                     }
                 }
             }
@@ -144,6 +190,10 @@ class ConsoleMagentoController  extends AbstractActionController{
         echo $result;
     }
 
+    /**
+     * Fetches all new images for existing products/skus
+     * @return void $result string
+     */
     public function soapCreateMediaAction()
     {
         $this->mage = $this->getServiceLocator()->get('Api\Magento\Model\MagentoTable');
@@ -151,16 +201,20 @@ class ConsoleMagentoController  extends AbstractActionController{
         $newImages = $this->mage->fetchNewImages();
         $result = '';
         if( !empty($newImages) ) {
+//            This loop will grab only the src
             foreach( $newImages as $key => $img ) {
                 preg_match( '/<img(.*)src(.*)=(.*)"(.*)"/U' , $img['filename'], $match );
                 $newImages[$key]['filename'] = array_pop($match);
             }
             if ( $image = $this->soap->soapMedia($newImages) ) {
-//            if($image = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapMedia($images)) {
                 foreach($image as $key => $img){
                     foreach($img as $ind => $imgName){
                         if(preg_match('/jpg/',$imgName)){
-                            $result .= $this->mage->updateImagesToClean($newImages[$ind]);
+                            if ( $key == 0 ) {
+                                $result .= $this->mage->updateImagesToClean($newImages[$ind]);
+                            } else {
+                                $result .= $this->mage->updateImagesToClean($newImages[(int)$key.$ind]);
+                            }
                         }
                     }
                 }

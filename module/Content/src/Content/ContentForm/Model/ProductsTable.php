@@ -423,11 +423,10 @@ class ProductsTable{
 
 
     /**
+     * Checks to see if Sku exists.
      * @param $sku
-     * @throws \Exception
      * @return int
      */
-
     public function validateSku($sku){
         $select = $this->sql->select()->from('product')->columns(array('entity_id'));
         $select->where(['productid' => $sku]);
@@ -1049,12 +1048,23 @@ class ProductsTable{
         return $this->eventManager;
     }
 
+    /**
+     * Method is used as an event logger. Any change that is made to any sku is registered. This uses
+     * Zend 2's observer pattern event listener
+     * For more information on event listener check out:
+     * http://stackoverflow.com/questions/14824026/zend-framework-2-logging-to-mysql-db-additional-columns-inserting-null
+     * @param $entityid
+     * @param $sku
+     * @param $newValue
+     * @param $oldValue
+     * @param $property
+     * */
     public function insertLogging($entityid, $sku ,$newValue, $oldValue, $property)
     {
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-
+        // This array is from the logger table. the keys have to be exactly the same as in the logger table.
         $fieldValueMap = array(
             'entity_id' =>  $entityid,
             'sku'   =>  $sku,
@@ -1064,7 +1074,6 @@ class ProductsTable{
             'changedby' =>  $user,
             'property'  =>  $property,
         );
-
         $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);
         $this->getEventManager()->trigger('construct_sku_log', null, array('makeFields'=>$eventWritables));
     }

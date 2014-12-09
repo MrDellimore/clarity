@@ -14,20 +14,33 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Driver\ResultInterface;
-use Zend\Db\Adapter\Platform\Mysql;
-
 
 class OptionTable {
 
+    /**
+     * @var \Zend\Db\Adapter\Adapter
+     */
     protected $adapter;
 
+    /**
+     * @var \Zend\Db\Sql\Sql
+     */
     protected $_sql;
 
+    /**
+     * @param Adapter $adapter
+     */
     public function __construct(Adapter $adapter){
         $this->adapter = $adapter;
         $this->_sql = new Sql($this->adapter);
     }
 
+    /**
+     * Fetches all of the options from the productattribute options table
+     * @param null $optionValue
+     * @param $attributeId
+     * @return array $opt
+     */
     public function fetchOptions($optionValue = Null, $attributeId)
     {
         $select = $this->_sql->select();
@@ -48,6 +61,7 @@ class OptionTable {
         }
 
         $options = $resultSet->toArray();
+//        This comment below will echo out the above query so you can better see what your query looks like in the developer tools of your browser
 //        $mysql = new Mysql(new \PDO($this->adapter));
 //        echo $select->getSqlString($mysql);
 
@@ -62,8 +76,6 @@ class OptionTable {
             }
             $opt[$key]['attId'] = $option['attId'];
         }
-//        var_dump($opt);
-
         return $opt;
     }
 }

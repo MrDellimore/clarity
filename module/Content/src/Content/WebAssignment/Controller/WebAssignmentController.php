@@ -15,8 +15,15 @@ use Zend\Session\Container;
 
 class WebAssignmentController extends AbstractActionController{
 
+    /**
+     * @var WebAssignTable $webassignTable object
+     */
     protected $webassignTable;
 
+    /**
+     * This action uses a data table but not server side. It displays all of the Manufacturer and their corresponding site (Focus|Asavings)
+     * @return array|\Zend\Http\Response|ViewModel
+     */
     public function indexAction()
     {
         //check if logged in
@@ -31,6 +38,9 @@ class WebAssignmentController extends AbstractActionController{
 
     }
 
+    /**
+     * @return WebAssignTable $webassignTable object
+     */
     public function getWebTable()
     {
         if (!$this->webassignTable) {
@@ -40,6 +50,10 @@ class WebAssignmentController extends AbstractActionController{
         return $this->webassignTable;
     }
 
+    /**
+     * Action updates webassignment table based on user selection.
+     * @return \Zend\Stdlib\ResponseInterface $response object
+     */
     public function submitFormAction()
     {
         $result = '';

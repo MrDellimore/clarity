@@ -15,27 +15,27 @@ use Zend\Session\Container;
 
 class IndexController extends AbstractActionController
 {
+    /**
+     * Direct user to login screen if they do not have a session container.
+     * @return ViewModel object
+     * */
     public function indexAction()
     {
-//        echo 'haha';
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
         $this->layout('layout/layout');
-//        return $this->redirect()->toRoute('home');
-        return new ViewModel(
-//            array(
-//                'firstName' =>  $userLogin['firstname'],
-//                'lastName'  =>  $userLogin['lastname'],
-//                'username'  =>  $userLogin['username'],
-//            )
-        );
+        return new ViewModel();
     }
 
-    public function logoutAction(){
-
+    /**
+     * Destroys the sesson container allowing user to log out.
+     * @return \Zend\Http\Response object
+     */
+    public function logoutAction()
+    {
         $loginSession= new Container('login');
         $loginSession->offsetUnset('sessionDataforUser');
         return $this->redirect()->toRoute('auth', array('action'=>'index') );

@@ -17,18 +17,29 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 
 class AttributesTable {
 
+    /**
+     * @var Adapter $_adapterobject
+    **/
     protected $_adapter;
 
+    /**
+     * @var Sql $_sql
+     **/
     protected $_sql;
 
-    public function __construct(Adapter $adapter){
+    /**
+     * @param Adapter $adapter
+     */
+    public function __construct(Adapter $adapter)
+    {
         $this->_adapter = $adapter;
         $this->_sql = new Sql($this->_adapter);
     }
 
     /**
      * Description: This method accesses everything from lookup table and displays it in the front end.
-     * @return array
+     * @param null | $attributeCode
+     * @return array $atts
      */
     public function fetchAttributes($attributeCode = null )
     {
@@ -37,7 +48,6 @@ class AttributesTable {
         $select->columns(['attId'=>'attribute_id','dataType'=>'backend_type','frontend'=>'frontend_label', 'input'=>'frontend_input', 'dateModified'=>'lastModifiedDate','user'=>'changedby']);
         $filter = new Where();
         $filter->like('productattribute_lookup.frontend_label', $attributeCode.'%');
-//        $filter->equalTo('attribute_id',$attributeId);
         $select->where($filter);
 
         $select->join(['u'=>'users'], 'u.userid = productattribute_lookup.changedby',['fname'=>'firstname','lname'=>'lastname'], Select::JOIN_LEFT);

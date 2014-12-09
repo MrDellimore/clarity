@@ -8,27 +8,37 @@
 
 namespace Api\Magento\Controller;
 
-use Zend\Db\Exception\UnexpectedValueException;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Content\ContentForm\Tables\Spex;
-use Zend\View\Helper\FlashMessenger;
-use Content\ContentForm\Model\ProductsTable;
 
 class MagentoController extends AbstractActionController
 {
+    /**
+     * Trait
+     */
     use Spex;
 
+    /**
+     * @var object
+     */
     protected $magentoTable;
 
+    /**
+     * @var object
+     */
     protected $mageSoap;
 
+    /**
+     * @var array
+     */
     protected $skuData;
 
-    protected $dirtyAttributeSkus = array();
-
-
+    /**
+     *
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function magentoAction()
     {
         $loginSession= new Container('login');
@@ -39,6 +49,10 @@ class MagentoController extends AbstractActionController
         return new ViewModel([]);
     }
 
+    /**
+     * This action returns an integer to a KPI with how many updates to push to Mage DB.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function kpiUpdateCountAction()
     {
         $loginSession= new Container('login');
@@ -51,7 +65,6 @@ class MagentoController extends AbstractActionController
         $categoryCount = $kpi->fetchCategoryCount();
         $linkedCount = $kpi->fetchLinkedCount();
         $updateCount = (int)$attributeCount + (int) $categoryCount + (int) $linkedCount;
-//        var_dump($attributeCount, $categoryCount, $linkedCount);
         $result = json_encode(['updateCount' => (int)$updateCount]);
         $event    = $this->getEvent();
         $response = $event->getResponse();
@@ -59,6 +72,10 @@ class MagentoController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * This action returns an integer to a KPI with how many new products/skus to push to Mage DB.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function kpiNewProductCountAction()
     {
         $loginSession= new Container('login');
@@ -68,16 +85,17 @@ class MagentoController extends AbstractActionController
         }
         $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
         $newProdCount = $kpi->fetchNewCount();
-        $result = json_encode(
-            array(
-                'newProdCount' => $newProdCount)
-        );
+        $result = json_encode(['newProdCount' => $newProdCount]);
         $event    = $this->getEvent();
         $response = $event->getResponse();
         $response->setContent($result);
         return $response;
     }
 
+    /**
+     * This action returns an integer to a KPI with how many new images to push to Mage DB.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function kpiImageCountAction()
     {
         $loginSession= new Container('login');
@@ -97,6 +115,10 @@ class MagentoController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * This action is used for the data table. It will list all of the new images to create in mage db.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function newImagesAction()
     {
         $loginSession= new Container('login');
@@ -131,6 +153,10 @@ class MagentoController extends AbstractActionController
         }
     }
 
+    /**
+     * This action is used for the data table. It will list all of the new products/skus to create in mage db.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function newProductsAction()
     {
         $loginSession= new Container('login');
@@ -165,6 +191,10 @@ class MagentoController extends AbstractActionController
         }
     }
 
+    /**
+     * This action is used for the data table. It will list all of products attributes to be updated in mage db.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function updateItemsAction()
     {
         $loginSession= new Container('login');
@@ -200,6 +230,11 @@ class MagentoController extends AbstractActionController
         }
     }
 
+    /**
+     * This action is used for the data table. It will list all of the Categories that have been deleted or added for a
+     * particular sku for mage db.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function updateCategoriesAction()
     {
         $loginSession= new Container('login');
@@ -234,6 +269,11 @@ class MagentoController extends AbstractActionController
         }
     }
 
+    /**
+     * This action is used for the data table. It will list all of the Related Products that have been deleted or added for a
+     * particular sku for mage db.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function updateRelatedAction()
     {
         $loginSession= new Container('login');
@@ -268,11 +308,15 @@ class MagentoController extends AbstractActionController
         }
     }
 
+    /**
+     * Will make api call for updates to be done based on what check boxes have been selected.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     protected function soapItemAction()
     {
-        $categorySoapResponse = $itemSoapResponse = $resp = $linkedSoapResponse = Null;
+        $categorySoapResponse = $itemSoapResponse = $linkedSoapResponse = Null;
         $updateCategories = $updateFields = $linkedFields = '';
-        $groupedProd = $categorizedProd = $changedProducts = $linkedProducts = [];
+        $groupedProd = $categorizedProd = $linkedProducts = [];
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
         if(empty($userLogin)){
@@ -287,7 +331,6 @@ class MagentoController extends AbstractActionController
             }
             if( !empty($checkboxSku['skuItem']) ) {
                 $groupedProd = $this->getMagentoTable()->groupSku($checkboxSku['skuItem']);
-//                $changedProducts = $this->getMagentoTable()->fetchDirtyProducts($groupedProd);
             }
             if( !empty($checkboxSku['skuCategory']) ) {
                 $categorizedProd = $this->getMagentoTable()->groupCategories($checkboxSku['skuCategory']);

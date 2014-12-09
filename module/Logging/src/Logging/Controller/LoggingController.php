@@ -3,18 +3,20 @@
 namespace Logging\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
-
 
 class LoggingController extends AbstractActionController
 {
 
+    /**
+     * @var LoggingTable $loggingTable object
+     */
     protected $loggingTable;
 
     /**
-     * Description: this action on load will load all rows from the logger table into the data table in the view.
-    */
+     * This action on load will load all rows from the logger table into the data table in the view.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function skuLogAction()
     {
         $loginSession= new Container('login');
@@ -30,6 +32,7 @@ class LoggingController extends AbstractActionController
             $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
             $limit = $logsInfo['length'];
 
+//TODO the below will be for filtering through a date range.
 //            $Qty = $logsInfo['more_old'];
 //            $qty = $logsInfo['moreold'];
 //            $filterDateRange = (!is_null($logsInfo['filterDateRange'])) ? $logsInfo['filterDateRange'] : null;
@@ -38,7 +41,6 @@ class LoggingController extends AbstractActionController
 //            $toDate = trim((string)$dateRange[1]);
 //            $fromDate = date('Y-m-d h:i:s', strtotime($fromDate) );
 //            $toDate = date('Y-m-d h:i:s', strtotime($toDate) );
-
 
             $searchParams = array('sku'=>$sku);//,'from'=>$fromDate,'to'=>$toDate);
 //            $dateRange = array('from'=>$fromDate,'to'=>$toDate);
@@ -62,6 +64,10 @@ class LoggingController extends AbstractActionController
         }
     }
 
+    /**
+     * This action will display all the of api call that were made to Mage
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function mageSoapLogAction()
     {
         $loginSession= new Container('login');
@@ -77,7 +83,7 @@ class LoggingController extends AbstractActionController
             $sku = (!is_null($logsInfo['search']['value']))? $logsInfo['search']['value']: null;
             $limit = $logsInfo['length'];
 
-
+//TODO the below will be for filtering through a date range.
 //            $filterDateRange = (!is_null($logsInfo['filterDateRange'])) ? $logsInfo['filterDateRange'] : null;
 //            $dateRange = explode('to',$filterDateRange);
 //            $fromDate = trim((string)$dateRange[0]);
@@ -108,6 +114,11 @@ class LoggingController extends AbstractActionController
         }
     }
 
+    /**
+     * This action will revert a change in Sku History tab. When the user clicks on revert link it will swap the old value
+     * and the new value and log that change as well as update that particular attribute.
+     * @return \Zend\Http\Response
+     */
     public function revertAction()
     {
         $loginSession= new Container('login');
@@ -135,6 +146,10 @@ class LoggingController extends AbstractActionController
         $this->redirect()->toRoute('logging');
     }
 
+    /**
+     * This method populates a select2 dropdown with a list of registered users.
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function listUsersAction()
     {
         $users = $this->getLoggingTable();
@@ -146,6 +161,9 @@ class LoggingController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return LoggingTable|object
+     */
     public function getLoggingTable()
     {
         if (!$this->loggingTable) {

@@ -17,11 +17,28 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 
 class WebAssignTable
 {
+    /**
+     * @var \Zend\Db\Adapter\Adapter
+     */
+    protected  $adapter;
+
+    /**
+     * @var \Zend\Db\Sql\Sql
+     */
+    protected $sql;
+
+    /**
+     * @param Adapter $adapter
+     */
     public function __construct(Adapter $adapter){
         $this->adapter = $adapter;
         $this->sql = new Sql($this->adapter);
     }
 
+    /**
+     * Queries webassignment table for fields and uses data table non-server-side to display them.
+     * @return array
+     */
     public function accessWeb()
     {
         $select = $this->sql->select();
@@ -36,27 +53,15 @@ class WebAssignTable
         return $resultSet->toArray();
     }
 
+    /**
+     * When user changes a manufacturer to a new site. This method will persist that change.
+     * @param $manufacturer
+     * @param $website
+     * @param $userid
+     * @return string
+     */
     public function updateWebsiteTable($manufacturer, $website, $userid)
     {
-
-        //What is the purpose of this first select statement?
-        //validation?  if so this can be done client side instead of a new DB call
-        /*
-        $select = $this->sql->select();
-        $select->from('webassignment')->columns(array('website'=>'website'))->where(array('manufacturer'=>$manufacturer));
-        $statement = $this->sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        $resultSet = new ResultSet;
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet->initialize($result);
-        }
-        $webResults = $resultSet->toArray();
-        $site = $webResults[0]['website'];
-        if($site == $website){
-            return '';
-        }
-        */
-
         $update = $this->sql->update('webassignment');
         $update->set(array('website'=>$website,'changedby'=>$userid, 'dataState'=>1))->where(array('manufacturer'=>$manufacturer));
         $statement = $this->sql->prepareStatementForSqlObject($update);
@@ -64,6 +69,6 @@ class WebAssignTable
         if($website == 0 ) $site = 'aSavings';
         if($website == 1 ) $site = 'Focus';
         if($website == 2 ) $site = 'Focus / aSavings';
-        return "Successfully changed Manufacturer '". $manufacturer . "' to Website: '" . $site . "'";
+        return "Successfully changed Manufacturer Site'". $manufacturer . "<br />";
     }
 }

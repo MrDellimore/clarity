@@ -1,24 +1,29 @@
 <?php
 
+/**
+ * This class is for user registration and login in.
+ * */
+
 namespace Authenticate\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Crypt\Password\Bcrypt;
-use Zend\Authentication\AuthenticationService as AuthService;
-use Authenticate\Authenticator\AuthenticationAdapter;
 use Authenticate\Entity\User;
 use Authenticate\Model\Auth;
 use Zend\Authentication\Adapter\DbTable;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\Mvc\Controller\Plugin\PluginInterface;
-use Zend\View\Helper\FlashMessenger;
 use Zend\Session\Container;
 
 use Zend\Validator\StringLength;
 
 class AuthenticateController extends AbstractActionController{
 
+    /**
+     * Method verifies that a user used the right credentials to enter Spex Dashboard.
+     * Posted vars are $login['username'] and $login['password']
+     * @return \Zend\Http\Response $response object
+     */
     public function loginAction()
     {
         $request = $this->getRequest();
@@ -27,6 +32,7 @@ class AuthenticateController extends AbstractActionController{
             $login = (array) $request->getPost();
             $authTable = $this->getServiceLocator()->get('Authenticate\Model\AuthTable');
             $username = $authTable->selectUser($login['username']);
+            //  Checks to see if user supplied any credentials.
             if( empty($username) ) {
                 $this->flashMessenger()->addMessage("Username doesn't exist.");
                 return $this->redirect()->toRoute("auth", array('action'=>'index'));
@@ -34,6 +40,7 @@ class AuthenticateController extends AbstractActionController{
                 $registeredPassword = trim($username[0]['password']);
                 $registeredUsername = trim($username[0]['username']);
                 $userPassword = trim($login['password']);
+                //  Verifies is supplied password and registered password are the same.
                 if( $bcrypt->verify($userPassword, $registeredPassword) ) {
                     $dbAdapter = $this->serviceLocator->get('Zend\Db\Adapter\Adapter');
                     $authAdapter = new DbTable($dbAdapter, 'users', 'username', 'password');
@@ -42,6 +49,7 @@ class AuthenticateController extends AbstractActionController{
                     $authService = $this->serviceLocator->get('Zend\Authentication\AuthenticationService');
                     $authService->setAdapter($authAdapter);
                     $result = $authService->authenticate();
+                    // Authenticates and if valid redirects to Spex Dashboard
                     if ($result->isValid()) {
                         // set id as identifier in session
                         $userId = $authAdapter->getResultRowObject('userid')->userid;
@@ -65,6 +73,10 @@ class AuthenticateController extends AbstractActionController{
         }
     }
 
+    /**
+     * Will persist user supplied info.
+     * @return \Zend\Http\Response $response object
+     */
     public function registerAction()
     {
         $request = $this->getRequest();
@@ -90,18 +102,22 @@ class AuthenticateController extends AbstractActionController{
             $register = $authTable->encryptPassword($register);
             $hydrator = new ClassMethods();
             $hydrator->hydrate($register, $user);
+            //  Persists user
             if(!$auth->createUser($authTable, $user)){
                 $this->flashMessenger()->addMessage("You have already registered. Try again.");
                 return $this->redirect()->toRoute("auth", array('action'=>'register'));
             }
             return $this->redirect()->toRoute("auth", array('action'=>'index'));
-
         }
         else{
             return $this->redirect()->toRoute("auth", array('action'=>'index'));
         }
     }
 
+    /**
+     * When logs out it destroys the session and redirects to login screen.
+     * @return \Zend\Http\Response $response object
+     */
     public function logoutAction()
     {
         $loginSession= new Container('login');
@@ -109,9 +125,12 @@ class AuthenticateController extends AbstractActionController{
         return $this->redirect()->toRoute("auth", array('action'=>'index'));
     }
 
+    /**
+     * This just displays the user login.
+     * @return array|\Zend\View\Model\ViewModel $result object
+     */
     public function indexAction()
     {
-//        $return = array('success' => true);
         $return = array();
         $flashMessenger = $this->flashMessenger();
         if ($flashMessenger->hasMessages()) {

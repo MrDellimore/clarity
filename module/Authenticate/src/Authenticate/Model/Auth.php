@@ -1,45 +1,32 @@
 <?php
 namespace Authenticate\Model;
 
-//use Authenticate\Model\AuthTable;
-//use Zend\Mvc\Controller\AbstractActionController;
-//use Zend\Mvc\Controller\AbstractController;
-use Zend\Db\Sql\Select;
-/*
- * Model for user updates and creation
- */
-
+/**
+ * This class is just an intermediary Between Controller the the AuthTable Model Class.
+ * */
 class Auth{
     
     protected $authTable;
 
     protected $userId;
-    
-    //register User
-    //return boolean if user was created
-    public function createUser($authTable, $userData){
 
-//        $authTable = $this->getAuthTable();
-//        $authTable = new AuthTable();
+    /**
+     * Method was created by Andrew so I decided to keep it.
+     * @param AuthTable $authTable object
+     * @param $userData array
+     * @return boolean
+     * */
+    public function createUser($authTable, $userData)
+    {
         return $authTable->saveUser($userData);
     }
     
     
     //validate credentials
     //return boolean
-    public function validateUser($credentials){
+    public function validateUser($credentials)
+    {
         $authTable = $this->getAuthTable();
         return $authTable->checkUser($credentials);   
     }
-    
-
-    
-//    protected function getAuthTable(){
-//        if (!$this->authTable) {
-//            $sm = $this->getServiceLocator();
-//            $this->authTable = $sm->get('Authenticate\Model\AuthTable');
-//
-//        }
-//        return $this->authTable;
-//    }
 }

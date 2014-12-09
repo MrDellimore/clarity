@@ -8,6 +8,7 @@
 namespace Content\ContentForm\Controller;
 
 
+use Content\ContentForm\Model\ProductsTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods as cHydrator;
 use Zend\View\Model\ViewModel;
@@ -19,13 +20,20 @@ use Zend\Session\Container;
  * Class ProductsController
  * @package Content\Products\Controller
  */
-class ProductsController extends AbstractActionController {
-
+class ProductsController extends AbstractActionController
+{
+    /**
+     * Content\ContentForm\Model\ProductsTable object
+     * */
     protected $formTable;
+
+    /**
+     * Content\ContentForm\Model\ImageTable object
+     * */
     protected $imageTable;
 
-    //protected $skuData = array();
     /**
+     * Will take in a sku and validate it.
      * @return ViewModel
      */
     public function indexAction(){
@@ -69,19 +77,11 @@ class ProductsController extends AbstractActionController {
 
         return $view;
     }
-//  load accessories action was here
 
-//  load categories action was here.
-
-//  submit form action was here.
-
-//  brand load action was here.
-
-//  manufacturer load action was here.
-
-//  image save action was here.
-
-
+    /**
+     * Populates variable as an object of ProductsTable
+     * @return ProductsTable $formTable object
+     * */
     public function getFormTable(){
         if (!$this->formTable) {
             $sm = $this->getServiceLocator();
@@ -90,6 +90,10 @@ class ProductsController extends AbstractActionController {
         return $this->formTable;
     }
 
+    /**
+     * Populates variable as an object of ImageTable
+     * @return ImageTable $imageTable object
+     * */
     public function getImageTable(){
         if (!$this->imageTable) {
             $sm = $this->getServiceLocator();

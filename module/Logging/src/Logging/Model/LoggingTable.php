@@ -15,16 +15,24 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Where;
-use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareTrait;
 use Content\ContentForm\Tables\Spex;
 
 class LoggingTable
 {
+    /**
+     * Traits
+     */
     use EventManagerAwareTrait, Spex;
 
+    /**
+     * @var \Zend\Db\Adapter\Adapter
+     */
     protected $adapter;
 
+    /**
+     * @var Sql object
+     */
     protected $sql;
 
     public function __construct(Adapter $adapter)
@@ -35,8 +43,9 @@ class LoggingTable
 
 
     /**
-     * Description: this method revert any changes that had taken place in the logging history.
-     * @params array();
+     * Description: this method reverts any changes that had taken place in the logging history.
+     * @param array $params
+     * @return ResultInterface $result
      */
     public function undo($params = array())
     {
@@ -57,7 +66,8 @@ class LoggingTable
             'property'      =>  $params['property'],
         );
 
-        $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $columnMap);//'fields' => $mapping,
+//        Refer to Module.php in Content module.
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $columnMap);
         $this->getEventManager()->trigger('construct_sku_log', null, array('makeFields'=>$eventWritables));
          $set = array(
                 'dataState'=>1,
@@ -99,25 +109,26 @@ class LoggingTable
     }
 
     /**
-     * Description: this method will use the search sku input box as a basis to return only those rows with the sku.
-     * @param $searchParam array();
-     * @return $response array()
+     * Description: this method will fetch logger table and dump it in the data table
+     * It will also use the sku if provide to search the log table by sku.
+     * @param array $searchParams
+     * @param $limit
+     * @param $moreOld | Null
+     * @param $old | Null
+     * @return array $response
      */
-
     public function lookupLoggingInfo($searchParams = array(), $limit, $moreOld = Null, $old = Null)
     {
-        $select = $this->sql->select();
-        $select->from('logger');
-        $select->columns(array(
-            'id'  =>  'id',
-            'entityID'  =>  'entity_id',
-            'sku'   =>  'sku',
-            'oldValue'  =>  'oldvalue',
-            'newValue'  =>  'newvalue',
-            'dataChanged'   =>  'datechanged',
-            'user'  =>  'changedby',
-            'property'  =>  'property',
-        ));
+        $select = $this->sql->select()->from('logger')->columns([
+                                                                'id'            =>  'id',
+                                                                'entityID'      =>  'entity_id',
+                                                                'sku'           =>  'sku',
+                                                                'oldValue'      =>  'oldvalue',
+                                                                'newValue'      =>  'newvalue',
+                                                                'dataChanged'   =>  'datechanged',
+                                                                'user'          =>  'changedby',
+                                                                'property'      =>  'property',
+                                                            ]);
         if( isset($searchParams['sku']) || isset($searchParams['from']) || isset($searchParams['to']) ) {
             $entityId = new Expression('p.entity_id = logger.entity_id');
             $select->join(array('p' => 'product'), $entityId ,array('entityID' => 'entity_id'));
@@ -155,7 +166,10 @@ class LoggingTable
             $oldValue = $history['oldValue'];
             $newValue = $history['newValue'];
 
-            /*Might use ellipses later on if requested*/
+//            Was asked to shorten fields that are too large.
+//            Might use ellipses later on if requested
+//            Used strip_tags instead on lines 184 and 187
+
 //            if( (is_string($oldValue) && strlen($oldValue) > 50) || ( is_string($newValue) && strlen($newValue) > 50 ) && !is_null($old) ) {
 //                $shortOldValue = utf8_encode(substr(strip_tags($oldValue),0,50)) . " <a href='#' class='more_old' id='more_old_sku" . $key . "'>...</a>";
 //                $shortNewValue = utf8_encode(substr(strip_tags($newValue),0,50)) . " <a href='#' class='more_new' id='more_new_sku" . $key . "'>...</a>";;
@@ -168,10 +182,7 @@ class LoggingTable
             $response[$key]['id']               = $history['id'];
             $response[$key]['sku']              = $history['sku'];
             $response[$key]['entityID']         = $history['entityID'];
-//            $response[$key]['oldValue'] = $shortOldValue;
             $response[$key]['oldValue']         = strip_tags($oldValue);
-//            $response[$key]['newValue'] = $history['newValue'];
-//            $response[$key]['newValue'] = $shortNewValue;
             $response[$key]['newValue']         = strip_tags($newValue);
             $response[$key]['manufacturer']     = $manufacturer;
             $response[$key]['dataChanged']      = date('m-d-Y',strtotime($history['dataChanged']));
@@ -181,6 +192,13 @@ class LoggingTable
         return $response;
     }
 
+    /**
+     * Description: this method will fetch mage_logs table and dump it in the data table
+     * It will also use the sku if provide to search the log table by sku.
+     * @param $search
+     * @param $limit
+     * @return array $response
+     */
     public function fetchMageLogs($search, $limit)
     {
         $select = $this->sql->select();
@@ -220,8 +238,6 @@ class LoggingTable
         $response = array();
 
         foreach($logs as $key => $fields) {
-//            $user = $logs[$key]['user'];
-//            $response[$key]['id'] = $fields['id'];
             $response[$key]['sku'] = $fields['sku'];
             $response[$key]['resource'] = $fields['resource'];
             $response[$key]['speed'] = $fields['speed']. ' secs';
