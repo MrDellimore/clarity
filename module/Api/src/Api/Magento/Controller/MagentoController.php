@@ -175,7 +175,8 @@ class MagentoController extends AbstractActionController
             if($limit == '-1'){
                 $limit = 100;
             }
-            $newProducts = $this->getMagentoTable()->fetchNewItems($sku,$limit);
+            $productTable = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
+            $newProducts = $this->getMagentoTable()->fetchNewItems($sku, $limit, $productTable);
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -214,7 +215,7 @@ class MagentoController extends AbstractActionController
                 $limit = 100;
             }
             $productTable = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
-            $skuData = $this->getMagentoTable()->fetchChangedProducts( $sku, $limit, $productTable);
+            $skuData = $this->getMagentoTable()->fetchChangedProducts( $sku, $limit, $productTable );
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -253,7 +254,8 @@ class MagentoController extends AbstractActionController
             if($limit == '-1'){
                 $limit = 100;
             }
-            $categories = $this->getMagentoTable()->fetchChangedCategories($sku,$limit);
+            $productTable = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
+            $categories = $this->getMagentoTable()->fetchChangedCategories($sku, $limit, $productTable);
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -292,7 +294,8 @@ class MagentoController extends AbstractActionController
             if($limit == '-1'){
                 $limit = 100;
             }
-            $linkedProduct = $this->getMagentoTable()->fetchLinkedProducts($sku,$limit);
+            $productTable = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
+            $linkedProduct = $this->getMagentoTable()->fetchLinkedProducts($sku, $limit, $productTable);
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -309,8 +312,8 @@ class MagentoController extends AbstractActionController
     }
 
     /**
-     * Will make api call for updates to be done based on what check boxes have been selected.
-     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     * Will make api call for updates to be done based on what check boxes have been selected in UI.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface $response object
      */
     protected function soapItemAction()
     {
@@ -330,13 +333,16 @@ class MagentoController extends AbstractActionController
                 return $this->redirect()->toRoute('apis');
             }
             if( !empty($checkboxSku['skuItem']) ) {
+//                if multiple attributes for the same sku have been selected this will stack them in the same array.
                 $groupedProd = $this->getMagentoTable()->groupSku($checkboxSku['skuItem']);
             }
             if( !empty($checkboxSku['skuCategory']) ) {
+//                This could be done in javascipt. It just makes the array 0-based and increments accordingly.
                 $categorizedProd = $this->getMagentoTable()->groupCategories($checkboxSku['skuCategory']);
             }
 
             if( !empty($checkboxSku['skuLink']) ) {
+//                This could be done in javascipt. It just makes the array 0-based and increments accordingly.
                 $linkedProducts = $this->getMagentoTable()->groupRelated($checkboxSku['skuLink']);
             }
         }
@@ -348,10 +354,14 @@ class MagentoController extends AbstractActionController
         if( !empty($categorizedProd) ) {
             $categorySoapResponse = $this->getMagentoSoap()->soapCategoriesUpdate($categorizedProd);
 
-            foreach ( $categorySoapResponse as $catResponse ) {
+            foreach ( $categorySoapResponse as $index => $catResponse ) {
                 foreach ( $catResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $updateCategories .= $this->getMagentoTable()->updateProductCategoriesToClean($categorizedProd[$key]);
+                        if ( $index == 0 ) {
+                            $updateCategories .= $this->getMagentoTable()->updateProductCategoriesToClean($categorizedProd[$key]);
+                        } else {
+                            $updateCategories .= $this->getMagentoTable()->updateProductCategoriesToClean($categorizedProd[(int)$index.$key]);
+                        }
                     }
                 }
             }
@@ -359,12 +369,17 @@ class MagentoController extends AbstractActionController
         /*Update Mage with up-to-date products*/
         if( !empty($groupedProd) ) {
             $itemSoapResponse = $this->getMagentoSoap()->soapUpdateProducts($groupedProd);
+//            This method below can probably be taken out since qty will not be updated through this api. Andrew has
+//            a job that does this in Management Studio. But for now I'll leave it because it doesn't hurt it being here.
             $groupedProd = $this->getMagentoTable()->adjustUpdateProductKeys($groupedProd);
-//            $itemSoapResponse = $this->getMagentoSoap()->soapChangedProducts($groupedProd);
-            foreach ( $itemSoapResponse as $itemResponse ) {
+            foreach ( $itemSoapResponse as $index => $itemResponse ) {
                 foreach ( $itemResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $updateFields .= $this->getMagentoTable()->updateToClean($groupedProd[$key]);
+                        if ( $index == 0 ) {
+                            $updateFields .= $this->getMagentoTable()->updateToClean($groupedProd[$key]);
+                        } else {
+                            $updateFields .= $this->getMagentoTable()->updateToClean($groupedProd[(int)$index.$key]);
+                        }
                     }
                 }
             }
@@ -372,10 +387,14 @@ class MagentoController extends AbstractActionController
         if( !empty($linkedProducts) ) {
             /*Update Mage with up-to-date linked products*/
             $linkedSoapResponse = $this->getMagentoSoap()->soapLinkedProducts($linkedProducts);
-            foreach ( $linkedSoapResponse as $linkedResponse ) {
+            foreach ( $linkedSoapResponse as $index => $linkedResponse ) {
                 foreach ( $linkedResponse as $key => $soapResponse ) {
                     if( $soapResponse ) {
-                        $linkedFields .= $this->getMagentoTable()->updateLinkedProductstoClean($linkedProducts[$key]);
+                        if ( $index == 0 ) {
+                            $linkedFields .= $this->getMagentoTable()->updateLinkedProductstoClean($linkedProducts[$key]);
+                        } else {
+                            $linkedFields .= $this->getMagentoTable()->updateLinkedProductstoClean($linkedProducts[(int)$index.$key]);
+                        }
                     }
                 }
             }
@@ -395,11 +414,16 @@ class MagentoController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * Will make api call for new products/skus to be done based on what check boxes have been selected in UI.
+     * <code>
+     * if ( $index == 0 ) I have this condition in certain places after my api calls because the api returns a batch
+     * in multiples of 10 to me because I supply it a batch in multiples of 10.
+     * </code>
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface $response object
+     */
     public function soapNewItemsAction()
     {
-//        $url = $this->url()->fromRoute('api-magento-new-items');
-//        echo '<pre>';
-//        var_dump($url);
         $newProducts = [];
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
@@ -414,29 +438,25 @@ class MagentoController extends AbstractActionController
                 return $this->redirect()->toRoute('apis');
             }
             if( !empty($checkboxNewSku['skuNewProduct']) ) {
+//                This method groupNewSku can be taken out and done in JS instead. It just reorders the array to 0-based array.
                 $groupedNewProducts = $this->getMagentoTable()->groupNewSku($checkboxNewSku['skuNewProduct']);
                 $newProducts = $this->getMagentoTable()->fetchNewProducts($groupedNewProducts);
             }
         }
-//        $newProducts = $this->getMagentoTable()->fetchNewItems();
         if ( !empty($newProducts) ) {
             if( $newProductResponse = $this->getMagentoSoap()->soapAddProducts($newProducts) ) {
                 $newProducts = $this->getMagentoTable()->adjustProductKeys($newProducts);
-//                echo '<pre>';
-//                var_dump($newProducts);
-//                die();
                 foreach( $newProductResponse as $index => $newResponse ) {
                     foreach( $newResponse as $key => $newEntityId ) {
                         if( $newEntityId ) {
-                            $result .= $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                            if ( $index == 0 ) {
+                                $result .= $this->getMagentoTable()->updateNewItemsToClean($newProducts[$key], $newEntityId);
+                            } else {
+                                $result .= $this->getMagentoTable()->updateNewItemsToClean($newProducts[(int)$index.$key], $newEntityId);
+                            }
                         }
                     }
                 }
-//                die();
-    //            if( $response ) {
-    ////                $url .= '?status=true';
-    //                return $this->redirect()->toRoute('apis');
-    //            }
             }
         } else {
             $result = "Error";
@@ -449,11 +469,12 @@ class MagentoController extends AbstractActionController
         $response->setContent($result);
 
         return $response;
-
-////        $url .= '?status=false';
-//        return $this->redirect()->toRoute('apis');
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface $response object
+     */
     public function soapImagesAction()
     {
         $images = [];
@@ -470,13 +491,19 @@ class MagentoController extends AbstractActionController
             if( !count( $checkboxImages ) ) {
                 return $this->redirect()->toRoute('apis');
             }
+//            this method orderImages can be done JS instead. It just reorders the array to 0-based array..
             $images = $this->getMagentoTable()->orderImages($checkboxImages['skuImage']);
         }
         if($image = $this->getServiceLocator()->get('Api\Magento\Model\MageSoap')->soapMedia($images)) {
             foreach($image as $key => $img){
                 foreach($img as $ind => $imgName){
+//                    The api will return an image name with .jpg. Otherwise iw will return false or an error.
                     if(preg_match('/jpg/',$imgName)){
-                        $result .= $this->getMagentoTable()->updateImagesToClean($images[$ind]);
+                        if ( $key == 0 ) {
+                            $result .= $this->getMagentoTable()->updateImagesToClean($images[$ind]);
+                        } else {
+                            $result .= $this->getMagentoTable()->updateImagesToClean($images[(int)$key.$ind]);
+                        }
                     }
                 }
             }
@@ -491,6 +518,9 @@ class MagentoController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return object
+     */
     public function getMagentoTable()
     {
         if (!$this->magentoTable) {
@@ -500,6 +530,9 @@ class MagentoController extends AbstractActionController
         return $this->magentoTable;
     }
 
+    /**
+     * @return object
+     */
     public function getMagentoSoap()
     {
         if (!$this->mageSoap) {

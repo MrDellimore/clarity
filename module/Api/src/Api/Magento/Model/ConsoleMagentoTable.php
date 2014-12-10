@@ -21,19 +21,34 @@ use Zend\Db\Sql\Expression;
 
 class ConsoleMagentoTable
 {
+    /**
+     * Trait
+     */
     use Spex;
 
+    /**
+     * @var array
+     */
     protected $stockData  = [
         'qty'=>'qty',
         'is_in_stock'=> 'is_in_stock',
     ];
 
+    /**
+     * @param Adapter $adapter
+     */
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
         $this->sql = new Sql($this->adapter);
     }
 
+    /**
+     * This method can possibly be combined with updateToClean for reusable code in the MagentoTable since they both do the same thing.
+     * Only differnce is that the indeces are not the same due to the indeces coming from the datatable.
+     * @param $changedProducts
+     * @return string
+     */
     public function updateToClean($changedProducts)
     {
         $result = '';
@@ -83,13 +98,9 @@ class ConsoleMagentoTable
                 if ( $uids == $ids ) {
                         $grouped[$count][$changedAttributes[$index]] = $changedValue[$index];
                     }
-//                $count++;
-
                 }
             $count++;
             }
-//        var_dump($grouped);
-//            die();
         return $grouped;
     }
 
@@ -97,6 +108,7 @@ class ConsoleMagentoTable
      * @Description: This method grabs all product attributes with a dataState of 1(changed). For attribute qty it adds another array called stock_data.
      * Be mindful of this particular attribute, otherwise it will not update in Mage. Please refer to http://www.magentocommerce.com/api/soap/catalog/catalogProduct/catalog_product.update.html
      * for more details. Look at catalogInventoryStockItemUpdateEntity for further explanation.
+     * It's the same as fetchChangedProducts in the MagentoTable class but that method is for grabbing changed attributes to display in the data table.
      * @param null
      * @return array | $soap
      */
@@ -121,9 +133,6 @@ class ConsoleMagentoTable
         $lookup = $this->productAttributeLookup($this->sql);
 //        foreach ($products as $product) {
             foreach( $lookup as $attribute ) {
-//                $entityId = $product['id'];
-//                $soap[$count]['id'] = $entityId;
-//                $soap[$count]['sku'] = $product['sku'];
                 $dataType = $attribute['dataType'];
                 $attributeId = $attribute['attId'];
                 $attributeCode = $attribute['attCode'];
@@ -132,7 +141,6 @@ class ConsoleMagentoTable
                     $selectAttributes->join(array('u' => 'users'),'u.userid = productattribute_'.$dataType.'.changedby ' ,array('fName' => 'firstname', 'lName' => 'lastname'),Select::JOIN_LEFT);
                     $selectAttributes->join(array('p' => 'product'),'p.entity_id = productattribute_'.$dataType.'.entity_id' ,array('id' => 'entity_id', 'sku' => 'productid'),Select::JOIN_LEFT);
                 }
-//                    echo $selectAttributes->getSqlString(new \PDO($this->adapter)) . "\n";
                 $statementAttributes = $this->sql->prepareStatementForSqlObject($selectAttributes);
                 $resultAttributes = $statementAttributes->execute();
                 $resultSetAttributes = new ResultSet;
@@ -147,21 +155,19 @@ class ConsoleMagentoTable
 //                        $soap[$count]['stock_data'][$attributeCode] = $atts[$attributeCode];
 //                    } else {
 //                    if ( $attributeCode != 'qty' ) {
-                        $soap[$count][$attributeCode] = $atts[$attributeCode];
-//                    }
-//                    }
+                    $soap[$count][$attributeCode] = $atts[$attributeCode];
                     $count++;
                 }
-//                $count++;
             }
-//            return $result;
-//            $count++;
 //        }
-//        var_dump($soap);
-//        die();
         return $soap;
     }
 
+    /**
+     * This method grabs all skus that are new but that have content_reviewed (1676) with a value of 1.
+     * It can also be combined with fetchNewItems in MagentoTable. That method has three arguments. But it can be adapted.
+     * @return array
+     */
     public function fetchNewItems()
     {
         //fetches all attribute codes from look up table and looks them up in corresponding attribute tables only if they are new.
@@ -183,17 +189,21 @@ class ConsoleMagentoTable
             $resultSet->initialize($result);
         }
         $products = $resultSet->toArray();
-        foreach($products as $index => $value){
+//        start of foreach
+        foreach( $products as $index => $value ) {
             $entityId = $value['id'];
             $attributes = $this->productAttributeLookup($this->sql);
             $soapBundle[$count]['id'] = $value['id'];
             $soapBundle[$count]['sku'] = $value['sku'];
-            foreach( $attributes as $fields ){
+//            start of foreach
+            foreach( $attributes as $fields ) {
                 $tableType = $fields['dataType'];
                 $attributeId = (int)$fields['attId'];
                 $attributeCode = $fields['attCode'];
                 $selectAttributes = $this->sql->select()->from('productattribute_'.$tableType)
                           ->columns([$attributeCode=>'value'])
+//                I took off the dataState of 2 here because we don't care what the dataState is for the attributes. We justs care of the product/sku
+//                has a dataState of 2 and the attribute_id 1676 has a value of 1.
                           ->where(['entity_id'=>$entityId,'attribute_id'=>$attributeId]);//, 'dataState'=>2
                 $statementAtts = $this->sql->prepareStatementForSqlObject($selectAttributes);
                 $resultAtts = $statementAtts->execute();
@@ -202,16 +212,19 @@ class ConsoleMagentoTable
                     $resultSetAtts->initialize($resultAtts);
                 }
                 $attributeValues = $resultSetAtts->toArray();
-                foreach($attributeValues as $keyValue => $valueOption){
+//                start of foreach
+                foreach( $attributeValues as $keyValue => $valueOption ) {
                     $soapBundle[$count]['websites'] = [$value['website']];
 //                    $soapBundle[$count][$attributeCode] = $attributeValues[$keyValue][$attributeCode];
+//                    start of if
                     if ( array_key_exists($attributeCode,$this->stockData) ) {
                         $soapBundle[$count]['stock_data'][$attributeCode] = $valueOption[$attributeCode];
                     } else {
                         if( is_null($attributeValues[$keyValue][$attributeCode]) && $attributeCode ==  'status' ){
                             $soapBundle[$count][$attributeCode] = 0;
                         }
-                        if( isset($attributeValues[$keyValue][$attributeCode]) ){
+//                        start of if
+                        if( isset($attributeValues[$keyValue][$attributeCode]) ) {
 //                            if( $attributeCode == 'content_reviewed' && (int)$valueOption[$attributeCode] == 1 ) {
                                 if ( $attributeCode ==  'status' ) {
                                     $soapBundle[$count][$attributeCode] = (int)$valueOption[$attributeCode];
@@ -219,15 +232,12 @@ class ConsoleMagentoTable
                                     $soapBundle[$count][$attributeCode] = $valueOption[$attributeCode];
                                 }
 //                            }
-                        }
-
-                    }
-                }
-            }
+                        } // end of if
+                    } // end of if
+                }   // end of foreach
+            } // end of foreach
             $count++;
-        }
-//        var_dump($soapBundle);
-//        die();
+        } // end of foreach
         return $soapBundle;
     }
 

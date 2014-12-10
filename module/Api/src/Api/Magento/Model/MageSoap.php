@@ -10,49 +10,62 @@ namespace Api\Magento\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Session\Container;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Where;
 use Zend\EventManager\EventManagerAwareTrait;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Adapter\Driver\ResultInterface;
 use Content\ContentForm\Tables\Spex;
 use Zend\Soap\Client;
 
 
-class MageSoap extends AbstractSoap{
+class MageSoap extends AbstractSoap
+{
 
+    /**
+     * Trait
+     */
     use EventManagerAwareTrait;
 
+    /**
+     * @var \Zend\Db\Adapter\Adapter
+     */
     protected $adapter;
 
+    /**
+     * @var int
+     */
     protected $totaltime;
 
-    protected $sql;
-
-    protected $dirtyCount;
-
-    protected $attributeDirtyCount = 0;
-
-    protected $dirtyItems;
-
+    /**
+     * @var array
+     */
     protected $imgPk = array();
 
+    /**
+     * @var int
+     */
     protected $_startTime;
 
+    /**
+     * @var int
+     */
     protected $_stopTime;
 
+    /**
+     * @var int
+     */
     protected $_totalTime;
 
+    /**
+     * @param Adapter $adapter
+     */
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
-//        $this->sql = new Sql($this->adapter);
         parent::__construct(SOAP_URL);
-//        parent::__construct(SOAP_URL_STAGE2);
-//        parent::__construct(SOAP_URL_STAGE);
     }
 
+    /**
+     * I created this method as the start of a start of a stop watch. I could have probably used Symfony 2's stopwatch.
+     * http://symfony.com/doc/current/components/stopwatch.html
+     */
     public function startStopwatch()
     {
         $mtime = microtime() ;
@@ -61,40 +74,27 @@ class MageSoap extends AbstractSoap{
         $this->_startTime = $mtime;
     }
 
+    /**
+     * This method is when the runner push stop on his stopwatch.
+     * @return bool|string
+     */
     public function stopStopwatch()
     {
         $mtime = microtime() ;
         $mtime = explode(" ",$mtime);
-//        var_dump($mtime);
         $mtime = $mtime[1] + $mtime[0];
         $this->_stopTime = $mtime;
         $this->_totalTime = (int)$this->_stopTime-(int)$this->_startTime;
         return date("H:i:s", $this->_totalTime);
     }
 
-    //    public function soapUpdateProducts($changedProducts)
-//    {
-//        $this->startStopwatch();
-//        $packet = $skuCollection = $atts = [];
-//        foreach( $changedProducts as $key => $attributes ) {
-//            $entityID = $attributes['id'];
-//            array_shift($attributes);
-//
-//            foreach( $attributes as $ind => $attrib ) {
-//                $skuCollection[] = $attrib['sku'];
-//                $newValue = $attrib['newValue'];
-//                foreach( $attrib as $prop => $attribute ) {
-//                    if ( $prop == 'property' ) {
-//                        $atts[$attribute] = $newValue;
-//                    }
-//                }
-//                $packet[$key] = array('entity_id' => $entityID, $atts);
-//            }
-//            $atts = [];
-//        }
-//        return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
-//    }
-
+    /**
+     * This method the attributes and places them in a packet to be sent to magento.
+     * I'm grabbing the sku here for logging. In the Mage Logs I want to notify the user what Sku was push to Mage for the update.
+     * The property index comes from table-managed.js in the updateMageItems function.
+     * @param $changedProducts
+     * @return array
+     */
     public function soapUpdateProducts($changedProducts)
     {
         $this->startStopwatch();
@@ -107,16 +107,15 @@ class MageSoap extends AbstractSoap{
                 $newValue = $attrib['newValue'];
                 foreach( $attrib as $prop => $attribute ) {
                     if ( $prop == 'property' ) {
-//                        This condition was for stock_status. But since we're doing qty/inventory every hour through sellercloud we dont need this here.
+//                        This condition was for stock_status. But since we're doing qty/inventory every hour through sellercloud we dont need this here. But I'll keep it for
+//                        some future case.
 //                        if ( is_array($attribute) ) {
-//                            echo 'haha';
 //                            foreach ( $attribute as $mageAttribute => $realAttribute ) {
 //                                $atts[$mageAttribute][$realAttribute] = $newValue;
 //                            }
 //                        } else {
-//                          This condition wraps strings that contain html elements inside so that they could be properly formatted when they are received in magento.
+//                              This condition can probably be taken out but should be tested first. Leaving line 121 would probably be the only statement that should be left.
                             if ( !(strcmp($newValue,strip_tags( $newValue ) ) === 0) ) {
-//                                $atts[$attribute] = "<![CDATA[" . $newValue . "]]>";
                                 $atts[$attribute] = html_entity_decode ($newValue );
                             } else {
                                 $atts[$attribute] = $newValue;
@@ -126,13 +125,17 @@ class MageSoap extends AbstractSoap{
                 }
                 $packet[$key] = array('entity_id' => (int)$entityID, $atts);
             }
+//            This had to re-create this array to flush it. That is to say, I had to empty that contents so it would not aggregate to the succeeding iteration.
             $atts = [];
         }
-//var_dump($packet);
-//die();
         return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
     }
 
+    /**
+     * Create a packet for Related Products for a soap call to Mage.
+     * @param $linkedProds
+     * @return array
+     */
     public function soapLinkedProducts($linkedProds)
     {
         $packet = $skuCollection = array();
@@ -162,27 +165,27 @@ class MageSoap extends AbstractSoap{
                 ];
             }
         }
-//        echo '<pre>';
-//        var_dump($packet);
-//        die();
         return $this->_soapCall($packet, null, $skuCollection);
     }
 
+    /**
+     * Create a packet for New Images for existing Skus in Mage. For more information check out:
+     * http://www.magentocommerce.com/api/soap/catalog/catalogProductAttributeMedia/catalog_product_attribute_media.create.html
+     * @param array $media
+     * @return array
+     */
     public function soapMedia($media = array())
     {
         $packet = $skuCollection = [];
         $this->startStopwatch();
         foreach($media as $key => $imgFile) {
-//                $imgDomain = $media[$key]['domain'];//this will change to whatever cdn we will have.
+//            this will change to whatever cdn we will have.
+//                $imgDomain = $media[$key]['domain'];
             $imgName = $imgFile['filename'];
             $this->imgPk[] = $imgFile['imageid'];
             $entityId = $imgFile['id'];
             $imgPath = file_get_contents("public".$imgName);
-//                $imgPath = 'http://www.focuscamera.com/media/catalog/product'.$imgName;
-
-//                $fileContents = file_get_contents($imgPath);
             $fileContentsEncoded = base64_encode($imgPath);
-//                $fileContentsEncoded = base64_encode($fileContents);
             $file = array(
                 'content'   =>  $fileContentsEncoded,
                 'mime'  =>  'image/jpeg',
@@ -192,20 +195,22 @@ class MageSoap extends AbstractSoap{
                 $sku,
                 [
                     'file'  =>   $file,
-                    'label' =>  $imgFile['label'],//'no label',
-                    'position'  => $imgFile['position'],//'0',
-//                        'types' =>  array('thumbnail'), //what kind of images is this?
+                    'label' =>  $imgFile['label'],
+                    'position'  => $imgFile['position'],
                     'excludes'  =>  0,
                     'remove'    =>  0,
                     'disabled'  =>  0,
                 ]
             ];
         }
-//        var_dump($packet);
-//        die();
         return $this->_soapCall($packet, 'catalog_product_attribute_media.create', $skuCollection);
     }
 
+    /**
+     * Creates a packet for Categories to be sent over to Mage.
+     * @param $categories
+     * @return array
+     */
     public function soapCategoriesUpdate($categories)
     {
         $packet = $skuCollection = array();
@@ -231,18 +236,20 @@ class MageSoap extends AbstractSoap{
                 ];
             }
         }
-//        var_dump($packet);
-//        die();
         return $this->_soapCall($packet, Null, $skuCollection);
     }
 
 
+    /**
+     * Creates a packet for product attributes that have changed.
+     * @param $changedProds
+     * @return array
+     */
     public function soapChangedProducts($changedProds)
     {
         $packet = [];
         $skuCollection = [];
         $attributes = [];
-        //var_dump($changedProds);
         foreach( $changedProds as $index => $fields ) {
             $keys = array_keys($fields);
             $skuCollection[] = $sku = $fields['sku'];
@@ -257,14 +264,14 @@ class MageSoap extends AbstractSoap{
             $packet[$index] = array('entity_id' => $entityID, $attributes);
             $attributes = [];
         }
-//        echo '<pre>';
-//        var_dump($packet);
-//        die();
         return $this->_soapCall($packet, 'catalog_product.update', $skuCollection);
     }
 
-
-
+    /**
+     * Creates a packet for new products to be sent over to Mage.
+     * @param $newProds
+     * @return array
+     */
     public function soapAddProducts($newProds)
     {
         $packet = [];
@@ -274,10 +281,8 @@ class MageSoap extends AbstractSoap{
         foreach( $newProds as $index => $fields ) {
             $keys = array_keys($fields);
             $skuCollection[] = $sku = $fields['sku'];
-//            array_shift($keys);
             array_shift($keys);
             array_shift($keys);
-//            array_shift($fields);
             array_shift($fields);
             array_shift($fields);
             foreach( $keys as $ind => $attFields ) {
@@ -286,30 +291,34 @@ class MageSoap extends AbstractSoap{
             $packet[$index] = array('simple', $attributeSet, $sku, $attributes );
             $attributes = [];
         }
-//        echo '<pre>';
-//    var_dump($packet);
-//        die();
          return $this->_soapCall($packet, 'catalog_product.create', $skuCollection);
     }
 
+    /**
+     * When a soap call is made to Mage, it will be recorded and sent to this method for persistence. It is a Mage Api History Logger.
+     * @param $Sku
+     * @param $resource
+     * @param $speed
+     * @param $status
+     */
     public function insertIntoMageLog($Sku, $resource, $speed, $status)
     {
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
-//        if( is_null($user) ) {
-//            $user = 'Console';
-//        }
+        if( is_null($user) ) {
+            $user = 'Console';
+        }
 //        foreach( $Skus as $sku ){
-            $fieldValueMap = array(
-                'sku'       =>  $Sku,
-                'resource'  =>  $resource,
-                'speed'     =>  $speed,
-                'pushedby'  =>   $user,
-                'status'    =>  $status,
-            );
-            $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);//'fields' => $mapping,
-            $this->getEventManager()->trigger('construct_mage_log', null, array('makeFields'=>$eventWritables));
+        $fieldValueMap = array(
+            'sku'       =>  $Sku,
+            'resource'  =>  $resource,
+            'speed'     =>  $speed,
+            'pushedby'  =>   $user,
+            'status'    =>  $status,
+        );
+        $eventWritables = array('dbAdapter'=> $this->adapter, 'extra'=> $fieldValueMap);
+        $this->getEventManager()->trigger('construct_mage_log', null, array('makeFields'=>$eventWritables));
 //        }
     }
 
