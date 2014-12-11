@@ -1610,6 +1610,7 @@ var TableManaged = function () {
             }});
         var groupNewSku = $('#skuNewProducts');
 
+//        For individual checkboxes
         $('#kpiNewProducts tbody').on('change', '#skuNewProduct',function (e) {
             e.preventDefault();
             var newProds = $(this);
@@ -1632,6 +1633,9 @@ var TableManaged = function () {
                 }
             } else {
                 if( uncheckedLength < checkedLength ) {
+                    if ( $('button.pushNewProducts').children().length() > 0 ) {
+                        console.log('skunewprods');
+                    }
                     groupNewSku.prop('checked',false);
                 }
             }
@@ -1649,11 +1653,14 @@ var TableManaged = function () {
             }
         });
         groupNewSku.prop('checked',false);
+
+//        For all checkboxes
         groupNewSku.on('change',function(){
             $('form#mageNewProds button').append('<div class="skunewprods"></div>');
             if( $(this).prop("checked") ) {
                 $('.skuNewProduct').prop('checked',true);
             } else {
+//                console.log('hahahahahaha');
                 $('form#mageNewProds input.SkuNewProds').remove();
                 $('.skuNewProduct').prop('checked',false);
             }
@@ -1676,6 +1683,7 @@ var TableManaged = function () {
             var newProds = $('#kpiNewProducts tbody #skuNewProduct');
 
             if( !$(this).prop('checked') ) {
+//                console.log('haha');
                 $("form#mageNewProds div.skunewprods").remove();
             }
 
