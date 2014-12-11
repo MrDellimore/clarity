@@ -53,6 +53,20 @@ return array(
                 ),
             ),
             array(
+                'label' => 'Marketing',
+                'route' => 'home',
+                'pages' =>  array(
+                    array(
+                        'label' =>  'Deals',
+                        'route' =>  'deals',
+                    ),
+                    array(
+                        'label' =>  'Create Deal',
+                        'route' =>  'create-deal',
+                    ),
+                ),
+            ),
+            array(
                 'label' => 'History',
                 'route' => 'home',
                 'pages' =>  array(

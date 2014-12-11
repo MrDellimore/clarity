@@ -1,0 +1,148 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Deals
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/">Home</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="/">Manage Content</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="/">Deals</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+<!-- BEGIN PAGE CONTENT-->
+<div class="row">
+<form id="deals" action="/deals/submit" method="POST">
+<div class="col-md-12">
+<div class="portlet">
+<div class="portlet-title">
+<!--    <div class="caption">-->
+<!--        <i class="fa fa-shopping-cart"></i><a href="http://focuscamera.com/--><?php //$this->data->getUrlKey()?><!--.html" target="_blank">--><?php //str_replace('"','&quot;',$this->data->getTitle())?><!--</a>-->
+<!--    </div>-->
+
+    <div class="actions btn-set">
+        <a class="btn default" href="/content/search"><i class="fa fa-angle-left"></i> Back</a>
+        <button class="btn green" id="dealsForm"><i class="fa fa-check" ></i> Save</button>
+        <!--<input class="btn default" value="Save" type="submit">-->
+    </div>
+</div>
+<div class="portlet-body">
+<div class="tabbable">
+<div class="tab-content no-space">
+<div class="tab-pane active" id="tab_general">
+<br /> <br />
+<!-- General Tab info-->
+
+
+<!-- Standard-->
+<div class="portlet box blue">
+<div class="portlet-title">
+    <div class="caption">
+        <i class="fa fa-gift"></i>Deals
+    </div>
+    <div class="tools">
+        <a href="javascript:;" class="collapse">
+        </a>
+
+    </div>
+</div>
+<!--orginal form content-->
+
+<!--<input type="hidden" name="id" value="--><?php /*$this->data->getId(); */?><!--">-->
+
+
+<div class="portlet-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-3" for="general_sku">SKU</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" name="sku" value="<?php /*$this->data->getSku(); */?>" placeholder="SKU" style="width:140px" required/>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-3" for="specialPrice">Special Price</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control"  name="specialPrice" placeholder="Special Price" value="<?php /*str_replace('"','&quot;',$this->data->getTitle())*/?>" required/>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-3" for="general_sku">Inventory</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" name="inventory"  placeholder="Inventory" style="width:140px" value="<?php /*$this->data->getInventory() */?>" required/>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-3">Start Date -End Date (Special Price)</label>
+                <div class="col-md-4">
+                    <div class="input-group" id="special_price default_special_price">
+                        <input type="text" class="form-control" name="startendDate" id="special_price" placeholder="Start Date -End Date (Special Price)" value="<?php /*$rebateStartEndDate = is_null($this->data->getRebateStartEndDate())? '' : $this->data->getRebateStartEndDate()*/?>">
+                                            <span class="input-group-btn">
+                                            <button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
+                                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-3" for="maxQty">Max Quantity in Shopping Cart</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" name="maxQty"  placeholder="Max Quantity" style="width:140px" value="<?php /*$this->data->getInventory() */?>" required/>
+<!--                    <span class="help-block"></span>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-3">Shipping</label>
+                <div class="col-md-4">
+                    <div class="input-group" id="usStandard">
+                        <input type="text" class="form-control" name="usStandard" id="usStandard"  placeholder="Shipping" value="<?php /*$rebateStartEndDate = is_null($this->data->getRebateStartEndDate())? '' : $this->data->getRebateStartEndDate()*/?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<br /><br />
+</div>
+</form>
+</div>
+</div>
+
+</div>

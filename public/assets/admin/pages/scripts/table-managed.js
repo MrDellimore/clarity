@@ -2074,6 +2074,72 @@ var TableManaged = function () {
         });
     };
 
+    var searchDeals = function () {
+
+        var table = $('#searchDeals');
+        table.dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/deals",
+                type: 'POST'
+            },
+            "columns": [
+                {
+                    "class": 'sku',
+                    "data": "sku"},
+                { "data": "special_price"},
+                { "data": "inventory"},
+                { "data": "start_date"},
+                { "data": "end_date"},
+                { "data": "max_qty"},
+                { "data": "us_standard"},
+                {
+                    "class":"remove",
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td><a href='#'>Remove</a></td>"
+                }
+            ],
+            "order": [
+                [0, "asc"]
+            ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "paging": true,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "lengthMenu": "_MENU_ records",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }});
+        $('#searchDeals tbody').on('click', 'td.remove',function (e) {
+            e.preventDefault();
+            var remove= $(this);
+            var sku = remove.siblings('td.sku').text();
+            var params = {
+                'sku':  sku
+            };
+            $.post('/deals/delete', params, function(data){
+                //nothing should happen except redraw the table.
+                table.api().draw();
+            });
+        });
+
+    };
+
     return {
 
         datatableUpdateChecked: function () {
@@ -2105,6 +2171,7 @@ var TableManaged = function () {
             updateMageRelatedProducts();
             newSkuImages();
             newProducts();
+            searchDeals();
         }
 
     };

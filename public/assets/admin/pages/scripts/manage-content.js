@@ -299,6 +299,69 @@ var ManageContent = function () {
                 };
             });
     };
+    var dealsFormHandle = function () {
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-full-width",
+            "showDuration": "2000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        toastr.options.onHidden = function() { window.location = '/deals'; };
+
+        $( "#deals" ).submit(function( event ) {
+            event.preventDefault();
+            var form = $('#deals').serializeArray();
+            var url = '/deals/submit';
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: form})
+                .done(function( data ) {
+                    toastr.success(data);
+                });
+        });
+    };
+
+    var updateDealsFormHandle = function () {
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-full-width",
+            "showDuration": "2000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        toastr.options.onHidden = function() { window.location = '/deals'; };
+
+        $( "#updateDeals" ).submit(function( event ) {
+//                var sku;
+            event.preventDefault();
+            var form = $('#updateDeals').serializeArray();
+
+            var url = '/deals/update';
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: form})
+                .done(function( data ) {
+                    toastr.success(data);
+                });
+        });
+    };
 //submitting website form
     return {
         //main function to initiate the module
@@ -309,6 +372,8 @@ var ManageContent = function () {
             mageSkuHandle();
             mageImageHandle();
             mageNewProductHandle();
+            dealsFormHandle();
+            updateDealsFormHandle();
         }
     };
 
