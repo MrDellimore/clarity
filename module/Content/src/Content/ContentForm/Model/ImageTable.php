@@ -117,7 +117,6 @@ class ImageTable{
 
 
         if(!empty($setArray)){
-            $setArray['datastate'] = 1;
             $setArray['changedby'] = $user;
 
             $update = $this->sql->update('productattribute_images');
@@ -125,6 +124,12 @@ class ImageTable{
             $update->where(array('value_id' => $image->getId() ));
             $statement = $this->sql->prepareStatementForSqlObject($update);
             $statement->execute();
+
+            $stateUpdate =$this->sql->update('productattribute_images');
+            $stateUpdate->set(array('dataState' => '1'));
+            $stateUpdate->where(array('value_id' => $image->getId(), 'dataState' => '0'));
+            $statement2 = $this->sql->prepareStatementForSqlObject($stateUpdate);
+            $statement2->execute();
 
             $message .= $image->getLabel() ." has been updated <br />";
         }
