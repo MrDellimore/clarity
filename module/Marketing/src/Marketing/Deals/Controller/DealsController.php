@@ -58,6 +58,9 @@ class DealsController  extends AbstractActionController
         }
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function displayFormDealsAction()
     {
         $loginSession= new Container('login');
@@ -77,6 +80,9 @@ class DealsController  extends AbstractActionController
         }
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function dealsUpdateAction()
     {
         $result = '';
@@ -101,6 +107,9 @@ class DealsController  extends AbstractActionController
         }
     }
 
+    /**
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function searchDealsAction()
     {
         $loginSession= new Container('login');
@@ -133,6 +142,9 @@ class DealsController  extends AbstractActionController
         }
     }
 
+    /**
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function deleteDealAction()
     {
         $loginSession= new Container('login');
