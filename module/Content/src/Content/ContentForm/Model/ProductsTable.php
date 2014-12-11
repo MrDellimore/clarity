@@ -48,7 +48,7 @@ class ProductsTable{
     public function lookupForm($entityid){
         $select = $this->sql->select();
         $select->from('product');
-        $select->columns(array('id' => 'entity_id', 'sku' => 'productid','status' => 'status','price' => 'price','Inventory' => 'quantity'));
+        $select->columns(array('id' => 'entity_id', 'sku' => 'productid','status' => 'status','price' => 'price','Inventory' => 'quantity','website' =>'website'));
 
 
         $select->where(array('product.entity_id' => $entityid));
@@ -607,9 +607,16 @@ class ProductsTable{
         if(!(is_null($form->getStatus()))) {
             $property = 'status';
             $this->updateAttribute($form->getId(),$form->getStatus(),'273','int');
-            $this->updateStatus($form->getId(),$form->getStatus());
-            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStatus(), $oldData->getStatus(), /*$oldData->getManufacturer(),*/ $property);//,'273','int');
+            $this->updateProductTable($form->getId(),$form->getStatus(),$property);
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getStatus(), $oldData->getStatus(), $property);
             $updateditems .= 'Status<br>';
+        }
+//update website
+        if(!(is_null($form->getWebsite()))) {
+            $property = 'website';
+            $this->updateProductTable($form->getId(),$form->getWebsite(),$property);
+            $this->insertLogging($form->getId(), $oldData->getSku(), $form->getWebsite(), $oldData->getWebsite(), $property);
+            $updateditems .= $property.'<br>';
         }
 //update special price
 //        if(!(is_null($form->getSpecialPrice()))) {
@@ -951,12 +958,12 @@ class ProductsTable{
     /**
      * update status in product table
      */
-    public function updateStatus($entityid,$value){
+    public function updateProductTable($entityid,$value,$property){
         $loginSession= new Container('login');
         $userData = $loginSession->sessionDataforUser;
         $user = $userData['userid'];
         $update = $this->sql->update('product')
-            ->set(array('status' => $value, 'changedby' => $user, 'lastModifiedDate'=>date('Y-m-d h:i:s')))
+            ->set(array($property => $value, 'changedby' => $user, 'lastModifiedDate'=>date('Y-m-d h:i:s')))
             ->where(array('entity_id ='.$entityid));
         $statement = $this->sql->prepareStatementForSqlObject($update);
         return $statement->execute();

@@ -237,17 +237,17 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label col-md-3" for="general_sku">Tax Class</label>
-                    <div class="col-md-9">
-                        <select class="form-control input-medium" data-placeholder="Select..." name="taxClass[option]">
+            <div class="col-md-9">
+                <select class="form-control input-medium" data-placeholder="Select..." name="taxClass[option]">
 
-                            <option value="0" <?= $this->data->getTaxClass()['option'] == 0 ? 'selected' :''?> >None</option>
-                            <option value="1" <?= $this->data->getTaxClass()['option'] == 1 ? 'selected' :''?> >Default</option>
-                            <option value="2" <?= $this->data->getTaxClass()['option'] == 2 ? 'selected' :''?> >Taxable Goods</option>
-                            <option value="4" <?= $this->data->getTaxClass()['option'] == 3 ? 'selected' :''?> >Shipping</option>
-                        </select>
-                    </div>
-                </div>
+                    <option value="0" <?= $this->data->getTaxClass()['option'] == 0 ? 'selected' :''?> >None</option>
+                    <option value="1" <?= $this->data->getTaxClass()['option'] == 1 ? 'selected' :''?> >Default</option>
+                    <option value="2" <?= $this->data->getTaxClass()['option'] == 2 ? 'selected' :''?> >Taxable Goods</option>
+                    <option value="4" <?= $this->data->getTaxClass()['option'] == 3 ? 'selected' :''?> >Shipping</option>
+                </select>
             </div>
+        </div>
+    </div>
         </div>
         <br />
         <div class="row">
@@ -268,9 +268,35 @@
 
 
             <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label col-md-3" for="website">Website</label>
+                    <div class="col-md-9">
+                        <select class="form-control input-medium" data-placeholder="Select..." name="website">
+                            <option value="1" <?= $this->data->getWebsite() == 1 ? 'selected' :''?> >Focus Camera</option>
+                            <option value="3" <?= $this->data->getWebsite() == 3 ? 'selected' :''?> >aSavings</option>
+                            <option value="0" <?= $this->data->getWebsite() == 0 ? 'selected' :''?> >Both</option>
+                    </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <br />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-9"></div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
                 <div class="col-md-4">
                     <div class="form-group">
-                            <input name = "originalContent[option]" type="checkbox" <?= $this->data->getOriginalContent()['option'] == 1 ? 'checked="checked"' : '' ?>> Original Content
+                        <input name = "originalContent[option]" type="checkbox" <?= $this->data->getOriginalContent()['option'] == 1 ? 'checked="checked"' : '' ?>> Original Content
                     </div>
                 </div><div class="col-md-4">
                     <div class="form-group">
