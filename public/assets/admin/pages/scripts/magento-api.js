@@ -126,6 +126,8 @@ $('.new-items').on('click',function(e){
     e.preventDefault();
     magentoNewItems.show(); //displays button to new items.
     soapNewProducts.show(); //displays datatable to new items.
+    //This is the same concept that is being used in the layout template. We are calling TableManage.init().
+    //So I made my own.
     TableManaged.datatableNewProductChecked();      //Keeps track of how many checkboxes have been selected
     var newProducts = $('#kpiNewProducts').dataTable();
     newProducts.api().draw();           //  redraws datatable
