@@ -83,13 +83,11 @@ class CategoryManagerController extends AbstractActionController
         }
         $request = $this->getRequest();
         $results = '';
-//        echo $userLogin['userid'];
         if($request->isPost()){
-
             $checkedProducts = $request->getPost();
             $cat = $checkedProducts['id'];
             unset($checkedProducts['id']);
-            $products = $this->getCategoryTable()->filterProduct($checkedProducts['manageCategory']);
+            $products = array_values($checkedProducts['manageCategory']);
             $category = new Category();
             $category->setId($cat);
             foreach ($products as $product ) {
@@ -105,6 +103,10 @@ class CategoryManagerController extends AbstractActionController
         }
     }
 
+    /**
+     * This is for the data table. When User clicks on a category from the JS Category Tree
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function searchProductsAction()
     {
         $loginSession= new Container('login');
@@ -114,16 +116,14 @@ class CategoryManagerController extends AbstractActionController
         }
         $request = $this->getRequest();
         $cat = '';
-        $manangedProducts = [];
+        $managedProducts = [];
         if($request -> isPost()){
             $queryData = $request->getPost();
             $category = $queryData['Id'];
             $draw = $queryData['draw'];
             $sku = $queryData['search']['value'];
             if( isset($queryData['manageProduct']) ) {
-                $manangedProducts = $queryData['manageProduct'];
-//                echo 'does this work';
-//                var_dump($queryData);
+                $managedProducts = $queryData['manageProduct'];
             }
             if( isset($category) ){
                 foreach( $category as $cat ) {
@@ -131,19 +131,10 @@ class CategoryManagerController extends AbstractActionController
                 }
             }
             $limit = $queryData['length'];
-//            if( !empty($manangedProducts) ) {
-//                var_dump($manangedProducts);
-//            }
-//            if( isset($manangedProducts) ) {
-//                foreach($manangedProducts as $value){
-//                    echo 'hahahahahahaha'. $value['value'];
-////                    array_push($setIds,$value['value']);
-//                }
-//            }
             if( $limit == '-1' ) {
                 $limit = 100;
             }
-            $products = $this->getCategoryTable()->populateProducts($sku, (int)$limit, $manangedProducts);
+            $products = $this->getCategoryTable()->populateProducts($sku, (int)$limit, $managedProducts);
             $result = json_encode(
                 array(
                     'draw' => $draw,
@@ -158,6 +149,10 @@ class CategoryManagerController extends AbstractActionController
         }
     }
 
+    /**
+     * Will add products/skus to categories.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function addProductsSubmitAction()
     {
         $loginSession= new Container('login');
@@ -170,14 +165,13 @@ class CategoryManagerController extends AbstractActionController
             $categoryData = $request->getPost();
             $categoryId = $categoryData['id'];
             unset($categoryData['id']);
-            $products = $this->getCategoryTable()->filterProduct($categoryData['manageProduct']);
+            $products = array_values($categoryData['manageCategory']);
             $results = '';
             $cat = $this->getServiceLocator()->get('Content\ContentForm\Entity\Category');
             $cat->setId($categoryId);
             foreach ( $products as $product ) {
                 $results .= $this->getServiceLocator()->get('Content\ContentForm\Model\CategoryTable')->addCategory($cat, $product['Entityid']);
             }
-//            $results = $this->getCategoryTable()->addProducts($categoryData['manageProduct'], $categoryData['category'], (int)$userLogin['userid']);
             if($results == ''){
                 $results = 'No changes to sku made.';
             }
@@ -188,6 +182,10 @@ class CategoryManagerController extends AbstractActionController
         }
     }
 
+    /**
+     * Will Move products from one category to another category by deleting it from one category and adding it to another.
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function moveProductsSubmitAction()
     {
         $loginSession= new Container('login');
@@ -206,7 +204,8 @@ class CategoryManagerController extends AbstractActionController
             $newCat->setId($newCatID);
             unset($categoryData['id']);
             unset($categoryData['newid']);
-            $products = $this->getCategoryTable()->filterProduct($categoryData['manageCategory']);
+
+            $products = array_values($categoryData['manageCategory']);
             $results = '';
             foreach ( $products as $product ) {
                 $results .= $this->getServiceLocator()->get('Content\ContentForm\Model\CategoryTable')->addCategory($newCat, $product['Entityid']);
@@ -222,6 +221,9 @@ class CategoryManagerController extends AbstractActionController
         }
     }
 
+    /**
+     * @return array|object
+     */
     public function getCategoryTable(){
         if (!$this->cats) {
             $sm = $this->getServiceLocator();
