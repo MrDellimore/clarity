@@ -321,6 +321,13 @@ class AjaxLoaderController extends AbstractActionController
             $response = $event->getResponse();
             $response->setContent($result);
 
+
+            $stash = $this->getServiceLocator()->get('Authenticate\Model\ActiveTable');
+            $loginSession= new Container('login');
+            $userData = $loginSession->sessionDataforUser;
+            $user = $userData['userid'];
+            $stash->unstashActiveUser($user,$oldData->getSku());
+
             return $response;
 
         }

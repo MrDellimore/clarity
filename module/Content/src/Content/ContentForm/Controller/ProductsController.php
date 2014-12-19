@@ -23,6 +23,7 @@ class ProductsController extends AbstractActionController {
 
     protected $formTable;
     protected $imageTable;
+    protected $activeTable;
 
     //protected $skuData = array();
     /**
@@ -31,6 +32,7 @@ class ProductsController extends AbstractActionController {
     public function indexAction(){
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
+
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
@@ -49,6 +51,13 @@ class ProductsController extends AbstractActionController {
             }
             //insert error handle for invalid sku here
 
+            //check is sku is checkedout
+
+            //check out sku
+            $stash = $this->getActiveTable();
+            $stash->stashActiveUser($userLogin['userid'],'contentForm/product/'.$sku,$sku);
+
+
             //lookupdata
             $skuData = $form->lookupForm($entityID['entity_id']);
 
@@ -59,14 +68,8 @@ class ProductsController extends AbstractActionController {
         else{
             return $this->redirect()->toRoute('search');
         }
-//        echo '<pre>';
-//        var_dump($skuData);
-//        echo "==============";
-//        var_dump($queriedData);
-//        exit();
-        $view = new ViewModel(array('data'=>$queriedData,'originalData' => $skuData));
-//        $view->setTerminal(true);
 
+        $view = new ViewModel(array('data'=>$queriedData,'originalData' => $skuData));
         return $view;
     }
 //  load accessories action was here
@@ -96,5 +99,13 @@ class ProductsController extends AbstractActionController {
             $this->imageTable = $sm->get('Content\ContentForm\Model\ImageTable');
         }
         return $this->imageTable;
+    }
+
+    public function getActiveTable(){
+        if (!$this->activeTable) {
+            $sm = $this->getServiceLocator();
+            $this->activeTable = $sm->get('Authenticate\Model\ActiveTable');
+        }
+        return $this->activeTable;
     }
 }
