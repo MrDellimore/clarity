@@ -186,6 +186,9 @@ class AjaxLoaderController extends AbstractActionController
 
                 foreach($setAccessories as $key => $value){
                     $element = $form->lookupAccessories($value['value'],1,'id');
+                    if (!$element) {
+                        continue;
+                    }
                     $element[0]['sort'] = $positions[$key]['value'];
                     array_push($firstElements,$element);
                 }
