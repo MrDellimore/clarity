@@ -79,7 +79,7 @@ class CategoryTable{
         $message = '';
 
         //$setArray['category_id'] = $cat->getId();
-        $setArray['datastate'] = 2;
+        $setArray['dataState'] = 2;
         $setArray['changedby'] = $user;
 
         $update = $this->sql->update('productcategory');
@@ -88,7 +88,7 @@ class CategoryTable{
         $statement = $this->sql->prepareStatementForSqlObject($update);
         $statement->execute();
 
-        $message .= $entityid ." Categories updated";
+        $message .= $entityid ." Categories updated <br />";
 
         return $message;
     }
@@ -111,7 +111,7 @@ class CategoryTable{
         $statement = $this->sql->prepareStatementForSqlObject($update);
         $statement->execute();
 
-        $message .= $entityid ." Categories unset";
+        $message .= $entityid ." Categories unset <br />";
 
         return $message;
     }
