@@ -5,6 +5,12 @@
  *
  * @see https://github.com/zendframework/ZFTool
  */
+
+
+
+define('CONFIG_DIR', dirname(__DIR__) . '/config');
+define('MODULE_DIR', dirname(__DIR__) . '/module');
+
 return array(
     'modules' => array(
         'ZendDeveloperTools',
