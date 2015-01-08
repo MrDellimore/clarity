@@ -177,6 +177,7 @@ var TableManaged = function () {
         });
 
     };
+
     var optionsPopulate = function () {
         var table = $('#optionsTable');
 
@@ -1945,9 +1946,9 @@ var TableManaged = function () {
                     "class": "sku",
                     "data": "sku"
                 },
-                { "data": "value" },
-//                { "data": "imagename" },
-                { "data": "manufacturer" }
+                { "class": "Product Name", "data": "value" },
+
+                { "class": "Manufacturer","data": "manufacturer" }
             ],
 
             "lengthMenu": [

@@ -66,7 +66,7 @@ class CategoryTable {
         $images = new Expression('i.entity_id = product.entity_id and i.default = 1 and i.disabled = 0');
         $intTable = new Expression('man.entity_id = product.entity_id and man.attribute_id = 1641');
         $manufacturer = new Expression('opt.option_id = man.value and opt.attribute_id = 1641');
-        $select->join(['c'=>'productcategory'],$cat, ['catid'=>'catid','cateroty_id'=>'category_id']);
+        $select->join(['c'=>'productcategory'],$cat, ['catid'=>'category_id']);
         $select->join(['v'=>'productattribute_varchar'],$name, ['value'=>'value'], Select::JOIN_LEFT);
         $select->join(['i'=>'productattribute_images'],$images, ['domain'=>'domain', 'filename'=>'filename'], Select::JOIN_LEFT);
         $select->join(['man'=>'productattribute_int'],$intTable, ['optionId'=>'value'], Select::JOIN_LEFT);

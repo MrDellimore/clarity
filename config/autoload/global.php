@@ -42,6 +42,23 @@ return array(
                     ),
                 ),
             ),
+
+          /*  array(
+                'label' => 'Help Desk',
+                'route' => 'home',
+                'pages' =>  array(
+                    array(
+                        'label' =>  'Tickets',
+                        'route' =>  'tickets',
+                    ),
+                    array(
+                        'label' =>  'Kanban Board',
+                        'route' =>  'kanban',
+                    ),
+
+                ),
+            ),
+*/
             array(
                 'label' => 'API',
                 'route' => 'home',
