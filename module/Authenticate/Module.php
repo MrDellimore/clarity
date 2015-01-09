@@ -30,7 +30,7 @@ class Module
         $acl->initAcl($e);
 
         $em = $app->getEventManager();
-        $em->attach('route', array($acl, 'checkAcl'));
+        $em->attach('route', array($acl, 'requireAcl'));
     }
 
 }

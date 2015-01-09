@@ -51,6 +51,7 @@ return array(
         $history_sku,
         $history_soap
     ),
+    'content' => array(),
     'guest' => array(
         'auth',
         'login'
