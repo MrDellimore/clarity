@@ -1,6 +1,8 @@
 <?php
 namespace Authenticate;
 
+use Zend\Mvc\MvcEvent;
+
 class Module
 {
     public function getConfig()
@@ -18,4 +20,17 @@ class Module
             ),
         );
     }
+
+    public function onBootstrap(MvcEvent $e) {
+        $app = $e->getApplication();
+
+        $sm = $app->getServiceManager();
+        $acl = $sm->get('acl');
+
+        $acl->initAcl($e);
+
+        $em = $app->getEventManager();
+        $em->attach('route', array($acl, 'requireAcl'));
+    }
+
 }
