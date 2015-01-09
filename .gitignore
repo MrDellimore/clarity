@@ -11,6 +11,5 @@ composer.lock
 *.pyc
 *.pyo
 .vagrant/*
-Vagrantfile
 config/autoload/local.php
 package.box

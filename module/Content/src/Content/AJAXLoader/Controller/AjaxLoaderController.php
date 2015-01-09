@@ -165,11 +165,11 @@ class AjaxLoaderController extends AbstractActionController
             $firstElements = array();
             $setIds = array();
 
-
             if($limit == '-1'){
                 $limit = 50;
             }
-//grab set IDs to remove from results
+
+            //grab set IDs to remove from results
             if(isset($setAccessories)){
                 foreach($setAccessories as $value){
                     array_push($setIds,$value['value']);
@@ -186,6 +186,9 @@ class AjaxLoaderController extends AbstractActionController
 
                 foreach($setAccessories as $key => $value){
                     $element = $form->lookupAccessories($value['value'],1,'id');
+                    if (!$element) {
+                        continue;
+                    }
                     $element[0]['sort'] = $positions[$key]['value'];
                     array_push($firstElements,$element);
                 }
@@ -193,7 +196,6 @@ class AjaxLoaderController extends AbstractActionController
                 $sort=array();
 
                 foreach($firstElements as $value){
-
                     $sort[$value[0]['entityid']] = $value[0]['sort'];
                 }
                 arsort($sort);
