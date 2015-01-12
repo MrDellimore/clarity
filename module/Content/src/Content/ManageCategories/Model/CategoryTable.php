@@ -59,7 +59,6 @@ class CategoryTable {
     public function fetchCategoryProducts($sku =null, $limit= null, $cats= null)
     {
         $category = [];
-        $count = 0;
         $select = $this->sql->select()->from('product')->columns(['id'=>'entity_id','sku'=>'productid']);
         $cat = new Expression('c.entity_id=product.entity_id and c.category_id = '. $cats . ' and c.dataState != 3');
         $name = new Expression('v.entity_id = product.entity_id and v.attribute_id = 96');
@@ -84,15 +83,15 @@ class CategoryTable {
             $resultSet->initialize($result);
         }
         $categoryProducts = $resultSet->toArray();
+
+        $i=0;
         foreach ( $categoryProducts as $prods ) {
-            $category[$count]['catid'] = $prods['catid'];
-            $category[$count]['Entityid'] = $prods['id'];
-            $category[$count]['sku'] = $prods['sku'];
-            $category[$count]['value'] = "<img src='".$prods['domain'].$prods['filename']."' width='100' height='100' /> <br />". $prods['value'];
-//            $category[$count]['imagename'] = "<img src='".$prods['domain'].$prods['filename']."' width='50' height='50' />";
-//            $category[$count]['imagename'] = $prods['domain'].$prods['filename'];
-            $category[$count]['manufacturer'] = $prods['manufacturer'];
-            $count++;
+            $category[$i]['catid'] = $prods['catid'];
+            $category[$i]['Entityid'] = $prods['id'];
+            $category[$i]['sku'] = $prods['sku'];
+            $category[$i]['value'] = "<img src='".$prods['domain'].$prods['filename']."' width='100' height='100' /> <br />". $prods['value'];
+            $category[$i]['manufacturer'] = $prods['manufacturer'];
+            $i++;
         }
         return $category;
     }

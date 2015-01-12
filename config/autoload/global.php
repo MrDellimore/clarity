@@ -19,6 +19,7 @@ return array(
             array(
                 'label' => 'Dashboard',
                 'route' => 'home',
+                'resource' => 'home',
             ),
             array(
                 'label' => 'Manage Content',
@@ -33,16 +34,16 @@ return array(
                         'route' => 'manageattributes',
                     ),
                     array(
+                        'label' => 'Category Management',
+                        'route' => 'managecategories',
+                    ),
+                    array(
                         'label' => 'Website Assignment',
                         'route' => 'webassignment',
                     ),
-//                    array(
-//                        'label' => 'ApiCron Management',
-//                        'route' => 'apimanage',
-//                    ),
                 ),
             ),
-
+/*
             array(
                 'label' => 'Help Desk',
                 'route' => 'home',
@@ -58,7 +59,7 @@ return array(
 
                 ),
             ),
-
+*/
             array(
                 'label' => 'API',
                 'route' => 'home',

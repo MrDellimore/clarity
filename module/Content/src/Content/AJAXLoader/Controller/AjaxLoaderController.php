@@ -120,8 +120,7 @@ class AjaxLoaderController extends AbstractActionController
         return $this->searchTable;
     }
 
-    public function loadRelatedAction()
-    {
+    public function loadRelatedAction(){
         $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
         $request = $this->getRequest();
         if($request->isPost()) {
