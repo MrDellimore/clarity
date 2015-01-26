@@ -1,15 +1,13 @@
 <?php
 namespace Authenticate\Model;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Adapter\Driver\ResultInterface;
-use Zend\Session\Container;
 use Authenticate\Entity\User;
-use Zend\Db\Sql\Sql;
 use Zend\Crypt\Password\Bcrypt;
-//use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter as dbTable;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\Driver\ResultInterface;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Sql;
+use Zend\Session\Container;
 
 class AuthTable{
     
@@ -25,12 +23,11 @@ class AuthTable{
     }
 
     public function storeUserSession($userSession){
-        $loginSession= new Container('login');
+        $sessionContainer = new Container('login');
+        $authTimeout = 60 *30 ;
+        $sessionContainer->setExpirationSeconds($authTimeout);
         $userInfo = $userSession->current();
-        $loginSession->sessionDataforUser = $userInfo;
-//        var_dump($loginSession->sessionDataforUser);
-//        die();
-
+        $sessionContainer->sessionDataforUser = $userInfo;
     }
 
     public function storeUser($userId)
