@@ -23,6 +23,7 @@ class IndexController extends AbstractActionController
         if(empty($userLogin)){
             return $this->redirect()->toRoute('auth', array('action'=>'index') );
         }
+        $manager = $loginSession->getManager();
         $this->layout('layout/layout');
 //        return $this->redirect()->toRoute('home');
         return new ViewModel(

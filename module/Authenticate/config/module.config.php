@@ -50,6 +50,9 @@ return array(
             ),
         ),
     ),
+    'session' => array(
+        'storage' => 'Authenticate\Model\AuthDBSession',
+    ),
     'services' => array(
         // Keys are the service names
         // Values are objects
