@@ -314,7 +314,8 @@ class ProductsTable{
         $select = $this->sql->select();
 
         $select->from('productattribute_images');
-        $select->columns(array( 'id' => 'value_id','label' => 'label','position' => 'position','entityid' =>'entity_id',
+        $select->columns(array( 'id' => 'value_id','label' => 'label','position' => 'position',
+                                'entityid' =>'entity_id',
                                 'domain' => 'domain', 'filename' =>'filename',
                                 'disabled' => 'disabled','default'=> 'default'));
         $select->where(array('entity_id' => $entityid, 'disabled' => 0));
@@ -438,7 +439,7 @@ class ProductsTable{
             $resultSet->initialize($result);
         }
         $entityid = $resultSet->toArray();
-        $entityid= current($entityid);
+        $entityid = current($entityid);
 
         return $entityid;
     }

@@ -59,6 +59,12 @@ return array(
     'controllers' => array('invokables' => array('Authenticate\Controller\Authenticate' => 'Authenticate\Controller\AuthenticateController')),
 
     'view_manager' => array('template_path_stack' => array(__DIR__ . '/../view')),
+    'service_manager' => array(
+        'invokables' => array(
+            'acl' => 'Authenticate\Controller\Plugin\Acl'
+        )
+    ),
+
 
     'di' => array(
         'services' => array(

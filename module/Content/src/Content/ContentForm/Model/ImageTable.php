@@ -24,9 +24,9 @@ class ImageTable{
 
 
         $filename = $data['files'][0]['name'];
-        $filetmp =$data['files'][0]['tmp_name'];
-        $filetype =$data['files'][0]['type'];
-        $filesize =$data['files'][0]['size'];
+        $filetmp  = $data['files'][0]['tmp_name'];
+        $filetype = $data['files'][0]['type'];
+        $filesize = $data['files'][0]['size'];
         //regex expression check to grab filetype
         preg_match('/.+\/(.+)/', $filetype, $matches);
         $extension = $matches[1];

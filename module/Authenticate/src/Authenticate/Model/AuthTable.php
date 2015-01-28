@@ -24,7 +24,7 @@ class AuthTable{
 
     }
 
-    public function storeUserSession($userSession){
+    public function storeUserSession(ResultSet $userSession){
         $loginSession= new Container('login');
         $userInfo = $userSession->current();
         $loginSession->sessionDataforUser = $userInfo;
