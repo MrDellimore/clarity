@@ -27,11 +27,7 @@ class CategoryManagerController extends AbstractActionController
      * @return object
      * */
     public function indexAction(){
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+
         $this->cats = $this->getCategoryTable();
         $request = $this->getRequest();
         $cat = '';
@@ -74,13 +70,8 @@ class CategoryManagerController extends AbstractActionController
      * @params checkedProducts array
      * @return object
      * */
-    public function removeProductCategoriesAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function removeProductCategoriesAction(){
+
         $request = $this->getRequest();
         $results = '';
         if($request->isPost()){
@@ -107,13 +98,8 @@ class CategoryManagerController extends AbstractActionController
      * This is for the data table. When User clicks on a category from the JS Category Tree
      * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
      */
-    public function searchProductsAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function searchProductsAction(){
+
         $request = $this->getRequest();
         $cat = '';
         $managedProducts = [];
@@ -153,13 +139,8 @@ class CategoryManagerController extends AbstractActionController
      * Will add products/skus to categories.
      * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
      */
-    public function addProductsSubmitAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function addProductsSubmitAction(){
+
         $request = $this->getRequest();
         if($request -> isPost()){
             $categoryData = $request->getPost();
@@ -186,13 +167,8 @@ class CategoryManagerController extends AbstractActionController
      * Will Move products from one category to another category by deleting it from one category and adding it to another.
      * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
      */
-    public function moveProductsSubmitAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function moveProductsSubmitAction(){
+
         $request = $this->getRequest();
         if($request -> isPost()){
             $categoryData = $request->getPost();

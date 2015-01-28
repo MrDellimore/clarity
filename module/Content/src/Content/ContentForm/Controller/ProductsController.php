@@ -30,12 +30,6 @@ class ProductsController extends AbstractActionController {
      * @return ViewModel
      */
     public function indexAction(){
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
 
         $queriedData = new Products();
         $sku = $this->params()->fromRoute('sku');

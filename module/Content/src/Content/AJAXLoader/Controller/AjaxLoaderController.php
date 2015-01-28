@@ -20,11 +20,6 @@ class AjaxLoaderController extends AbstractActionController
 
 //    public function magentoAction()
 //    {
-//        $loginSession= new Container('login');
-//        $userLogin = $loginSession->sessionDataforUser;
-//        if(empty($userLogin)){
-//            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-//        }
 //        $request = $this->getRequest();
 //
 //        if($request->isPost()){

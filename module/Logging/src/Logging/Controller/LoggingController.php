@@ -15,13 +15,8 @@ class LoggingController extends AbstractActionController
     /**
      * Description: this action on load will load all rows from the logger table into the data table in the view.
     */
-    public function skuLogAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function skuLogAction(){
+
         $logs = $this->getLoggingTable();
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -62,13 +57,8 @@ class LoggingController extends AbstractActionController
         }
     }
 
-    public function mageSoapLogAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function mageSoapLogAction(){
+
         $logs = $this->getLoggingTable();
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -108,13 +98,9 @@ class LoggingController extends AbstractActionController
         }
     }
 
-    public function revertAction()
-    {
+    public function revertAction(){
         $loginSession= new Container('login');
         $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
         $userID = $userLogin['userid'];
         $revert = $this->getLoggingTable();
         $request = $this->getRequest();

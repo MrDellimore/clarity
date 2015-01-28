@@ -17,14 +17,8 @@ class WebAssignmentController extends AbstractActionController{
 
     protected $webassignTable;
 
-    public function indexAction()
-    {
-        //check if logged in
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function indexAction(){
+
         $web = $this->getWebTable()->accessWeb();
         $viewResult = new ViewModel(array('web'=>$web));
         return $viewResult;

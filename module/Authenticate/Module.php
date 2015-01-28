@@ -2,6 +2,7 @@
 namespace Authenticate;
 
 use Zend\Mvc\MvcEvent;
+use Zend\Session\Container;
 
 class Module
 {
@@ -31,6 +32,15 @@ class Module
 
         $em = $app->getEventManager();
         $em->attach('route', array($acl, 'requireAcl'));
+
+        //redirect if not logged in
+        $em->attach('route', function(MvcEvent $e){
+            $loginSession= new Container('login');
+            $userLogin = $loginSession->sessionDataforUser;
+            if(empty($userLogin)){
+                $e->getRouteMatch()->setParam('controller', 'Authenticate\Controller\Authenticate')->setParam('action', 'index');
+            }
+        });
     }
 
 }

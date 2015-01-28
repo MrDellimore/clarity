@@ -51,7 +51,15 @@ return array(
         $history_sku,
         $history_soap
     ),
-    'content' => array(),
+    'content' => array_merge(
+        $homePage,
+        $manage_attribute,
+        $manage_search,
+        $manage_website,
+        $api_magento,
+        $history_sku,
+        $history_soap
+    ),
     'guest' => array(
         'auth',
         'login'

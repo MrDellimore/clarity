@@ -15,14 +15,7 @@ use Zend\Session\Container;
 
 class IndexController extends AbstractActionController
 {
-    public function indexAction()
-    {
-//        echo 'haha';
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function indexAction(){
         $this->layout('layout/layout');
 //        return $this->redirect()->toRoute('home');
         return new ViewModel(

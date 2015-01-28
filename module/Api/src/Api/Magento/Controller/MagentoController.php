@@ -29,23 +29,12 @@ class MagentoController extends AbstractActionController
     protected $dirtyAttributeSkus = array();
 
 
-    public function magentoAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function magentoAction(){
         return new ViewModel([]);
     }
 
-    public function kpiUpdateCountAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function kpiUpdateCountAction(){
+
         $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
         $attributeCount = $kpi->updateCount();
         $categoryCount = $kpi->fetchCategoryCount();
@@ -59,13 +48,7 @@ class MagentoController extends AbstractActionController
         return $response;
     }
 
-    public function kpiNewProductCountAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function kpiNewProductCountAction(){
         $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
         $newProdCount = $kpi->fetchNewCount();
         $result = json_encode(
@@ -78,13 +61,8 @@ class MagentoController extends AbstractActionController
         return $response;
     }
 
-    public function kpiImageCountAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function kpiImageCountAction(){
+
         $kpi = $this->getServiceLocator()->get('Api\Magento\Model\KeyPerformanceIndicator');
         $imageCount = $kpi->fetchImageCount();
         $result = json_encode(
@@ -97,13 +75,8 @@ class MagentoController extends AbstractActionController
         return $response;
     }
 
-    public function newImagesAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function newImagesAction(){
+
         $request = $this->getRequest();
 
         if($request->isPost()){
@@ -131,13 +104,8 @@ class MagentoController extends AbstractActionController
         }
     }
 
-    public function newProductsAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function newProductsAction(){
+
         $request = $this->getRequest();
 
         if($request->isPost()){
@@ -165,13 +133,8 @@ class MagentoController extends AbstractActionController
         }
     }
 
-    public function updateItemsAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function updateItemsAction(){
+
         $request = $this->getRequest();
 
         if($request->isPost()){
@@ -200,13 +163,8 @@ class MagentoController extends AbstractActionController
         }
     }
 
-    public function updateCategoriesAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function updateCategoriesAction(){
+
         $request = $this->getRequest();
 
         if($request->isPost()){
@@ -234,13 +192,8 @@ class MagentoController extends AbstractActionController
         }
     }
 
-    public function updateRelatedAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function updateRelatedAction(){
+
         $request = $this->getRequest();
 
         if($request->isPost()){
@@ -273,11 +226,6 @@ class MagentoController extends AbstractActionController
         $categorySoapResponse = $itemSoapResponse = $resp = $linkedSoapResponse = Null;
         $updateCategories = $updateFields = $linkedFields = '';
         $groupedProd = $categorizedProd = $changedProducts = $linkedProducts = [];
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
         $request = $this->getRequest();
 
         if ( $request->isPost() ) {
@@ -358,11 +306,6 @@ class MagentoController extends AbstractActionController
 //        echo '<pre>';
 //        var_dump($url);
         $newProducts = [];
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
         $result = '';
         $request = $this->getRequest();
         if ( $request->isPost() ) {
@@ -415,11 +358,6 @@ class MagentoController extends AbstractActionController
     {
         $images = [];
         $result = '';
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
         $request = $this->getRequest();
         if ( $request->isPost() ) {
             $checkboxImages = $request->getPost();
