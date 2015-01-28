@@ -86,9 +86,7 @@ var TableManaged = function () {
     };
 
     var attributesPopulate = function () {
-
         var table = $('#attributeTable');
-
         // begin first table
         table.dataTable({
             "processing": true,
@@ -96,7 +94,6 @@ var TableManaged = function () {
             "ajax": {
                 url: "/content/attributemanagement/attributes/quicksearch",
                 type: 'POST'
-
             },
             "columns": [
 //                { "data": "id" },
@@ -159,12 +156,10 @@ var TableManaged = function () {
                 "attributeId": attributeId
             };
             $('#frontend_label').val(frontend);
-            console.log('haha');
 
             if(type != 'select'){
                 $('.options').hide();
             } else{
-                console.log('hoho');
                 $('input.attributeId').val(attributeId);
                 $('.options').show();
                 $.post('/content/attributemanagement/options/quicksearch', params, function(data){
@@ -182,6 +177,7 @@ var TableManaged = function () {
         });
 
     };
+
     var optionsPopulate = function () {
         var table = $('#optionsTable');
 
@@ -929,6 +925,7 @@ var TableManaged = function () {
                 hiddenSku.appendTo('form#mageForm');
             }
             if( !$(this).is(':checked') ) {
+                console.log("form#mageForm input[name='skuItem["+ position +"][id]']");
                 $("form#mageForm input[name='skuItem["+ position +"][id]']").remove();
                 $("form#mageForm input[name='skuItem["+ position +"][property]']").remove();
                 $("form#mageForm input[name='skuItem["+ position +"][newValue]']").remove();
@@ -2074,6 +2071,484 @@ var TableManaged = function () {
         });
     };
 
+    var categoryProducts = function () {
+
+        var table = $('#manageCats');
+
+        // begin first table
+        table.dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "/content/manage-categories",
+                "type": 'POST',
+                "data": function (d){
+//                    $("#categoryProductsForm input[name='category']").on('change',function(){
+//                        d.category = $("#categoryProductsForm input[name='category']").serializeArray();
+//                    });
+//                    d.related = $("#accessoriesForm input[name*='linkedSku]']").serializeArray();
+//                    var cat = $("#categoryProductsForm input[name='category']").val();
+                    d.id = $("#categoryProductsForm input[name='id']").serializeArray();
+                }
+            },
+
+            "columns": [
+                {
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td id='category_product'>"+
+                        "<label for='categoryProduct'></label>"+
+                        "<input type='checkbox' class='categoryProduct' name='categoryProduct[][sku]' value=''/></td>"
+                },
+                {
+                    "class": "catid hidden",
+                    "data": "catid"
+                },
+                {
+                    "class": "id hidden",
+                    "data": "Entityid"
+                },
+                {
+                    "class": "sku",
+                    "data": "sku"
+                },
+                { "class": "Product Name", "data": "value" },
+
+                { "class": "Manufacturer","data": "manufacturer" }
+            ],
+
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "lengthMenu": "_MENU_ records",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }/*,
+             "columnDefs": [{  // set default column settings
+             'orderable': false,
+             'targets': [0]
+             }, {
+             "searchable": false,
+             "targets": [0]
+             }]
+             /*
+             "order": [
+             [1, "asc"]
+             ] */// set first column as a default sort by asc
+        });
+//        $('div#cat_manage_tree > ul > li > ul > li > ul > li').css('background-color','#ff0000');
+//        $('div#cat_manage_tree > ul > li > ul > li > ul > li').on('change', function(){
+//            console.log($(this).attr('id'));
+//        });
+
+//        $("#categoryProductsForm input[name='category']").on('change',function() {
+//            var category = {
+//                'cat' : $(this).val()
+//            };
+//            console.log($(this).val());
+//            $.post('/content/manage-categories',category,function(data){
+//                console.log(data);
+//                table.api().append(data);
+//            });
+//        });
+
+        var groupCatProducts = $('#categoryProds');
+
+        if ( !table.find('input.categoryProduct').prop('checked') ) {
+            $('.category_remove, .category_move').attr('disabled',true);
+        }
+
+        $('.category_remove').on('click',function(e){
+            e.preventDefault();
+            var data = $("#removeCatsForm").serializeArray();
+            var catId = $('input[name=id]').serializeArray();
+            var formData = data.concat(catId);
+            $.post('/content/manage-categories/remove',formData,function(result){
+                table.api().draw();
+//                toastr.success(result);
+
+            });
+
+//            var data = $("#categoryProductsForm input[name='sku']").serializeArray();
+//            console.log(data);
+//            console.log('clicked');
+//            $('#manageCats tbody tr').each(function(i,e){
+//                var input = $(this).find('td input.categoryProduct');
+////                console.log(typeof input);
+//                console.log(input[i]);
+////                console.log(i);
+////                console.log(input[i].checked);
+//
+////                if ( input[i].checked == true ) {
+////                    console.log('input checked');
+////                    var sku = input.closest('td').siblings('td.sku').eq(i).text();
+////                    console.log(sku);
+////                }
+//            });
+//
+//            var checkedLength = $('tbody input.categoryProduct:checkbox(":checked")').length;
+////            console.log(checkedLength);
+//            for (var i = 0; i < checkedLength; i++ ) {
+//                var sku = $('.categoryProduct').closest('td').siblings('td.sku').eq(i).text();
+////            console.log(sku);
+//            }
+//
+////            if( $('.categoryProduct').prop('checked') ) {
+////                var sku = $('.categoryProduct').closest('td').siblings('td.sku').text();
+////                console.log('checked');
+////                console.log(sku);
+////            }
+        });
+
+
+        $('#manageCats tbody').on('change', '.categoryProduct',function (e) {
+            var uncheckedLength = $('tbody input.categoryProduct:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.categoryProduct:checkbox(":checked")').length;
+            var manageCategory = $(this);
+            var sku = manageCategory.closest('td').siblings('td.sku').text();
+            var id = manageCategory.closest('td').siblings('td.id').text();
+            var pk = manageCategory.closest('td').siblings('td.catid').text();
+            var catId = $('input[name=id]').val();
+            var position = manageCategory.closest('tr').index();
+
+            var hiddenId = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][Entityid]", 'class':'ManageCategory', 'value':id});
+            var hiddenSku = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][sku]", 'class':'ManageCategory', 'value':sku});
+            var hiddenPK = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][pk]", 'class':'ManageCategory', 'value':pk});
+//            var hiddenOldCatId = $('<input>').attr({'type':'hidden','name':"manageCategory[" + position + "][oldcatid]", 'class':'ManageCategory', 'value':catId});
+
+            if( manageCategory.prop('checked') ) {
+                manageCategory.attr('checked',true);
+                $('.category_remove, .category_move').removeAttr('disabled');
+                hiddenId.appendTo('form#removeCatsForm');
+                hiddenSku.appendTo('form#removeCatsForm');
+//                hiddenOldCatId.appendTo('form#removeCatsForm');
+                hiddenPK.appendTo('form#removeCatsForm');
+
+                hiddenId.clone().appendTo("form#moveCatsForm");
+                hiddenSku.clone().appendTo("form#moveCatsForm");
+//                hiddenOldCatId.clone().appendTo("form#moveCatsForm");
+                hiddenPK.clone().appendTo("form#moveCatsForm");
+            }
+            if( !$(this).prop('checked') ) {
+                $(this).attr('checked',false);
+                $("form#removeCatsForm input[name='manageCategory["+ position +"][Entityid]']").remove();
+                $("form#removeCatsForm input[name='manageCategory["+ position +"][sku]']").remove();
+                $("form#removeCatsForm input[name='manageCategory["+ position +"][catid]']").remove();
+                $("form#removeCatsForm input[name='manageCategory["+ position +"][pk]']").remove();
+                $("form#moveCatsForm input[name='manageCategory["+ position +"][sku]']").remove();
+                $("form#moveCatsForm input[name='manageCategory["+ position +"][pk]']").remove();
+//                $("form#removeCatsForm input[name='manageCategory["+ position +"][oldcatid]']").remove();
+
+//                $("form#moveCatsForm input[name='manageCategory["+ position +"][oldcatid]']").remove();
+//                $("form#moveCatsForm input[name='manageCategory["+ position +"][catid]']").remove();
+            }
+//            console.log(uncheckedLength , checkedLength);
+            if( uncheckedLength < checkedLength ) {
+                groupCatProducts.attr('checked',false);
+            }
+            if ( uncheckedLength == 0 ) {
+                groupCatProducts.attr('checked',true);
+            }
+            if ( uncheckedLength == checkedLength ) {
+                $('.category_remove, .category_move').attr('disabled', true);
+            }
+        });
+
+        groupCatProducts.on('change',function(){
+            var manageCategory = $('#manageCats tbody .categoryProduct');
+            if( !$(this).prop('checked') ) {
+                $("form#removeCatsForm input.ManageCategory").remove();
+                $("form#moveCatsForm input.ManageCategory").remove();
+            }
+            /*Cache cat id for products*/
+            var catId = $('input[name=id]').val();
+
+            if ( groupCatProducts.prop('checked') ) {
+                $("form#removeCatsForm input.ManageCategory").remove();
+                manageCategory.each(function(i) {
+                    /*Cache sku for given row*/
+                    var id = manageCategory.closest('td')
+                        .siblings('td.id')
+                        .eq(i)
+                        .text();
+                    var sku = manageCategory.closest('td')
+                        .siblings('td.sku')
+                        .eq(i)
+                        .text();
+                    var pk = manageCategory.closest('td')
+                        .siblings('td.catid')
+                        .eq(i)
+                        .text();
+
+                    var hiddenId = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][Entityid]',class:  'ManageCategory',value: id});
+                    var hiddenSku = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][sku]',class:  'ManageCategory',value: sku});
+//                    var hiddenOldCatId = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][oldcatid]',class:  'ManageCategory',value: catId});
+                    var hiddenPK = $('<input>').attr({type: 'hidden',name: 'manageCategory['+i+'][pk]',class:  'ManageCategory',value: pk});
+                    hiddenId.appendTo('form#removeCatsForm');
+                    hiddenSku.appendTo('form#removeCatsForm');
+//                    hiddenOldCatId.appendTo('form#removeCatsForm');
+                    hiddenPK.appendTo('form#removeCatsForm');
+                    hiddenId.clone().appendTo("form#moveCatsForm");
+//                    hiddenOldCatId.clone().appendTo("form#moveCatsForm");
+                    hiddenSku.clone().appendTo("form#moveCatsForm");
+                    hiddenPK.clone().appendTo("form#moveCatsForm");
+                });
+            }
+            $('.categoryProduct').prop('checked',true);
+            if( $(this).prop('checked') ) {
+                $('.category_remove, .category_move').removeAttr('disabled');
+            }
+            if ( !$(this).prop('checked') ) {
+                $('.categoryProduct').removeAttr('checked');
+                $('.category_remove, .category_move').attr('disabled', true);
+            }
+        });
+    };
+
+    var categoryAddProducts = function () {
+        var addTable = $('#addProductsForm');
+
+        var aTable = addTable.dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/content/manage-categories/search",
+                type: 'POST',
+                "data": function (d){
+                    d.id = $("#categoryProductsForm input[name='id']").serializeArray();
+                }
+            },
+            "columns": [
+                {
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td class='add_category_product'>"+
+                        "<label for='addCategoryProduct'></label>"+
+                        "<input type='checkbox' class='addCategoryProduct' name='addCategoryProduct[][sku]' value=''/></td>"
+                },
+                {
+                    "class": "id",
+                    "data": "Entityid"
+                },
+                {
+                    "class": "sku",
+                    "data": "sku"
+                },
+                {
+                    "class": "value",
+                    "data": "value"
+                },
+                {
+                    "class": "manufacturer",
+                    "data": "manufacturer"
+                },
+                {
+                    "class":"remove hidden",
+                    "orderable":    false,
+                    "data": null,
+                    "defaultContent":   "<td><a href='#'>Remove</a></td>"
+                }
+            ],
+            "lengthMenu": [
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "emptyTable":     "No data available in table",
+                "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
+                "lengthMenu": "_MENU_ records",
+                "zeroRecords":    "No matching records found",
+                "processing":     "Processing...",
+                "paginate": {
+                    "previous":"Prev",
+                    "next": "Next",
+                    "last": "Last",
+                    "first": "First"
+                }
+            }});
+
+        $('#filterCheckedProducts').on('change',function(){
+            var filterCheckedProducts = $(this);
+//            var checkedProducts = $('#addProductsForm tbody input.addCategoryProduct');
+////            if ( !filterCheckedProducts.prop('checked') ) {
+//                checkedProducts.each(function(ind,e){
+//
+//    //                            console.log(e);
+//    //                            var td = checkedProducts.closest('td');
+//    //                            var tdid = td.siblings('td.id');
+//    //                            console.log(td);
+//    //                            console.log(tdid);
+//                    var targetid = checkedProducts.closest('td').siblings('td.id').eq(ind).text();
+//    //                            var id = checkedProducts.closest('td').siblings('td.id').eq(ind).text();
+//    //                            var id = addProductsCats.closest('td').siblings('td.id').eq(i).text();
+//    //                            var targetid = e.next().text();
+//                    console.log(targetid, ind, 'target');
+//    //                            if ( targetid == id ) {
+//    //                                console.log(targetid , id);
+//    //                                $(this).prop('checked',true);
+//    //                            }
+//                });
+////            }
+
+            if ( filterCheckedProducts.prop('checked') ) {
+                var checkedManagedProducts = $("#addCatsForm input.ManageCategoryProduct").serializeArray();
+                $.post('/content/manage-categories/search', checkedManagedProducts, function(data){
+//                    console.log(data);
+                    $('#addProductsForm tbody').empty();
+                    var content =  jQuery.parseJSON(data);
+                    $.each(content, function(i,o){
+                        if ( i == 'data' ) {
+                            $.each(o,function(dt, val){
+                                var inputs =
+                                    "<tr>" +
+                                        "<td><label for='addCategoryProduct'></label><input checked type='checkbox' name='addCategoryProduct[][sku]' class='addCategoryProduct' /></td>" +
+                                        "<td class='id'>"+val.Entityid+"</td>" +
+                                        "<td>"+val.sku+"</td>" +
+                                        "<td>"+val.value+"</td>" +
+                                        "<td>"+val.manufacturer+"</td>" +
+                                    "</tr>";
+                                $('#addProductsForm tbody').append(inputs);
+                            });
+                        }
+                    });
+                });
+            }
+            if ( !filterCheckedProducts.prop('checked') ) {
+                $("#addCatsForm input.ManageCategoryProduct").remove();
+                aTable.api().draw();
+//                $.post('/content/manage-categories/search',{},function(data){
+//                    console.log(data);
+//                });
+//                var checkedProducts = $('#addProductsForm tbody input.addCategoryProduct');
+//                $("#addCatsForm input.ManageCategoryProduct").each(function(i){
+//                    var name = $(this).attr('name');
+//                    var re = new RegExp('id');
+//                    if ( name.match(re) ) {
+//                       var id = $(this).val();
+//                        checkedProducts.each(function(ind,e){
+//                            var targetid = checkedProducts.closest('td').siblings('td.id').eq(ind).text();
+//                            console.log(targetid, ind, 'target');
+//                            if ( targetid == id ) {
+//                                checkedProducts.closest('td').siblings('td.sorting_1').addClass('checker');
+//                                console.log(targetid , id);
+//                                checkedProducts.closest('td').siblings('td.checker').prop('checked',true);
+////                                checkedProducts.attr('checked',"checked");
+//                            }
+//                        });
+//                    }
+//                });
+
+            }
+        });
+
+        var addAllProducts = $('#addAllProducts');
+
+        addAllProducts.on('change',function(){
+            var addProductsCats = $('#addProductsForm tbody .addCategoryProduct');
+            var uncheckedLength = $('tbody input.addCategoryProduct:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.addCategoryProduct:checkbox(":checked")').length;
+
+            if( addAllProducts.prop('checked') ) {
+                addProductsCats.each(function(i){
+                    var id = addProductsCats.closest('td').siblings('td.id').eq(i).text();
+                    var sku = addProductsCats.closest('td').siblings('td.sku').eq(i).text();
+                    var img = addProductsCats.closest('td').siblings('td.value').eq(i).find('img').prop('src');
+                    var value = addProductsCats.closest('td').siblings('td.value').eq(i).text();
+                    var manufacturer = addProductsCats.closest('td').siblings('td.manufacturer').eq(i).text();
+
+                    var hiddenId = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][Entityid]',class: 'ManageCategoryProduct',value: id});
+                    var hiddenSku = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][sku]',class: 'ManageCategoryProduct',value: sku});
+                    var hiddenImage = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][img]',class: 'ManageCategoryProduct',value: img});
+                    var hiddenProductName = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][name]',class: 'ManageCategoryProduct',value: value});
+                    var hiddenManufacturer = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][manufacturer]',class: 'ManageCategoryProduct',value: manufacturer});
+                    hiddenId.appendTo('form#addCatsForm');
+                    hiddenSku.appendTo('form#addCatsForm');
+                    hiddenProductName.appendTo('form#addCatsForm');
+                    hiddenImage.appendTo('form#addCatsForm');
+                    hiddenManufacturer.appendTo('form#addCatsForm');
+                });
+                if( uncheckedLength < checkedLength ) {
+                    $('form#addCatsForm input.ManageCategoryProduct').remove();
+
+                    addProductsCats.each(function(i){
+                        var id = addProductsCats.closest('td').siblings('td.id').eq(i).text();
+                        var sku = addProductsCats.closest('td').siblings('td.sku').eq(i).text();
+                        var img = addProductsCats.closest('td').siblings('td.value').eq(i).find('img').prop('src');
+                        var value = addProductsCats.closest('td').siblings('td.value').eq(i).text();
+                        var manufacturer = addProductsCats.closest('td').siblings('td.manufacturer').eq(i).text();
+
+                        var hiddenId = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][Entityid]',class: 'ManageCategoryProduct',value: id});
+                        var hiddenSku = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][sku]',class: 'ManageCategoryProduct',value: sku});
+                        var hiddenImage = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][img]',class: 'ManageCategoryProduct',value: img});
+                        var hiddenProductName = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][name]',class: 'ManageCategoryProduct',value: value});
+                        var hiddenManufacturer = $('<input>').attr({type: 'hidden',name: 'manageProduct['+i+'][manufacturer]',class: 'ManageCategoryProduct',value: manufacturer});
+                        hiddenId.appendTo('form#addCatsForm');
+                        hiddenSku.appendTo('form#addCatsForm');
+                        hiddenProductName.appendTo('form#addCatsForm');
+                        hiddenImage.appendTo('form#addCatsForm');
+                        hiddenManufacturer.appendTo('form#addCatsForm');
+                    });
+                }
+                $('.addCategoryProduct').prop('checked',true);
+            }
+            if ( !addAllProducts.prop('checked') ) {
+                $('.addCategoryProduct').prop('checked',false);
+                $("form#addCatsForm  input.ManageCategoryProduct").remove();
+            }
+        });
+
+        $('#addProductsForm tbody').on('change', '.addCategoryProduct',function (e) {
+            var addProduct = $(this);
+            var uncheckedLength = $('tbody input.addCategoryProduct:checkbox:not(":checked")').length;
+            var checkedLength = $('tbody input.addCategoryProduct:checkbox(":checked")').length;
+            var id = addProduct.closest('td').siblings('td.id').text();
+            var sku = addProduct.closest('td').siblings('td.sku').text();
+            var img = addProduct.closest('td').siblings('td.value').find('img').prop('src');
+            var name = addProduct.closest('td').siblings('td.value').text();
+            var manufacturer = addProduct.closest('td').siblings('td.manufacturer').text();
+            var position = addProduct.closest('tr').index();
+
+            var hiddenId = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][Entityid]", 'class':'ManageCategoryProduct', 'value':id});
+            var hiddenSku = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][sku]", 'class':'ManageCategoryProduct', 'value':sku});
+            var hiddenImage = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][img]", 'class':'ManageCategoryProduct', 'value':img});
+            var hiddenName = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][name]", 'class':'ManageCategoryProduct', 'value':name});
+            var hiddenManufacturer = $('<input>').attr({'type':'hidden','name':"manageProduct[" + position + "][manufacturer]", 'class':'ManageCategoryProduct', 'value':manufacturer});
+
+            if( addProduct.prop('checked') ) {
+                hiddenId.appendTo('form#addCatsForm');
+                hiddenSku.appendTo('form#addCatsForm');
+                hiddenImage.appendTo('form#addCatsForm');
+                hiddenName.appendTo('form#addCatsForm');
+                hiddenManufacturer.appendTo('form#addCatsForm');
+                if( uncheckedLength == 0) {
+                    addAllProducts.prop('checked','checked');
+                }
+            }
+            if( !addProduct.prop('checked') ) {
+                $("form#addCatsForm input[name='manageProduct["+ position +"][Entityid]']").remove();
+                $("form#addCatsForm input[name='manageProduct["+ position +"][sku]']").remove();
+                $("form#addCatsForm input[name='manageProduct["+ position +"][img]']").remove();
+                $("form#addCatsForm input[name='manageProduct["+ position +"][name]']").remove();
+                $("form#addCatsForm input[name='manageProduct["+ position +"][manufacturer]']").remove();
+                if( uncheckedLength < checkedLength ) {
+                    addAllProducts.prop('checked',false);
+                }
+            }
+        });
+    };
+
     return {
 
         datatableUpdateChecked: function () {
@@ -2105,8 +2580,9 @@ var TableManaged = function () {
             updateMageRelatedProducts();
             newSkuImages();
             newProducts();
+            categoryProducts();
+            categoryAddProducts();
         }
-
     };
 
 }();

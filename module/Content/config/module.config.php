@@ -166,6 +166,61 @@ return array(
                     ),
                 ),
             ),
+            'managecategories'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'index',
+
+                    ),
+                ),
+            ),
+            'managecategories-remove'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories/remove',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'removeProductCategories',
+
+                    ),
+                ),
+            ),
+            'managecategories-search'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories/search',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'searchProducts',
+
+                    ),
+                ),
+            ),
+            'managecategories-add-submit'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories/add-products',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'addProductsSubmit',
+
+                    ),
+                ),
+            ),
+            'managecategories-move'  => array(
+                'type'  => 'Zend\Mvc\Router\Http\Literal',
+                'options'    => array(
+                    'route' =>  '/content/manage-categories/move-products',
+                    'defaults'  =>  array(
+                        'controller'    => 'Content\ManageCategories\Controller\CategoryManager',
+                        'action'        =>  'moveProductsSubmit',
+
+                    ),
+                ),
+            ),
 
             'manageattributes'  => array(
                 'type'  => 'Zend\Mvc\Router\Http\Literal',
@@ -219,6 +274,7 @@ return array(
                                                  'Content\AJAXLoader\Controller\AjaxLoader'   => 'Content\AJAXLoader\Controller\AjaxLoaderController',
                                                  'Content\ManageAttributes\Controller\Attributes'   => 'Content\ManageAttributes\Controller\AttributesController',
                                                  'Content\AjaxLoader\Controller\AttributesAjax'   => 'Content\AjaxLoader\Controller\AttributesAjaxController',
+                                                 'Content\ManageCategories\Controller\CategoryManager'   => 'Content\ManageCategories\Controller\CategoryManagerController',
                                                 )
     ),
     'event_listener_construct' =>  array(

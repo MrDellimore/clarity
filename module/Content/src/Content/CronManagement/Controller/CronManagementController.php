@@ -13,13 +13,8 @@ use Zend\Session\Container;
 
 class CronManagementController {
 
-    public function indexAction()
-    {
-        $loginSession= new Container('login');
-        $userLogin = $loginSession->sessionDataforUser;
-        if(empty($userLogin)){
-            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-        }
+    public function indexAction(){
+
         return new ViewModel(['test'=>'test']);
     }
 

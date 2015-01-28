@@ -1,80 +1,14 @@
-<!-- Old HTML from menu
-<ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
-    <li class="sidebar-toggler-wrapper">
-        <div class="sidebar-toggler">
-        </div>
-    </li>
-
-     DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element
-    <li class="sidebar-search-wrapper hidden-xs">
-
-
-        <form class="sidebar-search" action="extra_search.html" method="POST">
-            <a href="javascript:;" class="remove">
-                <i class="icon-close"></i>
-            </a>
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>
-							</span>
-            </div>
-        </form>
-
-    </li>
-
-
-    <li class="start active ">
-        <a href="/">
-            <i class="icon-home"></i>
-            <span class="title">Dashboard</span>
-            <span class="selected"></span>
-        </a>
-    </li>
-
-    <li>
-        <a href="javascript:;">
-            <i class="icon-basket"></i>
-            <span class="title">Manage Content</span>
-            <span class="arrow "></span>
-        </a>
-        <ul class="sub-menu">
-            <li>
-                <a href="/search">
-                    <i class="icon-home"></i>
-                    Search</a>
-            </li>
-            <li>
-                <a href="">
-                    <i class="icon-basket"></i>
-                    Bundles</a>
-            </li>
-            <li>
-                <a href="/webassignment">
-                    <i class="icon-tag"></i>
-                    Website Assignment</a>
-            </li>
-        </ul>
-    </li>
-
-
-    <li>
-        <a href="/api-feeds">
-            <i class="icon-basket"></i>
-            <span class="title">API Feeds</span>
-            <span class="arrow "></span>
-        </a>
-    </li>
-    <li>
-        <a href="/sku-history">
-            <i class="icon-basket"></i>
-            <span class="title">SKU History</span>
-            <span class="arrow "></span>
-        </a>
-    </li>
-  -->
-
 <?php
+use Zend\Session\Container;
+
+$loginSession= new Container('login');
+$userData = $loginSession->sessionDataforUser;
+
+$role = $userData['role'];
+$acl = $this->viewModel()->getCurrent()->acl;
+$aclPlugin = $this->viewModel()->getCurrent()->aclPlugin;
+
+
 echo '<ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
     <li class="sidebar-toggler-wrapper">
         <div class="sidebar-toggler">
@@ -82,30 +16,47 @@ echo '<ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="20
     </li>';
 
 
+
 foreach ($this->container as $page){
     $hasChildren = $page->hasPages();
 
-    if(!$hasChildren){
-        $page->isActive() ? $active = 'start active' : $active = '';
-        $page->isActive() ? $selected = 'selected' : $selected = 'arrow';
+    if (!$hasChildren) {
+        if (! $aclPlugin->checkAclByRoute($page->getRoute(), $acl)) {
+            continue;
+        }
+        $active = '';
+        $selected = 'arrow';
 
+        if ($page->isActive()) {
+            $active = 'start active';
+            $selected = 'selected';
+        }
         echo '<li class="'.$active.'">
         <a href="'.$page->getHref().'"><i class="icon-home"></i>
             <span class="title">'.$page->getLabel().'</span>
             <span class="'.$selected.'"></span>
         </a></li>';
-    }
-
-    else{
+    } else {
+        if (! $aclPlugin->checkAclByRoute($page->getRoute(), $acl)) {
+            continue;
+        }
         //check if parent has active child
         $active = '';
+        $skipPageRoute = true;
         foreach($page->getPages() as $child){
             if($child->isActive()){
                 $active='active open';
             }
+            if ($skipPageRoute && $aclPlugin->checkAclByRoute($child->getRoute(), $acl)) {
+                $skipPageRoute = false;
+            }
         }
 
-        $page->isActive() ? $selected = 'selected' : $selected = 'arrow';
+        if ($skipPageRoute) {
+            continue;
+        }
+
+        $selected = $page->isActive() ? 'selected' : 'arrow';
 
         echo '<li class="'.$active.'">
         <a href="'.$page->getHref().'"><i class="icon-home"></i>
@@ -115,8 +66,18 @@ foreach ($this->container as $page){
         <ul class="sub-menu">';
 
         foreach($page->getPages() as $child){
-            $child->isActive() ? $active = 'active' : $active = '';
-            $child->isActive() ? $selected = 'selected' : $selected = 'arrow';
+
+            if (! $aclPlugin->checkAclByRoute($child->getRoute(), $acl)) {
+                continue;
+            }
+            $active = '';
+            $selected = 'arrow';
+
+            if ($page->isActive()) {
+                $active = 'start active';
+                $selected = 'selected';
+            }
+
             echo '<li class="'.$active.'">
         <a href="'.$child->getHref().'"><i class="icon-home"></i>
             <span class="title">'.$child->getLabel().'</span>

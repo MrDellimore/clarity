@@ -20,11 +20,6 @@ class AjaxLoaderController extends AbstractActionController
 
 //    public function magentoAction()
 //    {
-//        $loginSession= new Container('login');
-//        $userLogin = $loginSession->sessionDataforUser;
-//        if(empty($userLogin)){
-//            return $this->redirect()->toRoute('auth', array('action'=>'index') );
-//        }
 //        $request = $this->getRequest();
 //
 //        if($request->isPost()){
@@ -120,8 +115,7 @@ class AjaxLoaderController extends AbstractActionController
         return $this->searchTable;
     }
 
-    public function loadRelatedAction()
-    {
+    public function loadRelatedAction(){
         $form = $this->getServiceLocator()->get('Content\ContentForm\Model\ProductsTable');
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -322,6 +316,13 @@ class AjaxLoaderController extends AbstractActionController
             $event    = $this->getEvent();
             $response = $event->getResponse();
             $response->setContent($result);
+
+
+            $stash = $this->getServiceLocator()->get('Authenticate\Model\ActiveTable');
+            $loginSession= new Container('login');
+            $userData = $loginSession->sessionDataforUser;
+            $user = $userData['userid'];
+            $stash->unstashActiveUser($user,$oldData->getSku());
 
             return $response;
 

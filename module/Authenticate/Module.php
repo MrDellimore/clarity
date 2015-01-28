@@ -15,12 +15,39 @@ use Zend\Session\SessionManager;
 
 class Module
 {
-    public function getConfig()
-    {
+    public function getConfig() {
         return include __DIR__ . '/config/module.config.php';
     }
 
-    public function onBootstrap(MvcEvent $event){
+    public function getAutoloaderConfig() {
+        return array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                ),
+            ),
+        );
+    }
+
+    public function onBootstrap(MvcEvent $e) {
+        $app = $e->getApplication();
+
+        $sm = $app->getServiceManager();
+        $acl = $sm->get('acl');
+
+        $acl->initAcl($e);
+
+        $em = $app->getEventManager();
+        $em->attach('route', array($acl, 'requireAcl'));
+
+        //redirect if not logged in
+        $em->attach('route', function(MvcEvent $e){
+            $loginSession= new Container('login');
+            $userLogin = $loginSession->sessionDataforUser;
+            if(empty($userLogin)){
+                $e->getRouteMatch()->setParam('controller', 'Authenticate\Controller\Authenticate')->setParam('action', 'index');
+            }
+        });
 
         $sessionOptions = new AuthDBSessionOptions();
         $sessionOptions->setDataColumn('data')
@@ -29,7 +56,7 @@ class Module
             ->setLifetimeColumn('lifetime')
             ->setNameColumn('name');
 
-        $application    = $event->getApplication();
+        $application    = $e->getApplication();
         $serviceManager = $application->getServiceManager();
         $dbAdapter = $serviceManager->get('Zend\Db\Adapter\Adapter');
         $sessionTableGateway = new Sql($dbAdapter, 'session');
@@ -41,16 +68,5 @@ class Module
         $sessionManager->setSaveHandler($sessionGateway);
 
         Container::setDefaultManager($sessionManager);
-    }
-
-    public function getAutoloaderConfig()
-    {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
     }
 }
