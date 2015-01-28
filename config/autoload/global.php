@@ -12,6 +12,7 @@
  */
 
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Session\Config\SessionConfig;
 
 return array(
     'navigation' => array(
@@ -121,8 +122,25 @@ return array(
                         'login',
                         'dirty_skus',
                     );
+                    var_dump('hahaha'); exit();
                     foreach($sessionNames as $sessions){
                         $sessionContainer = new \Zend\Session\Container($sessions);
+
+                        $authTimeout = 1;
+                        $sessionConfig = new SessionConfig();
+                        $sessionConfig->setOptions(array(
+                            'use_cookies' => true,
+                            'cookie_httponly' => true,
+                            'gc_maxlifetime' => $authTimeout,
+                            'cookie_lifetime' => $authTimeout
+                        ));
+                        $sessionManager = $sessionContainer->getDefaultManager();
+                        $sessionManager->setConfig($sessionConfig);
+                        $sessionContainer->setDefaultManager($sessionManager);
+
+                        $sessionManager = $sessionContainer->getManager();
+                        $sessionManager->setConfig($sessionConfig);
+
                         $sessionService = new SessionService();
                         $sessionService->setSessionContainer($sessionContainer);
                     }
