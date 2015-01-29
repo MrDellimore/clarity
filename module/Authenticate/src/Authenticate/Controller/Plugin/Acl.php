@@ -82,6 +82,9 @@ class Acl extends AbstractPlugin {
      */
     public function checkAcl(MvcEvent $e) {
         $routeMatch = $e->getRouteMatch();
+        if (strstr(strtolower($routeMatch->getParam('controller')), 'ajax') != null) {
+            return true;
+        }
         $route = $routeMatch->getMatchedRouteName();
         $acl = $e->getViewModel()->acl;
         return $this->checkAclByRoute($route, $acl);

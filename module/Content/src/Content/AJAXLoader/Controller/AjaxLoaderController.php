@@ -355,20 +355,25 @@ class AjaxLoaderController extends AbstractActionController
     public function imageSaveAction(){
 
         $request = $this->getRequest();
+        $event    = $this->getEvent();
+        $response = $event->getResponse();
 
         if($request -> isPost()){
             $imageData = $request->getFiles()->toArray();
-
+            if (!$imageData) {
+                $response->setContent(json_encode(array()));
+                return $response;
+            }
             //save image
             $imageHandler = $this->getServiceLocator()->get('Content\ContentForm\Model\ImageTable');
             $imageResponse = $imageHandler->saveImageFile($imageData);
 
             $result = json_encode($imageResponse);
-            $event    = $this->getEvent();
-            $response = $event->getResponse();
             $response->setContent($result);
             return $response;
         }
+        $response->setContent(json_encode(array()));
+        return $response;
 
     }
-} 
+}
