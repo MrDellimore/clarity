@@ -122,7 +122,6 @@ return array(
                         'login',
                         'dirty_skus',
                     );
-                    var_dump('hahaha'); exit();
                     foreach($sessionNames as $sessions){
                         $sessionContainer = new \Zend\Session\Container($sessions);
 
