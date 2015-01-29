@@ -30,8 +30,16 @@ return array(
                     ),
                 ),
             ),
-
-
+            'refreshSession' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/refreshSession',
+                    'defaults' => array(
+                        'controller' => 'Common\Controller\Index',
+                        'action'     => 'refreshSession',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
