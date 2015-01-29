@@ -58,18 +58,16 @@ return array(
         // Values are objects
         'auth_service' => new Authenticate\Authenticator\AuthenticationAdapter(),
     ),
-
     'controllers' => array('invokables' => array('Authenticate\Controller\Authenticate' => 'Authenticate\Controller\AuthenticateController')),
-
     'view_manager' => array('template_path_stack' => array(__DIR__ . '/../view')),
     'service_manager' => array(
         'invokables' => array(
             'acl' => 'Authenticate\Controller\Plugin\Acl'
         )
     ),
-
-
     'di' => array(
         'services' => array(
-            'Authenticate\Model\AuthTable' => 'Authenticate\Model\AuthTable'))
+            'Authenticate\Model\AuthTable' => 'Authenticate\Model\AuthTable'
+        )
+    ),
 );

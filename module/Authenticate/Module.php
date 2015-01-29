@@ -4,6 +4,8 @@ namespace Authenticate;
 
 use Authenticate\Model\AuthDBSession;
 use Authenticate\Model\AuthDBSessionOptions;
+use Users\Entity\User;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\FactoryInterface;
@@ -13,12 +15,10 @@ use Zend\Session\Config\SessionConfig;
 use Zend\Session\SessionManager;
 
 
-class Module
-{
+class Module {
     public function getConfig() {
         return include __DIR__ . '/config/module.config.php';
     }
-
     public function getAutoloaderConfig() {
         return array(
             'Zend\Loader\StandardAutoloader' => array(
@@ -28,7 +28,6 @@ class Module
             ),
         );
     }
-
     public function onBootstrap(MvcEvent $e) {
         $app = $e->getApplication();
 
@@ -44,10 +43,27 @@ class Module
         $em->attach('route', function(MvcEvent $e){
             $loginSession= new Container('login');
             $userLogin = $loginSession->sessionDataforUser;
-            if(empty($userLogin)){
-                $e->getRouteMatch()->setParam('controller', 'Authenticate\Controller\Authenticate')->setParam('action', 'index');
+            $loginAction = [
+                "controller" =>  "Authenticate\\Controller\\Authenticate",
+                "action" =>  "login"
+            ];
+            if(empty($userLogin) && $loginAction != $e->getRouteMatch()->getParams()){
+                $e->getRouteMatch()
+                    ->setParam('controller', 'Authenticate\Controller\Authenticate')
+                    ->setParam('action', 'index');
             }
         });
+
+        $em->attach('route', function(MvcEvent $e){
+            $loginSession= new Container('login');
+            $userLogin = $loginSession->sessionDataforUser;
+            if(! empty($userLogin)){
+                $authTable = $e->getApplication()->getServiceManager()->get('Authenticate\Model\AuthTable');
+                $res = $authTable->updateRouteForUser($userLogin['userid'], $e->getRouteMatch());
+            }
+        });
+
+
 
         $sessionOptions = new AuthDBSessionOptions();
         $sessionOptions->setDataColumn('data')
@@ -56,17 +72,19 @@ class Module
             ->setLifetimeColumn('lifetime')
             ->setNameColumn('name');
 
-        $application    = $e->getApplication();
+        $application = $e->getApplication();
         $serviceManager = $application->getServiceManager();
         $dbAdapter = $serviceManager->get('Zend\Db\Adapter\Adapter');
-        $sessionTableGateway = new Sql($dbAdapter, 'session');
-        $sessionGateway = new AuthDBSession($sessionTableGateway, $sessionOptions);
+        $sessionTable = new Sql($dbAdapter, 'session');
+        $session = new AuthDBSession($sessionTable, $sessionOptions);
         $config = $serviceManager->get('Configuration');
         $sessionConfig = new SessionConfig();
-        // $sessionConfig->setOptions($config['session']);
         $sessionManager = new SessionManager($sessionConfig);
-        $sessionManager->setSaveHandler($sessionGateway);
+        $sessionManager->setSaveHandler($session);
 
         Container::setDefaultManager($sessionManager);
+
+        $eventManager = $application->getEventManager();
+        $eventManager->attach('finish', array($session, 'saveRouteData'));
     }
 }

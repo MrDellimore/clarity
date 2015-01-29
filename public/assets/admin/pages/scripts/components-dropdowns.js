@@ -115,7 +115,7 @@ var ComponentsDropdowns = function () {
         });
 
         //ajax route
-        var url = "/content/product/contentload";
+        var url = "/content/product/manufacturerload";
         $.ajax({
             url: url,
             dataType: "json"})

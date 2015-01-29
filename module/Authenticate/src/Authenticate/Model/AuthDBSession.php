@@ -8,26 +8,26 @@
 
 namespace Authenticate\Model;
 
-
 use Zend\Db\Sql\Exception\InvalidArgumentException;
 use Zend\Db\Sql\Sql;
+use Zend\Mvc\MvcEvent;
+use Zend\Session\Container;
 use Zend\Session\SaveHandler\SaveHandlerInterface;
 
 class AuthDBSession implements SaveHandlerInterface {
-
 
     protected $sql;
     protected $table;
     protected $options;
     protected $sessionName;
     protected $lifetime;
+    protected $id;
 
     protected function _runSql($unprep) {
         $adapter = $this->sql->getAdapter();
         $selectString = $this->sql->getSqlStringForSqlObject($unprep);
         return $adapter->query($selectString, $adapter::QUERY_MODE_EXECUTE);
     }
-
     public function __construct(Sql $sql, AuthDBSessionOptions $options) {
         if (!($sql instanceof Sql)) {
             throw new InvalidArgumentException(
@@ -39,16 +39,16 @@ class AuthDBSession implements SaveHandlerInterface {
         $this->sql = $sql;
         $this->options = $options;
     }
-
     public function open($savePath, $name) {
         $this->sessionName = $name;
-        $this->lifetime    = ini_get('session.gc_maxlifetime');
+        $this->lifetime    = 30 * 60;
         return true;
     }
     public function close(){
         return true;
     }
     public function read($id) {
+        $this->id = $id;
         $criteria = [
             $this->options->getIdColumn() => $id,
             $this->options->getNameColumn() => $this->sessionName
@@ -69,7 +69,13 @@ class AuthDBSession implements SaveHandlerInterface {
         return '';
     }
     public function write($id, $data) {
-
+        $saveData = [
+            $this->options->getDataColumn() => $data
+        ];
+        return $this->saveData($id, $saveData);
+    }
+    protected function saveData($id, array $saveData) {
+        $this->id = $id;
         $criteria = [
             $this->options->getIdColumn() => $id,
             $this->options->getNameColumn() => $this->sessionName
@@ -77,8 +83,7 @@ class AuthDBSession implements SaveHandlerInterface {
 
         $data = [
             $this->options->getModifiedColumn() => time(),
-            $this->options->getDataColumn()     => (string) $data
-        ];
+        ] + $saveData;
 
         $select = $this->sql->select()
             ->where($criteria);
@@ -111,6 +116,31 @@ class AuthDBSession implements SaveHandlerInterface {
             ->where(sprintf('%s < %d',
                 $platform->quoteIdentifier($this->options->getModifiedColumn()),
                 (time() - $this->lifetime)
-            )));
+            ))
+        );
+    }
+
+    /**
+     * @param MvcEvent $event
+     * This will save route data from the MVCEvent
+     */
+    public function saveRouteData(MvcEvent $event) {
+
+        $session = new Container('login');
+        $sessionData = $session->sessionDataforUser;
+        if ($sessionData) {
+            
+        }
+
+
+        // if there were no saves, we probably don't have an ID
+        if (!$this->id) {
+            return false;
+        }
+        $route = $event->getRouteMatch();
+        $saveData = [
+            // $this->options->getRouteColumn() => $route->getMatchedRouteName()
+        ];
+        return $this->saveData($this->id, $saveData);
     }
 }
