@@ -37,8 +37,14 @@ class Module
         $em->attach('route', function(MvcEvent $e){
             $loginSession= new Container('login');
             $userLogin = $loginSession->sessionDataforUser;
-            if(empty($userLogin)){
-                $e->getRouteMatch()->setParam('controller', 'Authenticate\Controller\Authenticate')->setParam('action', 'index');
+            $loginAction = [
+                "controller" =>  "Authenticate\\Controller\\Authenticate",
+                "action" =>  "login"
+            ];
+            if(empty($userLogin) && $loginAction != $e->getRouteMatch()->getParams()){
+                $e->getRouteMatch()
+                    ->setParam('controller', 'Authenticate\Controller\Authenticate')
+                    ->setParam('action', 'index');
             }
         });
     }
