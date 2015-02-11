@@ -49,7 +49,7 @@ class ProductsController extends AbstractActionController {
 
             //check out sku
             $stash = $this->getActiveTable();
-            $stash->stashActiveUser($userLogin['userid'],'contentForm/product/'.$sku,$sku);
+            // $stash->stashActiveUser($userLogin['userid'],'contentForm/product/'.$sku,$sku);
 
 
             //lookupdata
