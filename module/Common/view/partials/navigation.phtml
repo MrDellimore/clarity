@@ -73,7 +73,7 @@ foreach ($this->container as $page){
             $active = '';
             $selected = 'arrow';
 
-            if ($page->isActive()) {
+            if ($child->isActive()) {
                 $active = 'start active';
                 $selected = 'selected';
             }
