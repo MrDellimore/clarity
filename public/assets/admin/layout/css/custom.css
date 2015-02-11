@@ -39,3 +39,23 @@ this is a test
     background-color: silver;
     position: absolute;
 }
+
+#logoutmodal {
+    z-index: 100;
+    position: absolute;
+    top: 50px;
+    display: none;
+
+
+    /*
+    width: 500px;
+    height:500px;
+    border: 1px solid Black;
+    text-align: left;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left:-70px;
+    margin-top:-50px;
+    */
+}

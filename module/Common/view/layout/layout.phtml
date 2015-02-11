@@ -80,6 +80,52 @@
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content">
+
+
+
+
+
+
+
+<div class="modal" id="logoutmodal" tabindex="-1" role="catProductModalAdd">
+    <div class="custom-modal-dialog modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Logout?</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="col-md-12 pull-left">
+                    <p>Your session is about to expire. Would you like to stay logged in?</p>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" id="logoutbutton">Logout</button>
+                <button id="stayloggedin" class="btn blue"><i class="fa fa-check"></i>Stay Logged in</button>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 <!-- BEGIN HEADER INNER -->
@@ -356,6 +402,7 @@
 
 
 
+
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div id = "contentdiv" class="page-content">
@@ -414,11 +461,7 @@
     </ol>
 </div>
 
-<div id="dialog-logout" title="Do you want to logout?">
-    <p>
-        We are reching the end of your session soon, press Ok to keep logged in or press cancel to log out
-    </p>
-</div>
+
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
