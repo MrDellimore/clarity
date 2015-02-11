@@ -27,6 +27,10 @@ class IndexController extends AbstractActionController
         );
     }
 
+    public function refreshSessionAction() {
+        echo "Session Refreshed"; exit();
+    }
+
     public function logoutAction(){
 
         $loginSession= new Container('login');

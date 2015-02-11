@@ -1,5 +1,51 @@
 var Index = function () {
 
+    var logoutSet = 0;
+    var sessionTime = 30 * 1000 * 60;
+    var warningTime = 16 * 1000 * 60 ;
+    var logout = function() {
+        if (!logoutSet) {
+            return;
+        }
+        pathArray = window.location.href.split( '/' );
+        protocol = pathArray[0];
+        host = pathArray[2];
+        url = protocol + '//' + host;
+        // logout
+        window.location = url + "/logout";
+    };
+    var showModel = function() {
+        logoutSet = 1;
+
+        $( "#dialog-logout" ).dialog({
+            resizable: false,
+            height:140,
+            modal: true,
+            buttons: {
+                OK : function() {
+                    pathArray = window.location.href.split( '/' );
+                    protocol = pathArray[0];
+                    host = pathArray[2];
+                    url = protocol + '//' + host;
+                    $.get(url + "/refreshSession");
+                    logoutSet = 0;
+                    setTimeout(showModel, warningTime);
+                    setTimeout(logout, sessionTime);
+                    $( this ).dialog( "close" );
+                },
+                Logout : function() {
+                    $( this ).dialog( "close" );
+                    logout();
+                }
+            }
+        });
+    };
+    // timeout for 15 minutes
+    var startTimer = function() {
+        setTimeout(showModel, warningTime);
+        setTimeout(logout, sessionTime);
+    };
+
     return {
 
         //main function
@@ -10,6 +56,7 @@ var Index = function () {
                     map.width(map.parent().width());
                 });
             });
+            startTimer();
         },
 
         initJQVMAP: function () {
