@@ -16,12 +16,7 @@ use Zend\Session\Container;
 class SearchController extends AbstractActionController
 {
     public function indexAction(){
-
-      $viewResult = new ViewModel();
-      return $viewResult;
-
+		$viewResult = new ViewModel();
+		return $viewResult;
     }
-
-    //quick search action that was ajax was here
-
-} 
+}
