@@ -1,8 +1,8 @@
 var Index = function () {
 
 
-    var sessionTime = 15 * 1000 * 60;
-    var warningTime = 10 * 1000 * 60 ;
+    var sessionTime = 10 * 1000 * 60;
+    var warningTime = 5 * 1000 * 60 ;
     var exit;
     var popup;
 

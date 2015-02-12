@@ -10,6 +10,7 @@ $homePage = array(
     'listUsers',
     'form',
     'categoryload',
+    'logout',
 );
 
 $manage_search = array(
@@ -62,7 +63,8 @@ return array(
     ),
     'guest' => array(
         'auth',
-        'login'
+        'login',
+        'logout',
     )
 );
 
