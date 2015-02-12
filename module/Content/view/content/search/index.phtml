@@ -55,7 +55,7 @@
         <div class="btn-group">
     </div>
     <div class="row dropdown-options">
-		<div class="col-md-3">
+		<div class="col-md-3 search-filter">
             <label class="control-label">Status</label> <br />
 			<select class="form-control input-medium" data-placeholder="No Status Set" name="status">
 				<option value=""  ></option>
@@ -63,14 +63,14 @@
 				<option value="0"  >Disabled</option>
 			</select>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-3 search-filter">
             <label class="control-label">Manufacturer</label> <br />
             <select class="form-control input-medium" id="manufacturerDropdown" data-placeholder="No Manufacturer Set" name="mfc">
                 <option selected="selected" value=""></option>
             </select>
 
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-3 search-filter">
             <label class="control-label">Website</label> <br />
 			<select class="form-control input-medium" data-placeholder="No Website Set" name="website">
 				<option value=""  ></option>
@@ -78,11 +78,21 @@
 				<option value="3"  >aSavings</option>
 			</select>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-2 search-filter">
             <label class="control-label">Quantity</label> <br />
             <input type="text" name="quantity_min" style="width:3em;" value="0" /> to
             <input type="text" name="quantity_max" style="width:3em;" length="3" value="999" />
 		</div>
+    </div>
+	<div class="row">
+        <div class="col-md-2 search-filter">
+            <label class="control-label">Listed</label> <br />
+            <select class="form-control input-medium" data-placeholder="" name="listed">
+                <option value=""  ></option>
+                <option value="1"  >Yes</option>
+                <option value="2"  >No</option>
+            </select>
+        </div>
 
     </div>
 <!--

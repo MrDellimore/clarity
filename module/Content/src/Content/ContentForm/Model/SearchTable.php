@@ -28,6 +28,7 @@ class SearchTable{
         $website = '';
         $quantity_min = 0;
         $quantity_max = 999999999;
+        $listed = '';
 
         $options += [
             'sku' => '',
@@ -36,7 +37,8 @@ class SearchTable{
             'mfc' => '',
             'website' => '',
             'quantity_min' => 0,
-            'quantity_max' => 99999999999
+            'quantity_max' => 99999999999,
+            'listed' => ''
         ];
         extract($options, EXTR_IF_EXISTS);
 
@@ -99,6 +101,13 @@ class SearchTable{
             );
 
             $where->and->equalTo('mfc.value', $mfc);
+        }
+        if ($listed !== '') {
+            if ($listed == 1) {
+                $where->and->notEqualTo('product.dataState', 2);
+            } else if ($listed == 2) {
+                $where->and->equalTo('product.dataState', 2);
+            }
         }
 
         $select->limit((int)$limit);
