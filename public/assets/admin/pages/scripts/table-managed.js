@@ -5,7 +5,7 @@ var TableManaged = function () {
         var table = $('#sample_1');
 
         // begin first table
-        table.dataTable({
+        var dtable = table.DataTable({
 
 
             "processing": true,
@@ -18,6 +18,21 @@ var TableManaged = function () {
                     d.myKey = "10";
                     // d.custom = $('#myInput').val();
                     // etc
+                    var selects = $('.table-toolbar').find('.row .col-md-3').find('select.form-control');
+                    for (var i in selects) {
+                        select = $(selects[i]);
+                        option = select.find('option:checked');
+                        d[select.attr('name')] = option.val();
+                    }
+                    var texts = $('.table-toolbar').find('.row .col-md-3').find('input');
+                    for (var i in texts) {
+                        text = $(texts[i]);
+                        if (text.attr('name') === undefined) {
+                            continue;
+                        }
+                        d[text.attr('name')] = text.val();
+                    }
+                    return d;
                 }
             },
 
@@ -83,6 +98,9 @@ var TableManaged = function () {
         });
 
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+        redrawTable = function(e) { dtable.draw(); }
+        $('.dropdown-options').on('change', 'select', redrawTable);
+        $('.dropdown-options').on('keyup', 'input', redrawTable);
     };
 
     var attributesPopulate = function () {

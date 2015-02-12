@@ -63,13 +63,13 @@ class AjaxLoaderController extends AbstractActionController
             if($limit == '-1'){
                 $limit = 100;
             }
-
+            $queryData['limit'] = $limit;
+            $queryData['sku'] = $sku;
 
             $search = $this->getSearchTable();
 
-            $searchResult = $search->skulookup($sku,$limit);
+            $searchResult = $search->skulookup((array)$queryData);
             $searchResult = $this->updatequicksearch($searchResult);
-
 
             $result = json_encode(
                 array(
