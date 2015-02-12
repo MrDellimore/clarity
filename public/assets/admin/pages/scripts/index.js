@@ -43,7 +43,6 @@ var Index = function () {
             'filter': 'blur(0px)',
             '-webkit-filter': 'blur(0px)',
             '-moz-filter': 'blur(0px)',
-            '-o-filter': 'blur(0px)',
             '-ms-filter': 'blur(0px)'
         });
         $('#logoutmodal').hide(200);
@@ -54,6 +53,7 @@ var Index = function () {
     $('#stayloggedin').click(function(){
         resetTimer();
         hideModel();
+        $.get("/refreshSession");
     });
 
     $('#logoutbutton').click(function(){
