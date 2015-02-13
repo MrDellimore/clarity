@@ -41,7 +41,7 @@ class AuthDBSession implements SaveHandlerInterface {
     }
     public function open($savePath, $name) {
         $this->sessionName = $name;
-        $this->lifetime    = 30 * 60;
+        $this->lifetime    = 40 * 60;
         return true;
     }
     public function close(){
