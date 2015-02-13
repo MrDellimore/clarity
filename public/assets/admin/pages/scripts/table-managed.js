@@ -18,13 +18,13 @@ var TableManaged = function () {
                     d.myKey = "10";
                     // d.custom = $('#myInput').val();
                     // etc
-                    var selects = $('.table-toolbar').find('.row .col-md-3').find('select.form-control');
+                    var selects = $('.table-toolbar').find('.row .search-filter').find('select.form-control');
                     for (var i in selects) {
                         select = $(selects[i]);
                         option = select.find('option:checked');
                         d[select.attr('name')] = option.val();
                     }
-                    var texts = $('.table-toolbar').find('.row .col-md-3').find('input');
+                    var texts = $('.table-toolbar').find('.row .search-filter').find('input');
                     for (var i in texts) {
                         text = $(texts[i]);
                         if (text.attr('name') === undefined) {
